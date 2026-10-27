@@ -1740,12 +1740,12 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 .public-intro{max-width:780px;margin:0 0 24px;}
 .public-intro h2{margin:0 0 8px;color:var(--navy);font-size:clamp(25px,2.5vw,34px);line-height:1.25;}
 .public-intro p{margin:0;color:var(--text-2);font-size:16px;line-height:1.7;}
-.topbar.library-head{background:rgba(248,250,255,.93);}
-.topbar.library-head .topbar-in{min-height:112px;}
-.topbar.library-head .page-t h1{font-size:clamp(30px,3.5vw,46px);line-height:1.15;color:var(--navy);}
-.topbar.library-head .page-t p{display:block;margin-top:7px;font-size:14px;}
-.library-heading{display:flex;align-items:center;gap:16px;}
-.library-heading>svg{width:50px;height:50px;flex:none;color:#A77B23;stroke-width:1.7;}
+.topbar.collection-head{background:rgba(248,250,255,.93);}
+.topbar.collection-head .topbar-in{min-height:112px;}
+.topbar.collection-head .page-t h1{font-size:clamp(30px,3.5vw,46px);line-height:1.15;color:var(--navy);}
+.topbar.collection-head .page-t p{display:block;margin-top:7px;font-size:14px;}
+.collection-heading{display:flex;align-items:center;gap:16px;}
+.collection-heading>svg{width:50px;height:50px;flex:none;color:#A77B23;stroke-width:1.7;}
 .library-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;}
 .library-card{--library-color:151 48% 23%;position:relative;isolation:isolate;display:flex;align-items:flex-end;min-height:430px;border-radius:18px;overflow:hidden;background:hsl(var(--library-color));color:#fff;text-decoration:none;box-shadow:0 16px 36px -24px rgba(0,0,0,.48);transition:transform .35s ease,box-shadow .35s ease;}
 .library-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;transition:transform .6s cubic-bezier(.16,1,.3,1);}
@@ -1764,7 +1764,7 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 .library-card:hover .library-glass,.library-card:focus-visible .library-glass{background:rgba(255,255,255,.23);border-color:rgba(255,255,255,.62);}
 .library-card:hover .library-glass svg,.library-card:focus-visible .library-glass svg{transform:translateX(4px);}
 @media(max-width:1000px){.library-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
-@media(max-width:600px){.topbar.library-head .topbar-in{min-height:94px;}.topbar.library-head .page-t h1{font-size:28px;}.topbar.library-head .page-t p{font-size:12px;}.library-heading{gap:10px;}.library-heading>svg{width:36px;height:36px;}.library-card{min-height:400px;}.library-copy{padding:22px;}}
+@media(max-width:600px){.topbar.collection-head .topbar-in{min-height:94px;}.topbar.collection-head .page-t h1{font-size:28px;}.topbar.collection-head .page-t p{font-size:12px;}.collection-heading{gap:10px;}.collection-heading>svg{width:36px;height:36px;}.library-card{min-height:400px;}.library-copy{padding:22px;}}
 @media(prefers-reduced-motion:reduce){.library-card,.library-image,.library-glass,.library-glass svg,.library-card::after{transition:none;}.library-card:hover,.library-card:focus-visible,.library-card:hover .library-image,.library-card:focus-visible .library-image,.library-card:hover .library-glass svg,.library-card:focus-visible .library-glass svg{transform:none;}.library-card::after{display:none;}}
 .library-source{margin-top:22px;display:inline-flex;align-items:center;gap:8px;color:var(--navy);font-weight:600;}
 .group-choice-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:0 0 30px;}
@@ -1803,6 +1803,20 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 .has-photo .group-choice-copy,.has-photo .committee-card-copy{position:relative;inset:auto;padding:17px;}
 .group-choice.has-photo:hover .group-choice-media{transform:none;}
 .committee-card.has-photo{min-height:0;}
+.showcase-card{--showcase-color:221 55% 28%;isolation:isolate;border-radius:18px;background:hsl(var(--showcase-color));box-shadow:0 16px 36px -24px rgba(0,0,0,.48);}
+.showcase-card::before,.portfolio-entry .ecard::before{content:"";position:absolute;z-index:2;inset:0;pointer-events:none;opacity:0;background:radial-gradient(180px circle at var(--pointer-x,50%) var(--pointer-y,50%),rgba(255,255,255,.2),transparent 70%);transition:opacity .3s ease;}
+.showcase-card:hover,.showcase-card:focus-visible{transform:translateY(-6px);box-shadow:0 24px 42px -24px rgba(0,0,0,.55);}
+.showcase-card:focus-visible{outline:3px solid var(--navy);outline-offset:4px;}
+.showcase-card:hover::before,.showcase-card:focus-visible::before,.portfolio-entry .ecard:hover::before,.portfolio-entry .ecard:focus-visible::before{opacity:1;}
+.showcase-card .group-choice-copy,.showcase-card .committee-card-copy{inset:auto 0 0;width:calc(100% - 28px);margin:14px;padding:18px;border:1px solid rgba(255,255,255,.28);border-radius:13px;background:rgba(255,255,255,.1);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:background .25s ease,border-color .25s ease;}
+.showcase-card:hover .group-choice-copy,.showcase-card:hover .committee-card-copy,.showcase-card:focus-visible .group-choice-copy{background:rgba(255,255,255,.17);border-color:rgba(255,255,255,.48);}
+.showcase-card .group-choice-action{padding:13px 16px;border-color:rgba(255,255,255,.34);border-radius:10px;background:rgba(255,255,255,.12);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+.showcase-card:hover .group-choice-action,.showcase-card:focus-visible .group-choice-action{background:rgba(255,255,255,.23);border-color:rgba(255,255,255,.62);}
+.showcase-card.has-photo img{transition:filter .35s ease;}
+.showcase-card.has-photo:hover img{filter:brightness(1.025) saturate(1.04);}
+.showcase-card.has-photo{height:auto;}
+.portfolio-entry .ecard{position:relative;isolation:isolate;overflow:hidden;border-radius:16px;border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.08);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+.portfolio-entry .ecard:hover,.portfolio-entry .ecard:focus-visible{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.6);}
 .committee-advisor{width:min(100%,400px);margin:0 auto 28px;}
 .central-team{margin-top:34px;}
 .central-team h2{margin:0 0 18px;color:var(--navy);font-size:25px;}
@@ -1834,6 +1848,7 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 @media(max-width:850px){.group-choice-grid,.committee-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media(max-width:600px){.site-nav-in{padding:0 10px;min-height:56px;}.site-nav-name{display:none;}.site-nav-links{margin-left:0;width:100%;}.site-nav button{padding:8px 11px;font-size:13px;}.main>.topbar{top:56px;}.public-intro h2{font-size:25px;}.library-grid,.group-choice-grid,.committee-grid,.central-grid,.entry-unit-grid{grid-template-columns:1fr;}.group-choice,.entry .group-choice{height:225px;}.committee-card{min-height:285px;}.committee-duties,.portfolio-entry{padding:18px;}}
 @media(prefers-reduced-motion:reduce){.group-choice,.group-choice-media,.group-choice-action svg,.committee-card,.committee-card-media{transition:none;}.group-choice:hover,.group-choice:hover .group-choice-media,.group-choice:hover .group-choice-action svg,.library-card:hover,.library-card:hover .committee-card-media{transform:none;}}
+@media(prefers-reduced-motion:reduce){.showcase-card,.showcase-card::before,.showcase-card img,.showcase-card .group-choice-copy,.showcase-card .committee-card-copy,.portfolio-entry .ecard,.portfolio-entry .ecard::before{transition:none;}.showcase-card:hover,.showcase-card:focus-visible,.portfolio-entry .ecard:hover{transform:none;}.showcase-card::before,.portfolio-entry .ecard::before{display:none;}.showcase-card.has-photo:hover img{filter:none;}}
 @media print{.site-nav{display:none!important;}.main>.topbar{top:0;}}
 </style>
 </head>
@@ -2410,7 +2425,8 @@ function shell(){
     </div>
   </div>`;
 }
-function setHead(title, sub, actions=''){ $('.topbar')?.classList.remove('lux','library-head'); document.body.classList.remove('lux-top'); $('#page-t').innerHTML=`<h1>${title}</h1>${sub?`<p>${sub}</p>`:''}`; $('#top-act').innerHTML=actions; document.title = `${title.replace(/<[^>]+>/g,'')} | SISAKET GECC PROJECT`; }
+function setHead(title, sub, actions=''){ $('.topbar')?.classList.remove('lux','collection-head'); document.body.classList.remove('lux-top'); $('#page-t').innerHTML=`<h1>${title}</h1>${sub?`<p>${sub}</p>`:''}`; $('#top-act').innerHTML=actions; document.title = `${title.replace(/<[^>]+>/g,'')} | SISAKET GECC PROJECT`; }
+function setCollectionHead(title, icon, sub){ setHead(`<span class="collection-heading">${ic(icon)}<span>${esc(title)}</span></span>`,sub); $('.topbar')?.classList.add('collection-head'); }
 const kindLabel = u => u.kind==='renew' ? `ต่ออายุการรับรอง${u.prev?` (เดิม${LEVEL[u.prev].l})`:''}` : u.kind==='new' ? 'ขอรับรองปีแรก' : 'ยังไม่ระบุประเภทการสมัคร';
 const teamShort = id => `กลุ่มที่ ${id}`;
 const teamName = id => (DB.teams.find(t=>t.id===+id)||{}).name || `ทีม ${id}`;
@@ -2496,23 +2512,22 @@ function go(view, opts={}){
 }
 
 function viewLibrary(){
-  setHead(`<span class="library-heading">${ic('book')}<span>GECC Library</span></span>`,'คลังข้อมูลมาตรฐานศูนย์ราชการสะดวก จังหวัดศรีสะเกษ');
-  $('.topbar')?.classList.add('library-head');
+  setCollectionHead('GECC Library','book','คลังข้อมูลมาตรฐานศูนย์ราชการสะดวก จังหวัดศรีสะเกษ');
   $('#content').innerHTML = `<section class="public-intro"><p>เอกสาร คู่มือ และตัวอย่างสำหรับเตรียมความพร้อม ภาพปกจากเอกสารจริงในคลัง เลือกหมวดเพื่อเปิดโฟลเดอร์ใน Google Drive</p></section>
-    <div class="library-grid">${LIBRARY_FOLDERS.map(f=>`<a class="library-card${f.landscape?' is-landscape':''}" data-library-card style="--library-color:${esc(f.theme)}" href="${esc(f.url||LIBRARY_ROOT)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(f.name)} เปิดโฟลเดอร์ใน Google Drive"><img class="library-image" src="${esc(f.image)}" alt="ภาพตัวอย่างเอกสารหมวด${esc(f.name)}" loading="lazy" decoding="async"><span class="library-shade" aria-hidden="true"></span><div class="library-copy"><h2>${esc(f.name)}</h2><p>${esc(f.detail)}</p><span class="library-glass">เปิดดูเอกสาร ${ic('right')}</span></div></a>`).join('')}</div>
+    <div class="library-grid">${LIBRARY_FOLDERS.map(f=>`<a class="library-card${f.landscape?' is-landscape':''}" data-visual-card style="--library-color:${esc(f.theme)}" href="${esc(f.url||LIBRARY_ROOT)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(f.name)} เปิดโฟลเดอร์ใน Google Drive"><img class="library-image" src="${esc(f.image)}" alt="ภาพตัวอย่างเอกสารหมวด${esc(f.name)}" loading="lazy" decoding="async"><span class="library-shade" aria-hidden="true"></span><div class="library-copy"><h2>${esc(f.name)}</h2><p>${esc(f.detail)}</p><span class="library-glass">เปิดดูเอกสาร ${ic('right')}</span></div></a>`).join('')}</div>
     <a class="library-source" href="${LIBRARY_ROOT}" target="_blank" rel="noopener noreferrer">ดูโฟลเดอร์ GECC ทั้งหมด ${ic('right')}</a>`;
 }
 function groupChoice(t){
   const title=t.name.replace(/^กลุ่มที่\s*\d+\s*:\s*/,'');
   const photo=t.photo||GROUP_PHOTOS[t.id];
-  return `<button class="group-choice${photo?' has-photo':''}" data-act="entry-team" data-team="${t.id}" aria-label="เลือก${esc(t.name)} เพื่อเข้าสู่ระบบ"><span class="group-choice-media">${photo?`<img src="${esc(photo)}" alt="ภาพประกอบ${esc(t.name)}" loading="lazy" width="500" height="500">`:ic(['building','shield','pin','file','user','chart'][t.id-1])}<span class="group-choice-number">${String(t.id).padStart(2,'0')}</span></span><span class="group-choice-overlay"></span><span class="group-choice-copy"><strong>กลุ่มที่ ${t.id}</strong><small>${esc(title)}</small><span class="group-choice-action">เลือกกลุ่มเพื่อเข้าสู่ระบบ ${ic('right')}</span></span></button>`;
+  return `<button class="group-choice showcase-card${photo?' has-photo':''}" data-visual-card data-act="entry-team" data-team="${t.id}" aria-label="เลือก${esc(t.name)} เพื่อเข้าสู่ระบบ"><span class="group-choice-media">${photo?`<img src="${esc(photo)}" alt="ภาพประกอบ${esc(t.name)}" loading="lazy" width="500" height="500">`:ic(['building','shield','pin','file','user','chart'][t.id-1])}<span class="group-choice-number">${String(t.id).padStart(2,'0')}</span></span><span class="group-choice-overlay"></span><span class="group-choice-copy"><strong>กลุ่มที่ ${t.id}</strong><small>${esc(title)}</small><span class="group-choice-action">เลือกกลุ่มเพื่อเข้าสู่ระบบ ${ic('right')}</span></span></button>`;
 }
 function personCard(m){
   const title=m.title||m.pos||'';
-  return `<article class="committee-card${m.photo?' has-photo':''}"><div class="committee-card-media">${m.photo?`<img src="${esc(m.photo)}" alt="รูป ${esc(m.name||title)}" loading="lazy" width="500" height="500">`:`${ic('user')}<span>รอรูปบุคคล</span>`}</div><div class="committee-card-copy"><span class="committee-card-role">${esc(m.role||'')}</span><h3>${esc(m.name||title)}</h3>${m.name?`<p>${esc(title)}</p>`:''}</div></article>`;
+  return `<article class="committee-card showcase-card${m.photo?' has-photo':''}" data-visual-card><div class="committee-card-media">${m.photo?`<img src="${esc(m.photo)}" alt="รูป ${esc(m.name||title)}" loading="lazy" width="500" height="500">`:`${ic('user')}<span>รอรูปบุคคล</span>`}</div><div class="committee-card-copy"><span class="committee-card-role">${esc(m.role||'')}</span><h3>${esc(m.name||title)}</h3>${m.name?`<p>${esc(title)}</p>`:''}</div></article>`;
 }
 function viewCommittee(){
-  setHead('คณะทำงาน','คณะทำงานขับเคลื่อนการดำเนินการศูนย์ราชการสะดวก GECC จังหวัดศรีสะเกษ');
+  setCollectionHead('คณะทำงาน','users','คณะทำงานขับเคลื่อนการดำเนินการศูนย์ราชการสะดวก GECC จังหวัดศรีสะเกษ');
   $('#content').innerHTML = `<section class="public-intro"><h2>คณะทำงาน GECC จังหวัดศรีสะเกษ</h2><p>ตามคำสั่งแต่งตั้งคณะทำงานขับเคลื่อนการดำเนินการศูนย์ราชการสะดวก GECC จังหวัดศรีสะเกษ ลงวันที่ 17 กันยายน 2569 ช่องภาพบุคคลเตรียมไว้สำหรับเพิ่มรูปภายหลัง</p></section>
     <div class="committee-advisor">${personCard(COMMITTEE_ADVISOR)}</div>
     <div class="committee-grid">${COMMITTEE_MEMBERS.map(personCard).join('')}</div>
@@ -2522,7 +2537,7 @@ function viewCommittee(){
 function viewPortfolio(){
   const team=DB.teams.find(t=>t.id===S.entryTeam);
   if(team){ viewPortfolioEntry(team); return; }
-  setHead('Portfolio / เข้าสู่ระบบ','เลือกกลุ่มและประเภทผู้ใช้เพื่อเข้าสู่ระบบ');
+  setCollectionHead('Portfolio / เข้าสู่ระบบ','building','เลือกกลุ่มและประเภทผู้ใช้เพื่อเข้าสู่ระบบ');
   $('#content').innerHTML = `<section class="public-intro"><h2 tabindex="-1" data-entry-heading>เลือกกลุ่มของท่าน</h2><p>เลือกกลุ่มที่รับผิดชอบ แล้วเลือก MENTOR หรือหน่วยบริการ (MENTEE) เพื่อเข้าสู่ระบบ</p></section>
     <div class="group-choice-grid" aria-label="เลือกกลุ่มเพื่อเข้าสู่ระบบ">${DB.teams.slice().sort((a,b)=>a.id-b.id).map(groupChoice).join('')}</div>
     <button class="entry-coordinator" data-act="entry-coord">${ic('shield')}ผู้ประสานงานจังหวัดเข้าสู่ระบบ</button>
@@ -2782,11 +2797,11 @@ function peek(id){
 function viewPortfolioEntry(team){
   const unitStep=S.rolePick==='mentee';
   const units=DB.units.filter(u=>u.team===team.id);
-  setHead('Portfolio / เข้าสู่ระบบ',unitStep?'เลือกหน่วยบริการเพื่อเข้าสู่ระบบ':'เลือกประเภทผู้ใช้เพื่อเข้าสู่ระบบ');
+  setCollectionHead('Portfolio / เข้าสู่ระบบ','building',unitStep?'เลือกหน่วยบริการเพื่อเข้าสู่ระบบ':'เลือกประเภทผู้ใช้เพื่อเข้าสู่ระบบ');
   $('#content').innerHTML = `<section class="portfolio-entry">
     <h2 class="entry-q" tabindex="-1" data-entry-heading>${unitStep?'เลือกหน่วยบริการของท่าน':'เลือกประเภทผู้ใช้'}</h2>
     <p class="entry-help">${unitStep?'เลือกหน่วยบริการเพื่อเปิดหน้ากรอก PIN':'เลือกบทบาทที่ต้องการใช้งาน แล้วดำเนินการเข้าสู่ระบบ'}</p>
-    ${!unitStep?`<div class="ecards"><button class="ecard" data-act="entry-mentor"><span class="ei">${ic('users')}</span><b>MENTOR</b><span class="d">ตรวจประเมิน ให้คะแนน และให้ข้อเสนอแนะกับหน่วยบริการในกลุ่ม</span><span class="eg">เข้าสู่ระบบ MENTOR ${ic('right')}</span></button><button class="ecard" data-act="entry-mentee"><span class="ei">${ic('building')}</span><b>หน่วยบริการ (MENTEE)</b><span class="d">ส่งแบบประเมินความพร้อม แนบหลักฐาน และติดตามผลการตรวจ</span><span class="eg">เลือกหน่วยบริการ ${ic('right')}</span></button></div><button class="entry-back" data-act="entry-back" data-step="group">${ic('left')}กลับไปเลือกกลุ่ม</button>`:''}
+    ${!unitStep?`<div class="ecards"><button class="ecard" data-visual-card data-act="entry-mentor"><span class="ei">${ic('users')}</span><b>MENTOR</b><span class="d">ตรวจประเมิน ให้คะแนน และให้ข้อเสนอแนะกับหน่วยบริการในกลุ่ม</span><span class="eg">เข้าสู่ระบบ MENTOR ${ic('right')}</span></button><button class="ecard" data-visual-card data-act="entry-mentee"><span class="ei">${ic('building')}</span><b>หน่วยบริการ (MENTEE)</b><span class="d">ส่งแบบประเมินความพร้อม แนบหลักฐาน และติดตามผลการตรวจ</span><span class="eg">เลือกหน่วยบริการ ${ic('right')}</span></button></div><button class="entry-back" data-act="entry-back" data-step="group">${ic('left')}กลับไปเลือกกลุ่ม</button>`:''}
     ${unitStep?`${units.length?`<div class="entry-unit-grid">${units.map(u=>`<button class="entry-unit" data-act="entry-unit" data-id="${u.id}"><span>${esc(u.name)}</span>${ic('right')}</button>`).join('')}</div>`:'<p class="entry-s">ยังไม่มีหน่วยบริการในกลุ่มนี้</p>'}<button class="entry-back" data-act="entry-back" data-step="type">${ic('left')}กลับไปเลือกประเภทผู้ใช้</button>`:''}
   </section>`;
   $('#content [data-entry-heading]')?.focus({preventScroll:true});
@@ -3779,8 +3794,8 @@ function closeMenu(){ $('#side')?.classList.remove('open'); $('#scrim')?.classLi
 
 /* ================= Events ================= */
 document.addEventListener('pointermove',e=>{
-  if(S.view!=='library' || e.pointerType==='touch' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const card=e.target.closest('[data-library-card]'); if(!card) return;
+  if(!['library','committee','portfolio'].includes(S.view) || e.pointerType==='touch' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const card=e.target.closest('[data-visual-card]'); if(!card) return;
   const box=card.getBoundingClientRect();
   card.style.setProperty('--pointer-x',`${e.clientX-box.left}px`);
   card.style.setProperty('--pointer-y',`${e.clientY-box.top}px`);
