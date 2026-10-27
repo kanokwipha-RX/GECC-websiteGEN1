@@ -1727,6 +1727,114 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 .wflog li b{ display:block; font-size:14.5px; color:var(--text); } .wflog li span{ font-size:13px; color:var(--text-3); }
 .wflog li p{ margin:4px 0 0; font-size:14px; color:#1A4FD6; font-weight:600; background:#FDF1F0; padding:6px 10px; border-radius:8px; }
 .wfb-t .lockbar b{ font-size:15px!important; color:#17734A!important; display:inline; } .wfb-t .lockbar > span{ font-size:14.5px!important; color:#17734A!important; }
+/* Public navigation, library, and team portfolio */
+.site-nav{position:sticky;top:0;z-index:31;background:#0D1E57;border-bottom:2px solid var(--gold-500);color:#fff;}
+.site-nav-in{max-width:1440px;min-height:58px;margin:auto;padding:0 32px;display:flex;align-items:center;gap:24px;}
+.site-nav-name{font-size:13px;font-weight:700;letter-spacing:.05em;color:#E6CB82;white-space:nowrap;}
+.site-nav-links{display:flex;gap:4px;align-items:center;margin-left:auto;overflow-x:auto;scrollbar-width:thin;}
+.site-nav button{border:0;border-radius:8px;background:transparent;color:#E6EAF5;font:600 14px 'IBM Plex Sans Thai',sans-serif;white-space:nowrap;padding:9px 15px;min-height:42px;cursor:pointer;}
+.site-nav button:hover{background:rgba(255,255,255,.1);color:#fff;}
+.site-nav button[aria-current="page"]{background:rgba(230,203,130,.18);color:#F3E6BF;}
+.site-nav button:focus-visible,.library-card:focus-visible,.group-choice:focus-visible,.committee-card a:focus-visible,.committee-source a:focus-visible{outline:2px solid #E6CB82;outline-offset:2px;}
+.main>.topbar{top:58px;}
+.public-intro{max-width:780px;margin:0 0 24px;}
+.public-intro h2{margin:0 0 8px;color:var(--navy);font-size:clamp(25px,2.5vw,34px);line-height:1.25;}
+.public-intro p{margin:0;color:var(--text-2);font-size:16px;line-height:1.7;}
+.topbar.library-head{background:rgba(248,250,255,.93);}
+.topbar.library-head .topbar-in{min-height:112px;}
+.topbar.library-head .page-t h1{font-size:clamp(30px,3.5vw,46px);line-height:1.15;color:var(--navy);}
+.topbar.library-head .page-t p{display:block;margin-top:7px;font-size:14px;}
+.library-heading{display:flex;align-items:center;gap:16px;}
+.library-heading>svg{width:50px;height:50px;flex:none;color:#A77B23;stroke-width:1.7;}
+.library-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;}
+.library-card{--library-color:151 48% 23%;position:relative;isolation:isolate;display:flex;align-items:flex-end;min-height:430px;border-radius:18px;overflow:hidden;background:hsl(var(--library-color));color:#fff;text-decoration:none;box-shadow:0 16px 36px -24px rgba(0,0,0,.48);transition:transform .35s ease,box-shadow .35s ease;}
+.library-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;transition:transform .6s cubic-bezier(.16,1,.3,1);}
+.library-card.is-landscape .library-image{height:auto;object-fit:contain;}
+.library-shade{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 18%,hsl(var(--library-color)/.28) 43%,hsl(var(--library-color)/.93) 75%,hsl(var(--library-color)/.98));}
+.library-card::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(180px circle at var(--pointer-x,50%) var(--pointer-y,50%),rgba(255,255,255,.22),transparent 70%);transition:opacity .3s ease;}
+.library-copy{position:relative;z-index:1;width:100%;padding:24px;}
+.library-copy h2{margin:0;color:#fff;font-size:clamp(23px,2vw,29px);line-height:1.3;}
+.library-copy p{margin:8px 0 0;color:#F0F4FA;font-size:14px;line-height:1.55;}
+.library-glass{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:24px;padding:13px 16px;border:1px solid rgba(255,255,255,.34);border-radius:10px;background:rgba(255,255,255,.12);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#fff;font-size:14px;font-weight:700;transition:background .25s ease,border-color .25s ease;}
+.library-glass svg{width:20px;height:20px;flex:none;transition:transform .25s ease;}
+.library-card:hover,.library-card:focus-visible{transform:translateY(-6px);box-shadow:0 24px 42px -24px rgba(0,0,0,.55);}
+.library-card:focus-visible{outline:3px solid var(--navy);outline-offset:4px;}
+.library-card:hover .library-image,.library-card:focus-visible .library-image{transform:scale(1.055);}
+.library-card:hover::after,.library-card:focus-visible::after{opacity:1;}
+.library-card:hover .library-glass,.library-card:focus-visible .library-glass{background:rgba(255,255,255,.23);border-color:rgba(255,255,255,.62);}
+.library-card:hover .library-glass svg,.library-card:focus-visible .library-glass svg{transform:translateX(4px);}
+@media(max-width:1000px){.library-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:600px){.topbar.library-head .topbar-in{min-height:94px;}.topbar.library-head .page-t h1{font-size:28px;}.topbar.library-head .page-t p{font-size:12px;}.library-heading{gap:10px;}.library-heading>svg{width:36px;height:36px;}.library-card{min-height:400px;}.library-copy{padding:22px;}}
+@media(prefers-reduced-motion:reduce){.library-card,.library-image,.library-glass,.library-glass svg,.library-card::after{transition:none;}.library-card:hover,.library-card:focus-visible,.library-card:hover .library-image,.library-card:focus-visible .library-image,.library-card:hover .library-glass svg,.library-card:focus-visible .library-glass svg{transform:none;}.library-card::after{display:none;}}
+.library-source{margin-top:22px;display:inline-flex;align-items:center;gap:8px;color:var(--navy);font-weight:600;}
+.group-choice-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:0 0 30px;}
+.group-choice{position:relative;isolation:isolate;display:block;width:100%;height:265px;overflow:hidden;border:0;border-radius:16px;background:#172D6B;color:#fff;text-align:left;cursor:pointer;box-shadow:0 14px 30px -20px rgba(0,0,0,.35);font:inherit;transition:transform .35s ease,box-shadow .35s ease;}
+.group-choice:hover{transform:translateY(-4px);box-shadow:0 22px 40px -20px rgba(0,0,0,.42);}
+.group-choice-media{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(circle at 70% 20%,rgba(222,191,113,.42),transparent 45%),linear-gradient(145deg,#285092,#0D1E57);transition:transform .5s ease;}
+.group-choice:nth-child(3n+2) .group-choice-media{background:radial-gradient(circle at 75% 20%,rgba(242,208,135,.36),transparent 48%),linear-gradient(145deg,#1E6178,#0B334A);}
+.group-choice:nth-child(3n) .group-choice-media{background:radial-gradient(circle at 70% 20%,rgba(242,208,135,.3),transparent 48%),linear-gradient(145deg,#65578B,#252850);}
+.group-choice:hover .group-choice-media{transform:scale(1.08);}
+.group-choice-media svg{width:140px;height:140px;opacity:.22;stroke-width:1.2;}
+.group-choice-media img,.committee-card-media img{width:100%;height:100%;object-fit:cover;}
+.group-choice-number{position:absolute;right:18px;top:5px;color:rgba(255,255,255,.17);font-size:96px;font-weight:700;line-height:1;}
+.group-choice-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(6,17,51,.97),rgba(6,17,51,.72) 42%,transparent 80%);}
+.group-choice-copy{position:absolute;inset:auto 18px 18px;display:flex;flex-direction:column;gap:4px;}
+.group-choice-copy strong{font-size:21px;line-height:1.35;}
+.group-choice-copy small{font-size:13.5px;line-height:1.45;color:#E7ECF7;}
+.group-choice-action{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding:10px 12px;border:1px solid rgba(230,203,130,.45);border-radius:9px;background:rgba(230,203,130,.16);font-size:13px;font-weight:700;}
+.group-choice-action svg{width:17px;height:17px;transition:transform .2s ease;}
+.group-choice:hover .group-choice-action svg{transform:translateX(4px);}
+.committee-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:34px;}
+.committee-card{position:relative;min-height:305px;overflow:hidden;border-radius:16px;background:#11255C;color:#fff;box-shadow:0 14px 30px -22px rgba(0,0,0,.4);transition:transform .35s ease,box-shadow .35s ease;}
+.committee-card-media{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(circle at 72% 15%,rgba(230,203,130,.28),transparent 48%),linear-gradient(145deg,#38578A,#10265D);transition:transform .5s ease;}
+.committee-card-media svg{width:96px;height:96px;opacity:.3;stroke-width:1.15;}
+.committee-card-media span{position:absolute;top:15px;left:16px;padding:5px 9px;border:1px solid rgba(255,255,255,.35);border-radius:7px;color:#E8ECF5;font-size:11px;}
+.committee-card::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(5,16,47,.98),rgba(5,16,47,.78) 36%,transparent 76%);pointer-events:none;}
+.committee-card-copy{position:absolute;z-index:1;inset:auto 17px 17px;}
+.committee-card-copy h3{margin:0;color:#fff;font-size:18px;line-height:1.35;}
+.committee-card-copy p{margin:5px 0 0;color:#E4E9F5;font-size:12.5px;line-height:1.45;}
+.card-action{display:flex;align-items:center;justify-content:space-between;margin-top:13px;padding:9px 11px;border:1px solid rgba(230,203,130,.5);border-radius:8px;color:#fff;background:rgba(230,203,130,.15);font-size:12px;font-weight:700;}
+.card-action svg{width:16px;height:16px;}
+.committee-card-role{display:inline-block;margin-bottom:7px;color:#F1D58F;font-size:11px;font-weight:700;}
+.group-choice.has-photo{height:auto;display:flex;flex-direction:column;}
+.has-photo .group-choice-media,.has-photo .committee-card-media{position:relative;inset:auto;display:block;width:100%;aspect-ratio:1;background:#fff;flex:none;}
+.has-photo .group-choice-media img,.has-photo .committee-card-media img{display:block;object-fit:contain;}
+.has-photo .group-choice-overlay,.has-photo .group-choice-number,.committee-card.has-photo::after{display:none;}
+.has-photo .group-choice-copy,.has-photo .committee-card-copy{position:relative;inset:auto;padding:17px;}
+.group-choice.has-photo:hover .group-choice-media{transform:none;}
+.committee-card.has-photo{min-height:0;}
+.committee-advisor{width:min(100%,400px);margin:0 auto 28px;}
+.central-team{margin-top:34px;}
+.central-team h2{margin:0 0 18px;color:var(--navy);font-size:25px;}
+.central-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;max-width:800px;}
+.portfolio-entry{max-width:1000px;margin:0 auto;padding:28px;border-radius:16px;background:#0D1E57;color:#fff;}
+.portfolio-entry .entry-q{margin-top:0;}
+.portfolio-entry .entry-help{margin:8px 0 20px;color:#DDE3F2;line-height:1.6;}
+.portfolio-entry .entry-s{max-width:none;color:#DDE3F2;}
+.entry-coordinator{display:inline-flex;align-items:center;gap:7px;padding:10px 0;border:0;background:none;color:var(--navy);cursor:pointer;font:600 14px 'IBM Plex Sans Thai',sans-serif;text-decoration:underline;text-underline-offset:3px;}
+.entry-coordinator svg{width:17px;height:17px;}
+.entry-coordinator:focus-visible{outline:2px solid var(--navy);outline-offset:3px;}
+.committee-duties{margin-top:34px;padding:26px;border:1px solid var(--border);border-radius:16px;background:var(--surface);scroll-margin-top:140px;}
+.committee-duties h2{margin:0 0 18px;color:var(--navy);font-size:25px;}
+.committee-duties ol{margin:0;padding-left:28px;display:grid;gap:14px;}
+.committee-duties li{padding-left:6px;line-height:1.7;color:var(--text);}
+.committee-source{margin:22px 0 0;}
+.committee-source a{display:inline-flex;align-items:center;gap:8px;color:var(--navy);font-weight:700;text-underline-offset:3px;}
+.committee-source a svg{width:19px;height:19px;}
+.entry .group-choice-grid{margin-top:18px;text-align:left;}
+.entry .group-choice{height:230px;}
+.entry-back{display:inline-flex;align-items:center;gap:7px;margin-top:24px;padding:9px 12px;border:0;background:none;color:#E5EAF5;cursor:pointer;font:600 14px 'IBM Plex Sans Thai',sans-serif;}
+.entry-back svg{width:17px;height:17px;}
+.entry-unit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px;text-align:left;}
+.entry-unit{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:70px;padding:14px 16px;border:1px solid rgba(230,203,130,.42);border-radius:12px;background:rgba(255,255,255,.07);color:#fff;cursor:pointer;text-align:left;font:600 15px 'IBM Plex Sans Thai',sans-serif;}
+.entry-unit:hover{background:rgba(255,255,255,.14);}
+.entry-unit svg{width:18px;height:18px;flex:none;}
+.entry-unit:focus-visible,.entry-back:focus-visible{outline:2px solid #E6CB82;outline-offset:2px;}
+@media(max-width:1050px){.committee-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+@media(max-width:850px){.group-choice-grid,.committee-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:600px){.site-nav-in{padding:0 10px;min-height:56px;}.site-nav-name{display:none;}.site-nav-links{margin-left:0;width:100%;}.site-nav button{padding:8px 11px;font-size:13px;}.main>.topbar{top:56px;}.public-intro h2{font-size:25px;}.library-grid,.group-choice-grid,.committee-grid,.central-grid,.entry-unit-grid{grid-template-columns:1fr;}.group-choice,.entry .group-choice{height:225px;}.committee-card{min-height:285px;}.committee-duties,.portfolio-entry{padding:18px;}}
+@media(prefers-reduced-motion:reduce){.group-choice,.group-choice-media,.group-choice-action svg,.committee-card,.committee-card-media{transition:none;}.group-choice:hover,.group-choice:hover .group-choice-media,.group-choice:hover .group-choice-action svg,.library-card:hover,.library-card:hover .committee-card-media{transform:none;}}
+@media print{.site-nav{display:none!important;}.main>.topbar{top:0;}}
 </style>
 </head>
 <body>
@@ -1752,6 +1860,7 @@ const IC = {
   building:'<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>',
   clipboard:'<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/>',
   file:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+  book:'<path d="M12 7v14"/><path d="M3 3h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5v17h-5a4 4 0 0 0-4 1 4 4 0 0 0-4-1H3Z"/>',
   alert:'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
   check:'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
   tick:'<path d="M20 6 9 17l-5-5"/>',
@@ -1904,25 +2013,43 @@ const OUT = {
 const NEW_TOTAL = PHYS.filter(p=>p.n).length + QC.reduce((s,q)=>s+q.subs.filter(x=>x.n).length,0);
 const DISTRICTS = ['เมืองศรีสะเกษ','กันทรลักษ์','กันทรารมย์','ขุขันธ์','ขุนหาญ','อุทุมพรพิสัย','ราษีไศล','ไพรบึง','ปรางค์กู่','ห้วยทับทัน','ยางชุมน้อย','โนนคูณ','บึงบูรพ์','ศรีรัตนะ','น้ำเกลี้ยง','วังหิน','ภูสิงห์','เมืองจันทร์','เบญจลักษ์','พยุห์','โพธิ์ศรีสุวรรณ','ศิลาลาด'];
 /* ===== รายชื่อหน่วยบริการที่ประสงค์สมัครรับการประเมิน GECC 2570 จังหวัดศรีสะเกษ (28 หน่วยบริการ 6 กลุ่ม) ===== */
+const GROUP_PHOTOS = Object.fromEntries([1,2,3,4,5,6].map(id=>[id,`assets/images/group-${id}.jpg`]));
 const OFFICIAL_GROUPS = [
- {name:'กลุ่มที่ 1: งานปกครองอำเภอ (โซนที่ 1)', units:[['ที่ทำการปกครองอำเภอกันทรลักษ์','กันทรลักษ์'],['ที่ทำการปกครองอำเภอขุนหาญ','ขุนหาญ'],['ที่ทำการปกครองอำเภอพยุห์','พยุห์'],['ที่ทำการปกครองอำเภอโนนคูณ','โนนคูณ'],['ที่ทำการปกครองอำเภอห้วยทับทัน','ห้วยทับทัน']]},
+ {name:'กลุ่มที่ 1: งานปกครองอำเภอ', units:[['ที่ทำการปกครองอำเภอกันทรลักษ์','กันทรลักษ์'],['ที่ทำการปกครองอำเภอขุนหาญ','ขุนหาญ'],['ที่ทำการปกครองอำเภอพยุห์','พยุห์'],['ที่ทำการปกครองอำเภอโนนคูณ','โนนคูณ'],['ที่ทำการปกครองอำเภอห้วยทับทัน','ห้วยทับทัน']]},
  {name:'กลุ่มที่ 2: งานปกครองอำเภอ และอำนวยความเป็นธรรม', units:[['ที่ทำการปกครองอำเภออุทุมพรพิสัย','อุทุมพรพิสัย'],['ที่ทำการปกครองอำเภอราษีไศล','ราษีไศล'],['ที่ทำการปกครองอำเภอเมืองจันทร์','เมืองจันทร์'],['ที่ทำการปกครองอำเภอบึงบูรพ์','บึงบูรพ์'],['ศูนย์ดำรงธรรมจังหวัดศรีสะเกษ','ระดับจังหวัด']]},
  {name:'กลุ่มที่ 3: งานบริการที่ดิน โครงสร้างพื้นฐาน และผังเมือง', units:[['สำนักงานที่ดินจังหวัดศรีสะเกษ สาขากันทรารมย์','กันทรารมย์'],['สำนักงานที่ดินจังหวัดศรีสะเกษ สาขากันทรลักษ์','กันทรลักษ์'],['สำนักงานที่ดินจังหวัดศรีสะเกษ สาขาอุทุมพรพิสัย','อุทุมพรพิสัย'],['สำนักงานโยธาธิการและผังเมืองจังหวัดศรีสะเกษ','ระดับจังหวัด']]},
  {name:'กลุ่มที่ 4: งานกระบวนการยุติธรรม แรงงาน และสวัสดิการสังคม', units:[['เรือนจำจังหวัดศรีสะเกษ','ระดับจังหวัด'],['สำนักงานคุมประพฤติจังหวัดศรีสะเกษ','ระดับจังหวัด'],['สำนักงานจัดหางานจังหวัดศรีสะเกษ','ระดับจังหวัด'],['สำนักงานสวัสดิการและคุ้มครองแรงงานจังหวัดศรีสะเกษ','ระดับจังหวัด'],['สำนักงานพัฒนาสังคมและความมั่นคงของมนุษย์จังหวัดศรีสะเกษ','ระดับจังหวัด']]},
  {name:'กลุ่มที่ 5: งานสาธารณสุขและป้องกันภัย', units:[['โรงพยาบาลราษีไศล','ราษีไศล'],['โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านทับทิมสยาม07',''],['โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านม่วงแยก',''],['สำนักงานป้องกันและบรรเทาสาธารณภัยจังหวัดศรีสะเกษ','ระดับจังหวัด']]},
  {name:'กลุ่มที่ 6: งานบริหารจัดการ คลัง สถิติ ชุมชน วัฒนธรรม และศาสนา', units:[['สำนักงานคลังจังหวัดศรีสะเกษ','ระดับจังหวัด'],['สำนักงานสถิติจังหวัดศรีสะเกษ','ระดับจังหวัด'],['สำนักงานพัฒนาชุมชนจังหวัดศรีสะเกษ','ระดับจังหวัด'],['สำนักงานวัฒนธรรมจังหวัดศรีสะเกษ','ระดับจังหวัด'],['สำนักงานพระพุทธศาสนาจังหวัดศรีสะเกษ','ระดับจังหวัด']]}
 ];
+const MENTOR_COORDINATORS = [
+  {name:'ภญ.มัลลิกา สุพล', role:'ที่ปรึกษา MENTOR และเลขานุการทีม Mentor', pos:'เภสัชกรชำนาญการพิเศษ'},
+  {name:'ภญ.กนกวิภา ประกอบศรี', role:'Mentor และผู้ช่วยเลขานุการทีม MENTOR', pos:'เภสัชกรชำนาญการพิเศษ'}
+];
 const MENTOR_MEMBERS = {
- 1:{focus:'งานฝ่ายปกครองอำเภอเมือง และผู้บริหารที่ดินจังหวัด', m:[['นางสาวชลธิชา พูลทวี','ปลัดอำเภอ ที่ทำการปกครองอำเภอเมืองศรีสะเกษ'],['นางสาวณัฐพร ส่งสุข','ปลัดอำเภอ ที่ทำการปกครองอำเภอเมืองศรีสะเกษ'],['นายศรายุทธ สีละออง','ปลัดอำเภอ ที่ทำการปกครองอำเภอเมืองศรีสะเกษ'],['นายยุคลธร ฐิติเดชวรกุล','เจ้าพนักงานที่ดินจังหวัดศรีสะเกษ']]},
- 2:{focus:'งานฝ่ายปกครอง และวิชาการที่ดินระดับเชี่ยวชาญ', m:[['นางสาววรัตน์ สีละออง','ปลัดอำเภอ ที่ทำการปกครองอำเภอไพรบึง'],['นางสาวพรรษา ปัญญาคม',''],['นายรณกร ศรีฤทธิประดิษฐ์','ปลัดอำเภอ ที่ทำการปกครองอำเภอขุขันธ์'],['นางสาวอุไรรัตน์ ภิญโญ','นักวิชาการที่ดินชำนาญการพิเศษ']]},
- 3:{focus:'งานด้านเทคนิค วิศวกรรม ระบบสารสนเทศ และ GIS', m:[['นายลือชัย สิมมา','วิศวกร ระดับ 9 การไฟฟ้าจังหวัดศรีสะเกษ'],['นายธนพล คนไว','วิศวกร ระดับ 4 การไฟฟ้าจังหวัดศรีสะเกษ'],['นายยุทธนา เพิ่มบุญ','ที่ทำการปกครองอำเภอกันทรารมย์'],['นายชัยมงคล อินทรีย์','เจ้าหน้าที่ด้านระบบสารสนเทศภูมิศาสตร์ (GIS)']]},
- 4:{focus:'งานบัญชี การเงิน สารสนเทศ และสนับสนุนระบบงาน', m:[['น.ส.นุชรินทร์ วงศ์ฤทธิ์','นักบัญชี 7 การประปาส่วนภูมิภาคสาขาศรีสะเกษ'],['นางจิราภรณ์ นาดูน','พนักงานการเงินและบัญชี 6 การประปาส่วนภูมิภาคสาขาศรีสะเกษ'],['นางสาวศรีไพร ศรีอ่อน','พนักงานบันทึกข้อมูล']]},
- 5:{focus:'งานบริการประชาชน สาธารณสุข ขนส่ง และนักวิชาการ', m:[['ภญ.ณัฐธิดา ถาวรยุตติการต์','เภสัชกรชำนาญการ'],['นางสาวภัทรพร ผักกระโทก','สำนักงานขนส่งจังหวัดศรีสะเกษ'],['นายภัทรวัฒน์ ศรีกลัด','นักวิเคราะห์นโยบายและแผนชำนาญการ'],['นางสาววัชราภรณ์ ตรีเกียรติก้อง','นักวิชาการที่ดินปฏิบัติการ']]},
- 6:{focus:'งานศูนย์ดำรงธรรมจังหวัด งานกฎหมาย และเจ้าพนักงานอาวุโส', m:[['นายบุญชวัฒน์ ปัญช์ญญาแดง','ผู้อำนวยการกลุ่มงานศูนย์ดำรงธรรมจังหวัด'],['นายอัครภัทร แรตตีกรวย','นิติกรชำนาญการ รักษาราชการในตำแหน่งนิติกรชำนาญการพิเศษ'],['นายคเณศ เสมาเงิน','นักวิเคราะห์นโยบายและแผนปฏิบัติการ'],['นางสาวสุภัสสร เจริญทัศน์','เจ้าพนักงานที่ดินอาวุโส']]}
+ 1:{focus:'งานฝ่ายปกครองอำเภอเมือง และผู้บริหารที่ดินจังหวัด', m:[['นางสาวชลธิชา พูลทวี','ปลัดอำเภอ (ที่ทำการปกครองอำเภอเมืองศรีสะเกษ)'],['นางสาวณัฐพร ส่งสุข','ปลัดอำเภอ (ที่ทำการปกครองอำเภอเมืองศรีสะเกษ)'],['นายศรายุทธ สีละออง','ปลัดอำเภอ (ที่ทำการปกครองอำเภอเมืองศรีสะเกษ)'],['นายยุคลธร ฐิติเดชวรกุล','เจ้าพนักงานที่ดินจังหวัดศรีสะเกษ (สำนักงานที่ดินจังหวัดศรีสะเกษ)']]},
+ 2:{focus:'งานฝ่ายปกครอง และวิชาการที่ดินระดับเชี่ยวชาญ', m:[['นางสาววรัตน์ สีละออง','ปลัดอำเภอ (ที่ทำการปกครองอำเภอไพรบึง)'],['นางสาวพรรษา ปัญญาคม','ที่ทำการปกครองอำเภอไพรบึง'],['นายรณกร ศรีฤทธิประดิษฐ์','ปลัดอำเภอ (ที่ทำการปกครองอำเภอขุขันธ์)'],['นางสาวอุไรรัตน์ ภิญโญ','นักวิชาการที่ดินชำนาญการพิเศษ (สำนักงานที่ดินจังหวัดศรีสะเกษ)']]},
+ 3:{focus:'งานด้านเทคนิค วิศวกรรม ระบบสารสนเทศ และ GIS', m:[['นายลือชัย สิมมา','วิศวกร ระดับ 9 (การไฟฟ้าส่วนภูมิภาคจังหวัดศรีสะเกษ)'],['นายธนพล คนไว','วิศวกร ระดับ 4 (การไฟฟ้าส่วนภูมิภาคจังหวัดศรีสะเกษ)'],['นายยุทธนา เพิ่มบุญ','ที่ทำการปกครองอำเภอกันทรารมย์'],['นายชัยมงคล อินทรีย์','เจ้าหน้าที่ด้านระบบสารสนเทศภูมิศาสตร์ (สำนักงานที่ดินจังหวัดศรีสะเกษ)']]},
+ 4:{focus:'งานบัญชี การเงิน สารสนเทศ และสนับสนุนระบบงาน', m:[['น.ส.นุชรินทร์ วงศ์ฤทธิ์','นักบัญชี 7 (การประปาส่วนภูมิภาคสาขาศรีสะเกษ)'],['นางจิราภรณ์ นาดูน','พนักงานการเงินและบัญชี 6 (การประปาส่วนภูมิภาคสาขาศรีสะเกษ)'],['ภญ.ฐิติพร อินศร','เภสัชกรชำนาญการพิเศษ'],['นางสาวศรีไพร ศรีอ่อน','พนักงานบันทึกข้อมูล (สำนักงานที่ดินจังหวัดศรีสะเกษ)']]},
+ 5:{focus:'งานบริการประชาชน สาธารณสุข ขนส่ง และนักวิชาการ', m:[['ภญ.ณัฐธิดา ถาวรยุตติการต์','เภสัชกรชำนาญการ'],['นางสาวภัทรพร ผักกระโทก','สำนักงานขนส่งจังหวัดศรีสะเกษ'],['นายภัทรวัฒน์ ศรีกลัด','นักวิเคราะห์นโยบายและแผนชำนาญการ'],['นางสาววัชราภรณ์ ตรีเกียรติก้อง','นักวิชาการที่ดินปฏิบัติการ (สำนักงานที่ดินจังหวัดศรีสะเกษ)']]},
+ 6:{focus:'งานศูนย์ดำรงธรรมจังหวัด งานกฎหมาย และเจ้าพนักงานอาวุโส', m:[['นายบุญชวัฒน์ ปัญช์ญญาแดง','ผู้อำนวยการกลุ่มงานศูนย์ดำรงธรรมจังหวัด (สำนักงานจังหวัดศรีสะเกษ)'],['นายอัครภัทร แรตตีกรวย','นิติกรชำนาญการ รักษาราชการแทนตำแหน่งนิติกรชำนาญการพิเศษ (สำนักงานจังหวัดศรีสะเกษ)'],['นายคเณศ เสมาเงิน','นักวิเคราะห์นโยบายและแผนปฏิบัติการ (สำนักงานจังหวัดศรีสะเกษ)'],['นางสาวสุภัสสร เจริญทัศน์','เจ้าพนักงานที่ดินอาวุโส (สำนักงานที่ดินจังหวัดศรีสะเกษ)']]}
 };
+const mentorLead = id => MENTOR_MEMBERS[id]?.m[0]?.[0]||'';
 const defMembers = id => (MENTOR_MEMBERS[id]?.m||[]).map(([name,pos])=>({name,pos}));
 function migrate(db){
-  db.teams.forEach(t=>{ if(!Array.isArray(t.members)) t.members=defMembers(t.id); if(t.focus===undefined) t.focus=MENTOR_MEMBERS[t.id]?.focus||''; });
+  if(!Array.isArray(db.mentorCoordinators)) db.mentorCoordinators=MENTOR_COORDINATORS.map(x=>({...x}));
+  db.teams.forEach(t=>{
+    t.name=String(t.name||'').replace(/\s*\(?โซนที่\s*1\)?/g,'').trim();
+    const oldNames=t.id===4?[MENTOR_MEMBERS[4].m[0][0],MENTOR_MEMBERS[4].m[1][0],MENTOR_MEMBERS[4].m[3][0]]:MENTOR_MEMBERS[t.id]?.m.map(m=>m[0])||[];
+    const seeded=Array.isArray(t.members)&&t.members.length===oldNames.length&&t.members.every((m,i)=>m.name===oldNames[i]);
+    if(!Array.isArray(t.members)||(!db.mentorRosterVersion&&seeded)){
+      const photos=new Map((t.members||[]).map(m=>[m.name,m.photo]));
+      t.members=defMembers(t.id).map(m=>photos.get(m.name)?{...m,photo:photos.get(m.name)}:m);
+    }
+    if(!t.lead) t.lead=mentorLead(t.id);
+    if(t.focus===undefined) t.focus=MENTOR_MEMBERS[t.id]?.focus||'';
+  });
+  db.mentorRosterVersion=1;
   Object.entries(db.assess||{}).forEach(([uid,a])=>{ if(!Array.isArray(a.inspectors)){ const u=db.units.find(x=>x.id===uid); const t=u&&db.teams.find(x=>x.id===u.team); a.inspectors = (db.isSample && a.started && t) ? t.members.slice(0,2).map(m=>m.name) : []; a.inspector = a.inspectors.join(', ') || (db.isSample?'':a.inspector||''); } });
   return db;
 }
@@ -1976,12 +2103,12 @@ function blankAssess(){
     narr: NARR.map(()=>({text:'', link:'', score:null})),
     out:{ o11:null, o12:null, N:'', n:'', o13:null, o14:null, c21:OUT.c21.items.map(()=>false), c22:null, t3:OUT.t3.items.map(()=>false) } };
 }
-function defaultTeams(){ return [1,2,3,4,5,6].map(i=>({id:i, name:`ทีม MENTOR ${i}`, lead:''})); }
+function defaultTeams(){ return OFFICIAL_GROUPS.map((g,i)=>({id:i+1, name:g.name, photo:GROUP_PHOTOS[i+1], lead:mentorLead(i+1), focus:MENTOR_MEMBERS[i+1]?.focus||'', members:defMembers(i+1)})); }
 function blankDB(){
   const units=[]; let n=1;
   OFFICIAL_GROUPS.forEach((g,ti)=>g.units.forEach(([name,district])=>{ units.push({id:'u'+String(n).padStart(2,'0'), name, district, team:ti+1, kind:'', prev:''}); n++; }));
-  const teams = OFFICIAL_GROUPS.map((g,i)=>({id:i+1, name:g.name, lead:'', focus:MENTOR_MEMBERS[i+1]?.focus||'', members:defMembers(i+1)}));
-  return { v:2, isSample:false, fy:2570, teams, units, assess:{}, defects:[], createdAt:new Date().toISOString() };
+  const teams = defaultTeams();
+  return { v:2, isSample:false, fy:2570, teams, mentorCoordinators:MENTOR_COORDINATORS.map(x=>({...x})), mentorRosterVersion:1, units, assess:{}, defects:[], createdAt:new Date().toISOString() };
 }
 function sampleDB(){
   const r=mulberry32(2570); const db=blankDB(); db.isSample=true; const NONE=[4,12,19,24,26], PROG=[1,6,9,11,15,17,21,23,27];
@@ -2197,10 +2324,43 @@ async function ensureDemoFiles(){
   if(S.view==='unit') hydrateThumbs();
 }
 
-let DB = ensurePins(migrate(restore() || sampleDB()));
+const storedDB = restore();
+const needsMentorMigration = storedDB && !storedDB.mentorRosterVersion;
+let DB = ensurePins(migrate(storedDB || sampleDB()));
+if(needsMentorMigration) persist();
 if(DB.isSample && !DB.demoStat){ seedStatDemo(DB); DB.demoStat=1; persist(); }
-if(!restore()) persist();
-const S = { evOpen:{}, view:'exec', role:null, team:0, menteeUnit:null, unitId:null, tab:'phys', onlyNew:false, draft:null, dirty:false, execFilter:'all', sort:{k:'total',d:-1}, defFilter:'active', q:'', rolePick:null };
+if(!storedDB) persist();
+const S = { evOpen:{}, view:'exec', role:null, team:0, entryTeam:null, menteeUnit:null, unitId:null, tab:'phys', onlyNew:false, draft:null, dirty:false, execFilter:'all', sort:{k:'total',d:-1}, defFilter:'active', q:'', rolePick:null };
+const LIBRARY_ROOT = 'https://drive.google.com/drive/folders/1wjorBuZYDM3ZOjo44cnxPtchOMnPixBR';
+const LIBRARY_FOLDERS = [
+  {name:'เอกสารการประชุม', url:'https://drive.google.com/drive/folders/1q_q4ZnNuCvYHB3-Gj73wJuMVBAQWZf27', image:'assets/library/meetings.png', detail:'วาระและเอกสารประกอบการประชุม', theme:'151 48% 23%'},
+  {name:'เตรียมความพร้อม', url:'https://drive.google.com/drive/folders/1YSUOlPcWk1IoOSoxBOK7Sn0sfq39z0E_', image:'assets/library/readiness.png', detail:'แนวทางเตรียมความพร้อมก่อนสมัคร GECC', theme:'221 55% 28%', landscape:true},
+  {name:'ตัวอย่าง', url:'https://drive.google.com/drive/folders/1BlKsquKllYKNXaRdhFsb6ct8IWa3wlT6', image:'assets/library/examples.png', detail:'แบบสำรวจและตัวอย่างจากหน่วยบริการ', theme:'260 40% 30%'},
+  {name:'คณะทำงานฯ', url:'https://drive.google.com/drive/folders/1MBbBXwsPP3jGJYg24YcOCUlFXMddVBcN', image:'assets/library/committee.png', detail:'คำสั่งแต่งตั้งและข้อมูลคณะทำงาน', theme:'221 55% 28%'},
+  {name:'เกณฑ์ประเมิน 2570', url:'https://drive.google.com/drive/folders/1UA0GSSFT_lszbsGRIPEjrZXU9SoxXrkc', image:'assets/library/criteria.png', detail:'หลักเกณฑ์และคู่มือการประเมิน GECC 2570', theme:'151 48% 23%'}
+];
+// Verified from official provincial news dated 26 October 2569.
+const COMMITTEE_ADVISOR = {name:'นายอนุรัตน์ ธรรมประจำจิต', title:'ผู้ว่าราชการจังหวัดศรีสะเกษ', role:'ที่ปรึกษาคณะทำงาน', photo:'assets/images/committee-advisor.jpg'};
+const COMMITTEE_MEMBERS = [
+  {name:'นายธาตรี สิริรุ่งวนิช', title:'รองผู้ว่าราชการจังหวัดศรีสะเกษ (กลุ่มภารกิจด้านเศรษฐกิจ)', role:'หัวหน้าคณะทำงาน', photo:'assets/images/committee-chair.jpg'},
+  {name:'ดร.ชูวิทย์ นาเพีย', title:'รองอธิการบดีมหาวิทยาลัยราชภัฏศรีสะเกษ', role:'คณะทำงาน'},
+  {title:'ปลัดจังหวัดศรีสะเกษ', role:'คณะทำงาน'},
+  {title:'หัวหน้าสำนักงานจังหวัดศรีสะเกษ', role:'คณะทำงาน'},
+  {title:'นายแพทย์สาธารณสุขจังหวัดศรีสะเกษ', role:'คณะทำงาน'},
+  {title:'เจ้าพนักงานที่ดินจังหวัดศรีสะเกษ', role:'คณะทำงาน'},
+  {title:'คลังจังหวัดศรีสะเกษ', role:'คณะทำงาน'},
+  {title:'สถิติจังหวัดศรีสะเกษ', role:'คณะทำงาน'},
+  {title:'ผู้อำนวยการโรงพยาบาลราษีไศล', role:'คณะทำงาน'},
+  {name:'นายสมัย คำเหลือ', title:'สาธารณสุขอำเภอขุนหาญ', role:'คณะทำงาน'},
+  {name:'นางสาวมัลลิกา สุพล', title:'เภสัชกรชำนาญการพิเศษ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ', role:'คณะทำงานและเลขานุการ'},
+  {name:'นางสาวกนกวิภา ประกอบศรี', title:'เภสัชกรชำนาญการพิเศษ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ', role:'คณะทำงานและผู้ช่วยเลขานุการ'}
+];
+const COMMITTEE_DUTIES = [
+  'บูรณาการหน่วยงาน สนับสนุน และขับเคลื่อนให้ส่วนราชการ อำเภอ และหน่วยงานภาครัฐในจังหวัดศรีสะเกษ สมัครขอรับรองมาตรฐานศูนย์ราชการสะดวก GECC',
+  'ประเมินผลและติดตามผลการดำเนินการ เพื่อรักษามาตรฐานการบริการของศูนย์ราชการสะดวก GECC',
+  'กำหนดเป้าหมายการพัฒนาศูนย์ราชการสะดวก GECC โดยมุ่งเน้นให้หน่วยงานอำนวยความสะดวกแก่ประชาชน ปรับปรุงระบบงานให้โปร่งใส และตอบสนองความต้องการของประชาชนอย่างมีประสิทธิภาพ',
+  'ปฏิบัติหน้าที่อื่นๆ ตามที่ผู้ว่าราชการจังหวัดศรีสะเกษ มอบหมาย'
+];
 
 /* ================= Shell ================= */
 function navItems(){
@@ -2215,7 +2375,7 @@ function navItems(){
   return it;
 }
 function shell(){
-  const bare=(S.view==='role'||S.view==='modules'||S.view==='send'); const pub=!S.role||bare;
+  const bare=(S.view==='modules'||S.view==='send'); const pub=!S.role||bare;
   const roleLabel = S.role==='mentor' ? (S.team? teamName(S.team) : 'ผู้ประสานงานจังหวัด (ทุกทีม)') : S.role==='mentee' ? (unitById(S.menteeUnit)?.name||'') : '';
   const activeView = S.view==='udash' ? 'mdash' : S.view==='unit' ? (S.role==='mentee'?'':(S.from==='forms'?'forms':'mdash')) : S.view;
   $('#app').innerHTML = `
@@ -2225,26 +2385,32 @@ function shell(){
         <div class="seals"><span class="seal"><img src="${IMG.prov}" alt="ตราประจำจังหวัดศรีสะเกษ"></span><span class="seal"><img src="${IMG.gecc}" alt="ตราศูนย์ราชการสะดวก (GECC)"></span></div>
         <div><div class="brand-t">SISAKET GECC PROJECT</div><div class="brand-s">การยกระดับคุณภาพมาตรฐานบริการภาครัฐ<br>จังหวัดศรีสะเกษ ประจำปีงบประมาณ ${DB.fy}</div></div>
       </div>
-      <nav class="nav">${navItems().map(x=> x.roles ? `<div class="role-btns" role="group" aria-label="เข้าสู่ระบบตามบทบาท"><button data-act="role-go" data-r="mentor" ${S.role==='mentor'||(S.view==='role'&&S.rolePick==='mentor')?'aria-current="page"':''}>${ic('users')}MENTOR</button><button data-act="role-go" data-r="mentee" ${S.role==='mentee'||(S.view==='role'&&S.rolePick==='mentee')?'aria-current="page"':''}>${ic('building')}หน่วยบริการ</button></div>` : x.h ? `<div class="nav-h">${x.h}</div>` : x.tab ? `<button data-act="mod" data-tab="${x.tab}" ${S.view==='unit'&&S.tab===x.tab?'aria-current="page"':''}>${ic(x.i)}<span>${x.l}</span>${x.cnt?`<span class="cnt num">${x.cnt}</span>`:''}</button>` : `<button data-act="go" data-view="${x.v}" ${activeView===x.v?'aria-current="page"':''}>${ic(x.i)}<span>${x.l}</span>${x.cnt?`<span class="cnt num">${x.cnt}</span>`:''}</button>`).join('')}</nav>
+      <nav class="nav">${navItems().map(x=> x.roles ? `<div class="role-btns" role="group" aria-label="เข้าสู่ระบบตามบทบาท"><button data-act="role-go" data-r="mentor" ${S.role==='mentor'||(S.view==='portfolio'&&S.rolePick==='mentor')?'aria-current="page"':''}>${ic('users')}MENTOR</button><button data-act="role-go" data-r="mentee" ${S.role==='mentee'||(S.view==='portfolio'&&S.rolePick==='mentee')?'aria-current="page"':''}>${ic('building')}หน่วยบริการ</button></div>` : x.h ? `<div class="nav-h">${x.h}</div>` : x.tab ? `<button data-act="mod" data-tab="${x.tab}" ${S.view==='unit'&&S.tab===x.tab?'aria-current="page"':''}>${ic(x.i)}<span>${x.l}</span>${x.cnt?`<span class="cnt num">${x.cnt}</span>`:''}</button>` : `<button data-act="go" data-view="${x.v}" ${activeView===x.v?'aria-current="page"':''}>${ic(x.i)}<span>${x.l}</span>${x.cnt?`<span class="cnt num">${x.cnt}</span>`:''}</button>`).join('')}</nav>
       ${S.role?`<div class="role-card"><div class="rk">${S.role==='mentor'?'บทบาท: MENTOR':'บทบาท: หน่วยบริการที่สมัคร (MENTEE)'}</div><div class="rv">${esc(roleLabel)}</div><button data-act="logout">${ic('logout')}ออกจากบทบาทนี้</button></div>`:''}
       <div class="side-foot">พัฒนาและดูแลระบบ : Kanok_rx<br>สำนักงานสาธารณสุขจังหวัดศรีสะเกษ</div>
     </aside>
-    <div class="scrim" id="scrim" data-act="menu-close"></div>
-    <div class="main">
-      <header class="topbar"><div class="topbar-in">
+     <div class="scrim" id="scrim" data-act="menu-close"></div>
+     <div class="main">
+       <nav class="site-nav no-print" aria-label="เมนูหลักของเว็บไซต์"><div class="site-nav-in"><span class="site-nav-name">SISAKET GECC 2570</span><div class="site-nav-links">
+         <button data-act="go" data-view="exec" ${S.view==='exec'?'aria-current="page"':''}>หน้าหลัก</button>
+         <button data-act="go" data-view="committee" ${S.view==='committee'?'aria-current="page"':''}>คณะทำงาน</button>
+         <button data-act="go" data-view="library" ${S.view==='library'?'aria-current="page"':''}>GECC Library</button>
+         <button data-act="go" data-view="portfolio" ${S.view==='portfolio'?'aria-current="page"':''}>Portfolio / เข้าสู่ระบบ</button>
+       </div></div></nav>
+       <header class="topbar"><div class="topbar-in">
         <button class="btn btn-ghost btn-icon menu-btn" data-act="menu-open" aria-label="เปิดเมนู" aria-controls="side">${ic('menu')}</button>
         <div class="page-t" id="page-t"></div>
         <div class="tnav no-print" id="tnav" role="group" aria-label="เปลี่ยนหน้า"></div>
         <div class="top-act no-print" id="top-act"></div>
       </div></header>
-      ${DB.isSample?`<div class="banner no-print" role="note">${ic('info')}<div class="bt"><b>ตัวเลขร่างเพื่อดูภาพรวม</b> ตัวเลขการส่งเกณฑ์และคะแนนทั้งหมดเป็นข้อมูลจำลอง ยังไม่ใช่ผลการตรวจจริงของหน่วยบริการ เมื่อพร้อมใช้งานจริง ไปที่ MENTOR › จัดการข้อมูล เพื่อล้างตัวเลขร่าง</div></div>`:''}
+       ${DB.isSample && S.view==='exec'?`<div class="banner no-print" role="note">${ic('info')}<div class="bt"><b>ตัวเลขร่างเพื่อดูภาพรวม</b> ตัวเลขการส่งเกณฑ์และคะแนนทั้งหมดเป็นข้อมูลจำลอง ยังไม่ใช่ผลการตรวจจริงของหน่วยบริการ เมื่อพร้อมใช้งานจริง ไปที่ MENTOR › จัดการข้อมูล เพื่อล้างตัวเลขร่าง</div></div>`:''}
       <main class="content" id="content" tabindex="-1"></main>
       <nav class="pager no-print" id="pager" aria-label="เปลี่ยนหน้า"></nav>
       <footer class="footer"><span>SISAKET GECC PROJECT · ยกระดับมาตรฐานบริการภาครัฐ สะดวก รวดเร็ว เข้าถึงง่าย โปร่งใส</span><span>อ้างอิง: หลักเกณฑ์มาตรฐาน GECC ประจำปี พ.ศ. 2570</span></footer>
     </div>
   </div>`;
 }
-function setHead(title, sub, actions=''){ $('.topbar')?.classList.remove('lux'); document.body.classList.remove('lux-top'); $('#page-t').innerHTML=`<h1>${title}</h1>${sub?`<p>${sub}</p>`:''}`; $('#top-act').innerHTML=actions; document.title = `${title.replace(/<[^>]+>/g,'')} | SISAKET GECC PROJECT`; }
+function setHead(title, sub, actions=''){ $('.topbar')?.classList.remove('lux','library-head'); document.body.classList.remove('lux-top'); $('#page-t').innerHTML=`<h1>${title}</h1>${sub?`<p>${sub}</p>`:''}`; $('#top-act').innerHTML=actions; document.title = `${title.replace(/<[^>]+>/g,'')} | SISAKET GECC PROJECT`; }
 const kindLabel = u => u.kind==='renew' ? `ต่ออายุการรับรอง${u.prev?` (เดิม${LEVEL[u.prev].l})`:''}` : u.kind==='new' ? 'ขอรับรองปีแรก' : 'ยังไม่ระบุประเภทการสมัคร';
 const teamShort = id => `กลุ่มที่ ${id}`;
 const teamName = id => (DB.teams.find(t=>t.id===+id)||{}).name || `ทีม ${id}`;
@@ -2276,7 +2442,7 @@ function updatePager(){
   $$('.nav button[data-tab]').forEach(b=>{ if(S.view==='unit'&&S.tab===b.dataset.tab) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
   const el=$('#pager'); if(!el) return; let prev=null, next=null;
   const tn=$('#tnav'); el.innerHTML='';
-  if(!S.role || S.view==='role' || S.view==='modules' || S.view==='send'){ if(tn) tn.innerHTML=''; return; }
+  if(!S.role || S.view==='modules' || S.view==='send' || S.view==='library' || S.view==='committee' || S.view==='portfolio'){ if(tn) tn.innerHTML=''; return; }
   const pv=v=>({attrs:`data-act="go" data-view="${v}"`, label:PN[v]});
   if(S.view==='unit'){
     const order=Object.keys(TN); const i=order.indexOf(S.tab); const u=unitById(S.unitId);
@@ -2298,7 +2464,9 @@ function render(){
   shell();
   const v = S.view;
   if(v==='exec') viewExec();
-  else if(v==='role') viewRole();
+  else if(v==='committee') viewCommittee();
+  else if(v==='library') viewLibrary();
+  else if(v==='portfolio') viewPortfolio();
   else if(v==='modules') viewModules();
   else if(v==='send') menteeHome();
   else if(v==='mdash') viewMDash();
@@ -2311,16 +2479,55 @@ function render(){
   else if(v==='unit') viewUnit();
   else if(v==='mentee') viewMentee();
   updatePager();
+  const links=$('.site-nav-links'), active=links?.querySelector('[aria-current="page"]');
+  if(active) links.scrollLeft=active.offsetLeft-links.offsetLeft-(links.clientWidth-active.offsetWidth)/2;
 }
 function go(view, opts={}){
+  if(view==='role') view='portfolio';
   if(view==='mentee') view='modules';
   if(view==='mentor'||view==='analytics') view='mdash';
   if(S.dirty && S.view==='unit' && view!=='unit'){
     confirmDlg('ยังไม่ได้บันทึกผลการตรวจ','หากออกจากหน้านี้ การแก้ไขที่ยังไม่บันทึกจะหายไป','ออกโดยไม่บันทึก', ()=>{ S.dirty=false; S.draft=null; go(view,opts); }, true);
     return;
   }
+  if(view==='portfolio' && !Object.prototype.hasOwnProperty.call(opts,'entryTeam')) Object.assign(opts,{entryTeam:null,rolePick:null});
   Object.assign(S, opts); S.view=view; if(view!=='unit'){ S.draft=null; S.dirty=false; }
   render(); window.scrollTo({top:0}); closeMenu();
+}
+
+function viewLibrary(){
+  setHead(`<span class="library-heading">${ic('book')}<span>GECC Library</span></span>`,'คลังข้อมูลมาตรฐานศูนย์ราชการสะดวก จังหวัดศรีสะเกษ');
+  $('.topbar')?.classList.add('library-head');
+  $('#content').innerHTML = `<section class="public-intro"><p>เอกสาร คู่มือ และตัวอย่างสำหรับเตรียมความพร้อม ภาพปกจากเอกสารจริงในคลัง เลือกหมวดเพื่อเปิดโฟลเดอร์ใน Google Drive</p></section>
+    <div class="library-grid">${LIBRARY_FOLDERS.map(f=>`<a class="library-card${f.landscape?' is-landscape':''}" data-library-card style="--library-color:${esc(f.theme)}" href="${esc(f.url||LIBRARY_ROOT)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(f.name)} เปิดโฟลเดอร์ใน Google Drive"><img class="library-image" src="${esc(f.image)}" alt="ภาพตัวอย่างเอกสารหมวด${esc(f.name)}" loading="lazy" decoding="async"><span class="library-shade" aria-hidden="true"></span><div class="library-copy"><h2>${esc(f.name)}</h2><p>${esc(f.detail)}</p><span class="library-glass">เปิดดูเอกสาร ${ic('right')}</span></div></a>`).join('')}</div>
+    <a class="library-source" href="${LIBRARY_ROOT}" target="_blank" rel="noopener noreferrer">ดูโฟลเดอร์ GECC ทั้งหมด ${ic('right')}</a>`;
+}
+function groupChoice(t){
+  const title=t.name.replace(/^กลุ่มที่\s*\d+\s*:\s*/,'');
+  const photo=t.photo||GROUP_PHOTOS[t.id];
+  return `<button class="group-choice${photo?' has-photo':''}" data-act="entry-team" data-team="${t.id}" aria-label="เลือก${esc(t.name)} เพื่อเข้าสู่ระบบ"><span class="group-choice-media">${photo?`<img src="${esc(photo)}" alt="ภาพประกอบ${esc(t.name)}" loading="lazy" width="500" height="500">`:ic(['building','shield','pin','file','user','chart'][t.id-1])}<span class="group-choice-number">${String(t.id).padStart(2,'0')}</span></span><span class="group-choice-overlay"></span><span class="group-choice-copy"><strong>กลุ่มที่ ${t.id}</strong><small>${esc(title)}</small><span class="group-choice-action">เลือกกลุ่มเพื่อเข้าสู่ระบบ ${ic('right')}</span></span></button>`;
+}
+function personCard(m){
+  const title=m.title||m.pos||'';
+  return `<article class="committee-card${m.photo?' has-photo':''}"><div class="committee-card-media">${m.photo?`<img src="${esc(m.photo)}" alt="รูป ${esc(m.name||title)}" loading="lazy" width="500" height="500">`:`${ic('user')}<span>รอรูปบุคคล</span>`}</div><div class="committee-card-copy"><span class="committee-card-role">${esc(m.role||'')}</span><h3>${esc(m.name||title)}</h3>${m.name?`<p>${esc(title)}</p>`:''}</div></article>`;
+}
+function viewCommittee(){
+  setHead('คณะทำงาน','คณะทำงานขับเคลื่อนการดำเนินการศูนย์ราชการสะดวก GECC จังหวัดศรีสะเกษ');
+  $('#content').innerHTML = `<section class="public-intro"><h2>คณะทำงาน GECC จังหวัดศรีสะเกษ</h2><p>ตามคำสั่งแต่งตั้งคณะทำงานขับเคลื่อนการดำเนินการศูนย์ราชการสะดวก GECC จังหวัดศรีสะเกษ ลงวันที่ 17 กันยายน 2569 ช่องภาพบุคคลเตรียมไว้สำหรับเพิ่มรูปภายหลัง</p></section>
+    <div class="committee-advisor">${personCard(COMMITTEE_ADVISOR)}</div>
+    <div class="committee-grid">${COMMITTEE_MEMBERS.map(personCard).join('')}</div>
+    <section class="committee-duties" id="committee-duties"><h2>อำนาจหน้าที่</h2><ol>${COMMITTEE_DUTIES.map(d=>`<li>${esc(d)}</li>`).join('')}</ol></section>
+    <p class="committee-source"><a href="assets/committee-order-2569.pdf" target="_blank" rel="noopener noreferrer">${ic('file')}อ่านคำสั่งแต่งตั้งคณะทำงาน (PDF)</a></p>`;
+}
+function viewPortfolio(){
+  const team=DB.teams.find(t=>t.id===S.entryTeam);
+  if(team){ viewPortfolioEntry(team); return; }
+  setHead('Portfolio / เข้าสู่ระบบ','เลือกกลุ่มและประเภทผู้ใช้เพื่อเข้าสู่ระบบ');
+  $('#content').innerHTML = `<section class="public-intro"><h2 tabindex="-1" data-entry-heading>เลือกกลุ่มของท่าน</h2><p>เลือกกลุ่มที่รับผิดชอบ แล้วเลือก MENTOR หรือหน่วยบริการ (MENTEE) เพื่อเข้าสู่ระบบ</p></section>
+    <div class="group-choice-grid" aria-label="เลือกกลุ่มเพื่อเข้าสู่ระบบ">${DB.teams.slice().sort((a,b)=>a.id-b.id).map(groupChoice).join('')}</div>
+    <button class="entry-coordinator" data-act="entry-coord">${ic('shield')}ผู้ประสานงานจังหวัดเข้าสู่ระบบ</button>
+    <section class="central-team" aria-labelledby="central-team-title"><h2 id="central-team-title">ฝ่ายบริหารและประสานงานกลาง</h2><div class="central-grid">${(DB.mentorCoordinators||[]).map(personCard).join('')}</div></section>`;
+  $('#content [data-entry-heading]')?.focus({preventScroll:true});
 }
 
 /* ================= Shared widgets ================= */
@@ -2571,28 +2778,18 @@ function peek(id){
   <div class="modal-f"><button class="btn" data-act="modal-close">ปิด</button>${canOpen?`<button class="btn" data-act="open-udash" data-id="${x.u.id}">${ic('chart')}DASHBOARD หน่วยบริการ</button><button class="btn btn-primary" data-act="open-unit" data-id="${x.u.id}">${ic('clipboard')}เปิดแบบตรวจ</button>`:`<button class="btn" data-act="open-form" data-id="${x.u.id}">${ic('clipboard')}ดูแบบตรวจ</button>`}</div>`);
 }
 
-/* ================= View: Role ================= */
-function viewRole(){
-  setHead('เข้าสู่ระบบ','เลือกช่องทางเข้าสู่ระบบ');
-  const p=S.rolePick;
-  $('#content').innerHTML = `<section class="entry"><div class="entry-c">
-    <div class="seals entry-seals"><span class="seal"><img src="${IMG.prov}" alt="ตราประจำจังหวัดศรีสะเกษ"></span><span class="seal"><img src="${IMG.gecc}" alt="ตราศูนย์ราชการสะดวก (GECC)"></span></div>
-    <div class="entry-k">ระบบติดตามและตรวจประเมินมาตรฐานศูนย์ราชการสะดวก</div>
-    <h1 class="entry-t">SISAKET GECC PROJECT</h1>
-    <p class="entry-s">การยกระดับคุณภาพมาตรฐานบริการภาครัฐจังหวัดศรีสะเกษ ประจำปีงบประมาณ ${DB.fy}</p>
-    <h2 class="entry-q">เลือกช่องทางเข้าสู่ระบบ</h2>
-    <div class="ecards">
-      <button class="ecard" data-act="role-pick" data-r="mentor" aria-pressed="${p==='mentor'}"><span class="ei">${ic('users')}</span><b>MENTOR</b><span class="d">เจ้าหน้าที่พี่เลี้ยงตรวจประเมิน ให้คะแนน ให้ข้อเสนอแนะ และตรวจซ้ำหน่วยบริการในกลุ่ม</span><span class="eg">เลือกช่องทางนี้ ${ic('right')}</span></button>
-      <button class="ecard" data-act="role-pick" data-r="mentee" aria-pressed="${p==='mentee'}"><span class="ei">${ic('building')}</span><b>หน่วยบริการที่สมัคร (MENTEE)</b><span class="d">ส่งแบบประเมินความพร้อม ส่งเกณฑ์และแนบหลักฐาน ติดตามผลและข้อเสนอแนะจาก MENTOR</span><span class="eg">เลือกช่องทางนี้ ${ic('right')}</span></button>
-    </div>
-    ${p==='mentor'?`<div class="epanel"><div class="epanel-h"><b>เลือกกลุ่ม MENTOR ของท่าน</b><span>แต่ละกลุ่มเห็นเฉพาะหน่วยบริการในความรับผิดชอบ</span></div><div class="team-pick">
-      ${DB.teams.map(t=>{ const n=DB.units.filter(u=>u.team===t.id).length; const nm=t.name.replace(/^กลุ่มที่\s*\d+\s*:\s*/,''); return `<button class="tpk" data-act="enter-mentor" data-team="${t.id}"><span class="tpk-i">${t.id}</span><span class="tpk-t"><span class="tpk-k">กลุ่มที่ ${t.id}</span><b>${esc(nm)}</b><span class="tpk-m"><span>${ic('building')}${n} หน่วยบริการ</span><span>${ic('users')}MENTOR ${(t.members||[]).length} คน</span></span>${(t.members||[]).length?`<span class="tpk-ms">${t.members.map(m=>`<span class="tpk-mn">${esc(m.name)}</span>`).join('')}</span>`:''}</span><span class="tpk-go">${ic('right')}</span></button>`; }).join('')}
-      <button class="tpk coord" data-act="enter-mentor" data-team="0"><span class="tpk-i">${ic('shield')}</span><span class="tpk-t"><span class="tpk-k">ผู้ประสานงานจังหวัด</span><b>ดูและจัดการทุกกลุ่ม</b><span class="tpk-m"><span>${ic('building')}${DB.units.length} หน่วยบริการ</span><span>${ic('users')}${DB.teams.length} กลุ่ม MENTOR</span></span></span><span class="tpk-go">${ic('right')}</span></button></div></div>`:''}
-    ${p==='mentee'?`<div class="epanel"><div class="epanel-h"><b>เลือกหน่วยบริการของท่าน</b><span>ระบบจะแสดงเฉพาะข้อมูลของหน่วยบริการที่เลือก</span></div>
-      <div class="field" id="f-unit"><label for="mentee-unit">หน่วยบริการ</label><select class="inp" id="mentee-unit"><option value="">เลือกหน่วยบริการ</option>${DB.teams.map(t=>`<optgroup label="${esc(t.name)}">${DB.units.filter(u=>u.team===t.id).map(u=>`<option value="${u.id}">${esc(u.name)}</option>`).join('')}</optgroup>`).join('')}</select><div class="err">กรุณาเลือกหน่วยบริการก่อนเข้าสู่ระบบ</div></div>
-      <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn btn-lux" data-act="enter-mentee">เข้าสู่ระบบ ${ic('right')}</button></div></div>`:''}
-    <div class="entry-f"><button class="eback" data-act="logout">${ic('left')}กลับไปหน้า Executive Dashboard</button><span>ต้นแบบนี้ยังไม่มีระบบยืนยันตัวตน ก่อนใช้งานจริงจะเชื่อมระบบ Login</span></div>
-  </div></section>`;
+/* ================= Portfolio: login steps ================= */
+function viewPortfolioEntry(team){
+  const unitStep=S.rolePick==='mentee';
+  const units=DB.units.filter(u=>u.team===team.id);
+  setHead('Portfolio / เข้าสู่ระบบ',unitStep?'เลือกหน่วยบริการเพื่อเข้าสู่ระบบ':'เลือกประเภทผู้ใช้เพื่อเข้าสู่ระบบ');
+  $('#content').innerHTML = `<section class="portfolio-entry">
+    <h2 class="entry-q" tabindex="-1" data-entry-heading>${unitStep?'เลือกหน่วยบริการของท่าน':'เลือกประเภทผู้ใช้'}</h2>
+    <p class="entry-help">${unitStep?'เลือกหน่วยบริการเพื่อเปิดหน้ากรอก PIN':'เลือกบทบาทที่ต้องการใช้งาน แล้วดำเนินการเข้าสู่ระบบ'}</p>
+    ${!unitStep?`<div class="ecards"><button class="ecard" data-act="entry-mentor"><span class="ei">${ic('users')}</span><b>MENTOR</b><span class="d">ตรวจประเมิน ให้คะแนน และให้ข้อเสนอแนะกับหน่วยบริการในกลุ่ม</span><span class="eg">เข้าสู่ระบบ MENTOR ${ic('right')}</span></button><button class="ecard" data-act="entry-mentee"><span class="ei">${ic('building')}</span><b>หน่วยบริการ (MENTEE)</b><span class="d">ส่งแบบประเมินความพร้อม แนบหลักฐาน และติดตามผลการตรวจ</span><span class="eg">เลือกหน่วยบริการ ${ic('right')}</span></button></div><button class="entry-back" data-act="entry-back" data-step="group">${ic('left')}กลับไปเลือกกลุ่ม</button>`:''}
+    ${unitStep?`${units.length?`<div class="entry-unit-grid">${units.map(u=>`<button class="entry-unit" data-act="entry-unit" data-id="${u.id}"><span>${esc(u.name)}</span>${ic('right')}</button>`).join('')}</div>`:'<p class="entry-s">ยังไม่มีหน่วยบริการในกลุ่มนี้</p>'}<button class="entry-back" data-act="entry-back" data-step="type">${ic('left')}กลับไปเลือกประเภทผู้ใช้</button>`:''}
+  </section>`;
+  $('#content [data-entry-heading]')?.focus({preventScroll:true});
 }
 function modList(){
   if(S.role==='mentor'){ const team=S.team; const open=allInfo(team).reduce((s,x)=>s+x.open.length,0);
@@ -2737,7 +2934,7 @@ function pinModal(kind,id,label){
 function pinOk(){
   const p=S.pinPending; if(!p) return; const v=($('#pin-in')?.value||'').trim();
   if(v!==pinFor(p.kind,p.id)){ const f=$('#f-pin'); f.classList.add('invalid'); f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake'); $('#pin-in').select(); return; }
-  closeModal(); S.pinPending=null;
+  S.pinPending=null; closeModal();
   if(p.kind==='unit'){ S.role='mentee'; S.menteeUnit=p.id; S.team=0; S.coord=false; go('modules'); toast('เข้าสู่ระบบ · '+unitById(p.id).name); }
   else { S.role='mentor'; S.team=p.kind==='coord'?0:+p.id; S.coord=S.team===0; S.mdTeam=S.team; S.menteeUnit=null; go('modules'); toast(`เข้าสู่ระบบในบทบาท MENTOR · ${S.team?teamName(S.team):'ผู้ประสานงานจังหวัด'}`); }
 }
@@ -3555,7 +3752,7 @@ function viewSettings(){
 
 /* ================= Modals ================= */
 function openModal(html){ const r=$('#modal-root'); r.innerHTML=`<div class="modal-bg" data-act="modal-bg"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`; const f=r.querySelector('input,select,textarea,button.btn-primary')||r.querySelector('button'); setTimeout(()=>f&&f.focus(),20); }
-function closeModal(){ $('#modal-root').innerHTML=''; }
+function closeModal(){ const returnToEntry=!!S.pinPending && S.view==='portfolio'; $('#modal-root').innerHTML=''; if(returnToEntry){ S.pinPending=null; $('#content [data-entry-heading]')?.focus({preventScroll:true}); } }
 let confirmCb=null;
 function confirmDlg(title,msg,okLabel,cb,danger=false){ confirmCb=cb; openModal(`<div class="modal-h"><div><h3>${title}</h3><p>${msg}</p></div></div><div class="modal-f"><button class="btn" data-act="modal-close">ยกเลิก</button><button class="btn ${danger?'btn-danger':'btn-primary'}" data-act="confirm-ok">${okLabel}</button></div>`); }
 function defectModal(d, pre={}){
@@ -3581,18 +3778,25 @@ function openMenu(){ $('#side').classList.add('open'); $('#scrim').classList.add
 function closeMenu(){ $('#side')?.classList.remove('open'); $('#scrim')?.classList.remove('open'); }
 
 /* ================= Events ================= */
+document.addEventListener('pointermove',e=>{
+  if(S.view!=='library' || e.pointerType==='touch' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const card=e.target.closest('[data-library-card]'); if(!card) return;
+  const box=card.getBoundingClientRect();
+  card.style.setProperty('--pointer-x',`${e.clientX-box.left}px`);
+  card.style.setProperty('--pointer-y',`${e.clientY-box.top}px`);
+},{passive:true});
 document.addEventListener('click', e=>{
   const el=e.target.closest('[data-act]'); if(!el) return;
   const act=el.dataset.act;
   if(act==='modal-bg'){ if(e.target===el) closeModal(); return; }
   const id=el.dataset.id;
   switch(act){
-    case 'go': go(el.dataset.view, el.dataset.view==='role'?{rolePick:S.role}:{}); break;
+    case 'go': go(el.dataset.view, el.dataset.view==='role'?{rolePick:null}:{}); break;
     case 'menu-open': openMenu(); break;
     case 'menu-close': closeMenu(); break;
     case 'print': window.print(); break;
     case 'exec-filter': S.execFilter = (S.execFilter===el.dataset.f||el.dataset.f==='all')?'all':el.dataset.f; (S.view==='mdash'?viewMDash:viewExec)(); break;
-    case 'go-mdash': if(!S.role){ go('role',{rolePick:'mentor'}); toast('กรุณาเข้าสู่ระบบ MENTOR เพื่อดูรายชื่อ'); break; } S.execFilter=el.dataset.f; go('mdash'); setTimeout(()=>$('#md-table')?.scrollIntoView({behavior:'smooth',block:'start'}),60); break;
+    case 'go-mdash': if(!S.role){ go('role',{rolePick:null}); toast('กรุณาเลือกกลุ่มและเข้าสู่ระบบ MENTOR'); break; } S.execFilter=el.dataset.f; go('mdash'); setTimeout(()=>$('#md-table')?.scrollIntoView({behavior:'smooth',block:'start'}),60); break;
     case 'md-team': if(!S.coord){ denyUnit(); break; } S.mdTeam=+el.dataset.team; viewMDash(); break;
     case 'sort': { const k=el.dataset.k; S.sort = S.sort.k===k?{k,d:-S.sort.d}:{k,d:k==='name'?1:-1}; (S.view==='mdash'?viewMDash:viewExec)(); break; }
     case 'peek': peek(id); break;
@@ -3629,11 +3833,14 @@ document.addEventListener('click', e=>{
     case 'att-dl': downloadAttachment(el.dataset.fid, el.dataset.name); break;
     case 'phys-miss': physMissModal(+el.dataset.i); break;
     case 'dual-list': dualList(el.dataset.p, el.dataset.s); break;
-    case 'role-go': { const r=el.dataset.r; if(S.role===r){ go(r==='mentor'?'mentor':'mentee'); } else go('role',{rolePick:r}); break; }
-    case 'role-pick': S.rolePick=el.dataset.r; viewRole(); break;
-    case 'enter-mentor': { const t=+el.dataset.team; pinModal(t?'team':'coord', t, t?teamName(t):'ผู้ประสานงานจังหวัด'); break; }
+    case 'role-go': { const r=el.dataset.r; if(S.role===r){ go(r==='mentor'?'mentor':'mentee'); } else go('role',{rolePick:null}); break; }
+    case 'entry-team': go('portfolio',{entryTeam:+el.dataset.team,rolePick:null}); break;
+    case 'entry-mentor': if(S.entryTeam) pinModal('team',S.entryTeam,teamName(S.entryTeam)); break;
+    case 'entry-mentee': S.rolePick='mentee'; viewPortfolio(); break;
+    case 'entry-unit': { const u=unitById(id); if(u && u.team===S.entryTeam) pinModal('unit',id,u.name); break; }
+    case 'entry-coord': pinModal('coord',0,'ผู้ประสานงานจังหวัด'); break;
+    case 'entry-back': if(el.dataset.step==='group') go('portfolio',{entryTeam:null,rolePick:null}); else { S.rolePick=null; viewPortfolio(); } break;
     case 'pin-ok': pinOk(); break;
-    case 'enter-mentee': { const v=$('#mentee-unit').value; if(!v){ $('#f-unit').classList.add('invalid'); $('#mentee-unit').focus(); return; } pinModal('unit', v, unitById(v).name); break; }
     case 'logout': go('exec',{role:null, team:0, menteeUnit:null, coord:false}); break;
     case 'set-team': if(S.coord){ S.team=+el.dataset.team; render(); } break;
     case 'open-unit': { closeModal(); const u=unitById(id); if(S.role==='mentor' && S.team && u.team!==S.team){ toast('หน่วยบริการนี้ไม่อยู่ในความรับผิดชอบของทีมท่าน',true); return; } S.draft=null; go('unit',{unitId:id, tab:'phys', from:'mentor'}); break; }
@@ -3699,7 +3906,19 @@ function saveDefect(id){
 }
 function saveSettings(silent=false){
   $$('[data-u]').forEach(el=>{ const u=unitById(el.dataset.u); if(!u) return; const k=el.dataset.k; u[k] = k==='team'?+el.value:el.value; });
-  $$('[data-t]').forEach(el=>{ const t=DB.teams.find(x=>x.id===+el.dataset.t); if(el.dataset.k==='members'){ t.members=el.value.split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{ const k=l.search(/\s[–-]\s/); return k>0?{name:l.slice(0,k).trim(), pos:l.slice(k+3).trim()}:{name:l,pos:''}; }); } else t[el.dataset.k]=el.value; });
+  $$('[data-t]').forEach(el=>{
+    const t=DB.teams.find(x=>x.id===+el.dataset.t);
+    if(el.dataset.k==='members'){
+      const old=t.members||[];
+      t.members=el.value.split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{
+        const k=l.search(/\s[–-]\s/);
+        const member=k>0?{name:l.slice(0,k).trim(),pos:l.slice(k+3).trim()}:{name:l,pos:''};
+        const photo=old.find(x=>x.name===member.name)?.photo;
+        if(photo) member.photo=photo;
+        return member;
+      });
+    } else t[el.dataset.k]=el.dataset.k==='name'?el.value.replace(/\s*\(?โซนที่\s*1\)?/g,'').trim():el.value;
+  });
   $$('[data-cal]').forEach(el=>{ if(el.value) cal()[el.dataset.cal]=el.value; });
   ensurePins(DB); let badPin=false; $$('[data-pin]').forEach(el=>{ const v=el.value.trim(); if(!/^\d{4,6}$/.test(v)){ badPin=true; el.classList.add('pin-bad'); return; } el.classList.remove('pin-bad'); if(el.dataset.pin==='coord') DB.pins.coord=v; else DB.pins[el.dataset.pin][el.dataset.pin==='team'?+el.dataset.id:el.dataset.id]=v; });
   if(badPin){ toast('PIN ต้องเป็นตัวเลข 4–6 หลัก',true); return; }
@@ -3714,7 +3933,7 @@ function exportJSON(){
 function importJSON(file){
   if(!file) return; const r=new FileReader();
   r.onload=()=>{ try{ const d=JSON.parse(r.result); if(!d||!Array.isArray(d.units)||typeof d.assess!=='object'||!Array.isArray(d.defects)) throw new Error('bad');
-      confirmDlg('นำเข้าข้อมูล?',`พบหน่วยบริการ ${d.units.length} แห่ง ข้อมูลปัจจุบันจะถูกแทนที่`,'นำเข้าข้อมูล',()=>{ DB=d; DB.teams=DB.teams||defaultTeams(); persist(); render(); toast('นำเข้าข้อมูลแล้ว'); });
+      confirmDlg('นำเข้าข้อมูล?',`พบหน่วยบริการ ${d.units.length} แห่ง ข้อมูลปัจจุบันจะถูกแทนที่`,'นำเข้าข้อมูล',()=>{ DB=migrate({...d,teams:d.teams||defaultTeams()}); persist(); render(); toast('นำเข้าข้อมูลแล้ว'); });
     }catch(err){ toast('ไฟล์ไม่ถูกต้อง กรุณาใช้ไฟล์ที่ส่งออกจากระบบนี้',true); } };
   r.readAsText(file);
 }
