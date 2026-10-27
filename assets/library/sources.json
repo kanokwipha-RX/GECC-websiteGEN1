@@ -1,0 +1,31 @@
+{
+  "retrievedOn": "2026-10-27",
+  "description": "Google Drive preview images of documents in the GECC Library folders supplied by the user.",
+  "covers": [
+    {
+      "image": "meetings.png",
+      "document": "วาระประชุมคณะทำงาน GECC .pdf",
+      "source": "https://drive.google.com/file/d/1QRfOvDk1DVH4AN9nf3l97ZqsXLXofXWO/view"
+    },
+    {
+      "image": "readiness.png",
+      "document": "690923 คลินิก GECC 2570 FN_261001_104159.pdf",
+      "source": "https://drive.google.com/file/d/1v2CbfKyopqBZWqJPc3TxuGXHpdSZ14jo/view"
+    },
+    {
+      "image": "examples.png",
+      "document": "แบบสำรวจความต้องการและความคาดหวังของผู้มารับบริการOSSC.pdf",
+      "source": "https://drive.google.com/file/d/1ppavXRK7uougXPi4MS9iImE196z_W-Yy/view"
+    },
+    {
+      "image": "committee.png",
+      "document": "คำสั่งแต่งตั้งคณะทำงาน GECC จ.ศรีสะเกษ.pdf",
+      "source": "https://drive.google.com/file/d/1LocrSVZ25u3OkutyumuYOX_sF5p71QD8/view"
+    },
+    {
+      "image": "criteria.png",
+      "document": "หลักเกณฑ์ GECC 2570 -เผยแพร่.pdf",
+      "source": "https://drive.google.com/file/d/16XgVWPOmJZR22HwuqUKU-CvSWoE_THRk/view"
+    }
+  ]
+}
