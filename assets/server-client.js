@@ -325,14 +325,162 @@ window.GECCClient = (() => {
     S.view = "exec";
     await boot();
   }
+  function publicPhysChart(phys) {
+    const rows = phys?.bars || [];
+    const n = rows.length;
+    const full = phys?.full || 0;
+    const part = phys?.part || 0;
+    const zero = phys?.zero ?? n;
+    const L = 46, R = 16, T = 34, PH = 230, slot = 40, W = Math.max(900, L + R + n * slot), BW = 24, base = T + PH, H = base + 130, OX = 96;
+    const Y = (v) => base - (v / 15) * PH;
+    let g = "";
+    [0, 5, 10, 15].forEach((t) => {
+      g += `<line x1="${L}" x2="${W - R}" y1="${Y(t)}" y2="${Y(t)}" class="pb-gl"/><text x="${L - 10}" y="${Y(t) + 4}" class="pb-yl">${t}</text>`;
+    });
+    const bars = rows.map((r, i) => {
+      const cx = L + slot * i + slot / 2;
+      const x = cx - BW / 2;
+      const h = (r.v / 15) * PH;
+      const done = r.v === 15;
+      const nm = typeof shortUnit === "function" ? shortUnit(r.name) : r.name;
+      return `<g class="pb-b" role="button" tabindex="0" data-act="go" data-view="portfolio" aria-label="${esc(r.name)} ดำเนินการ ${r.v} จาก 15 ข้อ"><title>${esc(r.name)} · ${r.v}/15 ข้อ</title>
+        <rect x="${x}" y="${T}" width="${BW}" height="${PH}" rx="7" class="pb-tr"/>
+        ${h > 0 ? `<rect x="${x}" y="${base - h}" width="${BW}" height="${h}" rx="7" fill="url(#pbNavy)"/>` : ""}
+        ${done ? `<rect x="${x}" y="${base - h}" width="${BW}" height="5" rx="2.5" fill="url(#pbGold)"/>` : ""}
+        ${r.v > 0 ? (h > 30 ? `<text x="${cx}" y="${base - h + 22}" class="pb-v ${done ? "gd" : ""}">${r.v}</text>` : `<text x="${cx}" y="${base - h - 7}" class="pb-v out">${r.v}</text>`) : `<text x="${cx}" y="${base - 8}" class="pb-v zero">0</text>`}
+        <text transform="translate(${cx + 4},${base + 14}) rotate(-42)" class="pb-xl">${esc(nm)}</text></g>`;
+    }).join("");
+    return `<section class="card pbc">
+      <div class="pbc-h"><div class="pbc-t"><h3>หน่วยบริการที่มีความพร้อมด้านกายภาพ 15 ข้อ <span>(MUST HAVE)</span></h3><p>จำนวนข้อที่แต่ละหน่วยบริการดำเนินการ เรียงจากมากไปน้อย · แตะแท่งเพื่อดูรายละเอียด</p></div>
+        <div class="pbc-k"><span class="pk f"><b>${full}</b>ครบ 15 ข้อ</span><span class="pk p"><b>${part}</b>ยังไม่ครบ</span><span class="pk z"><b>${zero}</b>ยังไม่ส่ง</span></div></div>
+      <div class="pbc-l"><span><i class="lg-n"></i>ดำเนินการ</span><span><i class="lg-g"></i>ครบ 15 ข้อ</span><span><i class="lg-t"></i>เป้า 15 ข้อ</span></div>
+      <div class="pbc-w"><svg viewBox="${-OX} 0 ${W + OX} ${H}" class="pbc-s" role="img" aria-label="กราฟแท่งจำนวนเกณฑ์ด้านกายภาพที่ดำเนินการแล้วของ ${n} หน่วยบริการ">
+        <defs><linearGradient id="pbNavy" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2D4EAD"/><stop offset="1" stop-color="#0C1D55"/></linearGradient><linearGradient id="pbGold" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F0DA9A"/><stop offset=".5" stop-color="#C9A24A"/><stop offset="1" stop-color="#9A7124"/></linearGradient></defs>
+        ${g}${bars}</svg></div>
+    </section>`;
+  }
+
+  function publicCritBoxes(N, crit) {
+    const pc = (v) => fmt(N ? (v / N) * 100 : 0);
+    const CB = [
+      ["qc", "2.1", "เกณฑ์ 2.1 ด้านคุณภาพ: Checklist", "แบบประเมินคุณภาพการบริการ 10 ข้อ"],
+      ["narr", "2.2", "เกณฑ์ 2.2 ด้านคุณภาพ: การบรรยาย", "บรรยายความโดดเด่นและความเป็นต้นแบบ 10 ข้อ"],
+      ["out", "3", "เกณฑ์ 3 ด้านผลลัพธ์", "3 ด้าน · 100 คะแนน"],
+    ];
+    const row = (k, cls, st, icn, l, v) =>
+      `<button class="mr ${cls}" data-act="go" data-view="portfolio" aria-label="รายชื่อหน่วยบริการ ${l} ${v} แห่ง" title="แตะเพื่อเข้าสู่ระบบ"><span class="mr-i">${ic(icn)}</span><span class="mr-l">${l}</span><b>${v}</b><small>${pc(v)}%</small></button>`;
+    return `<div class="grid g3 crit3">${CB.map(([k, no, nm, sb]) => {
+      const d = crit?.[k]?.done || 0,
+        p = crit?.[k]?.prog || 0,
+        n = crit?.[k]?.none ?? N;
+      return `<div class="dp2 cbx"><div class="dp2-h"><span class="dp-no">${no}</span><div><h3>${nm}</h3><p>${sb}</p></div></div>
+      <div class="cbx-b"><div class="dp2-k">${row(k, "g", "done", "check", "ส่งแล้ว", d)}${row(k, "o", "prog", "clock", "ระหว่างดำเนินการ", p)}${row(k, "r", "none", "alert", "ยังไม่ส่ง", n)}</div>
+      <div class="stack3" style="margin-top:12px">${d ? `<span class="s3-done" style="width:${(d / N) * 100}%"></span>` : ""}${p ? `<span class="s3-prog" style="width:${(p / N) * 100}%"></span>` : ""}${n ? `<span class="s3-none" style="width:${(n / N) * 100}%"></span>` : ""}</div>
+      <div class="cb-p"><span>ส่งแล้ว</span><b>${pc(d)}%</b><span class="muted">จาก ${N} หน่วยบริการ</span></div></div></div>`;
+    }).join("")}</div>`;
+  }
+
+  function publicScoreStrip(scores, W = 1000) {
+    W = Math.max(280, Math.round(W));
+    const H = 170, x0 = 14, x1 = W - 14, dmin = 150, dmax = 300;
+    const fs = W < 480 ? 12 : 13.5;
+    const X = (v) => x0 + ((Math.max(dmin, Math.min(dmax, v)) - dmin) / (dmax - dmin)) * (x1 - x0);
+    const bands = [
+      [150, 240, "below", "ต่ำกว่าเกณฑ์"],
+      [240, 260, "blue", "พื้นฐาน"],
+      [260, 280, "silver", "ก้าวหน้า"],
+      [280, 300, "gold", "เป็นเลิศ"],
+    ];
+    const pts = (scores || []).slice().sort((a, b) => a.total - b.total);
+    const buckets = {};
+    let dots = "";
+    pts.forEach((x) => {
+      const bx = Math.round(X(x.total) / 16);
+      const k = (buckets[bx] = (buckets[bx] || 0) + 1);
+      const cx = X(x.total) + Math.floor((k - 1) / 5) * 8;
+      const cy = 112 - ((k - 1) % 5) * 16;
+      dots += `<g class="dot" role="button" tabindex="0" data-act="go" data-view="portfolio" aria-label="${esc(x.name)} ${fmt(x.total, 1)} คะแนน ${LEVEL[x.level]?.l || ''}"><title>${esc(x.name)} · ${fmt(x.total, 1)} คะแนน · ${LEVEL[x.level]?.l || ''}</title><circle cx="${cx}" cy="${cy}" r="7" class="d-${x.level}"/></g>`;
+    });
+    return `<div class="strip"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="การกระจายคะแนนของหน่วยบริการเทียบเกณฑ์ผ่าน 240 คะแนน">
+      ${bands.map((b) => `<rect x="${X(b[0])}" y="22" width="${X(b[1]) - X(b[0])}" height="104" rx="${b[0] === 150 ? 8 : 0}" class="band-${b[2]}"/><text x="${(X(b[0]) + X(b[1])) / 2}" y="16" text-anchor="middle" class="bandl" font-size="${fs}">${b[3]}</text>`).join("")}
+      <line x1="${X(240)}" x2="${X(240)}" y1="22" y2="134" class="thr"/>
+      ${[150, 180, 210, 240, 260, 280, 300].map((t) => `<text x="${X(t)}" y="154" text-anchor="${t === 150 ? "start" : t === 300 ? "end" : "middle"}" class="tick" font-size="${fs}">${t}</text>`).join("")}
+      <text x="${X(240) - 6}" y="40" text-anchor="end" class="thrl" font-size="${fs}">เกณฑ์ผ่าน 240</text>
+      ${dots}</svg></div>
+      <div class="legend"><span class="lv lv-gold"><i></i>เป็นเลิศ</span><span class="lv lv-silver"><i></i>ก้าวหน้า</span><span class="lv lv-blue"><i></i>พื้นฐาน</span><span class="lv lv-below"><i></i>ต่ำกว่า 240</span><span class="lv lv-gate"><i></i>กายภาพยังไม่ครบ 15 ข้อ</span><span>แตะจุดเพื่อดูรายละเอียดหน่วยบริการ</span></div>`;
+  }
+
+  function publicMentorEvaluation(N, r) {
+    const cnt = (s) => r?.[s] || 0;
+    const lvl = (l) => r?.levels?.[l] || 0;
+    const scores = r?.scores || [];
+    const stripContent = scores.length
+      ? publicScoreStrip(scores)
+      : `<div class="empty">${ic("clipboard")}<h3>ยังไม่มีหน่วยบริการที่ส่งครบ</h3><p>เมื่อหน่วยบริการส่งครบทั้ง 3 เกณฑ์ คะแนนจะแสดงบนแถบนี้</p></div>`;
+    return `<div class="resv">
+      <div class="grid g4" role="group" aria-label="กรองตามสถานะ">
+        ${["pass", "fix", "risk", "none"]
+          .map(
+            (s) => `<button class="kpi is-${s}" data-act="go" data-view="portfolio" title="เข้าสู่ระบบเพื่อดูรายละเอียด">
+          <span class="kpi-k">${ic(STATUS[s].i)}${STATUS[s].l}</span><span class="kpi-v">${cnt(s)}<small>แห่ง</small></span>
+          <span class="kpi-s">${s === "pass" ? "กายภาพครบ คะแนน ≥ 240 ไม่มีข้อบกพร่องค้าง" : s === "fix" ? "คะแนนผ่าน แต่ยังมีข้อบกพร่องต้องแก้ไข" : s === "risk" ? "กายภาพไม่ครบ หรือคะแนนต่ำกว่า 240" : "รอส่งเกณฑ์ให้ครบก่อนคิดผล"}</span></button>`,
+          )
+          .join("")}
+      </div>
+
+      <div class="grid g2" style="margin-top:16px">
+        <div class="card"><div class="card-h"><div><h3><span class="hico">${ic("target")}</span>การกระจายคะแนนรวมเทียบเกณฑ์</h3><p>ผ่านเกณฑ์ไม่ต่ำกว่า 240 จาก 300 คะแนน (ร้อยละ 80)</p></div></div>
+          <div class="card-b"><div class="strip-wrap" id="strip-wrap">${stripContent}</div></div></div>
+        <div class="card">
+          <div class="card-h"><div><h3><span class="hico">${ic("shield")}</span>ระดับมาตรฐานที่คาดหมาย</h3><p>คำนวณจากคะแนนรวมปัจจุบัน</p></div></div>
+          <div class="levels" style="margin-top:12px">${["gold", "silver", "blue"].map((l) => `<div class="lvl-tile"><img src="${IMG[LEVEL[l].img]}" alt="ตรา GECC ${LEVEL[l].l}"><div class="n">${lvl(l)}</div><div class="l">${LEVEL[l].l}</div><div class="r">${LEVEL[l].r}</div></div>`).join("")}</div>
+          <div class="lvl-other"><div><span class="lo-i r">${ic("xc")}</span><span><b class="num">${lvl("below")}</b>ต่ำกว่าเกณฑ์ 240</span></div><div><span class="lo-i o">${ic("alert")}</span><span><b class="num">${lvl("gate")}</b>กายภาพยังไม่ครบ</span></div><div><span class="lo-i n">${ic("clock")}</span><span><b class="num">${lvl("none")}</b>รอผลครบทุกเกณฑ์</span></div></div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function publicSurveySection(survey) {
+    const rows = survey?.units || 0;
+    const tot = survey?.tot || 0;
+    const A = survey?.avg || {};
+    const item = ([k, t, en], theme) => {
+      const v = A[k];
+      return `<div class="sx-it"><div class="sx-n"><b>${esc(t)}</b><span>${esc(en)}</span></div><div class="sx-bw"><div class="sx-bar ${theme}"><span style="width:${v == null ? 0 : (v / 5) * 100}%"></span></div>${starsHtml(v)}</div><div class="sx-v ${theme}">${v == null ? "–" : v.toFixed(2)}</div></div>`;
+    };
+    const panel = (theme, icon, title, en, overallLabel, ov, items) => `<div class="sx-p ${theme}">
+      <div class="sx-ph"><span class="sx-pi">${icon}</span><div><h3>${title}</h3><span>${en}</span></div></div>
+      <div class="sx-top"><div class="sx-g">${svGauge(ov, theme)}</div><div class="sx-ov"><span class="sx-ol">${overallLabel}</span><div class="sx-stars">${starsHtml(ov)}<b>${ov == null ? "–" : ov.toFixed(2)}</b></div>${ov != null ? `<span class="sx-lv ${theme}">ระดับ${LVL5(ov)}</span>` : ""}</div></div>
+      <div class="sx-list">${items.map((q) => item(q, theme)).join("")}</div></div>`;
+    const smile =
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01"/><path d="M15 9h.01"/></svg>';
+    return `<h2 class="section-t">สำรวจความพึงพอใจและความเชื่อมั่นของผู้รับบริการ จังหวัดศรีสะเกษ</h2>
+    <section class="card sx">
+      <div class="sx-h"><div><span class="sx-k">SATISFACTION &amp; TRUST</span><h2>ความพึงพอใจและความเชื่อมั่น ภาพรวมจังหวัดศรีสะเกษ</h2></div><span class="sx-pill">${ic("users")}${rows ? `ตอบแบบประเมิน <b class="num">${fmt(tot)}</b> คน · <b class="num">${rows}</b> หน่วยบริการ` : "ยังไม่มีหน่วยบริการกรอกผลสำรวจ"}</span></div>
+      <div class="sx-grid">
+        ${panel("gold", smile, "ความพึงพอใจ", "SATISFACTION", "ความพึงพอใจภาพรวม", A.s5, SAT.filter(([k]) => k !== "s5"))}
+        ${panel("mint", ic("shield"), "ความเชื่อมั่น", "TRUST IN SERVICE", "ความเชื่อมั่นภาพรวม", A.c5, CONF.filter(([k]) => k !== "c5"))}
+      </div>
+      <p class="tiny muted" style="margin:12px 0 0">คำนวณเฉลี่ยถ่วงน้ำหนักตามจำนวนผู้ตอบของแต่ละหน่วยบริการ · มาตราส่วน 5 ระดับ · ชุดข้อคำถามเดียวกับ SISAKET SMART FDA</p>
+    </section>`;
+  }
+
   function publicDashboard() {
     const r = aggregate;
     executiveHead(r?.lastUpdatedAt);
+    const N = r?.units || 28;
     $("#content").innerHTML =
       `${reportBar('Executive_Dashboard_GECC2570','', 'Executive Dashboard · ภาพรวมจังหวัดศรีสะเกษ',r?.lastUpdatedAt)}
       ${countdownHTML(false)}
-      ${r?.submission && r?.readiness ? `<h2 class="section-t">ความพร้อมของหน่วยบริการตามเกณฑ์การประเมิน GECC ด้านกายภาพ ด้านคุณภาพ และด้านผลลัพธ์</h2><section class="card band" aria-label="รายงานการส่งเกณฑ์และแบบประเมินความพร้อม">${dualBandSummary(r.units,r.submission,r.readiness,false)}<div class="band-f">${ic('clock')}ข้อมูล ณ ${r.lastUpdatedAt?thDateTime(r.lastUpdatedAt):'ยังไม่มีการบันทึก'} · หน่วยบริการที่สมัคร ${fmt(r.units)} แห่ง · ${fmt(r.teams)} กลุ่ม MENTOR</div></section>`:''}
-      <section><h2 class="section-t">ความก้าวหน้าภาพรวมจังหวัด</h2><p class="summary-note">แสดงข้อมูลรวมของหน่วยบริการที่เข้าร่วมการประเมิน เข้าสู่ระบบเพื่อดูรายละเอียด คะแนน และหลักฐานตามสิทธิ์ของท่าน</p>${
+      ${r?.submission && r?.readiness ? `<h2 class="section-t" style="margin-top:0">ความพร้อมของหน่วยบริการตามเกณฑ์การประเมิน GECC ด้านกายภาพ ด้านคุณภาพ และด้านผลลัพธ์</h2><section class="card band" aria-label="รายงานการส่งเกณฑ์และแบบประเมินความพร้อม">${dualBandSummary(N,r.submission,r.readiness,false)}<div class="band-f">${ic('clock')}ข้อมูล ณ ${r.lastUpdatedAt?thDateTime(r.lastUpdatedAt):'ยังไม่มีการบันทึก'} · หน่วยบริการที่สมัคร ${fmt(N)} แห่ง · ${fmt(r?.teams||6)} กลุ่ม MENTOR</div></section>`:''}
+      <h2 class="section-t">หน่วยบริการที่มีความพร้อมด้านกายภาพ 15 ข้อ (MUST HAVE)</h2>
+      ${publicPhysChart(r?.phys)}
+      <h2 class="section-t">หน่วยบริการที่มีความพร้อมด้านคุณภาพ และด้านผลลัพธ์</h2>
+      ${publicCritBoxes(N, r?.crit)}
+      <h2 class="section-t">ผลการตรวจประเมินจาก MENTOR</h2>
+      ${publicMentorEvaluation(N, r)}
+      ${publicSurveySection(r?.survey)}
+      <section style="margin-top:20px"><h2 class="section-t">ความก้าวหน้าภาพรวมจังหวัด</h2><p class="summary-note">แสดงข้อมูลรวมของหน่วยบริการที่เข้าร่วมการประเมิน เข้าสู่ระบบเพื่อดูรายละเอียด คะแนน และหลักฐานตามสิทธิ์ของท่าน</p>${
         r
           ? `<div class="summary-grid">${[
               ["units", "หน่วยบริการที่เข้าร่วม"],
