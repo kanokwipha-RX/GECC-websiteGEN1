@@ -55,7 +55,7 @@ function api(): never {
             fail(400,'กรุณาเชื่อมต่อผ่าน HTTPS');
         if (!is_string($route)||!preg_match('~^[a-z]+(?:/[A-Za-z0-9_-]+)*$~D',$route)) fail(404,'ไม่พบรายการ');
         $modifying=!in_array($method,['GET','HEAD'],true);
-        if ($modifying&&($_SERVER['HTTP_ORIGIN']??'')!==$c['origin']) fail(403,'ต้นทางคำขอไม่ถูกต้อง');
+        if ($modifying&&!in_array($_SERVER['HTTP_ORIGIN']??'',[$c['origin'],'https://osscsskfda.org','https://www.osscsskfda.org'],true)) fail(403,'ต้นทางคำขอไม่ถูกต้อง');
         if ($route==='setup'&&$method==='POST') {require_once __DIR__.'/install.php';$v=body(4096);reply(web_install($v->token??''));}
         if ($route==='health'&&$method==='GET') {
             try {state();reply(['ok'=>true]);} catch(\Throwable) {reply(['ok'=>false],503);}

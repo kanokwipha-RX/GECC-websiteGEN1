@@ -145,7 +145,6 @@ window.GECCClient = (() => {
   }
   async function boot() {
     if (!server) {
-      notice("โหมดสาธิตในเครื่อง · ข้อมูลและไฟล์แนบเก็บในเบราว์เซอร์นี้เท่านั้น");
       decorate();
       window.GECCMotion?.enter();
       return;
