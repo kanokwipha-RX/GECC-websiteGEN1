@@ -143,6 +143,17 @@ function api(): never {
                 return save_state($next,$r,$session['id'],'import');
             }));
         }
+        if ($route==='admin/repair-encoding'&&in_array($method,['GET','POST'],true)) {
+            if (($session['role']??null)!=='coord') fail(403,'เฉพาะผู้ประสานงานจัดการข้อมูล');
+            require_once __DIR__.'/encoding.php';
+            $revision=null;
+            if ($method==='POST') {
+                $v=body(4096);
+                if (!is_int($v->revision??null)) fail(400,'กรุณาตรวจภาษาไทยก่อนซ่อม');
+                $revision=$v->revision;
+            }
+            reply(repair_encoding($revision,$session));
+        }
         if ($route==='admin/reset'&&$method==='POST') {
             if ($session['role']!=='coord') fail(403,'เฉพาะผู้ประสานงานจัดการข้อมูล');
             $v=body(4096);

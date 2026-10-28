@@ -326,13 +326,13 @@ window.GECCClient = (() => {
     await boot();
   }
   function publicDashboard() {
-    setHead(
-      "ภาพรวม GECC จังหวัดศรีสะเกษ",
-      "การยกระดับมาตรฐานบริการภาครัฐ ประจำปีงบประมาณ " + DB.fy,
-    );
     const r = aggregate;
+    executiveHead(r?.lastUpdatedAt);
     $("#content").innerHTML =
-      `<section><h2 class="section-t">ความก้าวหน้าภาพรวมจังหวัด</h2><p class="summary-note">แสดงข้อมูลรวมของหน่วยบริการที่เข้าร่วมการประเมิน เข้าสู่ระบบเพื่อดูรายละเอียด คะแนน และหลักฐานตามสิทธิ์ของท่าน</p>${
+      `${reportBar('Executive_Dashboard_GECC2570','', 'Executive Dashboard · ภาพรวมจังหวัดศรีสะเกษ',r?.lastUpdatedAt)}
+      ${countdownHTML(false)}
+      ${r?.submission && r?.readiness ? `<h2 class="section-t">ความพร้อมของหน่วยบริการตามเกณฑ์การประเมิน GECC ด้านกายภาพ ด้านคุณภาพ และด้านผลลัพธ์</h2><section class="card band" aria-label="รายงานการส่งเกณฑ์และแบบประเมินความพร้อม">${dualBandSummary(r.units,r.submission,r.readiness,false)}<div class="band-f">${ic('clock')}ข้อมูล ณ ${r.lastUpdatedAt?thDateTime(r.lastUpdatedAt):'ยังไม่มีการบันทึก'} · หน่วยบริการที่สมัคร ${fmt(r.units)} แห่ง · ${fmt(r.teams)} กลุ่ม MENTOR</div></section>`:''}
+      <section><h2 class="section-t">ความก้าวหน้าภาพรวมจังหวัด</h2><p class="summary-note">แสดงข้อมูลรวมของหน่วยบริการที่เข้าร่วมการประเมิน เข้าสู่ระบบเพื่อดูรายละเอียด คะแนน และหลักฐานตามสิทธิ์ของท่าน</p>${
         r
           ? `<div class="summary-grid">${[
               ["units", "หน่วยบริการที่เข้าร่วม"],
@@ -470,6 +470,7 @@ window.GECCClient = (() => {
             ["content", "แก้ไขข้อมูลเผยแพร่"],
             ["audit", "ประวัติการทำรายการ"],
             ["backup", "สำรองข้อมูลพร้อมไฟล์แนบ"],
+            ...(window.GECC_API_STYLE === "php" ? [["repair-encoding", "ตรวจและซ่อมภาษาไทย"]] : []),
           ]) {
             const b = document.createElement("button");
             b.className = "btn";
@@ -583,6 +584,7 @@ window.GECCClient = (() => {
       }
       if (action === "backup") await backup();
       if (action === "content") contentModal();
+      if (action === "repair-encoding") await repairEncoding();
     } catch (error) {
       report(error);
     }
@@ -789,6 +791,28 @@ window.GECCClient = (() => {
       submit.removeAttribute("aria-busy");
     }
   });
+  async function repairEncoding() {
+    if (S.dirty) throw new Error("กรุณาบันทึกข้อมูลร่างก่อนตรวจภาษาไทย");
+    const preview = await request("/api/admin/repair-encoding");
+    if (!preview.count) { toast("ไม่พบข้อความภาษาไทยที่ต้องซ่อม"); return; }
+    openModal(`<div class="modal-h"><h3>ตรวจพบข้อความที่ซ่อมได้ ${fmt(preview.count)} รายการ</h3><button class="btn" data-act="modal-close">ปิด</button></div><div class="modal-b"><p>ตัวอย่างก่อนและหลังซ่อม ระบบจะสำรองข้อมูลไว้ในพื้นที่ส่วนตัวก่อนบันทึก</p><div class="tbl-wrap"><table class="tbl"><thead><tr><th>ข้อความเดิม</th><th>หลังซ่อม</th></tr></thead><tbody>${preview.examples.map(x=>`<tr><td>${esc(x.before)}</td><td>${esc(x.after)}</td></tr>`).join('')}</tbody></table></div><p id="encoding-error" role="status"></p></div><div class="modal-f"><button class="btn" data-act="modal-close">ยกเลิก</button><button class="btn btn-primary" id="encoding-apply">สำรองและซ่อมภาษาไทย</button></div>`);
+    $("#encoding-apply").addEventListener("click", async (event) => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      button.setAttribute("aria-busy", "true");
+      try {
+        await request("/api/admin/repair-encoding", {method:"POST",body:JSON.stringify({revision:preview.revision})});
+        await boot();
+        closeModal();
+        toast("สำรองข้อมูลและซ่อมภาษาไทยแล้ว");
+      } catch (error) {
+        $("#encoding-error").textContent = error.message;
+      } finally {
+        button.disabled = false;
+        button.removeAttribute("aria-busy");
+      }
+    });
+  }
   function contentModal() {
     const c = DB.publicContent || {};
     const extra =

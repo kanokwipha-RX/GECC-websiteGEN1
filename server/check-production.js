@@ -1,4 +1,5 @@
 // Read-only checks. Never submits forms, authenticates or changes live data.
+import { assertCleanThai } from "../deploy/encoding-check.mjs";
 export async function checkProduction(target) {
   const url = new URL(target);
   if (!["http:", "https:"].includes(url.protocol) || url.search || url.hash || url.username || url.password)
@@ -8,7 +9,7 @@ export async function checkProduction(target) {
   let transport = "node";
   try {
     const runtime = await fetch(new URL("assets/runtime.js", url), { signal: AbortSignal.timeout(15000) });
-    if (runtime.ok && (await runtime.text()).includes('window.GECC_API_STYLE="php"')) transport = "php";
+    if (runtime.ok && /window\.GECC_API_STYLE\s*=\s*["']php["']/.test(await runtime.text())) transport = "php";
   } catch {}
   const endpoint = path => transport === "php" && path.startsWith("api/")
     ? "api/index.php?route=" + encodeURIComponent(path.slice(4))
@@ -23,13 +24,15 @@ export async function checkProduction(target) {
   }
   await check("production runtime (no preview injection)", "", async r => {
     const html = await r.text();
-    return r.ok && html.includes('src="assets/runtime.js"') && !html.includes("window.GECC_PREVIEW=true");
+    return r.ok && /src="assets\/runtime\.js(?:\?v=[a-f0-9]+)?"/.test(html) && !html.includes("window.GECC_PREVIEW=true");
   });
   await check("database readiness", "api/health", async r => r.ok && (await r.json()).ok === true);
   await check("anonymous session", "api/session", async r => r.ok && (await r.json()).user === null);
-  await check("public aggregates without assessment records", "api/state", async r => {
+  await check("public aggregates, dashboard totals and readable Thai without assessment records", "api/state", async r => {
     const data = await r.json();
+    assertCleanThai(data.state, "publicState");
     return r.ok && !data.state?.isSample && data.summary &&
+      data.summary.submission && data.summary.readiness &&
       Array.isArray(data.state?.units) && data.state.units.length === 0 &&
       Object.keys(data.state.assess || {}).length === 0 && !data.state.pins;
   });

@@ -28,11 +28,17 @@ export function summary(state) {
     fix: 0,
     risk: 0,
     none: 0,
+    submission: { done: 0, prog: 0, none: 0 },
+    readiness: { ready: 0, notready: 0, draft: 0, none: 0 },
+    lastUpdatedAt: null,
   };
   for (const u of state.units) {
     const a = state.assess[u.id];
     const sub = rules.subOf(a);
     const complete = ["phys", "qual", "out"].every((k) => sub[k] === "done");
+    result.submission[complete ? "done" : Object.values(sub).some(s => s !== "none") ? "prog" : "none"]++;
+    result.readiness[rules.readyOf(a).st]++;
+    if (a?.updatedAt && (!result.lastUpdatedAt || a.updatedAt > result.lastUpdatedAt)) result.lastUpdatedAt = a.updatedAt;
     if (a?.wf?.status === "submitted") result.submitted++;
     if (a?.wf?.status === "reviewed") result.reviewed++;
     if (rules.readyOf(a).st === "ready") result.ready++;

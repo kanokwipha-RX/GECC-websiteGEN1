@@ -23,6 +23,11 @@ is unavailable. All API/file requests use the application base path.
 Server mode starts empty/public, never reads local records,
 never seeds demo assessments and never honors demo hash login. Session and resource
 permissions are server authoritative. Public assessment statistics are aggregates.
+Public chart counts and update timestamps come from summary, never fabricated
+unit records. Application schedules use Asia/Bangkok (+07:00); timeline dates keep
+their original ISO calendar date. PHP encoding repair belongs to the coordinator
+settings workflow: preview, revision/CSRF check, private snapshot, atomic write,
+append-only audit. It never changes passwords or role/resource scopes.
 
 Organization: own assessment/evidence and defect responses; cannot edit scores,
 reviewer feedback or locked records. Reviewer: assigned group, score/review/return/

@@ -11,4 +11,5 @@ accounts.json
 php/setup-token.txt
 php/installed.lock
 php/files/
+php/backups/
 gecc-private/

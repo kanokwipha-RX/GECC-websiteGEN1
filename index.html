@@ -2486,6 +2486,11 @@ function semiGauge(t){
     <circle cx="${cx}" cy="${cy}" r="8" fill="url(#sgg)"/>
     <text x="${cx}" y="${cy+40}" text-anchor="middle" class="sg-v">${fmt(t*100)}%</text></svg>`;
 }
+function executiveHead(lastUpd){
+  setHead('ภาพรวมจังหวัดศรีสะเกษ', `Executive Dashboard · ปีงบประมาณ ${DB.fy}`, `${S.role?'':`<button class="btn btn-lux" data-act="go" data-view="portfolio">${ic('user')}<span class="lbl-t">เข้าสู่ระบบ</span></button>`}`);
+  $('.topbar').classList.add('lux'); document.body.classList.add('lux-top');
+  $('#page-t').innerHTML=`<div class="tb-brand"><div class="seals"><span class="seal"><img src="${IMG.prov}" alt="ตราประจำจังหวัดศรีสะเกษ"></span><span class="seal"><img src="${IMG.gecc}" alt="ตราศูนย์ราชการสะดวก (GECC)"></span></div><div class="tb-t"><div class="tb-k">EXECUTIVE DASHBOARD · ข้อมูลล่าสุด ${lastUpd?thDateTime(lastUpd):'ยังไม่มีการบันทึก'}</div><h1>SISAKET GECC PROJECT</h1><p>การยกระดับคุณภาพมาตรฐานบริการภาครัฐจังหวัดศรีสะเกษ<br>ประจำปีงบประมาณ ${DB.fy}</p></div></div>`;
+}
 function viewExec(){
   if(window.GECC_SERVER && !S.role) return GECCClient.publicDashboard();
   const infos = allInfo(0); const N=infos.length; const as=infos.filter(x=>x.assessed);
@@ -2497,9 +2502,7 @@ function viewExec(){
   const newPct = as.length ? avg(x=>x.c.newDone)/NEW_TOTAL*100 : 0;
   const physDone = as.filter(x=>x.c.physComplete).length;
   const lastUpd = infos.map(x=>x.a?.updatedAt).filter(Boolean).sort().pop();
-  setHead('ภาพรวมจังหวัดศรีสะเกษ', `Executive Dashboard · ปีงบประมาณ ${DB.fy}`, `${S.role?'':`<button class="btn btn-lux" data-act="go" data-view="role">${ic('user')}<span class="lbl-t">เข้าสู่ระบบ</span></button>`}`);
-  $('.topbar').classList.add('lux'); document.body.classList.add('lux-top');
-  $('#page-t').innerHTML=`<div class="tb-brand"><div class="seals"><span class="seal"><img src="${IMG.prov}" alt="ตราประจำจังหวัดศรีสะเกษ"></span><span class="seal"><img src="${IMG.gecc}" alt="ตราศูนย์ราชการสะดวก (GECC)"></span></div><div class="tb-t"><div class="tb-k">EXECUTIVE DASHBOARD · ข้อมูลล่าสุด ${lastUpd?thDateTime(lastUpd):'–'}</div><h1>SISAKET GECC PROJECT</h1><p>การยกระดับคุณภาพมาตรฐานบริการภาครัฐจังหวัดศรีสะเกษ<br>ประจำปีงบประมาณ ${DB.fy}</p></div></div>`;
+  executiveHead(lastUpd);
   const F=S.execFilter;
   let list = infos.filter(x=>F==='all'||x.status===F);
   if(S.q) list=list.filter(x=>(x.u.name+x.u.district).includes(S.q));
@@ -2780,8 +2783,8 @@ function wfAlertHTML(team){
   const chip=o=>`<button class="wa-u" data-act="open-review" data-id="${o.u.id}">${esc(o.u.name)}</button>`;
   return `<div class="wfalert" role="alert"><span class="wa-i">${ic('alert')}</span><div class="wa-t"><b>แจ้งเตือน MENTOR</b>${pend.length?`<div>ตรวจแล้วแต่ยังไม่ยืนยันผล <b>${pend.length}</b> แห่ง: ${pend.map(chip).join('')}</div>`:''}${late.length?`<div>รอตรวจเกิน 7 วัน <b>${late.length}</b> แห่ง: ${late.map(chip).join('')}</div>`:''}</div></div>`;
 }
-function reportBar(name,uid,label){
-  const last=Object.values(DB.assess).map(a=>a?.updatedAt).filter(Boolean).sort().pop();
+function reportBar(name,uid,label,lastUpdatedAt){
+  const last=lastUpdatedAt||Object.values(DB.assess).map(a=>a?.updatedAt).filter(Boolean).sort().pop();
   return `<div class="rbar no-print"><div class="rb-l"><span class="rb-k">${label||'รายงาน'}</span><span class="rb-d">${ic('clock')}ข้อมูล ณ ${last?thDateTime(last):'–'}</span></div><div class="rb-a"><button class="rb-btn pri" data-act="pdf-page" data-name="${name}" ${uid?`data-uid="${uid}"`:''}>${ic('download')}<span>ดาวน์โหลดรายงาน PDF</span></button><button class="rb-btn" data-act="print" aria-label="พิมพ์">${ic('printer')}<span>พิมพ์</span></button></div></div>`;
 }
 /* ================= PIN สาธิต (ยังไม่ใช่ระบบรักษาความปลอดภัยจริง) ================= */
@@ -2814,14 +2817,14 @@ function denyUnit(){ toast('หน่วยบริการนี้อยู�
 /* ================= นับถอยหลังวันปิดรับสมัคร GECC 2570 ================= */
 function cal(){ DB.cal=DB.cal||{}; const c=DB.cal; c.start=c.start||'2026-10-01'; c.prov=c.prov||'2026-12-04'; c.open=c.open||'2026-11-16'; c.close=c.close||'2026-12-25'; return c; }
 function cdParts(){
-  const c=cal(); const now=new Date(); const open=new Date(c.open+'T08:30:00'), close=new Date(c.close+'T23:59:59'), prov=new Date(c.prov+'T16:30:00');
+  const c=cal(); const now=new Date(); const open=new Date(c.open+'T08:30:00+07:00'), close=new Date(c.close+'T23:59:59+07:00'), prov=new Date(c.prov+'T16:30:00+07:00');
   const phase= now<open?'before': now<=close?'open':'closed';
   const ms=Math.max(0, close-now); const d=Math.floor(ms/864e5), h=Math.floor(ms%864e5/36e5), m=Math.floor(ms%36e5/6e4);
   const dd=x=>Math.max(0,Math.ceil((x-now)/864e5));
   return {c,now,open,close,prov,phase,d,h,m,toOpen:dd(open),toProv:dd(prov)};
 }
 function countdownHTML(mini){
-  const p=cdParts(); const c=p.c; const st=new Date(c.start+'T00:00:00');
+  const p=cdParts(); const c=p.c; const st=new Date(c.start+'T00:00:00+07:00');
   const span=p.close-st; const pos=x=>Math.max(0,Math.min(100,(x-st)/span*100));
   const ms=[['start',st,'เริ่มเตรียมความพร้อม'],['open',p.open,'เปิดรับสมัคร GECC Online'],['close',p.close,'ปิดรับสมัคร']].sort((a,b)=>a[1]-b[1]);
   const head = p.phase==='before'?'นับถอยหลังวันปิดรับสมัคร':p.phase==='open'?'เปิดรับสมัครแล้ว · เหลือเวลาอีก':'ปิดรับสมัครแล้ว';
@@ -2831,7 +2834,7 @@ function countdownHTML(mini){
       <div class="cdn-l"><span class="cdn-k">${ic('clock')}รับสมัครมาตรฐาน GECC ประจำปี พ.ศ. ${DB.fy}</span><h2>${head}</h2><p>เปิดรับ ${thDate(c.open,true)} – ปิดรับ ${thDate(c.close,true)}</p><div class="cdcs">${chips}</div></div>
       <div class="cdn-n" role="timer" aria-live="off">${p.phase==='closed'?`<div class="cu"><b>0</b><span>วัน</span></div>`:`<div class="cu"><b data-cd="d">${p.d}</b><span>วัน</span></div><i>:</i><div class="cu"><b data-cd="h">${String(p.h).padStart(2,'0')}</b><span>ชั่วโมง</span></div><i>:</i><div class="cu"><b data-cd="m">${String(p.m).padStart(2,'0')}</b><span>นาที</span></div>`}</div>
     </div>
-    ${mini?'':`<div class="cdt"><div class="cdt-track"><span class="cdt-fill" style="width:${pos(p.now)}%"></span>${ms.map(([k,x,l])=>`<span class="cdt-m ${k} ${x<=p.now?'past':''}" style="left:${pos(x)}%"><i></i><b>${l}</b><em>${thDate(x.toISOString().slice(0,10))}</em></span>`).join('')}<span class="cdt-now" style="left:${pos(p.now)}%"><b>วันนี้</b></span></div></div>`}
+    ${mini?'':`<div class="cdt"><div class="cdt-track"><span class="cdt-fill" style="width:${pos(p.now)}%"></span>${ms.map(([k,x,l])=>`<span class="cdt-m ${k} ${x<=p.now?'past':''}" style="left:${pos(x)}%"><i></i><b>${l}</b><em>${thDate(c[k])}</em></span>`).join('')}<span class="cdt-now" style="left:${pos(p.now)}%"><b>วันนี้</b></span></div></div>`}
   </section>`;
 }
 function tickCountdown(){ const els=$$('[data-cd]'); if(!els.length) return; const p=cdParts(); els.forEach(e=>{ const k=e.dataset.cd; e.textContent = k==='d'?p.d : String(k==='h'?p.h:p.m).padStart(2,'0'); }); }
@@ -3202,9 +3205,9 @@ async function viewFile(key,fid){
 function hydrateThumbs(){ $$('img[data-thumb]').forEach(async im=>{ const id=im.dataset.thumb; let u=THUMB[id]; if(!u){ const b=await FDB.get(id); if(!b){ im.closest('.fch')?.classList.add('miss'); return; } u=THUMB[id]=URL.createObjectURL(b); } im.src=u; }); }
 
 /* ================= Executive: readiness, per-criterion, charts, survey ================= */
-function dualPanel(no,title,sub,d,p,n,N,labels,note){
+function dualPanel(no,title,sub,d,p,n,N,labels,note,interactive=true){
   const pc=v=>fmt(N?v/N*100:0);
-  const row=(cls,icn,l,v)=>`<button class="mr ${cls}" data-act="dual-list" data-p="${no}" data-s="${cls}" aria-label="ดูรายชื่อหน่วยบริการ ${l} ${v} แห่ง" title="กดเพื่อดูรายชื่อหน่วยบริการ"><span class="mr-i">${ic(icn)}</span><span class="mr-l">${l}</span><b>${v}</b><small>${pc(v)}%</small></button>`;
+  const row=(cls,icn,l,v)=>`<${interactive?'button':'div'} class="mr ${cls}" ${interactive?`data-act="dual-list" data-p="${no}" data-s="${cls}" aria-label="ดูรายชื่อหน่วยบริการ ${l} ${v} แห่ง" title="กดเพื่อดูรายชื่อหน่วยบริการ"`:''}><span class="mr-i">${ic(icn)}</span><span class="mr-l">${l}</span><b>${v}</b><small>${pc(v)}%</small></${interactive?'button':'div'}>`;
   return `<div class="dp2"><div class="dp2-h"><span class="dp-no">${no}</span><div><h3>${title}</h3><p>${sub}</p></div></div>
     <div class="dp2-b"><div class="dp2-g">${semiGauge(N?d/N:0)}<div class="dp2-v"><b>${d}</b>/${N} แห่ง ${labels[0]}</div></div>
       <div class="dp2-k">${row('g','check',labels[0],d)}${row('o','clock',labels[1],p)}${row('r','alert',labels[2],n)}${note?`<div class="dp2-n">${note}</div>`:''}</div></div></div>`;
@@ -3222,9 +3225,13 @@ function dualList(no,cls){
 function dualBand(infos,all){
   const N=infos.length; const R=infos.map(x=>readyOf(x.a).st);
   const ok=R.filter(s=>s==='ready').length, nr=R.filter(s=>s==='notready').length, dr=R.filter(s=>s==='draft').length, none=R.filter(s=>s==='none').length;
+  return dualBandSummary(N,all,{ready:ok,notready:nr,draft:dr,none});
+}
+function dualBandSummary(N,all,readiness,interactive=true){
+  const {ready:ok,notready:nr,draft:dr,none}=readiness;
   return `<div class="dual2">
-    ${dualPanel(1,'หน่วยบริการที่มีความพร้อมตามเกณฑ์มาตรฐาน <span class="nw">GECC 3 ด้าน (แห่ง)</span>','ด้านกายภาพ · ด้านคุณภาพ · ด้านผลลัพธ์',all.done,all.prog,all.none,N,['ส่งครบ','ระหว่างดำเนินการ','ไม่ส่ง ต้องติดตาม'],`ส่งแล้วบางด้าน ${all.prog} แห่ง`)}
-    ${dualPanel(2,'หน่วยบริการที่ประเมินความพร้อมเข้าสู่มาตรฐาน <span class="nw">GECC ครบถ้วน (แห่ง)</span>','เกณฑ์บังคับก่อนสมัคร ประจำปี พ.ศ. '+DB.fy,ok,nr+dr,none,N,['ส่งครบ','ระหว่างดำเนินการ','ไม่ส่ง ต้องติดตาม'],`ยังไม่พร้อม ${nr} แห่ง · กรอกไม่ครบ ${dr} แห่ง`)}
+    ${dualPanel(1,'หน่วยบริการที่มีความพร้อมตามเกณฑ์มาตรฐาน <span class="nw">GECC 3 ด้าน (แห่ง)</span>','ด้านกายภาพ · ด้านคุณภาพ · ด้านผลลัพธ์',all.done,all.prog,all.none,N,['ส่งครบ','ระหว่างดำเนินการ','ไม่ส่ง ต้องติดตาม'],`ส่งแล้วบางด้าน ${all.prog} แห่ง`,interactive)}
+    ${dualPanel(2,'หน่วยบริการที่ประเมินความพร้อมเข้าสู่มาตรฐาน <span class="nw">GECC ครบถ้วน (แห่ง)</span>','เกณฑ์บังคับก่อนสมัคร ประจำปี พ.ศ. '+DB.fy,ok,nr+dr,none,N,['ส่งครบ','ระหว่างดำเนินการ','ไม่ส่ง ต้องติดตาม'],`ยังไม่พร้อม ${nr} แห่ง · กรอกไม่ครบ ${dr} แห่ง`,interactive)}
   </div>`;
 }
 /* ================= ขั้นตอนส่งข้อมูล → รอตรวจ → ตรวจแล้ว / ส่งกลับแก้ไข ================= */

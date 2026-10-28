@@ -129,6 +129,10 @@ textarea[data-bind^="adv."],
 .mr {
   background: var(--surface);
 }
+.dp2 { background: var(--surface); }
+.committee-card:not(.has-photo) { height: auto; min-height: 0; }
+.committee-card:not(.has-photo) .committee-card-media { position: relative; height: 150px; }
+.committee-card:not(.has-photo) .committee-card-copy { position: relative; inset: auto; }
 .mr.g,
 .mr.o,
 .mr.r {

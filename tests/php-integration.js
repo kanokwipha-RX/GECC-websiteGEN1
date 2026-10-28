@@ -5,7 +5,7 @@ import { randomBytes, createHash } from "node:crypto";
 import assert from "node:assert/strict";
 import { chromium } from "playwright";
 import { buildPhp } from "../deploy/build-php.mjs";
-import { rules } from "../server/domain.js";
+import { rules, summary } from "../server/domain.js";
 import { checkProduction } from "../server/check-production.js";
 const php=resolve(process.env.PHP_BIN||"var/runtimes/php/php.exe");
 const maria=resolve(process.env.MARIADB_BIN||"var/runtimes/maria/mariadb-10.6.28-winx64/bin");
@@ -329,6 +329,68 @@ try {
     assert.equal((await call("session",null,"POST",{username:"absent-test",password:"wrong"})).status,429);
     const events=(await call("audit",coord)).data.events;
     assert.ok(events.length>0);assert.ok(events.every(e=>e.created_at.endsWith("Z")));
+  });
+  await check("encoding repair previews, backs up and atomically preserves live records and credentials",async()=>{
+    const corrupt=text=>new TextDecoder("windows-874").decode(new TextEncoder().encode(text));
+    const before=(await call("state",coord)).data;
+    const original=structuredClone(before.state);
+    before.state.publicContent.library[0].name=corrupt(original.publicContent.library[0].name);
+    before.state.mentorCoordinators[0].name=corrupt(original.mentorCoordinators[0].name);
+    before.state.units[0].name=corrupt(original.units[0].name);
+    const account=sql("SELECT * FROM gecc_accounts WHERE id=?",[coord.user.id])[0];
+    sql("UPDATE gecc_accounts SET name=? WHERE id=?",[corrupt("ผู้ประสานงานจังหวัด"),coord.user.id]);
+    sql("UPDATE gecc_app_state SET document=? WHERE id=1",[JSON.stringify(before.state)]);
+    assert.equal((await call("admin/repair-encoding")).status,403);
+    assert.equal((await call("admin/repair-encoding",unit)).status,403);
+    assert.equal((await call("admin/repair-encoding",mentor,"POST",{revision:before.revision})).status,403);
+    const preview=(await call("admin/repair-encoding",coord)).data;
+    assert.equal(preview.count,4);assert.equal(preview.applied,false);
+    assert.deepEqual((await call("state",coord)).data.state,before.state,"preview must not write");
+    assert.equal((await call("admin/repair-encoding",coord,"POST",{revision:before.revision-1})).status,409);
+    assert.equal((await call("admin/repair-encoding",coord,"POST",{revision:before.revision},{"X-CSRF-Token":"forged"})).status,403);
+    await page.evaluate(async()=>{S.dirty=false;await GECCClient.boot();go("settings");});
+    await page.locator("[data-server-action=repair-encoding]").click();
+    await page.waitForSelector("#encoding-apply");
+    assert.ok((await page.locator("[role=dialog]").innerText()).includes(original.mentorCoordinators[0].name));
+    await page.locator("#encoding-apply").click();
+    await page.waitForFunction(()=>!document.querySelector("#encoding-apply"));
+    assert.deepEqual((await call("state",coord)).data.state,original);
+    const after=sql("SELECT * FROM gecc_accounts WHERE id=?",[coord.user.id])[0];
+    assert.equal(after.name,"ผู้ประสานงานจังหวัด");
+    assert.deepEqual({...after,name:account.name},account,"password, role and scope unchanged");
+    const {readdir}=await import("node:fs/promises");
+    const backups=await readdir(join(privateDir,"backups"));assert.equal(backups.length,1);
+    const backup=JSON.parse(await readFile(join(privateDir,"backups",backups[0]),"utf8"));
+    assert.deepEqual(backup.state,before.state);assert.ok(!JSON.stringify(backup).includes("password_hash"));
+    const fixed=(await call("state",coord)).data;
+    const noChange=(await call("admin/repair-encoding",coord,"POST",{revision:fixed.revision})).data;
+    assert.equal(noChange.count,0);assert.equal(noChange.applied,false);
+    assert.equal((await call("state",coord)).data.revision,fixed.revision);
+    assert.deepEqual((await call("state")).data.summary,summary(original),"PHP and Node chart aggregates agree");
+    const anon=await browser.newContext({viewport:{width:1440,height:1000}});
+    try {
+      const p=await anon.newPage();await p.goto(base);await p.waitForSelector(".dual2");
+      assert.ok(!(await p.locator(".rb-d").innerText()).includes('ณ –'),"toolbar must use aggregate update date");
+      assert.equal(await p.locator(".cdt-m.start em").innerText(),await p.evaluate(()=>thDate(DB.cal.start)),"timeline must retain October 1 in Bangkok");
+      await p.pdf({path:"artifacts/php-public-dashboard-print.pdf",format:"A4",printBackground:true});
+      assert.equal(await p.locator(".tb-brand .seal img").count(),2);
+      assert.equal(await p.locator("[data-act=dual-list]").count(),0,"public metrics have no private drilldown");
+      assert.equal(await p.evaluate(()=>DB.units.length),0);
+      await p.screenshot({path:"artifacts/php-public-dashboard-desktop.png",fullPage:true});
+      for (const view of ["exec","portfolio","committee","library"]) {
+        for (const theme of ["light","dark"]) {
+          await p.emulateMedia({colorScheme:theme});
+          for (const width of [360,390,768,1440]) {
+            await p.setViewportSize({width,height:900});await p.evaluate(view=>go(view),view);
+            assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,view+" "+theme+" "+width);
+            assert.ok(!(await p.locator("#content").innerText()).includes('เธเธ'),view+" readable Thai");
+            if (width===390) {
+              await p.screenshot({path:`artifacts/php-public-${view}-${theme}-mobile.png`,fullPage:true});
+            }
+          }
+        }
+      }
+    }finally{await anon.close();}
   });
   await check("release keeps configuration, credentials, schema and private files outside public web paths",async()=>{
     for(const path of ["/gecc-private/accounts.json","/gecc-private/setup-token.txt","/sskgecc/.env","/sskgecc/php/schema.sql","/sskgecc/server/app.js"])

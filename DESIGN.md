@@ -23,6 +23,9 @@ spacing/motion/accessibility tokens and shared refinements. Do not duplicate the
 - Compact countdown uses `.cdn-compact`; `.mini` belongs only to score bars.
 - At up to 600px the four public navigation links use two columns so complete
   Thai labels are visible; the sticky page header follows the 102px navigation.
+- Public production dashboards reuse executiveHead/countdownHTML/dualBandSummary
+  with server aggregates only; private drilldowns remain authenticated. Chart
+  panels use --surface in both themes. Photo-free person cards keep copy in flow.
 
 ## Review checklist (all screens)
 1. Existing shell -> site navigation -> header -> content -> pager -> footer retained.

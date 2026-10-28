@@ -68,8 +68,15 @@ function ready_of(?object $a): array {
 }
 function summary(object $s): array {
     $r = ['units'=>count($s->units),'teams'=>count($s->teams)] + array_fill_keys(['submitted','reviewed','ready','complete','pass','fix','risk','none'],0);
+    $r['submission'] = array_fill_keys(['done','prog','none'],0);
+    $r['readiness'] = array_fill_keys(['ready','notready','draft','none'],0);
+    $r['lastUpdatedAt'] = null;
     foreach ($s->units as $u) {
         $a = $s->assess->{$u->id} ?? null; $sub = sub_of($a);
+        $complete = $sub['phys']==='done' && $sub['qual']==='done' && $sub['out']==='done';
+        $r['submission'][$complete ? 'done' : (count(array_filter($sub,fn($v)=>$v!=='none')) ? 'prog' : 'none')]++;
+        $r['readiness'][ready_of($a)['st']]++;
+        if (!empty($a->updatedAt) && ($r['lastUpdatedAt']===null || $a->updatedAt>$r['lastUpdatedAt'])) $r['lastUpdatedAt']=$a->updatedAt;
         if (($a->wf->status ?? '')==='submitted') $r['submitted']++;
         if (($a->wf->status ?? '')==='reviewed') $r['reviewed']++;
         if (ready_of($a)['st']==='ready') $r['ready']++;
