@@ -13,6 +13,12 @@
     "test:browser": "node tests/browser.js",
     "db:migrate": "node server/manage.js migrate",
     "account:create": "node server/manage.js account",
+    "accounts:prepare": "node server/accounts.js prepare var/private/accounts.json",
+    "accounts:check": "node server/accounts.js check var/private/accounts.json",
+    "accounts:apply": "node server/accounts.js apply var/private/accounts.json",
+    "check:production": "node server/check-production.js",
+    "build:php": "node deploy/build-php.mjs",
+    "test:php": "node tests/php-integration.js",
     "data:import": "node server/manage.js import"
   },
   "dependencies": {

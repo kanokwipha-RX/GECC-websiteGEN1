@@ -22,13 +22,14 @@ services:
     environment:
       DATABASE_URL: postgres://gecc:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}@db:5432/gecc
       APP_ORIGIN: ${APP_ORIGIN:?Set HTTPS APP_ORIGIN}
+      BASE_PATH: ${BASE_PATH-/sskgecc}
       COOKIE_SECURE: "true"
     ports:
-      - 127.0.0.1:8080:8080
+      - 127.0.0.1:${WEB_PORT:-8080}:8080
     volumes:
       - files:/app/var/files
     healthcheck:
-      test: [CMD, node, -e, "fetch('http://127.0.0.1:8080/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      test: [CMD, node, -e, "import('./server/config.js').then(({basePath})=>fetch('http://127.0.0.1:8080'+basePath(process.env.BASE_PATH)+'/api/health')).then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 30s
       timeout: 8s
       retries: 3
