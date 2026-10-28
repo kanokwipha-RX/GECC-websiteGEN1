@@ -17,7 +17,25 @@
 }
 :root {
   --text-3: #626b82;
+  --idle: #596171;
 }
+.mods { background: var(--bg); }
+.mods-h::before { background: var(--bg); }
+.mod { background: var(--surface); border-color: var(--border-strong); }
+.mod-go { color: var(--navy); }
+.wk.wait { color: var(--warn); background: var(--warn-50); border-color: var(--border-strong); }
+.mdv .teamtabs button:not([aria-pressed="true"]) { background: var(--navy-50); border-color: var(--border-strong); }
+.ut.done { background: var(--ok-50); border-color: var(--ok); }
+.ut.prog { background: var(--warn-50); border-color: var(--warn); }
+.ut.none { background: var(--bad-50); border-color: var(--bad); }
+.hb-v.g { color: var(--ok); }
+.hb-v.o { color: var(--warn); }
+.hb-v.r { color: var(--bad); }
+.rb-btn:not(.pri) { background: var(--surface); }
+.wfc.wait, .hpart { color: var(--warn); background: var(--warn-50); }
+.plist button.plk { all: unset; box-sizing: border-box; grid-column: 2 / -1; display: flex; align-items: start; justify-content: space-between; gap: 12px; width: 100%; min-width: 0; cursor: pointer; border-radius: 10px; }
+.plist button.plk:hover { background: var(--navy-50); }
+.plist button.plk:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 :root {
   --brand-solid: #0f2263;
   --review-ink: #1a4fd6;
@@ -394,17 +412,24 @@ body.modal-open {
     display: none;
   }
   .site-nav-in {
-    padding-inline: 12px;
+    padding: 4px 12px;
     gap: 8px;
   }
   .site-nav-links {
     margin-left: 0;
     width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: visible;
   }
   .site-nav button {
     padding-inline: 12px;
     flex-shrink: 0;
+    min-height: 44px;
+    min-width: 0;
+    white-space: normal;
   }
+  .main > .topbar { top: 102px; }
   .topbar-in {
     gap: 8px;
   }

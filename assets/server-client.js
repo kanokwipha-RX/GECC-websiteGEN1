@@ -8,6 +8,11 @@ window.GECCClient = (() => {
     busy = false,
     blocked = false;
   const server = !!window.GECC_SERVER;
+  function apiUrl(path) {
+    return window.GECC_API_STYLE === "php"
+      ? window.GECC_BASE_PATH + "api/index.php?route=" + encodeURIComponent(path.replace(/^\/api\//, ""))
+      : window.GECC_BASE_PATH + path.replace(/^\//, "");
+  }
   const clean = (value) => {
     const d = clone(value);
     delete d.pins;
@@ -23,13 +28,15 @@ window.GECCClient = (() => {
       ...(csrf ? { "X-CSRF-Token": csrf } : {}),
       ...options.headers,
     };
-    const response = await fetch(path, {
+    const response = await fetch(apiUrl(path), {
       credentials: "same-origin",
       ...options,
       headers,
     });
     if (!response.ok) {
-      let message = "เชื่อมต่อระบบไม่สำเร็จ กรุณาลองใหม่";
+      let message = response.status === 404
+        ? "ยังไม่พบระบบข้อมูลกลาง กรุณาให้ผู้ดูแลตรวจสอบการเชื่อมต่อเซิร์ฟเวอร์"
+        : "เชื่อมต่อระบบไม่สำเร็จ กรุณาลองใหม่";
       try {
         message = (await response.json()).error || message;
       } catch {}
@@ -138,6 +145,7 @@ window.GECCClient = (() => {
   }
   async function boot() {
     if (!server) {
+      notice("โหมดสาธิตในเครื่อง · ข้อมูลและไฟล์แนบเก็บในเบราว์เซอร์นี้เท่านั้น");
       decorate();
       window.GECCMotion?.enter();
       return;
@@ -257,14 +265,18 @@ window.GECCClient = (() => {
       `<div class="modal-h"><div><h3>เข้าสู่ระบบ</h3><p>${esc(label)}</p></div><button class="btn btn-ghost btn-icon" data-act="modal-close" aria-label="ปิด">${ic("x")}</button></div><form id="server-login" class="modal-b auth-fields" novalidate><div class="field"><label for="login-name">${kind === "unit" ? "รหัสหน่วยบริการ 6 หลัก" : "ชื่อผู้ใช้รายบุคคล"}</label><input class="inp" id="login-name" name="username" autocomplete="username" ${kind === "unit" ? 'inputmode="numeric" maxlength="6"' : ""} value="${esc(unit?.code || "")}" required></div><div class="field"><label for="login-password">รหัสผ่าน</label><input class="inp" type="password" id="login-password" name="password" autocomplete="current-password" required maxlength="128"></div><p id="login-error" class="auth-help" role="status">${kind === "unit" ? "ใช้รหัส GECC ภายในที่ได้รับจากผู้ประสานงาน" : "ใช้บัญชีส่วนบุคคลที่ผู้ประสานงานกำหนดให้"}</p><button class="btn btn-primary" type="submit">เข้าสู่ระบบ</button></form>`,
     );
   }
+  function invalidField(input) {
+    input.closest(".field")?.classList.add("invalid");
+    input.setAttribute("aria-invalid", "true");
+    input.focus();
+  }
   async function login() {
     const name = $("#login-name"),
       pass = $("#login-password");
     if (!name || !pass) return;
     const kind = S.pinPending?.kind;
     if (kind === "unit" && !/^\d{6}$/.test(name.value.trim())) {
-      name.setAttribute("aria-invalid", "true");
-      name.focus();
+      invalidField(name);
       $("#login-error").textContent = "กรอกรหัสหน่วยบริการ 6 หลัก";
       return;
     }
@@ -289,8 +301,7 @@ window.GECCClient = (() => {
       await boot();
     } catch (e) {
       $("#login-error").textContent = e.message;
-      pass.setAttribute("aria-invalid", "true");
-      pass.focus();
+      invalidField(pass);
     } finally {
       button.disabled = false;
       button.removeAttribute("aria-busy");
@@ -345,7 +356,7 @@ window.GECCClient = (() => {
   async function putFile(id, blob, name) {
     const uid = S.unitId || S.menteeUnit;
     if (!uid) throw new Error("กรุณาเลือกหน่วยบริการก่อนแนบไฟล์");
-    const response = await fetch("/api/files/" + encodeURIComponent(id), {
+    const response = await fetch(apiUrl("/api/files/" + encodeURIComponent(id)), {
       method: "PUT",
       credentials: "same-origin",
       headers: {
@@ -363,7 +374,7 @@ window.GECCClient = (() => {
     return response.json();
   }
   async function getFile(id) {
-    const response = await fetch("/api/files/" + encodeURIComponent(id), {
+    const response = await fetch(apiUrl("/api/files/" + encodeURIComponent(id)), {
       credentials: "same-origin",
     });
     if (response.status === 404) return null;
@@ -401,6 +412,8 @@ window.GECCClient = (() => {
             if (invalid) ids.add(error.id);
           }
           if (help) ids.add(help.id);
+          const status = el.closest("form")?.querySelector("[role=status][id]");
+          if (status) ids.add(status.id);
           const desc = [...ids].join(" ");
           if (el.getAttribute("aria-describedby") !== desc) {
             if (desc) el.setAttribute("aria-describedby", desc);
@@ -409,6 +422,17 @@ window.GECCClient = (() => {
           const value = invalid ? "true" : "false";
           if (el.getAttribute("aria-invalid") !== value)
             el.setAttribute("aria-invalid", value);
+          if (el.type === "password" && !el.dataset.secretToggle) {
+            el.dataset.secretToggle = "true";
+            const toggle = document.createElement("button");
+            toggle.type = "button";
+            toggle.className = "btn btn-ghost btn-sm";
+            toggle.dataset.togglePassword = el.id;
+            toggle.setAttribute("aria-controls", el.id);
+            toggle.setAttribute("aria-pressed", "false");
+            toggle.textContent = "แสดงรหัสผ่าน";
+            el.after(toggle);
+          }
         });
       });
       document.querySelectorAll("[role=tab]").forEach((t) => {
@@ -486,8 +510,7 @@ window.GECCClient = (() => {
     const form = e.target;
     if (!form.checkValidity()) {
       const invalid = form.querySelector(":invalid");
-      invalid?.setAttribute("aria-invalid", "true");
-      invalid?.focus();
+      if (invalid) invalidField(invalid);
       const error = form.querySelector("[role=status]");
       if (error)
         error.textContent = "กรุณากรอกข้อมูลให้ครบถ้วนและตรวจรูปแบบข้อมูล";
@@ -505,6 +528,7 @@ window.GECCClient = (() => {
       if (e.target.id === "password-form") {
         if ($("#new-password").value !== $("#repeat-password").value) {
           $("#password-error").textContent = "รหัสผ่านใหม่ทั้งสองช่องไม่ตรงกัน";
+          invalidField($("#repeat-password"));
           return;
         }
         await request("/api/password", {
@@ -537,6 +561,15 @@ window.GECCClient = (() => {
     }
   });
   document.addEventListener("click", async (e) => {
+    const toggle = e.target.closest("[data-toggle-password]");
+    if (toggle) {
+      const input = document.getElementById(toggle.dataset.togglePassword);
+      const visible = input.type === "password";
+      input.type = visible ? "text" : "password";
+      toggle.textContent = visible ? "ซ่อนรหัสผ่าน" : "แสดงรหัสผ่าน";
+      toggle.setAttribute("aria-pressed", String(visible));
+      return;
+    }
     const action = e.target.closest("[data-server-action]")?.dataset
       .serverAction;
     if (!action) return;
@@ -656,7 +689,7 @@ window.GECCClient = (() => {
           if (digest !== f.sha256 || bytes.length !== f.size)
             throw new Error("ไฟล์สำรองเสียหาย: " + f.name);
           const response = await fetch(
-            "/api/files/" + encodeURIComponent(f.id),
+            apiUrl("/api/files/" + encodeURIComponent(f.id)),
             {
               method: "PUT",
               credentials: "same-origin",
@@ -705,7 +738,7 @@ window.GECCClient = (() => {
     if (!b) return;
     if (b.dataset.accountReset) {
       openModal(
-        `<div class="modal-h"><h3>ตั้งรหัสผ่านชั่วคราวใหม่</h3><button class="btn" data-act="modal-close">ยกเลิก</button></div><form class="modal-b auth-fields" id="reset-account-form" data-id="${esc(b.dataset.accountReset)}"><label for="reset-account-pass">รหัสผ่านชั่วคราว 12–128 ตัวอักษร</label><input class="inp" id="reset-account-pass" type="password" autocomplete="new-password" required minlength="12" maxlength="128"><p role="status" id="reset-error"></p><button class="btn btn-primary">ตั้งรหัสผ่านใหม่</button></form>`,
+        `<div class="modal-h"><h3>ตั้งรหัสผ่านชั่วคราวใหม่</h3><button class="btn" data-act="modal-close">ยกเลิก</button></div><form class="modal-b auth-fields" id="reset-account-form" novalidate data-id="${esc(b.dataset.accountReset)}"><div class="field"><label for="reset-account-pass">รหัสผ่านชั่วคราว 12–128 ตัวอักษร</label><input class="inp" id="reset-account-pass" type="password" autocomplete="new-password" required minlength="12" maxlength="128" aria-describedby="reset-error"></div><p role="status" id="reset-error"></p><button type="submit" class="btn btn-primary">ตั้งรหัสผ่านใหม่</button></form>`,
       );
       return;
     }
@@ -732,9 +765,14 @@ window.GECCClient = (() => {
     if (e.target.id !== "reset-account-form") return;
     e.preventDefault();
     const form = e.target;
+    if (!form.checkValidity()) {
+      invalidField($("#reset-account-pass"));
+      $("#reset-error").textContent = "รหัสผ่านต้องมี 12–128 ตัวอักษร";
+      return;
+    }
     if (form.dataset.pending === "true") return;
     form.dataset.pending = "true";
-    const submit = form.querySelector("button");
+    const submit = form.querySelector("button[type=submit]");
     submit.disabled = true;
     submit.setAttribute("aria-busy", "true");
     try {
@@ -864,6 +902,12 @@ window.GECCClient = (() => {
       }
     }
   });
+  document.addEventListener("input", e => {
+    if (e.target.closest(".auth-fields .field")) {
+      e.target.closest(".field").classList.remove("invalid");
+      e.target.removeAttribute("aria-invalid");
+    }
+  });
   const api = {
     get busy() {
       return busy;
@@ -886,6 +930,12 @@ window.GECCClient = (() => {
   };
   const observer = new MutationObserver(() => decorate());
   observer.observe(document.getElementById("app"), {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+  observer.observe(document.getElementById("modal-root"), {
     childList: true,
     subtree: true,
     attributes: true,

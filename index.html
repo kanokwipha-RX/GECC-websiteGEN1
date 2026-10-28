@@ -2,6 +2,8 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
+<script>window.GECC_SERVER=true;</script>
+<script src="assets/runtime.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0F1F4D">
 <title>SISAKET GECC PROJECT</title>
@@ -1709,7 +1711,7 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 .cdt-now b{ display:block; font-size:12px; font-weight:700; color:#0A1640; background:#fff; padding:2px 10px; border-radius:999px; position:relative; }
 .cdt-now b::after{ content:""; position:absolute; left:50%; bottom:-5px; transform:translateX(-50%); border:5px solid transparent; border-top-color:#fff; border-bottom:0; }
 .cdn.closed .cu b{ background:none; color:#AEB8D6; -webkit-text-fill-color:#AEB8D6; }
-.cdn.mini{ padding:18px 22px; border-radius:20px; } .cdn.mini .cu{ min-width:70px; padding:8px; } .cdn.mini .cu b{ font-size:40px; } .cdn.mini .cdn-l h2{ font-size:21px; }
+.cdn.cdn-compact{ padding:18px 22px; border-radius:20px; } .cdn.cdn-compact .cu{ min-width:70px; padding:8px; } .cdn.cdn-compact .cu b{ font-size:40px; } .cdn.cdn-compact .cdn-l h2{ font-size:21px; }
 .mods .cdn{ margin-top:18px; margin-bottom:0; }
 @media (max-width:900px){ .cdt-m b{ display:none; } .cdt-m.close b,.cdt-m.open b{ display:block; } }
 @media (max-width:600px){ .cdn{ padding:20px 16px; } .cdn-n{ width:100%; justify-content:center; } .cu{ min-width:0; flex:1; } .cdn-n > i{ font-size:28px; } .cdt-m em{ display:none; } .cdt{ padding-bottom:30px; } .cdt-m.open b{ display:none; } }
@@ -2824,7 +2826,7 @@ function countdownHTML(mini){
   const ms=[['start',st,'เริ่มเตรียมความพร้อม'],['open',p.open,'เปิดรับสมัคร GECC Online'],['close',p.close,'ปิดรับสมัคร']].sort((a,b)=>a[1]-b[1]);
   const head = p.phase==='before'?'นับถอยหลังวันปิดรับสมัคร':p.phase==='open'?'เปิดรับสมัครแล้ว · เหลือเวลาอีก':'ปิดรับสมัครแล้ว';
   const chips=[ p.phase==='before'?`<span class="cdc">${ic('calendar')}อีก <b>${p.toOpen}</b> วัน เปิดรับสมัคร</span>`:'' ].join('');
-  return `<section class="cdn ${mini?'mini':''} ${p.phase}" aria-label="นับถอยหลังวันปิดรับสมัคร">
+  return `<section class="cdn ${mini?'cdn-compact':''} ${p.phase}" aria-label="นับถอยหลังวันปิดรับสมัคร">
     <div class="cdn-top">
       <div class="cdn-l"><span class="cdn-k">${ic('clock')}รับสมัครมาตรฐาน GECC ประจำปี พ.ศ. ${DB.fy}</span><h2>${head}</h2><p>เปิดรับ ${thDate(c.open,true)} – ปิดรับ ${thDate(c.close,true)}</p><div class="cdcs">${chips}</div></div>
       <div class="cdn-n" role="timer" aria-live="off">${p.phase==='closed'?`<div class="cu"><b>0</b><span>วัน</span></div>`:`<div class="cu"><b data-cd="d">${p.d}</b><span>วัน</span></div><i>:</i><div class="cu"><b data-cd="h">${String(p.h).padStart(2,'0')}</b><span>ชั่วโมง</span></div><i>:</i><div class="cu"><b data-cd="m">${String(p.m).padStart(2,'0')}</b><span>นาที</span></div>`}</div>
@@ -3037,7 +3039,7 @@ function analyticsHTML(infos){
   return `  <div class="card" style="margin-top:16px"><div class="card-h"><div><h3>คะแนนรายประเด็นของแต่ละหน่วยบริการ</h3><p>Checklist 10 ประเด็น (เต็มประเด็นละ 10) และด้านผลลัพธ์ · แยกตามกลุ่ม · ช่วยชี้ว่าแต่ละหน่วยบริการอ่อนประเด็นใด</p></div></div>
     <div class="card-b">${heatHTML(infos)}</div></div>
   <div class="grid g2" style="margin-top:16px">
-    <div class="card"><div class="card-h"><div><h3>เกณฑ์ด้านกายภาพที่ยังไม่ผ่าน</h3><p>จำนวนหน่วยบริการที่ยังไม่ผ่านในแต่ละข้อ · แตะหัวข้อเพื่อดูรายชื่อ</p></div></div><div class="card-b">${physMiss.length?`<ol class="plist">${physMiss.map(o=>`<li class="plk" data-act="phys-miss" data-i="${o.i}" tabindex="0" role="button" aria-label="ดูหน่วยบริการที่ยังไม่ผ่านข้อ ${o.i+1}"><div><div class="pt">ข้อ ${o.i+1} ${esc(o.p.s)} ${o.p.n?NEWB:''}</div><div class="pd">แตะเพื่อดูรายชื่อหน่วยบริการ</div></div><div class="pv"><b>${o.n}</b>แห่ง</div></li>`).join('')}</ol>`:`<div class="empty">${ic('check')}<h3>ทุกหน่วยบริการผ่านกายภาพครบ 15 ข้อ</h3></div>`}</div></div>
+    <div class="card"><div class="card-h"><div><h3>เกณฑ์ด้านกายภาพที่ยังไม่ผ่าน</h3><p>จำนวนหน่วยบริการที่ยังไม่ผ่านในแต่ละข้อ · แตะหัวข้อเพื่อดูรายชื่อ</p></div></div><div class="card-b">${physMiss.length?`<ol class="plist">${physMiss.map(o=>`<li><button type="button" class="plk" data-act="phys-miss" data-i="${o.i}" aria-label="ดูหน่วยบริการที่ยังไม่ผ่านข้อ ${o.i+1}"><div><div class="pt">ข้อ ${o.i+1} ${esc(o.p.s)} ${o.p.n?NEWB:''}</div><div class="pd">แตะเพื่อดูรายชื่อหน่วยบริการ</div></div><div class="pv"><b>${o.n}</b>แห่ง</div></button></li>`).join('')}</ol>`:`<div class="empty">${ic('check')}<h3>ทุกหน่วยบริการผ่านกายภาพครบ 15 ข้อ</h3></div>`}</div></div>
     <div class="card"><div class="card-h"><div><h3 class="row" style="gap:8px">${NEWB} ความพร้อมตามเกณฑ์ใหม่ปี 2570</h3><p>เรียงจากข้อที่หน่วยบริการดำเนินการได้น้อยที่สุด · ประเมินแล้ว ${as.length} แห่ง</p></div></div><div class="card-b dim">${as.length?newItems.slice(0,10).map(o=>dimRow(`${o.ref} ${esc(o.t)}`, `${o.done}<small>/${as.length}</small>`, pct(o.done,as.length))).join(''):`<div class="empty">${ic('chart')}<h3>ยังไม่มีข้อมูล</h3></div>`}</div></div>
   </div>`;
 }
