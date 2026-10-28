@@ -22,6 +22,7 @@ import {
 import { summary, rules } from "./domain.js";
 import { staticFile } from "./static.js";
 import { prepareImport, references } from "./import.js";
+import { basePath as normalizeBasePath } from "./config.js";
 const json = (res, status, value, headers = {}) => {
   res.writeHead(status, {
     "Content-Type": "application/json; charset=utf-8",
@@ -77,18 +78,29 @@ export function createApp({
   origin = "http://127.0.0.1:8080",
   fileRoot = "./var/files",
   secure = false,
+  basePath = "",
 }) {
+  basePath = normalizeBasePath(basePath);
   const attempts = new Map();
   const root = resolve(fileRoot);
-  const cookieName = secure ? "__Host-gecc" : "gecc";
+  const cookieName = basePath
+    ? `${secure ? "__Secure-" : ""}gecc-${hashToken(basePath).slice(0, 12)}`
+    : secure ? "__Host-gecc" : "gecc";
   const cookie = (value, age = 28800) =>
-    `${cookieName}=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${age}${secure ? "; Secure" : ""}`;
+    `${cookieName}=${value}; HttpOnly; SameSite=Strict; Path=${basePath}/; Max-Age=${age}${secure ? "; Secure" : ""}`;
   return createServer(async (req, res) => {
     res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
     res.setHeader("X-Frame-Options", "DENY");
     try {
       const url = new URL(req.url, origin);
-      const path = url.pathname;
+      if (basePath && url.pathname === basePath && ["GET", "HEAD"].includes(req.method)) {
+        res.writeHead(308, { Location: basePath + "/" + url.search });
+        return res.end();
+      }
+      if (basePath && !url.pathname.startsWith(basePath + "/"))
+        return json(res, 404, { error: "Not found" });
+      const path = url.pathname.slice(basePath.length);
+      req.url = path + url.search;
       if (!path.startsWith("/api/")) return await staticFile(req, res, true);
       if (path === "/api/health" && req.method === "GET") {
         try {

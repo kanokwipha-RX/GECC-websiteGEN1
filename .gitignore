@@ -5,3 +5,9 @@ node_modules/
 var/
 artifacts/
 *.log
+php/config.local.php
+php/accounts.json
+php/setup-token.txt
+php/installed.lock
+php/files/
+gecc-private/

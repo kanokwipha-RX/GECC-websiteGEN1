@@ -329,6 +329,8 @@ export function mergeState(current, incoming, actor) {
       fail(403, "ไม่มีสิทธิ์แก้ไขข้อบกพร่อง");
     incomingIds.add(d.id);
     const old = previousById.get(d.id);
+    if (old && !allowed(actor, current.units.find((u) => u.id === old.unitId)))
+      fail(403, "ไม่มีสิทธิ์แก้ไขข้อบกพร่องเดิม");
     if (equal(d, old)) continue;
     if (!["open", "fixing", "recheck", "closed"].includes(d.status))
       fail(400, "สถานะข้อบกพร่องไม่ถูกต้อง");

@@ -31,11 +31,11 @@ export async function staticFile(req, res, serverMode = true) {
     const file = resolve(root, rel);
     if (!file.startsWith(root + sep)) throw Error();
     let bytes = await readFile(file);
-    if (rel === "index.html" && serverMode)
+    if (rel === "index.html" && !serverMode)
       bytes = Buffer.from(
         bytes
           .toString()
-          .replace("<head>", "<head><script>window.GECC_SERVER=true;</script>"),
+          .replace("<head>", "<head><script>window.GECC_PREVIEW=true;</script>"),
       );
     res.writeHead(200, {
       "Content-Type": types[extname(file).toLowerCase()] || "application/octet-stream",

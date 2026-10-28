@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>เตรียมระบบ GECC</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#f6f3ec;color:#13204a;font:16px/1.7 'IBM Plex Sans Thai',system-ui,sans-serif}
+main{max-width:44rem;margin:4rem auto;padding:24px;background:white;border-radius:12px}
+label,input,button{display:block}input{box-sizing:border-box;width:100%;font:inherit;padding:12px;border:1px solid #596171;border-radius:8px}
+button{font:inherit;padding:12px 20px;background:#0f2263;color:white;border:0;border-radius:8px;margin-top:20px;cursor:pointer}
+:focus-visible{outline:3px solid #2854a8;outline-offset:3px}button:disabled{opacity:.7;cursor:wait}
+#status{min-height:3em;overflow-wrap:anywhere}small{display:block;color:#4d5673}
+@media(max-width:600px){main{margin:16px}}
+</style>
+</head>
+<body><main>
+<h1>เตรียมระบบ GECC</h1>
+<p>สำหรับผู้ดูแลเท่านั้น ต้องตั้งค่าไฟล์ส่วนตัวและฐานข้อมูลก่อน การติดตั้งจะสร้างตารางและบัญชีที่ยังขาด โดยไม่แทนที่ข้อมูลเดิม</p>
+<form id="setup" novalidate>
+<label for="token">รหัสติดตั้งครั้งเดียวจากไฟล์ส่วนตัว</label>
+<input id="token" type="password" autocomplete="off" required minlength="64" maxlength="64" aria-describedby="status help">
+<button type="button" id="toggle" aria-controls="token" aria-pressed="false">แสดงรหัสติดตั้ง</button>
+<small id="help">ไม่ใช่รหัสผ่านฐานข้อมูล หลังติดตั้งสำเร็จระบบจะปิดช่องทางนี้</small>
+<button id="submit" type="submit">เตรียมฐานข้อมูลและบัญชี</button>
+<p id="status" role="status" aria-live="polite"></p>
+</form>
+<a href="./">กลับหน้าเว็บไซต์</a>
+</main>
+<script>
+document.getElementById('toggle').addEventListener('click',event=>{
+  const input=document.getElementById('token'),show=input.type==='password';
+  input.type=show?'text':'password';event.currentTarget.textContent=show?'ซ่อนรหัสติดตั้ง':'แสดงรหัสติดตั้ง';
+  event.currentTarget.setAttribute('aria-pressed',String(show));
+});
+document.getElementById('setup').addEventListener('submit',async event=>{
+  event.preventDefault();
+  const token=document.getElementById('token'),button=document.getElementById('submit'),status=document.getElementById('status');
+  if(!/^[a-f0-9]{64}$/.test(token.value.trim())){token.setAttribute('aria-invalid','true');status.textContent='กรอกรหัสติดตั้ง 64 ตัวจากไฟล์ส่วนตัว';token.focus();return;}
+  if(button.disabled)return;
+  button.disabled=true;button.setAttribute('aria-busy','true');token.removeAttribute('aria-invalid');
+  status.textContent='กำลังเตรียมระบบ กรุณารอโดยไม่ปิดหน้านี้';
+  try{
+    const response=await fetch('api/index.php?route=setup',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:token.value.trim()})});
+    const result=await response.json();if(!response.ok)throw new Error(result.error||'ติดตั้งไม่สำเร็จ');
+    token.value='';status.textContent='เตรียมระบบสำเร็จ สร้างบัญชี '+result.created+' บัญชี คงบัญชีเดิม '+result.skipped+' บัญชี รหัสผ่านอยู่ในไฟล์ส่วนตัว accounts.json กรุณาลบ setup.html หลังใช้งาน';
+  }catch(error){status.textContent=error.message||'เชื่อมต่อไม่สำเร็จ กรุณาให้ผู้ดูแลตรวจสอบก่อนลองใหม่';}
+  finally{button.disabled=false;button.removeAttribute('aria-busy');}
+});
+</script></body></html>
