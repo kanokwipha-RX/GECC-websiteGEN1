@@ -267,7 +267,11 @@ test("static server never exposes source, environment, schema or private files",
     assert.equal((await fetch(base + path)).status, 404);
   const page = await fetch(base + "/");
   assert.equal(page.status, 200);
-  assert.ok((await page.text()).includes("window.GECC_SERVER=true"));
+  const html = await page.text();
+  assert.ok(html.includes('src="assets/runtime.js"'));
+  assert.ok(!html.includes("window.GECC_PREVIEW=true"));
+  const runtime = await (await fetch(base + "/assets/runtime.js")).text();
+  assert.ok(runtime.includes("window.GECC_SERVER = window.GECC_PREVIEW !== true"));
 });
 test("password change invalidates all old sessions; changed password required for new login", async () => {
   const r = await call("/api/password", "new", "POST", {

@@ -7,6 +7,16 @@ import { rules } from "../server/domain.js";
 import { testDatabase } from "./postgres.js";
 import { migrate, transaction } from "../server/store.js";
 const actor = { role: "coord", name: "Test coordinator" };
+test("reviewer cannot take a defect from another group by changing its unit identifier", async () => {
+  const s = await initialState();
+  const original = s.units[0];
+  const own = s.units.find(u => u.team !== original.team);
+  s.defects = [{ id: "protected-defect", unitId: original.id, detail: "Existing finding", due: "2026-11-30", status: "open" }];
+  const reviewer = { role: "mentor", team: own.team, name: "Reviewer" };
+  const input = project(s, reviewer);
+  input.defects.push({ ...s.defects[0], unitId: own.id });
+  assert.throws(() => mergeState(s, input, reviewer), error => error.status === 403);
+});
 test("initialization uses official roster with no sample scores or credentials", async () => {
   const s = await initialState();
   assert.equal(s.units.length, 28);

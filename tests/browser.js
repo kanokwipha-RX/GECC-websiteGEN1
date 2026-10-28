@@ -38,23 +38,27 @@ for (const [name, role, scope] of [
   ["test-coord", "coord", null],
   ["000001", "mentee", "u01"],
   ["test-mentor", "mentor", 1],
+  ["000002", "mentee", "u02"],
 ])
   await pool.query(
-    "INSERT INTO accounts(id,username,name,password_hash,role,unit_id,team,must_change) VALUES($1,$1,$1,$2,$3,$4,$5,false)",
+    "INSERT INTO accounts(id,username,name,password_hash,role,unit_id,team,must_change) VALUES($1,$1,$1,$2,$3,$4,$5,$6)",
     [
       name,
       hash,
       role,
       role === "mentee" ? scope : null,
       role === "mentor" ? scope : null,
+      name === "000002",
     ],
   );
 await pool.query("INSERT INTO app_state(id,document) VALUES(1,$1)", [
   JSON.stringify(state),
 ]);
 const privateRoot = await mkdtemp(join(tmpdir(), "gecc-browser-"));
-const origin = "http://127.0.0.1:8092";
-const api = createApp({ pool, origin, fileRoot: privateRoot });
+const apiOrigin = "http://127.0.0.1:8092";
+const basePath = process.env.GECC_TEST_BASE_PATH || "";
+const origin = apiOrigin + basePath;
+const api = createApp({ pool, origin: apiOrigin, basePath, fileRoot: privateRoot });
 await new Promise((r) => api.listen(8092, "127.0.0.1", r));
 const browser = await chromium.launch();
 const errors = [],
@@ -76,6 +80,10 @@ async function check(name, fn) {
   console.log("PASS", name);
 }
 async function audit(page, name) {
+  await page.evaluate(async () => {
+    await Promise.all(document.getAnimations().filter(a => Number.isFinite(a.effect?.getTiming().iterations))
+      .map(a => a.finished.catch(() => {})));
+  });
   await page.evaluate(axe);
   const results = await page.evaluate(async () =>
     axe.run(document, {
@@ -157,6 +165,15 @@ try {
           () => document.documentElement.scrollWidth > innerWidth + 1,
         );
         assert.equal(overflow, false, view + " overflow " + width);
+        if (width <= 600) {
+          assert.equal(await p.evaluate(() => {
+            const nav = document.querySelector(".site-nav-links").getBoundingClientRect();
+            return [...document.querySelectorAll(".site-nav-links button")].every(b => {
+              const r = b.getBoundingClientRect();
+              return r.left >= nav.left - 1 && r.right <= nav.right + 1 && b.scrollWidth <= b.clientWidth + 1;
+            });
+          }), true, "mobile navigation labels must be fully visible");
+        }
         if ([360, 1440].includes(width)) {
           await p.screenshot({
             path: `${artifactRoot}/${view}-${width}-light.png`,
@@ -320,6 +337,61 @@ try {
       DB.units.length === 28 &&
       document.querySelector(".mgrid2"),
   );
+  await check("all coordinator screens fit mobile and desktop in light and dark; countdown remains readable", async () => {
+    for (const scheme of ["light", "dark"]) {
+      await c.emulateMedia({ colorScheme: scheme });
+      for (const width of [390, 1440]) {
+        await c.setViewportSize({ width, height: 1000 });
+        for (const view of ["modules", "mdash", "forms", "defects", "settings"]) {
+          await c.evaluate(v => go(v), view);
+          await c.waitForTimeout(80);
+          assert.equal(await c.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false, `${view} ${scheme} ${width}`);
+          if (view === "modules") {
+            const rect = await c.locator(".cdn-compact").boundingBox();
+            assert.ok(rect.width > 250 && rect.height > 80, "countdown must not inherit miniature score-bar dimensions");
+            await c.screenshot({ path: `${artifactRoot}/production-modules-${scheme}-${width}.png`, fullPage: true });
+          }
+          await audit(c, `server ${view} ${scheme} ${width}`);
+        }
+      }
+    }
+    await c.emulateMedia({ colorScheme: "light" });
+    await c.setViewportSize({ width: 1440, height: 1000 });
+    await c.evaluate(() => go("modules"));
+  });
+  await check("account controls create, disable, re-enable and reset passwords with confirmation", async () => {
+    await c.evaluate(() => go("settings"));
+    await c.locator("[data-server-action=accounts]").click();
+    await c.locator("#account-role").selectOption("mentor");
+    await c.locator("#account-team").selectOption("2");
+    await c.locator("#account-name").fill("ui-reviewer");
+    await c.locator("#account-display").fill("UI reviewer");
+    await c.locator("#account-pass").fill("Temporary-ui-password-2570");
+    await c.locator("#account-form button:not([type])").click();
+    const row = c.locator(".tbl tbody tr").filter({ hasText: "ui-reviewer" });
+    await row.getByRole("button", { name: "ปิดบัญชี", exact: true }).click();
+    await c.locator("[data-act=confirm-ok]").click();
+    await row.getByRole("button", { name: "เปิดบัญชี", exact: true }).waitFor();
+    await row.getByRole("button", { name: "เปิดบัญชี", exact: true }).click();
+    await c.locator("[data-act=confirm-ok]").click();
+    await row.getByRole("button", { name: "ปิดบัญชี", exact: true }).waitFor();
+    await row.getByRole("button", { name: "ตั้งรหัสผ่านชั่วคราวใหม่", exact: true }).click();
+    await c.locator("#reset-account-form button[type=submit]").click();
+    assert.equal(await c.evaluate(() => document.activeElement.id), "reset-account-pass");
+    await c.locator("#reset-account-pass").fill("Reset-ui-password-2570");
+    let release;
+    const held = new Promise(resolve => { release = resolve; });
+    await c.route("**/api/accounts/*", async route => { await held; await route.continue(); });
+    try {
+      await c.locator("#reset-account-form button[type=submit]").click();
+      await c.waitForFunction(() => document.querySelector("#reset-account-form button[type=submit]")?.disabled === true);
+      assert.equal(await c.locator("[data-toggle-password=reset-account-pass]").isEnabled(), true);
+    } finally { release(); }
+    await row.waitFor();
+    await c.unroute("**/api/accounts/*");
+    await audit(c, "account management dialog");
+    await c.locator(".modal [data-act=modal-close]").click();
+  });
   await check(
     "real login opens scoped app and persists assessment through API",
     async () => {
@@ -458,6 +530,60 @@ try {
     assert.equal(pdf.subarray(0, 5).toString(), "%PDF-");
   });
   assert.deepEqual(errors, [], "runtime JavaScript errors");
+  await check("missing runtime fails closed and never reads or creates browser demo records", async () => {
+    const context = await browser.newContext();
+    try {
+      const p = await context.newPage();
+      await p.route("**/assets/runtime.js", r => r.abort());
+      await p.goto(origin + "/#demo-mentor");
+      await p.waitForSelector("#connection-notice.error");
+      assert.deepEqual(await p.evaluate(() => ({ server: window.GECC_SERVER, sample: DB.isSample, units: DB.units.length, stored: localStorage.getItem(KEY) })),
+        { server: true, sample: false, units: 0, stored: null });
+    } finally { await context.close(); }
+  });
+  await check("first login requires a new password; mismatch focuses linked error; real unit and mentor sessions are scoped", async () => {
+    const context = await browser.newContext({ viewport: { width: 390, height: 900 } });
+    try {
+      const p = await context.newPage();
+      p.on("pageerror", e => errors.push(e.message));
+      await p.goto(origin + "/");
+      await p.waitForSelector(".summary-grid");
+      await p.evaluate(() => GECCClient.loginModal("unit", "u02", "หน่วยบริการ"));
+      await p.locator("#login-name").fill("000002");
+      await p.locator("#login-password").fill("Browser-test-password");
+      await p.locator("[data-toggle-password=login-password]").click();
+      assert.equal(await p.locator("#login-password").getAttribute("type"), "text");
+      await p.locator("[data-toggle-password=login-password]").click();
+      await p.locator("#server-login button[type=submit]").click();
+      await p.waitForSelector("#password-form");
+      await p.locator("#old-password").fill("Browser-test-password");
+      await p.locator("#new-password").fill("Changed-unit-password-2570");
+      await p.locator("#repeat-password").fill("Mismatch-password-2570");
+      await p.locator("#password-form button[type=submit]").click();
+      assert.equal(await p.locator("#repeat-password").getAttribute("aria-invalid"), "true");
+      assert.ok((await p.locator("#repeat-password").getAttribute("aria-describedby")).includes("password-error"));
+      assert.equal(await p.evaluate(() => document.activeElement.id), "repeat-password");
+      await p.locator("#repeat-password").fill("Changed-unit-password-2570");
+      await p.locator("#password-form button[type=submit]").click();
+      await p.waitForFunction(() => S.role === null && !document.getElementById("password-form"));
+      await p.evaluate(() => GECCClient.loginModal("unit", "u02", "หน่วยบริการ"));
+      await p.locator("#login-name").fill("000002");
+      await p.locator("#login-password").fill("Changed-unit-password-2570");
+      await p.locator("#server-login button[type=submit]").click();
+      await p.waitForFunction(() => S.role === "mentee" && S.view === "modules");
+      assert.deepEqual(await p.evaluate(() => DB.units.map(u => u.id)), ["u02"]);
+      await audit(p, "first-login unit dashboard mobile");
+      await p.evaluate(() => GECCClient.logout());
+      await p.evaluate(() => GECCClient.loginModal("team", 1, "MENTOR"));
+      await p.locator("#login-name").fill("test-mentor");
+      await p.locator("#login-password").fill("Browser-test-password");
+      await p.locator("#server-login button[type=submit]").click();
+      await p.waitForFunction(() => S.role === "mentor" && S.team === 1);
+      assert.equal(await p.evaluate(() => DB.units.every(u => u.team === 1)), true);
+      await audit(p, "mentor scoped dashboard mobile");
+    } finally { await context.close(); }
+  });
+  assert.deepEqual(errors, [], "runtime JavaScript errors after all scenarios");
   checks.push("no browser JavaScript exceptions");
   await writeFile(
     artifactRoot + "/browser-report.json",
