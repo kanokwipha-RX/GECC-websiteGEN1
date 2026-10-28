@@ -1,1 +1,549 @@
-{"v":2,"isSample":false,"fy":2570,"teams":[{"id":1,"name":"กลุ่มที่ 1: งานปกครองอำเภอ","lead":"นางสาวชลธิชา พูลทวี","focus":"งานฝ่ายปกครองอำเภอเมือง และผู้บริหารที่ดินจังหวัด","members":[{"name":"นางสาวชลธิชา พูลทวี","pos":"ปลัดอำเภอ (ที่ทำการปกครองอำเภอเมืองศรีสะเกษ)"},{"name":"นางสาวณัฐพร ส่งสุข","pos":"ปลัดอำเภอ (ที่ทำการปกครองอำเภอเมืองศรีสะเกษ)"},{"name":"นายศรายุทธ สีละออง","pos":"ปลัดอำเภอ (ที่ทำการปกครองอำเภอเมืองศรีสะเกษ)"},{"name":"นายยุคลธร ฐิติเดชวรกุล","pos":"เจ้าพนักงานที่ดินจังหวัดศรีสะเกษ (สำนักงานที่ดินจังหวัดศรีสะเกษ)"}],"photo":"assets/images/group-1.jpg"},{"id":2,"name":"กลุ่มที่ 2: งานปกครองอำเภอ และอำนวยความเป็นธรรม","lead":"นางสาววรัตน์ สีละออง","focus":"งานฝ่ายปกครอง และวิชาการที่ดินระดับเชี่ยวชาญ","members":[{"name":"นางสาววรัตน์ สีละออง","pos":"ปลัดอำเภอ (ที่ทำการปกครองอำเภอไพรบึง)"},{"name":"นางสาวพรรษา ปัญญาคม","pos":"ที่ทำการปกครองอำเภอไพรบึง"},{"name":"นายรณกร ศรีฤทธิประดิษฐ์","pos":"ปลัดอำเภอ (ที่ทำการปกครองอำเภอขุขันธ์)"},{"name":"นางสาวอุไรรัตน์ ภิญโญ","pos":"นักวิชาการที่ดินชำนาญการพิเศษ (สำนักงานที่ดินจังหวัดศรีสะเกษ)"}],"photo":"assets/images/group-2.jpg"},{"id":3,"name":"กลุ่มที่ 3: งานบริการที่ดิน โครงสร้างพื้นฐาน และผังเมือง","lead":"นายลือชัย สิมมา","focus":"งานด้านเทคนิค วิศวกรรม ระบบสารสนเทศ และ GIS","members":[{"name":"นายลือชัย สิมมา","pos":"วิศวกร ระดับ 9 (การไฟฟ้าส่วนภูมิภาคจังหวัดศรีสะเกษ)"},{"name":"นายธนพล คนไว","pos":"วิศวกร ระดับ 4 (การไฟฟ้าส่วนภูมิภาคจังหวัดศรีสะเกษ)"},{"name":"นายยุทธนา เพิ่มบุญ","pos":"ที่ทำการปกครองอำเภอกันทรารมย์"},{"name":"นายชัยมงคล อินทรีย์","pos":"เจ้าหน้าที่ด้านระบบสารสนเทศภูมิศาสตร์ (สำนักงานที่ดินจังหวัดศรีสะเกษ)"}],"photo":"assets/images/group-3.jpg"},{"id":4,"name":"กลุ่มที่ 4: งานกระบวนการยุติธรรม แรงงาน และสวัสดิการสังคม","lead":"น.ส.นุชรินทร์ วงศ์ฤทธิ์","focus":"งานบัญชี การเงิน สารสนเทศ และสนับสนุนระบบงาน","members":[{"name":"น.ส.นุชรินทร์ วงศ์ฤทธิ์","pos":"นักบัญชี 7 (การประปาส่วนภูมิภาคสาขาศรีสะเกษ)"},{"name":"นางจิราภรณ์ นาดูน","pos":"พนักงานการเงินและบัญชี 6 (การประปาส่วนภูมิภาคสาขาศรีสะเกษ)"},{"name":"ภญ.ฐิติพร อินศร","pos":"เภสัชกรชำนาญการพิเศษ"},{"name":"นางสาวศรีไพร ศรีอ่อน","pos":"พนักงานบันทึกข้อมูล (สำนักงานที่ดินจังหวัดศรีสะเกษ)"}],"photo":"assets/images/group-4.jpg"},{"id":5,"name":"กลุ่มที่ 5: งานสาธารณสุขและป้องกันภัย","lead":"ภญ.ณัฐธิดา ถาวรยุตติการต์","focus":"งานบริการประชาชน สาธารณสุข ขนส่ง และนักวิชาการ","members":[{"name":"ภญ.ณัฐธิดา ถาวรยุตติการต์","pos":"เภสัชกรชำนาญการ"},{"name":"นางสาวภัทรพร ผักกระโทก","pos":"สำนักงานขนส่งจังหวัดศรีสะเกษ"},{"name":"นายภัทรวัฒน์ ศรีกลัด","pos":"นักวิเคราะห์นโยบายและแผนชำนาญการ"},{"name":"นางสาววัชราภรณ์ ตรีเกียรติก้อง","pos":"นักวิชาการที่ดินปฏิบัติการ (สำนักงานที่ดินจังหวัดศรีสะเกษ)"}],"photo":"assets/images/group-5.jpg"},{"id":6,"name":"กลุ่มที่ 6: งานบริหารจัดการ คลัง สถิติ ชุมชน วัฒนธรรม และศาสนา","lead":"นายบุญชวัฒน์ ปัญช์ญญาแดง","focus":"งานศูนย์ดำรงธรรมจังหวัด งานกฎหมาย และเจ้าพนักงานอาวุโส","members":[{"name":"นายบุญชวัฒน์ ปัญช์ญญาแดง","pos":"ผู้อำนวยการกลุ่มงานศูนย์ดำรงธรรมจังหวัด (สำนักงานจังหวัดศรีสะเกษ)"},{"name":"นายอัครภัทร แรตตีกรวย","pos":"นิติกรชำนาญการ รักษาราชการแทนตำแหน่งนิติกรชำนาญการพิเศษ (สำนักงานจังหวัดศรีสะเกษ)"},{"name":"นายคเณศ เสมาเงิน","pos":"นักวิเคราะห์นโยบายและแผนปฏิบัติการ (สำนักงานจังหวัดศรีสะเกษ)"},{"name":"นางสาวสุภัสสร เจริญทัศน์","pos":"เจ้าพนักงานที่ดินอาวุโส (สำนักงานที่ดินจังหวัดศรีสะเกษ)"}],"photo":"assets/images/group-6.jpg"}],"units":[{"id":"u01","name":"ที่ทำการปกครองอำเภอกันทรลักษ์","district":"กันทรลักษ์","team":1,"kind":"","prev":"","code":"000001"},{"id":"u02","name":"ที่ทำการปกครองอำเภอขุนหาญ","district":"ขุนหาญ","team":1,"kind":"","prev":"","code":"000002"},{"id":"u03","name":"ที่ทำการปกครองอำเภอพยุห์","district":"พยุห์","team":1,"kind":"","prev":"","code":"000003"},{"id":"u04","name":"ที่ทำการปกครองอำเภอโนนคูณ","district":"โนนคูณ","team":1,"kind":"","prev":"","code":"000004"},{"id":"u05","name":"ที่ทำการปกครองอำเภอห้วยทับทัน","district":"ห้วยทับทัน","team":1,"kind":"","prev":"","code":"000005"},{"id":"u06","name":"ที่ทำการปกครองอำเภออุทุมพรพิสัย","district":"อุทุมพรพิสัย","team":2,"kind":"","prev":"","code":"000006"},{"id":"u07","name":"ที่ทำการปกครองอำเภอราษีไศล","district":"ราษีไศล","team":2,"kind":"","prev":"","code":"000007"},{"id":"u08","name":"ที่ทำการปกครองอำเภอเมืองจันทร์","district":"เมืองจันทร์","team":2,"kind":"","prev":"","code":"000008"},{"id":"u09","name":"ที่ทำการปกครองอำเภอบึงบูรพ์","district":"บึงบูรพ์","team":2,"kind":"","prev":"","code":"000009"},{"id":"u10","name":"ศูนย์ดำรงธรรมจังหวัดศรีสะเกษ","district":"ระดับจังหวัด","team":2,"kind":"","prev":"","code":"000010"},{"id":"u11","name":"สำนักงานที่ดินจังหวัดศรีสะเกษ สาขากันทรารมย์","district":"กันทรารมย์","team":3,"kind":"","prev":"","code":"000011"},{"id":"u12","name":"สำนักงานที่ดินจังหวัดศรีสะเกษ สาขากันทรลักษ์","district":"กันทรลักษ์","team":3,"kind":"","prev":"","code":"000012"},{"id":"u13","name":"สำนักงานที่ดินจังหวัดศรีสะเกษ สาขาอุทุมพรพิสัย","district":"อุทุมพรพิสัย","team":3,"kind":"","prev":"","code":"000013"},{"id":"u14","name":"สำนักงานโยธาธิการและผังเมืองจังหวัดศรีสะเกษ","district":"ระดับจังหวัด","team":3,"kind":"","prev":"","code":"000014"},{"id":"u15","name":"เรือนจำจังหวัดศรีสะเกษ","district":"ระดับจังหวัด","team":4,"kind":"","prev":"","code":"000015"},{"id":"u16","name":"สำนักงานคุมประพฤติจังหวัดศรีสะเกษ","district":"ระดับจังหวัด","team":4,"kind":"","prev":"","code":"000016"},{"id":"u17","name":"สำนักงานจัดหางานจังหวัดศรีสะเกษ","district":"ระดับจังหวัด","team":4,"kind":"","prev":"","code":"000017"},{"id":"u18","name":"สำนักงานสวัสดิการและคุ้มครองแรงงานจังหวัดศรีสะเกษ","district":"ระดับจังหวัด","team":4,"kind":"","prev":"","code":"000018"},{"id":"u19","name":"สำนักงานพัฒนาสังคมและความมั่นคงของมนุษย์จังหวัดศรีสะเกษ","district":"ระดับจังหวัด","team":4,"kind":"","prev":"","code":"000019"},{"id":"u20","name":"โรงพยาบาลราษีไศล","district":"ราษีไศล","team":5,"kind":"","prev":"","code":"000020"},{"id":"u21","name":"โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านทับทิมสยาม07","district":"","team":5,"kind":"","prev":"","code":"000021"},{"id":"u22","name":"โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านม่วงแยก","district":"","team":5,"kind":"","prev":"","code":"000022"},{"id":"u23","name":"สำนักงานป้องกันและบรรเทาสาธารณภัยจังหวัดศรีสะเกษ","district":"ระดับจังหวัด","team":5,"kind":"","prev":"","code":"000023"},{"id":"u24","name":"สำนักงานคลังจังหวัดศรีสะเกษ","district":"ระดับจังหวัด","team":6,"kind":"","prev":"","code":"000024"},{"id":"u25","name":"สำนักงานสถิติจังหวัดศรีสะเกษ","district":"ระดับจังหวัด","team":6,"kind":"","prev":"","code":"000025"},{"id":"u26","name":"สำนักงานพัฒนาชุมชนจังหวัดศรีสะเกษ","district":"ระดับจังหวัด","team":6,"kind":"","prev":"","code":"000026"},{"id":"u27","name":"สำนักงานวัฒนธรรมจังหวัดศรีสะเกษ","district":"ระดับจังหวัด","team":6,"kind":"","prev":"","code":"000027"},{"id":"u28","name":"สำนักงานพระพุทธศาสนาจังหวัดศรีสะเกษ","district":"ระดับจังหวัด","team":6,"kind":"","prev":"","code":"000028"}],"assess":{},"defects":[],"createdAt":"2026-10-23T06:06:35.471Z","mentorCoordinators":[{"name":"ภญ.มัลลิกา สุพล","role":"ที่ปรึกษา MENTOR และเลขานุการทีม Mentor","pos":"เภสัชกรชำนาญการพิเศษ"},{"name":"ภญ.กนกวิภา ประกอบศรี","role":"Mentor และผู้ช่วยเลขานุการทีม MENTOR","pos":"เภสัชกรชำนาญการพิเศษ"}],"mentorRosterVersion":1,"nextUnitCode":29,"retiredUnitIds":[],"cal":{"start":"2026-10-01","prov":"2026-12-04","open":"2026-11-16","close":"2026-12-25"},"publicContent":{"library":[{"name":"เอกสารการประชุม","url":"https://drive.google.com/drive/folders/1q_q4ZnNuCvYHB3-Gj73wJuMVBAQWZf27","image":"assets/library/meetings.png","detail":"วาระและเอกสารประกอบการประชุม","theme":"151 48% 23%"},{"name":"เตรียมความพร้อม","url":"https://drive.google.com/drive/folders/1YSUOlPcWk1IoOSoxBOK7Sn0sfq39z0E_","image":"assets/library/readiness.png","detail":"แนวทางเตรียมความพร้อมก่อนสมัคร GECC","theme":"221 55% 28%","landscape":true},{"name":"ตัวอย่าง","url":"https://drive.google.com/drive/folders/1BlKsquKllYKNXaRdhFsb6ct8IWa3wlT6","image":"assets/library/examples.png","detail":"แบบสำรวจและตัวอย่างจากหน่วยบริการ","theme":"260 40% 30%"},{"name":"คณะทำงานฯ","url":"https://drive.google.com/drive/folders/1MBbBXwsPP3jGJYg24YcOCUlFXMddVBcN","image":"assets/library/committee.png","detail":"คำสั่งแต่งตั้งและข้อมูลคณะทำงาน","theme":"221 55% 28%"},{"name":"เกณฑ์ประเมิน 2570","url":"https://drive.google.com/drive/folders/1UA0GSSFT_lszbsGRIPEjrZXU9SoxXrkc","image":"assets/library/criteria.png","detail":"หลักเกณฑ์และคู่มือการประเมิน GECC 2570","theme":"151 48% 23%"}],"advisor":{"name":"นายอนุรัตน์ ธรรมประจำจิต","title":"ผู้ว่าราชการจังหวัดศรีสะเกษ","role":"ที่ปรึกษาคณะทำงาน","photo":"assets/images/committee-advisor.jpg"},"committee":[{"name":"นายธาตรี สิริรุ่งวนิช","title":"รองผู้ว่าราชการจังหวัดศรีสะเกษ (กลุ่มภารกิจด้านเศรษฐกิจ)","role":"หัวหน้าคณะทำงาน","photo":"assets/images/committee-chair.jpg"},{"name":"ดร.ชูวิทย์ นาเพีย","title":"รองอธิการบดีมหาวิทยาลัยราชภัฏศรีสะเกษ","role":"คณะทำงาน"},{"title":"ปลัดจังหวัดศรีสะเกษ","role":"คณะทำงาน"},{"title":"หัวหน้าสำนักงานจังหวัดศรีสะเกษ","role":"คณะทำงาน"},{"title":"นายแพทย์สาธารณสุขจังหวัดศรีสะเกษ","role":"คณะทำงาน"},{"title":"เจ้าพนักงานที่ดินจังหวัดศรีสะเกษ","role":"คณะทำงาน"},{"title":"คลังจังหวัดศรีสะเกษ","role":"คณะทำงาน"},{"title":"สถิติจังหวัดศรีสะเกษ","role":"คณะทำงาน"},{"title":"ผู้อำนวยการโรงพยาบาลราษีไศล","role":"คณะทำงาน"},{"name":"นายสมัย คำเหลือ","title":"สาธารณสุขอำเภอขุนหาญ","role":"คณะทำงาน"},{"name":"นางสาวมัลลิกา สุพล","title":"เภสัชกรชำนาญการพิเศษ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ","role":"คณะทำงานและเลขานุการ"},{"name":"นางสาวกนกวิภา ประกอบศรี","title":"เภสัชกรชำนาญการพิเศษ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ","role":"คณะทำงานและผู้ช่วยเลขานุการ"}],"duties":["บูรณาการหน่วยงาน สนับสนุน และขับเคลื่อนให้ส่วนราชการ อำเภอ และหน่วยงานภาครัฐในจังหวัดศรีสะเกษ สมัครขอรับรองมาตรฐานศูนย์ราชการสะดวก GECC","ประเมินผลและติดตามผลการดำเนินการ เพื่อรักษามาตรฐานการบริการของศูนย์ราชการสะดวก GECC","กำหนดเป้าหมายการพัฒนาศูนย์ราชการสะดวก GECC โดยมุ่งเน้นให้หน่วยงานอำนวยความสะดวกแก่ประชาชน ปรับปรุงระบบงานให้โปร่งใส และตอบสนองความต้องการของประชาชนอย่างมีประสิทธิภาพ","ปฏิบัติหน้าที่อื่นๆ ตามที่ผู้ว่าราชการจังหวัดศรีสะเกษ มอบหมาย"]}}
+{
+    "v":  2,
+    "isSample":  false,
+    "fy":  2570,
+    "teams":  [
+                  {
+                      "id":  1,
+                      "name":  "\u0e01\u0e25\u0e38\u0e48\u0e21\u0e17\u0e35\u0e48 1: \u0e07\u0e32\u0e19\u0e1b\u0e01\u0e04\u0e23\u0e2d\u0e07\u0e2d\u0e33\u0e40\u0e20\u0e2d",
+                      "focus":  "\u0e07\u0e32\u0e19\u0e1d\u0e48\u0e32\u0e22\u0e1b\u0e01\u0e04\u0e23\u0e2d\u0e07\u0e2d\u0e33\u0e40\u0e20\u0e2d\u0e40\u0e21\u0e37\u0e2d\u0e07 \u0e41\u0e25\u0e30\u0e1c\u0e39\u0e49\u0e1a\u0e23\u0e34\u0e2b\u0e32\u0e23\u0e17\u0e35\u0e48\u0e14\u0e34\u0e19\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14",
+                      "members":  [
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e07\u0e2a\u0e32\u0e27\u0e0a\u0e25\u0e18\u0e34\u0e0a\u0e32 \u0e1e\u0e39\u0e25\u0e17\u0e27\u0e35",
+                                          "pos":  "\u0e1b\u0e25\u0e31\u0e14\u0e2d\u0e33\u0e40\u0e20\u0e2d (\u0e17\u0e35\u0e48\u0e17\u0e33\u0e01\u0e32\u0e23\u0e1b\u0e01\u0e04\u0e23\u0e2d\u0e07\u0e2d\u0e33\u0e40\u0e20\u0e2d\u0e40\u0e21\u0e37\u0e2d\u0e07\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29)"
+                                      },
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e07\u0e2a\u0e32\u0e27\u0e13\u0e31\u0e10\u0e1e\u0e23 \u0e2a\u0e48\u0e07\u0e2a\u0e38\u0e02",
+                                          "pos":  "\u0e1b\u0e25\u0e31\u0e14\u0e2d\u0e33\u0e40\u0e20\u0e2d (\u0e17\u0e35\u0e48\u0e17\u0e33\u0e01\u0e32\u0e23\u0e1b\u0e01\u0e04\u0e23\u0e2d\u0e07\u0e2d\u0e33\u0e40\u0e20\u0e2d\u0e40\u0e21\u0e37\u0e2d\u0e07\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29)"
+                                      },
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e22\u0e28\u0e23\u0e32\u0e22\u0e38\u0e17\u0e18 \u0e2a\u0e35\u0e25\u0e30\u0e2d\u0e2d\u0e07",
+                                          "pos":  "\u0e1b\u0e25\u0e31\u0e14\u0e2d\u0e33\u0e40\u0e20\u0e2d (\u0e17\u0e35\u0e48\u0e17\u0e33\u0e01\u0e32\u0e23\u0e1b\u0e01\u0e04\u0e23\u0e2d\u0e07\u0e2d\u0e33\u0e40\u0e20\u0e2d\u0e40\u0e21\u0e37\u0e2d\u0e07\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29)"
+                                      },
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e22\u0e22\u0e38\u0e04\u0e25\u0e18\u0e23 \u0e10\u0e34\u0e15\u0e34\u0e40\u0e14\u0e0a\u0e27\u0e23\u0e01\u0e38\u0e25",
+                                          "pos":  "\u0e40\u0e08\u0e49\u0e32\u0e1e\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e17\u0e35\u0e48\u0e14\u0e34\u0e19\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29 (\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e17\u0e35\u0e48\u0e14\u0e34\u0e19\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29)"
+                                      }
+                                  ],
+                      "photo":  "assets/images/group-1.jpg",
+                      "lead":  "\u0e19\u0e32\u0e07\u0e2a\u0e32\u0e27\u0e0a\u0e25\u0e18\u0e34\u0e0a\u0e32 \u0e1e\u0e39\u0e25\u0e17\u0e27\u0e35"
+                  },
+                  {
+                      "id":  2,
+                      "name":  "\u0e01\u0e25\u0e38\u0e48\u0e21\u0e17\u0e35\u0e48 2: \u0e07\u0e32\u0e19\u0e1b\u0e01\u0e04\u0e23\u0e2d\u0e07\u0e2d\u0e33\u0e40\u0e20\u0e2d \u0e41\u0e25\u0e30\u0e2d\u0e33\u0e19\u0e27\u0e22\u0e04\u0e27\u0e32\u0e21\u0e40\u0e1b\u0e47\u0e19\u0e18\u0e23\u0e23\u0e21",
+                      "focus":  "\u0e07\u0e32\u0e19\u0e1d\u0e48\u0e32\u0e22\u0e1b\u0e01\u0e04\u0e23\u0e2d\u0e07 \u0e41\u0e25\u0e30\u0e27\u0e34\u0e0a\u0e32\u0e01\u0e32\u0e23\u0e17\u0e35\u0e48\u0e14\u0e34\u0e19\u0e23\u0e30\u0e14\u0e31\u0e1a\u0e40\u0e0a\u0e35\u0e48\u0e22\u0e27\u0e0a\u0e32\u0e0d",
+                      "members":  [
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e07\u0e2a\u0e32\u0e27\u0e27\u0e23\u0e31\u0e15\u0e19\u0e4c \u0e2a\u0e35\u0e25\u0e30\u0e2d\u0e2d\u0e07",
+                                          "pos":  "\u0e1b\u0e25\u0e31\u0e14\u0e2d\u0e33\u0e40\u0e20\u0e2d (\u0e17\u0e35\u0e48\u0e17\u0e33\u0e01\u0e32\u0e23\u0e1b\u0e01\u0e04\u0e23\u0e2d\u0e07\u0e2d\u0e33\u0e40\u0e20\u0e2d\u0e44\u0e1e\u0e23\u0e1a\u0e36\u0e07)"
+                                      },
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e07\u0e2a\u0e32\u0e27\u0e1e\u0e23\u0e23\u0e29\u0e32 \u0e1b\u0e31\u0e0d\u0e0d\u0e32\u0e04\u0e21",
+                                          "pos":  "\u0e17\u0e35\u0e48\u0e17\u0e33\u0e01\u0e32\u0e23\u0e1b\u0e01\u0e04\u0e23\u0e2d\u0e07\u0e2d\u0e33\u0e40\u0e20\u0e2d\u0e44\u0e1e\u0e23\u0e1a\u0e36\u0e07"
+                                      },
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e22\u0e23\u0e13\u0e01\u0e23 \u0e28\u0e23\u0e35\u0e24\u0e17\u0e18\u0e34\u0e1b\u0e23\u0e30\u0e14\u0e34\u0e29\u0e10\u0e4c",
+                                          "pos":  "\u0e1b\u0e25\u0e31\u0e14\u0e2d\u0e33\u0e40\u0e20\u0e2d (\u0e17\u0e35\u0e48\u0e17\u0e33\u0e01\u0e32\u0e23\u0e1b\u0e01\u0e04\u0e23\u0e2d\u0e07\u0e2d\u0e33\u0e40\u0e20\u0e2d\u0e02\u0e38\u0e02\u0e31\u0e19\u0e18\u0e4c)"
+                                      },
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e07\u0e2a\u0e32\u0e27\u0e2d\u0e38\u0e44\u0e23\u0e23\u0e31\u0e15\u0e19\u0e4c \u0e20\u0e34\u0e0d\u0e42\u0e0d",
+                                          "pos":  "\u0e19\u0e31\u0e01\u0e27\u0e34\u0e0a\u0e32\u0e01\u0e32\u0e23\u0e17\u0e35\u0e48\u0e14\u0e34\u0e19\u0e0a\u0e33\u0e19\u0e32\u0e0d\u0e01\u0e32\u0e23\u0e1e\u0e34\u0e40\u0e28\u0e29 (\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e17\u0e35\u0e48\u0e14\u0e34\u0e19\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29)"
+                                      }
+                                  ],
+                      "photo":  "assets/images/group-2.jpg",
+                      "lead":  "\u0e19\u0e32\u0e07\u0e2a\u0e32\u0e27\u0e27\u0e23\u0e31\u0e15\u0e19\u0e4c \u0e2a\u0e35\u0e25\u0e30\u0e2d\u0e2d\u0e07"
+                  },
+                  {
+                      "id":  3,
+                      "name":  "\u0e01\u0e25\u0e38\u0e48\u0e21\u0e17\u0e35\u0e48 3: \u0e07\u0e32\u0e19\u0e1a\u0e23\u0e34\u0e01\u0e32\u0e23\u0e17\u0e35\u0e48\u0e14\u0e34\u0e19 \u0e42\u0e04\u0e23\u0e07\u0e2a\u0e23\u0e49\u0e32\u0e07\u0e1e\u0e37\u0e49\u0e19\u0e10\u0e32\u0e19 \u0e41\u0e25\u0e30\u0e1c\u0e31\u0e07\u0e40\u0e21\u0e37\u0e2d\u0e07",
+                      "focus":  "\u0e07\u0e32\u0e19\u0e14\u0e49\u0e32\u0e19\u0e40\u0e17\u0e04\u0e19\u0e34\u0e04 \u0e27\u0e34\u0e28\u0e27\u0e01\u0e23\u0e23\u0e21 \u0e23\u0e30\u0e1a\u0e1a\u0e2a\u0e32\u0e23\u0e2a\u0e19\u0e40\u0e17\u0e28 \u0e41\u0e25\u0e30 GIS",
+                      "members":  [
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e22\u0e25\u0e37\u0e2d\u0e0a\u0e31\u0e22 \u0e2a\u0e34\u0e21\u0e21\u0e32",
+                                          "pos":  "\u0e27\u0e34\u0e28\u0e27\u0e01\u0e23 \u0e23\u0e30\u0e14\u0e31\u0e1a 9 (\u0e01\u0e32\u0e23\u0e44\u0e1f\u0e1f\u0e49\u0e32\u0e2a\u0e48\u0e27\u0e19\u0e20\u0e39\u0e21\u0e34\u0e20\u0e32\u0e04\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29)"
+                                      },
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e22\u0e18\u0e19\u0e1e\u0e25 \u0e04\u0e19\u0e44\u0e27",
+                                          "pos":  "\u0e27\u0e34\u0e28\u0e27\u0e01\u0e23 \u0e23\u0e30\u0e14\u0e31\u0e1a 4 (\u0e01\u0e32\u0e23\u0e44\u0e1f\u0e1f\u0e49\u0e32\u0e2a\u0e48\u0e27\u0e19\u0e20\u0e39\u0e21\u0e34\u0e20\u0e32\u0e04\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29)"
+                                      },
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e22\u0e22\u0e38\u0e17\u0e18\u0e19\u0e32 \u0e40\u0e1e\u0e34\u0e48\u0e21\u0e1a\u0e38\u0e0d",
+                                          "pos":  "\u0e17\u0e35\u0e48\u0e17\u0e33\u0e01\u0e32\u0e23\u0e1b\u0e01\u0e04\u0e23\u0e2d\u0e07\u0e2d\u0e33\u0e40\u0e20\u0e2d\u0e01\u0e31\u0e19\u0e17\u0e23\u0e32\u0e23\u0e21\u0e22\u0e4c"
+                                      },
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e22\u0e0a\u0e31\u0e22\u0e21\u0e07\u0e04\u0e25 \u0e2d\u0e34\u0e19\u0e17\u0e23\u0e35\u0e22\u0e4c",
+                                          "pos":  "\u0e40\u0e08\u0e49\u0e32\u0e2b\u0e19\u0e49\u0e32\u0e17\u0e35\u0e48\u0e14\u0e49\u0e32\u0e19\u0e23\u0e30\u0e1a\u0e1a\u0e2a\u0e32\u0e23\u0e2a\u0e19\u0e40\u0e17\u0e28\u0e20\u0e39\u0e21\u0e34\u0e28\u0e32\u0e2a\u0e15\u0e23\u0e4c (\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e17\u0e35\u0e48\u0e14\u0e34\u0e19\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29)"
+                                      }
+                                  ],
+                      "photo":  "assets/images/group-3.jpg",
+                      "lead":  "\u0e19\u0e32\u0e22\u0e25\u0e37\u0e2d\u0e0a\u0e31\u0e22 \u0e2a\u0e34\u0e21\u0e21\u0e32"
+                  },
+                  {
+                      "id":  4,
+                      "name":  "\u0e01\u0e25\u0e38\u0e48\u0e21\u0e17\u0e35\u0e48 4: \u0e07\u0e32\u0e19\u0e01\u0e23\u0e30\u0e1a\u0e27\u0e19\u0e01\u0e32\u0e23\u0e22\u0e38\u0e15\u0e34\u0e18\u0e23\u0e23\u0e21 \u0e41\u0e23\u0e07\u0e07\u0e32\u0e19 \u0e41\u0e25\u0e30\u0e2a\u0e27\u0e31\u0e2a\u0e14\u0e34\u0e01\u0e32\u0e23\u0e2a\u0e31\u0e07\u0e04\u0e21",
+                      "focus":  "\u0e07\u0e32\u0e19\u0e1a\u0e31\u0e0d\u0e0a\u0e35 \u0e01\u0e32\u0e23\u0e40\u0e07\u0e34\u0e19 \u0e2a\u0e32\u0e23\u0e2a\u0e19\u0e40\u0e17\u0e28 \u0e41\u0e25\u0e30\u0e2a\u0e19\u0e31\u0e1a\u0e2a\u0e19\u0e38\u0e19\u0e23\u0e30\u0e1a\u0e1a\u0e07\u0e32\u0e19",
+                      "members":  [
+                                      {
+                                          "name":  "\u0e19.\u0e2a.\u0e19\u0e38\u0e0a\u0e23\u0e34\u0e19\u0e17\u0e23\u0e4c \u0e27\u0e07\u0e28\u0e4c\u0e24\u0e17\u0e18\u0e34\u0e4c",
+                                          "pos":  "\u0e19\u0e31\u0e01\u0e1a\u0e31\u0e0d\u0e0a\u0e35 7 (\u0e01\u0e32\u0e23\u0e1b\u0e23\u0e30\u0e1b\u0e32\u0e2a\u0e48\u0e27\u0e19\u0e20\u0e39\u0e21\u0e34\u0e20\u0e32\u0e04\u0e2a\u0e32\u0e02\u0e32\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29)"
+                                      },
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e07\u0e08\u0e34\u0e23\u0e32\u0e20\u0e23\u0e13\u0e4c \u0e19\u0e32\u0e14\u0e39\u0e19",
+                                          "pos":  "\u0e1e\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e01\u0e32\u0e23\u0e40\u0e07\u0e34\u0e19\u0e41\u0e25\u0e30\u0e1a\u0e31\u0e0d\u0e0a\u0e35 6 (\u0e01\u0e32\u0e23\u0e1b\u0e23\u0e30\u0e1b\u0e32\u0e2a\u0e48\u0e27\u0e19\u0e20\u0e39\u0e21\u0e34\u0e20\u0e32\u0e04\u0e2a\u0e32\u0e02\u0e32\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29)"
+                                      },
+                                      {
+                                          "name":  "\u0e20\u0e0d.\u0e10\u0e34\u0e15\u0e34\u0e1e\u0e23 \u0e2d\u0e34\u0e19\u0e28\u0e23",
+                                          "pos":  "\u0e40\u0e20\u0e2a\u0e31\u0e0a\u0e01\u0e23\u0e0a\u0e33\u0e19\u0e32\u0e0d\u0e01\u0e32\u0e23\u0e1e\u0e34\u0e40\u0e28\u0e29"
+                                      },
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e07\u0e2a\u0e32\u0e27\u0e28\u0e23\u0e35\u0e44\u0e1e\u0e23 \u0e28\u0e23\u0e35\u0e2d\u0e48\u0e2d\u0e19",
+                                          "pos":  "\u0e1e\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 (\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e17\u0e35\u0e48\u0e14\u0e34\u0e19\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29)"
+                                      }
+                                  ],
+                      "photo":  "assets/images/group-4.jpg",
+                      "lead":  "\u0e19.\u0e2a.\u0e19\u0e38\u0e0a\u0e23\u0e34\u0e19\u0e17\u0e23\u0e4c \u0e27\u0e07\u0e28\u0e4c\u0e24\u0e17\u0e18\u0e34\u0e4c"
+                  },
+                  {
+                      "id":  5,
+                      "name":  "\u0e01\u0e25\u0e38\u0e48\u0e21\u0e17\u0e35\u0e48 5: \u0e07\u0e32\u0e19\u0e2a\u0e32\u0e18\u0e32\u0e23\u0e13\u0e2a\u0e38\u0e02\u0e41\u0e25\u0e30\u0e1b\u0e49\u0e2d\u0e07\u0e01\u0e31\u0e19\u0e20\u0e31\u0e22",
+                      "focus":  "\u0e07\u0e32\u0e19\u0e1a\u0e23\u0e34\u0e01\u0e32\u0e23\u0e1b\u0e23\u0e30\u0e0a\u0e32\u0e0a\u0e19 \u0e2a\u0e32\u0e18\u0e32\u0e23\u0e13\u0e2a\u0e38\u0e02 \u0e02\u0e19\u0e2a\u0e48\u0e07 \u0e41\u0e25\u0e30\u0e19\u0e31\u0e01\u0e27\u0e34\u0e0a\u0e32\u0e01\u0e32\u0e23",
+                      "members":  [
+                                      {
+                                          "name":  "\u0e20\u0e0d.\u0e13\u0e31\u0e10\u0e18\u0e34\u0e14\u0e32 \u0e16\u0e32\u0e27\u0e23\u0e22\u0e38\u0e15\u0e15\u0e34\u0e01\u0e32\u0e23\u0e15\u0e4c",
+                                          "pos":  "\u0e40\u0e20\u0e2a\u0e31\u0e0a\u0e01\u0e23\u0e0a\u0e33\u0e19\u0e32\u0e0d\u0e01\u0e32\u0e23"
+                                      },
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e07\u0e2a\u0e32\u0e27\u0e20\u0e31\u0e17\u0e23\u0e1e\u0e23 \u0e1c\u0e31\u0e01\u0e01\u0e23\u0e30\u0e42\u0e17\u0e01",
+                                          "pos":  "\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e02\u0e19\u0e2a\u0e48\u0e07\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29"
+                                      },
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e22\u0e20\u0e31\u0e17\u0e23\u0e27\u0e31\u0e12\u0e19\u0e4c \u0e28\u0e23\u0e35\u0e01\u0e25\u0e31\u0e14",
+                                          "pos":  "\u0e19\u0e31\u0e01\u0e27\u0e34\u0e40\u0e04\u0e23\u0e32\u0e30\u0e2b\u0e4c\u0e19\u0e42\u0e22\u0e1a\u0e32\u0e22\u0e41\u0e25\u0e30\u0e41\u0e1c\u0e19\u0e0a\u0e33\u0e19\u0e32\u0e0d\u0e01\u0e32\u0e23"
+                                      },
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e07\u0e2a\u0e32\u0e27\u0e27\u0e31\u0e0a\u0e23\u0e32\u0e20\u0e23\u0e13\u0e4c \u0e15\u0e23\u0e35\u0e40\u0e01\u0e35\u0e22\u0e23\u0e15\u0e34\u0e01\u0e49\u0e2d\u0e07",
+                                          "pos":  "\u0e19\u0e31\u0e01\u0e27\u0e34\u0e0a\u0e32\u0e01\u0e32\u0e23\u0e17\u0e35\u0e48\u0e14\u0e34\u0e19\u0e1b\u0e0f\u0e34\u0e1a\u0e31\u0e15\u0e34\u0e01\u0e32\u0e23 (\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e17\u0e35\u0e48\u0e14\u0e34\u0e19\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29)"
+                                      }
+                                  ],
+                      "photo":  "assets/images/group-5.jpg",
+                      "lead":  "\u0e20\u0e0d.\u0e13\u0e31\u0e10\u0e18\u0e34\u0e14\u0e32 \u0e16\u0e32\u0e27\u0e23\u0e22\u0e38\u0e15\u0e15\u0e34\u0e01\u0e32\u0e23\u0e15\u0e4c"
+                  },
+                  {
+                      "id":  6,
+                      "name":  "\u0e01\u0e25\u0e38\u0e48\u0e21\u0e17\u0e35\u0e48 6: \u0e07\u0e32\u0e19\u0e1a\u0e23\u0e34\u0e2b\u0e32\u0e23\u0e08\u0e31\u0e14\u0e01\u0e32\u0e23 \u0e04\u0e25\u0e31\u0e07 \u0e2a\u0e16\u0e34\u0e15\u0e34 \u0e0a\u0e38\u0e21\u0e0a\u0e19 \u0e27\u0e31\u0e12\u0e19\u0e18\u0e23\u0e23\u0e21 \u0e41\u0e25\u0e30\u0e28\u0e32\u0e2a\u0e19\u0e32",
+                      "focus":  "\u0e07\u0e32\u0e19\u0e28\u0e39\u0e19\u0e22\u0e4c\u0e14\u0e33\u0e23\u0e07\u0e18\u0e23\u0e23\u0e21\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14 \u0e07\u0e32\u0e19\u0e01\u0e0e\u0e2b\u0e21\u0e32\u0e22 \u0e41\u0e25\u0e30\u0e40\u0e08\u0e49\u0e32\u0e1e\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e2d\u0e32\u0e27\u0e38\u0e42\u0e2a",
+                      "members":  [
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e22\u0e1a\u0e38\u0e0d\u0e0a\u0e27\u0e31\u0e12\u0e19\u0e4c \u0e1b\u0e31\u0e0d\u0e0a\u0e4c\u0e0d\u0e0d\u0e32\u0e41\u0e14\u0e07",
+                                          "pos":  "\u0e1c\u0e39\u0e49\u0e2d\u0e33\u0e19\u0e27\u0e22\u0e01\u0e32\u0e23\u0e01\u0e25\u0e38\u0e48\u0e21\u0e07\u0e32\u0e19\u0e28\u0e39\u0e19\u0e22\u0e4c\u0e14\u0e33\u0e23\u0e07\u0e18\u0e23\u0e23\u0e21\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14 (\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29)"
+                                      },
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e22\u0e2d\u0e31\u0e04\u0e23\u0e20\u0e31\u0e17\u0e23 \u0e41\u0e23\u0e15\u0e15\u0e35\u0e01\u0e23\u0e27\u0e22",
+                                          "pos":  "\u0e19\u0e34\u0e15\u0e34\u0e01\u0e23\u0e0a\u0e33\u0e19\u0e32\u0e0d\u0e01\u0e32\u0e23 \u0e23\u0e31\u0e01\u0e29\u0e32\u0e23\u0e32\u0e0a\u0e01\u0e32\u0e23\u0e41\u0e17\u0e19\u0e15\u0e33\u0e41\u0e2b\u0e19\u0e48\u0e07\u0e19\u0e34\u0e15\u0e34\u0e01\u0e23\u0e0a\u0e33\u0e19\u0e32\u0e0d\u0e01\u0e32\u0e23\u0e1e\u0e34\u0e40\u0e28\u0e29 (\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29)"
+                                      },
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e22\u0e04\u0e40\u0e13\u0e28 \u0e40\u0e2a\u0e21\u0e32\u0e40\u0e07\u0e34\u0e19",
+                                          "pos":  "\u0e19\u0e31\u0e01\u0e27\u0e34\u0e40\u0e04\u0e23\u0e32\u0e30\u0e2b\u0e4c\u0e19\u0e42\u0e22\u0e1a\u0e32\u0e22\u0e41\u0e25\u0e30\u0e41\u0e1c\u0e19\u0e1b\u0e0f\u0e34\u0e1a\u0e31\u0e15\u0e34\u0e01\u0e32\u0e23 (\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29)"
+                                      },
+                                      {
+                                          "name":  "\u0e19\u0e32\u0e07\u0e2a\u0e32\u0e27\u0e2a\u0e38\u0e20\u0e31\u0e2a\u0e2a\u0e23 \u0e40\u0e08\u0e23\u0e34\u0e0d\u0e17\u0e31\u0e28\u0e19\u0e4c",
+                                          "pos":  "\u0e40\u0e08\u0e49\u0e32\u0e1e\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e17\u0e35\u0e48\u0e14\u0e34\u0e19\u0e2d\u0e32\u0e27\u0e38\u0e42\u0e2a (\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e17\u0e35\u0e48\u0e14\u0e34\u0e19\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29)"
+                                      }
+                                  ],
+                      "photo":  "assets/images/group-6.jpg",
+                      "lead":  "\u0e19\u0e32\u0e22\u0e1a\u0e38\u0e0d\u0e0a\u0e27\u0e31\u0e12\u0e19\u0e4c \u0e1b\u0e31\u0e0d\u0e0a\u0e4c\u0e0d\u0e0d\u0e32\u0e41\u0e14\u0e07"
+                  }
+              ],
+    "units":  [
+                  {
+                      "id":  "u01",
+                      "name":  "\u0e17\u0e35\u0e48\u0e17\u0e33\u0e01\u0e32\u0e23\u0e1b\u0e01\u0e04\u0e23\u0e2d\u0e07\u0e2d\u0e33\u0e40\u0e20\u0e2d\u0e01\u0e31\u0e19\u0e17\u0e23\u0e25\u0e31\u0e01\u0e29\u0e4c",
+                      "code":  "000001",
+                      "district":  "\u0e01\u0e31\u0e19\u0e17\u0e23\u0e25\u0e31\u0e01\u0e29\u0e4c",
+                      "kind":  "",
+                      "team":  1,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u02",
+                      "name":  "\u0e17\u0e35\u0e48\u0e17\u0e33\u0e01\u0e32\u0e23\u0e1b\u0e01\u0e04\u0e23\u0e2d\u0e07\u0e2d\u0e33\u0e40\u0e20\u0e2d\u0e02\u0e38\u0e19\u0e2b\u0e32\u0e0d",
+                      "code":  "000002",
+                      "district":  "\u0e02\u0e38\u0e19\u0e2b\u0e32\u0e0d",
+                      "kind":  "",
+                      "team":  1,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u03",
+                      "name":  "\u0e17\u0e35\u0e48\u0e17\u0e33\u0e01\u0e32\u0e23\u0e1b\u0e01\u0e04\u0e23\u0e2d\u0e07\u0e2d\u0e33\u0e40\u0e20\u0e2d\u0e1e\u0e22\u0e38\u0e2b\u0e4c",
+                      "code":  "000003",
+                      "district":  "\u0e1e\u0e22\u0e38\u0e2b\u0e4c",
+                      "kind":  "",
+                      "team":  1,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u04",
+                      "name":  "\u0e17\u0e35\u0e48\u0e17\u0e33\u0e01\u0e32\u0e23\u0e1b\u0e01\u0e04\u0e23\u0e2d\u0e07\u0e2d\u0e33\u0e40\u0e20\u0e2d\u0e42\u0e19\u0e19\u0e04\u0e39\u0e13",
+                      "code":  "000004",
+                      "district":  "\u0e42\u0e19\u0e19\u0e04\u0e39\u0e13",
+                      "kind":  "",
+                      "team":  1,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u05",
+                      "name":  "\u0e17\u0e35\u0e48\u0e17\u0e33\u0e01\u0e32\u0e23\u0e1b\u0e01\u0e04\u0e23\u0e2d\u0e07\u0e2d\u0e33\u0e40\u0e20\u0e2d\u0e2b\u0e49\u0e27\u0e22\u0e17\u0e31\u0e1a\u0e17\u0e31\u0e19",
+                      "code":  "000005",
+                      "district":  "\u0e2b\u0e49\u0e27\u0e22\u0e17\u0e31\u0e1a\u0e17\u0e31\u0e19",
+                      "kind":  "",
+                      "team":  1,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u06",
+                      "name":  "\u0e17\u0e35\u0e48\u0e17\u0e33\u0e01\u0e32\u0e23\u0e1b\u0e01\u0e04\u0e23\u0e2d\u0e07\u0e2d\u0e33\u0e40\u0e20\u0e2d\u0e2d\u0e38\u0e17\u0e38\u0e21\u0e1e\u0e23\u0e1e\u0e34\u0e2a\u0e31\u0e22",
+                      "code":  "000006",
+                      "district":  "\u0e2d\u0e38\u0e17\u0e38\u0e21\u0e1e\u0e23\u0e1e\u0e34\u0e2a\u0e31\u0e22",
+                      "kind":  "",
+                      "team":  2,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u07",
+                      "name":  "\u0e17\u0e35\u0e48\u0e17\u0e33\u0e01\u0e32\u0e23\u0e1b\u0e01\u0e04\u0e23\u0e2d\u0e07\u0e2d\u0e33\u0e40\u0e20\u0e2d\u0e23\u0e32\u0e29\u0e35\u0e44\u0e28\u0e25",
+                      "code":  "000007",
+                      "district":  "\u0e23\u0e32\u0e29\u0e35\u0e44\u0e28\u0e25",
+                      "kind":  "",
+                      "team":  2,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u08",
+                      "name":  "\u0e17\u0e35\u0e48\u0e17\u0e33\u0e01\u0e32\u0e23\u0e1b\u0e01\u0e04\u0e23\u0e2d\u0e07\u0e2d\u0e33\u0e40\u0e20\u0e2d\u0e40\u0e21\u0e37\u0e2d\u0e07\u0e08\u0e31\u0e19\u0e17\u0e23\u0e4c",
+                      "code":  "000008",
+                      "district":  "\u0e40\u0e21\u0e37\u0e2d\u0e07\u0e08\u0e31\u0e19\u0e17\u0e23\u0e4c",
+                      "kind":  "",
+                      "team":  2,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u09",
+                      "name":  "\u0e17\u0e35\u0e48\u0e17\u0e33\u0e01\u0e32\u0e23\u0e1b\u0e01\u0e04\u0e23\u0e2d\u0e07\u0e2d\u0e33\u0e40\u0e20\u0e2d\u0e1a\u0e36\u0e07\u0e1a\u0e39\u0e23\u0e1e\u0e4c",
+                      "code":  "000009",
+                      "district":  "\u0e1a\u0e36\u0e07\u0e1a\u0e39\u0e23\u0e1e\u0e4c",
+                      "kind":  "",
+                      "team":  2,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u10",
+                      "name":  "\u0e28\u0e39\u0e19\u0e22\u0e4c\u0e14\u0e33\u0e23\u0e07\u0e18\u0e23\u0e23\u0e21\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29",
+                      "code":  "000010",
+                      "district":  "\u0e23\u0e30\u0e14\u0e31\u0e1a\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14",
+                      "kind":  "",
+                      "team":  2,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u11",
+                      "name":  "\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e17\u0e35\u0e48\u0e14\u0e34\u0e19\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29 \u0e2a\u0e32\u0e02\u0e32\u0e01\u0e31\u0e19\u0e17\u0e23\u0e32\u0e23\u0e21\u0e22\u0e4c",
+                      "code":  "000011",
+                      "district":  "\u0e01\u0e31\u0e19\u0e17\u0e23\u0e32\u0e23\u0e21\u0e22\u0e4c",
+                      "kind":  "",
+                      "team":  3,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u12",
+                      "name":  "\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e17\u0e35\u0e48\u0e14\u0e34\u0e19\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29 \u0e2a\u0e32\u0e02\u0e32\u0e01\u0e31\u0e19\u0e17\u0e23\u0e25\u0e31\u0e01\u0e29\u0e4c",
+                      "code":  "000012",
+                      "district":  "\u0e01\u0e31\u0e19\u0e17\u0e23\u0e25\u0e31\u0e01\u0e29\u0e4c",
+                      "kind":  "",
+                      "team":  3,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u13",
+                      "name":  "\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e17\u0e35\u0e48\u0e14\u0e34\u0e19\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29 \u0e2a\u0e32\u0e02\u0e32\u0e2d\u0e38\u0e17\u0e38\u0e21\u0e1e\u0e23\u0e1e\u0e34\u0e2a\u0e31\u0e22",
+                      "code":  "000013",
+                      "district":  "\u0e2d\u0e38\u0e17\u0e38\u0e21\u0e1e\u0e23\u0e1e\u0e34\u0e2a\u0e31\u0e22",
+                      "kind":  "",
+                      "team":  3,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u14",
+                      "name":  "\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e42\u0e22\u0e18\u0e32\u0e18\u0e34\u0e01\u0e32\u0e23\u0e41\u0e25\u0e30\u0e1c\u0e31\u0e07\u0e40\u0e21\u0e37\u0e2d\u0e07\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29",
+                      "code":  "000014",
+                      "district":  "\u0e23\u0e30\u0e14\u0e31\u0e1a\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14",
+                      "kind":  "",
+                      "team":  3,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u15",
+                      "name":  "\u0e40\u0e23\u0e37\u0e2d\u0e19\u0e08\u0e33\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29",
+                      "code":  "000015",
+                      "district":  "\u0e23\u0e30\u0e14\u0e31\u0e1a\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14",
+                      "kind":  "",
+                      "team":  4,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u16",
+                      "name":  "\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e04\u0e38\u0e21\u0e1b\u0e23\u0e30\u0e1e\u0e24\u0e15\u0e34\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29",
+                      "code":  "000016",
+                      "district":  "\u0e23\u0e30\u0e14\u0e31\u0e1a\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14",
+                      "kind":  "",
+                      "team":  4,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u17",
+                      "name":  "\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e08\u0e31\u0e14\u0e2b\u0e32\u0e07\u0e32\u0e19\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29",
+                      "code":  "000017",
+                      "district":  "\u0e23\u0e30\u0e14\u0e31\u0e1a\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14",
+                      "kind":  "",
+                      "team":  4,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u18",
+                      "name":  "\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e2a\u0e27\u0e31\u0e2a\u0e14\u0e34\u0e01\u0e32\u0e23\u0e41\u0e25\u0e30\u0e04\u0e38\u0e49\u0e21\u0e04\u0e23\u0e2d\u0e07\u0e41\u0e23\u0e07\u0e07\u0e32\u0e19\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29",
+                      "code":  "000018",
+                      "district":  "\u0e23\u0e30\u0e14\u0e31\u0e1a\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14",
+                      "kind":  "",
+                      "team":  4,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u19",
+                      "name":  "\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e1e\u0e31\u0e12\u0e19\u0e32\u0e2a\u0e31\u0e07\u0e04\u0e21\u0e41\u0e25\u0e30\u0e04\u0e27\u0e32\u0e21\u0e21\u0e31\u0e48\u0e19\u0e04\u0e07\u0e02\u0e2d\u0e07\u0e21\u0e19\u0e38\u0e29\u0e22\u0e4c\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29",
+                      "code":  "000019",
+                      "district":  "\u0e23\u0e30\u0e14\u0e31\u0e1a\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14",
+                      "kind":  "",
+                      "team":  4,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u20",
+                      "name":  "\u0e42\u0e23\u0e07\u0e1e\u0e22\u0e32\u0e1a\u0e32\u0e25\u0e23\u0e32\u0e29\u0e35\u0e44\u0e28\u0e25",
+                      "code":  "000020",
+                      "district":  "\u0e23\u0e32\u0e29\u0e35\u0e44\u0e28\u0e25",
+                      "kind":  "",
+                      "team":  5,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u21",
+                      "name":  "\u0e42\u0e23\u0e07\u0e1e\u0e22\u0e32\u0e1a\u0e32\u0e25\u0e2a\u0e48\u0e07\u0e40\u0e2a\u0e23\u0e34\u0e21\u0e2a\u0e38\u0e02\u0e20\u0e32\u0e1e\u0e15\u0e33\u0e1a\u0e25\u0e1a\u0e49\u0e32\u0e19\u0e17\u0e31\u0e1a\u0e17\u0e34\u0e21\u0e2a\u0e22\u0e32\u0e2107",
+                      "code":  "000021",
+                      "district":  "",
+                      "kind":  "",
+                      "team":  5,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u22",
+                      "name":  "\u0e42\u0e23\u0e07\u0e1e\u0e22\u0e32\u0e1a\u0e32\u0e25\u0e2a\u0e48\u0e07\u0e40\u0e2a\u0e23\u0e34\u0e21\u0e2a\u0e38\u0e02\u0e20\u0e32\u0e1e\u0e15\u0e33\u0e1a\u0e25\u0e1a\u0e49\u0e32\u0e19\u0e21\u0e48\u0e27\u0e07\u0e41\u0e22\u0e01",
+                      "code":  "000022",
+                      "district":  "",
+                      "kind":  "",
+                      "team":  5,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u23",
+                      "name":  "\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e1b\u0e49\u0e2d\u0e07\u0e01\u0e31\u0e19\u0e41\u0e25\u0e30\u0e1a\u0e23\u0e23\u0e40\u0e17\u0e32\u0e2a\u0e32\u0e18\u0e32\u0e23\u0e13\u0e20\u0e31\u0e22\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29",
+                      "code":  "000023",
+                      "district":  "\u0e23\u0e30\u0e14\u0e31\u0e1a\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14",
+                      "kind":  "",
+                      "team":  5,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u24",
+                      "name":  "\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e04\u0e25\u0e31\u0e07\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29",
+                      "code":  "000024",
+                      "district":  "\u0e23\u0e30\u0e14\u0e31\u0e1a\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14",
+                      "kind":  "",
+                      "team":  6,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u25",
+                      "name":  "\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e2a\u0e16\u0e34\u0e15\u0e34\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29",
+                      "code":  "000025",
+                      "district":  "\u0e23\u0e30\u0e14\u0e31\u0e1a\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14",
+                      "kind":  "",
+                      "team":  6,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u26",
+                      "name":  "\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e1e\u0e31\u0e12\u0e19\u0e32\u0e0a\u0e38\u0e21\u0e0a\u0e19\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29",
+                      "code":  "000026",
+                      "district":  "\u0e23\u0e30\u0e14\u0e31\u0e1a\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14",
+                      "kind":  "",
+                      "team":  6,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u27",
+                      "name":  "\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e27\u0e31\u0e12\u0e19\u0e18\u0e23\u0e23\u0e21\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29",
+                      "code":  "000027",
+                      "district":  "\u0e23\u0e30\u0e14\u0e31\u0e1a\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14",
+                      "kind":  "",
+                      "team":  6,
+                      "prev":  ""
+                  },
+                  {
+                      "id":  "u28",
+                      "name":  "\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e1e\u0e23\u0e30\u0e1e\u0e38\u0e17\u0e18\u0e28\u0e32\u0e2a\u0e19\u0e32\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29",
+                      "code":  "000028",
+                      "district":  "\u0e23\u0e30\u0e14\u0e31\u0e1a\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14",
+                      "kind":  "",
+                      "team":  6,
+                      "prev":  ""
+                  }
+              ],
+    "assess":  {
+
+               },
+    "defects":  [
+
+                ],
+    "createdAt":  "2026-10-23T06:06:35.471Z",
+    "mentorCoordinators":  [
+                               {
+                                   "pos":  "\u0e40\u0e20\u0e2a\u0e31\u0e0a\u0e01\u0e23\u0e0a\u0e33\u0e19\u0e32\u0e0d\u0e01\u0e32\u0e23\u0e1e\u0e34\u0e40\u0e28\u0e29",
+                                   "name":  "\u0e20\u0e0d.\u0e21\u0e31\u0e25\u0e25\u0e34\u0e01\u0e32 \u0e2a\u0e38\u0e1e\u0e25",
+                                   "role":  "\u0e17\u0e35\u0e48\u0e1b\u0e23\u0e36\u0e01\u0e29\u0e32 MENTOR \u0e41\u0e25\u0e30\u0e40\u0e25\u0e02\u0e32\u0e19\u0e38\u0e01\u0e32\u0e23\u0e17\u0e35\u0e21 Mentor"
+                               },
+                               {
+                                   "pos":  "\u0e40\u0e20\u0e2a\u0e31\u0e0a\u0e01\u0e23\u0e0a\u0e33\u0e19\u0e32\u0e0d\u0e01\u0e32\u0e23\u0e1e\u0e34\u0e40\u0e28\u0e29",
+                                   "name":  "\u0e20\u0e0d.\u0e01\u0e19\u0e01\u0e27\u0e34\u0e20\u0e32 \u0e1b\u0e23\u0e30\u0e01\u0e2d\u0e1a\u0e28\u0e23\u0e35",
+                                   "role":  "Mentor \u0e41\u0e25\u0e30\u0e1c\u0e39\u0e49\u0e0a\u0e48\u0e27\u0e22\u0e40\u0e25\u0e02\u0e32\u0e19\u0e38\u0e01\u0e32\u0e23\u0e17\u0e35\u0e21 MENTOR"
+                               }
+                           ],
+    "mentorRosterVersion":  1,
+    "nextUnitCode":  29,
+    "retiredUnitIds":  [
+
+                       ],
+    "cal":  {
+                "start":  "2026-10-01",
+                "prov":  "2026-12-04",
+                "open":  "2026-11-16",
+                "close":  "2026-12-25"
+            },
+    "publicContent":  {
+                          "library":  [
+                                          {
+                                              "detail":  "\u0e27\u0e32\u0e23\u0e30\u0e41\u0e25\u0e30\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23\u0e1b\u0e23\u0e30\u0e01\u0e2d\u0e1a\u0e01\u0e32\u0e23\u0e1b\u0e23\u0e30\u0e0a\u0e38\u0e21",
+                                              "url":  "https://drive.google.com/drive/folders/1q_q4ZnNuCvYHB3-Gj73wJuMVBAQWZf27",
+                                              "name":  "\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23\u0e01\u0e32\u0e23\u0e1b\u0e23\u0e30\u0e0a\u0e38\u0e21",
+                                              "theme":  "151 48% 23%",
+                                              "image":  "assets/library/meetings.png"
+                                          },
+                                          {
+                                              "detail":  "\u0e41\u0e19\u0e27\u0e17\u0e32\u0e07\u0e40\u0e15\u0e23\u0e35\u0e22\u0e21\u0e04\u0e27\u0e32\u0e21\u0e1e\u0e23\u0e49\u0e2d\u0e21\u0e01\u0e48\u0e2d\u0e19\u0e2a\u0e21\u0e31\u0e04\u0e23 GECC",
+                                              "name":  "\u0e40\u0e15\u0e23\u0e35\u0e22\u0e21\u0e04\u0e27\u0e32\u0e21\u0e1e\u0e23\u0e49\u0e2d\u0e21",
+                                              "landscape":  true,
+                                              "image":  "assets/library/readiness.png",
+                                              "url":  "https://drive.google.com/drive/folders/1YSUOlPcWk1IoOSoxBOK7Sn0sfq39z0E_",
+                                              "theme":  "221 55% 28%"
+                                          },
+                                          {
+                                              "detail":  "\u0e41\u0e1a\u0e1a\u0e2a\u0e33\u0e23\u0e27\u0e08\u0e41\u0e25\u0e30\u0e15\u0e31\u0e27\u0e2d\u0e22\u0e48\u0e32\u0e07\u0e08\u0e32\u0e01\u0e2b\u0e19\u0e48\u0e27\u0e22\u0e1a\u0e23\u0e34\u0e01\u0e32\u0e23",
+                                              "url":  "https://drive.google.com/drive/folders/1BlKsquKllYKNXaRdhFsb6ct8IWa3wlT6",
+                                              "name":  "\u0e15\u0e31\u0e27\u0e2d\u0e22\u0e48\u0e32\u0e07",
+                                              "theme":  "260 40% 30%",
+                                              "image":  "assets/library/examples.png"
+                                          },
+                                          {
+                                              "detail":  "\u0e04\u0e33\u0e2a\u0e31\u0e48\u0e07\u0e41\u0e15\u0e48\u0e07\u0e15\u0e31\u0e49\u0e07\u0e41\u0e25\u0e30\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e04\u0e13\u0e30\u0e17\u0e33\u0e07\u0e32\u0e19",
+                                              "url":  "https://drive.google.com/drive/folders/1MBbBXwsPP3jGJYg24YcOCUlFXMddVBcN",
+                                              "name":  "\u0e04\u0e13\u0e30\u0e17\u0e33\u0e07\u0e32\u0e19\u0e2f",
+                                              "theme":  "221 55% 28%",
+                                              "image":  "assets/library/committee.png"
+                                          },
+                                          {
+                                              "detail":  "\u0e2b\u0e25\u0e31\u0e01\u0e40\u0e01\u0e13\u0e11\u0e4c\u0e41\u0e25\u0e30\u0e04\u0e39\u0e48\u0e21\u0e37\u0e2d\u0e01\u0e32\u0e23\u0e1b\u0e23\u0e30\u0e40\u0e21\u0e34\u0e19 GECC 2570",
+                                              "url":  "https://drive.google.com/drive/folders/1UA0GSSFT_lszbsGRIPEjrZXU9SoxXrkc",
+                                              "name":  "\u0e40\u0e01\u0e13\u0e11\u0e4c\u0e1b\u0e23\u0e30\u0e40\u0e21\u0e34\u0e19 2570",
+                                              "theme":  "151 48% 23%",
+                                              "image":  "assets/library/criteria.png"
+                                          }
+                                      ],
+                          "advisor":  {
+                                          "title":  "\u0e1c\u0e39\u0e49\u0e27\u0e48\u0e32\u0e23\u0e32\u0e0a\u0e01\u0e32\u0e23\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29",
+                                          "photo":  "assets/images/committee-advisor.jpg",
+                                          "name":  "\u0e19\u0e32\u0e22\u0e2d\u0e19\u0e38\u0e23\u0e31\u0e15\u0e19\u0e4c \u0e18\u0e23\u0e23\u0e21\u0e1b\u0e23\u0e30\u0e08\u0e33\u0e08\u0e34\u0e15",
+                                          "role":  "\u0e17\u0e35\u0e48\u0e1b\u0e23\u0e36\u0e01\u0e29\u0e32\u0e04\u0e13\u0e30\u0e17\u0e33\u0e07\u0e32\u0e19"
+                                      },
+                          "duties":  [
+                                         "\u0e1a\u0e39\u0e23\u0e13\u0e32\u0e01\u0e32\u0e23\u0e2b\u0e19\u0e48\u0e27\u0e22\u0e07\u0e32\u0e19 \u0e2a\u0e19\u0e31\u0e1a\u0e2a\u0e19\u0e38\u0e19 \u0e41\u0e25\u0e30\u0e02\u0e31\u0e1a\u0e40\u0e04\u0e25\u0e37\u0e48\u0e2d\u0e19\u0e43\u0e2b\u0e49\u0e2a\u0e48\u0e27\u0e19\u0e23\u0e32\u0e0a\u0e01\u0e32\u0e23 \u0e2d\u0e33\u0e40\u0e20\u0e2d \u0e41\u0e25\u0e30\u0e2b\u0e19\u0e48\u0e27\u0e22\u0e07\u0e32\u0e19\u0e20\u0e32\u0e04\u0e23\u0e31\u0e10\u0e43\u0e19\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29 \u0e2a\u0e21\u0e31\u0e04\u0e23\u0e02\u0e2d\u0e23\u0e31\u0e1a\u0e23\u0e2d\u0e07\u0e21\u0e32\u0e15\u0e23\u0e10\u0e32\u0e19\u0e28\u0e39\u0e19\u0e22\u0e4c\u0e23\u0e32\u0e0a\u0e01\u0e32\u0e23\u0e2a\u0e30\u0e14\u0e27\u0e01 GECC",
+                                         "\u0e1b\u0e23\u0e30\u0e40\u0e21\u0e34\u0e19\u0e1c\u0e25\u0e41\u0e25\u0e30\u0e15\u0e34\u0e14\u0e15\u0e32\u0e21\u0e1c\u0e25\u0e01\u0e32\u0e23\u0e14\u0e33\u0e40\u0e19\u0e34\u0e19\u0e01\u0e32\u0e23 \u0e40\u0e1e\u0e37\u0e48\u0e2d\u0e23\u0e31\u0e01\u0e29\u0e32\u0e21\u0e32\u0e15\u0e23\u0e10\u0e32\u0e19\u0e01\u0e32\u0e23\u0e1a\u0e23\u0e34\u0e01\u0e32\u0e23\u0e02\u0e2d\u0e07\u0e28\u0e39\u0e19\u0e22\u0e4c\u0e23\u0e32\u0e0a\u0e01\u0e32\u0e23\u0e2a\u0e30\u0e14\u0e27\u0e01 GECC",
+                                         "\u0e01\u0e33\u0e2b\u0e19\u0e14\u0e40\u0e1b\u0e49\u0e32\u0e2b\u0e21\u0e32\u0e22\u0e01\u0e32\u0e23\u0e1e\u0e31\u0e12\u0e19\u0e32\u0e28\u0e39\u0e19\u0e22\u0e4c\u0e23\u0e32\u0e0a\u0e01\u0e32\u0e23\u0e2a\u0e30\u0e14\u0e27\u0e01 GECC \u0e42\u0e14\u0e22\u0e21\u0e38\u0e48\u0e07\u0e40\u0e19\u0e49\u0e19\u0e43\u0e2b\u0e49\u0e2b\u0e19\u0e48\u0e27\u0e22\u0e07\u0e32\u0e19\u0e2d\u0e33\u0e19\u0e27\u0e22\u0e04\u0e27\u0e32\u0e21\u0e2a\u0e30\u0e14\u0e27\u0e01\u0e41\u0e01\u0e48\u0e1b\u0e23\u0e30\u0e0a\u0e32\u0e0a\u0e19 \u0e1b\u0e23\u0e31\u0e1a\u0e1b\u0e23\u0e38\u0e07\u0e23\u0e30\u0e1a\u0e1a\u0e07\u0e32\u0e19\u0e43\u0e2b\u0e49\u0e42\u0e1b\u0e23\u0e48\u0e07\u0e43\u0e2a \u0e41\u0e25\u0e30\u0e15\u0e2d\u0e1a\u0e2a\u0e19\u0e2d\u0e07\u0e04\u0e27\u0e32\u0e21\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e02\u0e2d\u0e07\u0e1b\u0e23\u0e30\u0e0a\u0e32\u0e0a\u0e19\u0e2d\u0e22\u0e48\u0e32\u0e07\u0e21\u0e35\u0e1b\u0e23\u0e30\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e20\u0e32\u0e1e",
+                                         "\u0e1b\u0e0f\u0e34\u0e1a\u0e31\u0e15\u0e34\u0e2b\u0e19\u0e49\u0e32\u0e17\u0e35\u0e48\u0e2d\u0e37\u0e48\u0e19\u0e46 \u0e15\u0e32\u0e21\u0e17\u0e35\u0e48\u0e1c\u0e39\u0e49\u0e27\u0e48\u0e32\u0e23\u0e32\u0e0a\u0e01\u0e32\u0e23\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29 \u0e21\u0e2d\u0e1a\u0e2b\u0e21\u0e32\u0e22"
+                                     ],
+                          "committee":  [
+                                            {
+                                                "title":  "\u0e23\u0e2d\u0e07\u0e1c\u0e39\u0e49\u0e27\u0e48\u0e32\u0e23\u0e32\u0e0a\u0e01\u0e32\u0e23\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29 (\u0e01\u0e25\u0e38\u0e48\u0e21\u0e20\u0e32\u0e23\u0e01\u0e34\u0e08\u0e14\u0e49\u0e32\u0e19\u0e40\u0e28\u0e23\u0e29\u0e10\u0e01\u0e34\u0e08)",
+                                                "photo":  "assets/images/committee-chair.jpg",
+                                                "name":  "\u0e19\u0e32\u0e22\u0e18\u0e32\u0e15\u0e23\u0e35 \u0e2a\u0e34\u0e23\u0e34\u0e23\u0e38\u0e48\u0e07\u0e27\u0e19\u0e34\u0e0a",
+                                                "role":  "\u0e2b\u0e31\u0e27\u0e2b\u0e19\u0e49\u0e32\u0e04\u0e13\u0e30\u0e17\u0e33\u0e07\u0e32\u0e19"
+                                            },
+                                            {
+                                                "title":  "\u0e23\u0e2d\u0e07\u0e2d\u0e18\u0e34\u0e01\u0e32\u0e23\u0e1a\u0e14\u0e35\u0e21\u0e2b\u0e32\u0e27\u0e34\u0e17\u0e22\u0e32\u0e25\u0e31\u0e22\u0e23\u0e32\u0e0a\u0e20\u0e31\u0e0f\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29",
+                                                "name":  "\u0e14\u0e23.\u0e0a\u0e39\u0e27\u0e34\u0e17\u0e22\u0e4c \u0e19\u0e32\u0e40\u0e1e\u0e35\u0e22",
+                                                "role":  "\u0e04\u0e13\u0e30\u0e17\u0e33\u0e07\u0e32\u0e19"
+                                            },
+                                            {
+                                                "role":  "\u0e04\u0e13\u0e30\u0e17\u0e33\u0e07\u0e32\u0e19",
+                                                "title":  "\u0e1b\u0e25\u0e31\u0e14\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29"
+                                            },
+                                            {
+                                                "role":  "\u0e04\u0e13\u0e30\u0e17\u0e33\u0e07\u0e32\u0e19",
+                                                "title":  "\u0e2b\u0e31\u0e27\u0e2b\u0e19\u0e49\u0e32\u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29"
+                                            },
+                                            {
+                                                "role":  "\u0e04\u0e13\u0e30\u0e17\u0e33\u0e07\u0e32\u0e19",
+                                                "title":  "\u0e19\u0e32\u0e22\u0e41\u0e1e\u0e17\u0e22\u0e4c\u0e2a\u0e32\u0e18\u0e32\u0e23\u0e13\u0e2a\u0e38\u0e02\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29"
+                                            },
+                                            {
+                                                "role":  "\u0e04\u0e13\u0e30\u0e17\u0e33\u0e07\u0e32\u0e19",
+                                                "title":  "\u0e40\u0e08\u0e49\u0e32\u0e1e\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e17\u0e35\u0e48\u0e14\u0e34\u0e19\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29"
+                                            },
+                                            {
+                                                "role":  "\u0e04\u0e13\u0e30\u0e17\u0e33\u0e07\u0e32\u0e19",
+                                                "title":  "\u0e04\u0e25\u0e31\u0e07\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29"
+                                            },
+                                            {
+                                                "role":  "\u0e04\u0e13\u0e30\u0e17\u0e33\u0e07\u0e32\u0e19",
+                                                "title":  "\u0e2a\u0e16\u0e34\u0e15\u0e34\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29"
+                                            },
+                                            {
+                                                "role":  "\u0e04\u0e13\u0e30\u0e17\u0e33\u0e07\u0e32\u0e19",
+                                                "title":  "\u0e1c\u0e39\u0e49\u0e2d\u0e33\u0e19\u0e27\u0e22\u0e01\u0e32\u0e23\u0e42\u0e23\u0e07\u0e1e\u0e22\u0e32\u0e1a\u0e32\u0e25\u0e23\u0e32\u0e29\u0e35\u0e44\u0e28\u0e25"
+                                            },
+                                            {
+                                                "title":  "\u0e2a\u0e32\u0e18\u0e32\u0e23\u0e13\u0e2a\u0e38\u0e02\u0e2d\u0e33\u0e40\u0e20\u0e2d\u0e02\u0e38\u0e19\u0e2b\u0e32\u0e0d",
+                                                "name":  "\u0e19\u0e32\u0e22\u0e2a\u0e21\u0e31\u0e22 \u0e04\u0e33\u0e40\u0e2b\u0e25\u0e37\u0e2d",
+                                                "role":  "\u0e04\u0e13\u0e30\u0e17\u0e33\u0e07\u0e32\u0e19"
+                                            },
+                                            {
+                                                "title":  "\u0e40\u0e20\u0e2a\u0e31\u0e0a\u0e01\u0e23\u0e0a\u0e33\u0e19\u0e32\u0e0d\u0e01\u0e32\u0e23\u0e1e\u0e34\u0e40\u0e28\u0e29 \u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e2a\u0e32\u0e18\u0e32\u0e23\u0e13\u0e2a\u0e38\u0e02\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29",
+                                                "name":  "\u0e19\u0e32\u0e07\u0e2a\u0e32\u0e27\u0e21\u0e31\u0e25\u0e25\u0e34\u0e01\u0e32 \u0e2a\u0e38\u0e1e\u0e25",
+                                                "role":  "\u0e04\u0e13\u0e30\u0e17\u0e33\u0e07\u0e32\u0e19\u0e41\u0e25\u0e30\u0e40\u0e25\u0e02\u0e32\u0e19\u0e38\u0e01\u0e32\u0e23"
+                                            },
+                                            {
+                                                "title":  "\u0e40\u0e20\u0e2a\u0e31\u0e0a\u0e01\u0e23\u0e0a\u0e33\u0e19\u0e32\u0e0d\u0e01\u0e32\u0e23\u0e1e\u0e34\u0e40\u0e28\u0e29 \u0e2a\u0e33\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e2a\u0e32\u0e18\u0e32\u0e23\u0e13\u0e2a\u0e38\u0e02\u0e08\u0e31\u0e07\u0e2b\u0e27\u0e31\u0e14\u0e28\u0e23\u0e35\u0e2a\u0e30\u0e40\u0e01\u0e29",
+                                                "name":  "\u0e19\u0e32\u0e07\u0e2a\u0e32\u0e27\u0e01\u0e19\u0e01\u0e27\u0e34\u0e20\u0e32 \u0e1b\u0e23\u0e30\u0e01\u0e2d\u0e1a\u0e28\u0e23\u0e35",
+                                                "role":  "\u0e04\u0e13\u0e30\u0e17\u0e33\u0e07\u0e32\u0e19\u0e41\u0e25\u0e30\u0e1c\u0e39\u0e49\u0e0a\u0e48\u0e27\u0e22\u0e40\u0e25\u0e02\u0e32\u0e19\u0e38\u0e01\u0e32\u0e23"
+                                            }
+                                        ]
+                      }
+}
