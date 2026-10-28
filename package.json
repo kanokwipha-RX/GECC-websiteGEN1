@@ -1,0 +1,26 @@
+{
+  "name": "sisaket-gecc",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/preview.js",
+    "test": "node --test tests/*.test.js",
+    "test:browser": "node tests/browser.js",
+    "db:migrate": "node server/manage.js migrate",
+    "account:create": "node server/manage.js account",
+    "data:import": "node server/manage.js import"
+  },
+  "dependencies": {
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.12",
+    "axe-core": "^4.11.0",
+    "playwright": "^1.56.1"
+  }
+}
