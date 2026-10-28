@@ -1,5 +1,19 @@
 # Agency server runbook — deployment requires owner approval
 
+Target-host correction: owner confirmed Apache/PHP 8.3.36 only. This Node/Docker
+runbook is an alternative architecture, not the approved installation path for
+that host. The confirmed database is MariaDB 10.6.28. Use PHP-DEPLOYMENT-TH.md
+for the implemented PHP package/installer. Existing Node tests do not certify a PHP deployment.
+
+Repeatable Linux/Docker setup: `bash deploy/production.sh check`, then
+`bash deploy/production.sh init --apply`. See RUN-ON-SERVER-TH.md for Git handoff,
+secret handling, Apache cutover and rerun/backup constraints. Docker installation
+and Apache reload are intentionally owned by the host administrator.
+
+For the actual `/sskgecc/` hosting path and generated account bundle, follow
+[PRODUCTION-READINESS.md](PRODUCTION-READINESS.md) and the Apache proxy snippet.
+`APP_ORIGIN` is the origin only; `BASE_PATH=/sskgecc` carries the path separately.
+
 ## Two separate modes
 
 `npm ci && npm run dev`: browser-only preview at http://127.0.0.1:8080. Existing

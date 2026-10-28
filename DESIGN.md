@@ -17,6 +17,12 @@ spacing/motion/accessibility tokens and shared refinements. Do not duplicate the
 - No crop of embedded image text, no text overlay over faces or document details.
 - Motion: 160ms controls, 220ms page entry, 320ms reveal; reduced motion is instant.
 - All content visible without motion/IntersectionObserver. No animated fake counts.
+- Idle status text uses premium.css `--idle: #596171` in light mode; existing dark
+  token remains authoritative. Module cards, workflow status, reviewer tiles and
+  report buttons use existing semantic surface/text tokens in both themes.
+- Compact countdown uses `.cdn-compact`; `.mini` belongs only to score bars.
+- At up to 600px the four public navigation links use two columns so complete
+  Thai labels are visible; the sticky page header follows the 102px navigation.
 
 ## Review checklist (all screens)
 1. Existing shell -> site navigation -> header -> content -> pager -> footer retained.

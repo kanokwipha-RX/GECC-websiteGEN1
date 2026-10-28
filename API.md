@@ -1,5 +1,12 @@
 # GECC same-origin API
 
+PHP/MariaDB target: the release client maps these logical paths to
+/sskgecc/api/index.php?route=... (for example route=session or route=files%2Fid).
+Request methods, JSON bodies, scoped responses, CSRF and workflow semantics remain
+the same. PHP uses PDO/InnoDB, Argon2id password hashes, database-backed login
+throttling and a one-time guarded installer; see PHP-DEPLOYMENT-TH.md.
+The PostgreSQL/Node implementation described below remains an alternative runtime.
+
 All responses are JSON except static assets and authenticated binary downloads.
 Errors use `{ "error": "Thai recovery message" }`. Sessions are HttpOnly cookies;
 the session response supplies a CSRF token held in browser memory. Mutations require
