@@ -1852,6 +1852,50 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 @media(prefers-reduced-motion:reduce){.group-choice,.group-choice-media,.group-choice-action svg,.committee-card,.committee-card-media{transition:none;}.group-choice:hover,.group-choice:hover .group-choice-media,.group-choice:hover .group-choice-action svg,.library-card:hover,.library-card:hover .committee-card-media{transform:none;}}
 @media(prefers-reduced-motion:reduce){.showcase-card,.showcase-card::before,.showcase-card img,.showcase-card .group-choice-copy,.showcase-card .committee-card-copy,.portfolio-entry .ecard,.portfolio-entry .ecard::before{transition:none;}.showcase-card:hover,.showcase-card:focus-visible,.portfolio-entry .ecard:hover{transform:none;}.showcase-card::before,.portfolio-entry .ecard::before{display:none;}.showcase-card.has-photo:hover img{filter:none;}}
 @media print{.site-nav{display:none!important;}.main>.topbar{top:0;}}
+/* Group Portal & Mentor/Mentee Boxes */
+.portal-groups-container{display:flex;flex-direction:column;gap:28px;margin-top:24px;}
+.group-portal-card{border-radius:18px;background:linear-gradient(145deg,#0D1E57,#132768);border:1px solid rgba(255,255,255,.16);padding:24px;color:#fff;box-shadow:0 16px 36px -20px rgba(0,0,0,.45);}
+.group-portal-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:20px;}
+.gph-title{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.gph-badge{display:inline-block;padding:4px 12px;border-radius:8px;background:var(--gold-grad);color:#0A1640;font-weight:700;font-size:13px;}
+.group-portal-head h2{margin:0;color:#fff;font-size:20px;}
+.gph-focus{display:flex;align-items:center;gap:6px;font-size:13px;color:#D5DCEE;}
+.gph-focus svg{width:16px;height:16px;color:var(--gold-300);}
+.group-portal-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:900px){.group-portal-grid{grid-template-columns:1fr;}}
+.portal-pane{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px;}
+.pane-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.pane-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px;color:#F1D58F;}
+.pane-title svg{width:20px;height:20px;}
+.portal-photo-slot{width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;position:relative;border:1.5px dashed rgba(230,203,130,.45);background:rgba(6,17,51,.45);display:grid;place-items:center;}
+.portal-photo-slot img{width:100%;height:100%;object-fit:cover;}
+.slot-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:16px;text-align:center;color:#D5DCEE;}
+.slot-placeholder svg{width:36px;height:36px;opacity:.55;color:var(--gold-300);}
+.slot-placeholder strong{font-size:14px;color:#fff;}
+.slot-placeholder span{font-size:12px;opacity:.75;}
+.pane-roster h4{margin:0 0 10px;font-size:13.5px;color:#E6CB82;display:flex;align-items:center;gap:6px;}
+.pane-roster h4 svg{width:16px;height:16px;}
+.roster-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;}
+.roster-list li{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);}
+.m-idx{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:rgba(230,203,130,.2);color:#E6CB82;font-size:11px;font-weight:700;flex:none;margin-top:2px;}
+.m-info{display:flex;flex-direction:column;gap:2px;min-width:0;}
+.m-info strong{font-size:13px;color:#fff;}
+.m-info small{font-size:11.5px;color:#BDC8E2;}
+.unit-login-grid{display:grid;grid-template-columns:1fr;gap:6px;}
+.unit-login-btn{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;cursor:pointer;transition:all .2s ease;}
+.unit-login-btn:hover{background:rgba(230,203,130,.14);border-color:rgba(230,203,130,.45);transform:translateX(3px);}
+.unit-login-btn:focus-visible{outline:2px solid var(--gold-300);outline-offset:2px;}
+.ul-text{display:flex;flex-direction:column;gap:2px;min-width:0;text-align:left;}
+.ul-text strong{font-size:13px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ul-text small{font-size:11px;color:#D5DCEE;}
+.ul-go{color:var(--gold-300);display:grid;place-items:center;flex:none;}
+.ul-go svg{width:14px;height:14px;}
+/* Library Gate */
+.library-gate-card{max-width:480px;margin:36px auto;padding:32px 28px;border-radius:18px;background:linear-gradient(145deg,#0D1E57,#132768);border:1px solid rgba(230,203,130,.35);box-shadow:0 20px 48px -20px rgba(0,0,0,.55);color:#fff;text-align:center;}
+.library-gate-card .gate-icon{width:64px;height:64px;margin:0 auto 16px;border-radius:50%;background:var(--gold-grad);color:#0A1640;display:grid;place-items:center;box-shadow:0 0 0 4px rgba(230,203,130,.25);}
+.library-gate-card .gate-icon svg{width:32px;height:32px;}
+.library-gate-card h2{margin:0 0 8px;font-size:22px;color:#fff;}
+.library-gate-card p{margin:0;font-size:14px;color:#D5DCEE;line-height:1.55;}
 </style>
 <link rel="stylesheet" href="assets/premium.css">
 <script src="assets/motion.js" defer></script>
@@ -1914,7 +1958,10 @@ const IC = {
   image:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>',
   star:'<path d="M12 2.6l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.5l-5.9 3.2 1.3-6.6-4.9-4.6 6.6-.8z"/>',
   upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/>',
-  database:'<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/>'
+  database:'<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/>',
+  lock:'<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  unlock:'<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>',
+  eye:'<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>'
 };
 const ic = (n, cls='') => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]||''}</svg>`;
 const NEWB = '<span class="new" title="เกณฑ์ที่ปรับเพิ่มใหม่ ปี 2570">NEW<span class="sr"> เกณฑ์ใหม่ปี 2570</span></span>';
@@ -2229,6 +2276,15 @@ const COMMITTEE_DUTIES = [
   'ปฏิบัติหน้าที่อื่นๆ ตามที่ผู้ว่าราชการจังหวัดศรีสะเกษ มอบหมาย'
 ];
 
+const MENTOR_ADVISORS = [
+  {name:'นางสาวชลธิชา พูลทวี', title:'ปลัดอำเภอ (ที่ทำการปกครองอำเภอเมืองศรีสะเกษ)', role:'ที่ปรึกษา MENTOR กลุ่มที่ 1'},
+  {name:'นางสาววรัตน์ สีละออง', title:'ปลัดอำเภอ (ที่ทำการปกครองอำเภอไพรบึง)', role:'ที่ปรึกษา MENTOR กลุ่มที่ 2'},
+  {name:'นายลือชัย สิมมา', title:'วิศวกร ระดับ 9 (การไฟฟ้าส่วนภูมิภาคจังหวัดศรีสะเกษ)', role:'ที่ปรึกษา MENTOR กลุ่มที่ 3'},
+  {name:'น.ส.นุชรินทร์ วงศ์ฤทธิ์', title:'นักบัญชี 7 (การประปาส่วนภูมิภาคสาขาศรีสะเกษ)', role:'ที่ปรึกษา MENTOR กลุ่มที่ 4'},
+  {name:'ภญ.ณัฐธิดา ถาวรยุตติการต์', title:'เภสัชกรชำนาญการ', role:'ที่ปรึกษา MENTOR กลุ่มที่ 5'},
+  {name:'นายบุญชวัฒน์ ปัญช์ญญาแดง', title:'ผู้อำนวยการกลุ่มงานศูนย์ดำรงธรรมจังหวัด (สำนักงานจังหวัดศรีสะเกษ)', role:'ที่ปรึกษา MENTOR กลุ่มที่ 6'}
+];
+
 /* ================= Shell ================= */
 function navItems(){
   const it=S.role==='mentee'?[{v:'exec', i:'chart', l:'Executive Dashboard'}]:[{v:'modules', i:'dashboard', l:'เลือกระบบงาน'},{v:'exec', i:'chart', l:'Executive Dashboard'}];
@@ -2262,7 +2318,7 @@ function shell(){
          <button data-act="go" data-view="exec" ${S.view==='exec'?'aria-current="page"':''}>หน้าหลัก</button>
          <button data-act="go" data-view="committee" ${S.view==='committee'?'aria-current="page"':''}>คณะทำงาน</button>
          <button data-act="go" data-view="library" ${S.view==='library'?'aria-current="page"':''}>GECC Library</button>
-         <button data-act="go" data-view="portfolio" ${S.view==='portfolio'?'aria-current="page"':''}>Portfolio / เข้าสู่ระบบ</button>
+         <button data-act="go" data-view="portfolio" ${S.view==='portfolio'?'aria-current="page"':''}>เข้าสู่ระบบ</button>
        </div></div></nav>
        <header class="topbar"><div class="topbar-in">
         <button class="btn btn-ghost btn-icon menu-btn" data-act="menu-open" aria-label="เปิดเมนู" aria-controls="side">${ic('menu')}</button>
@@ -2365,9 +2421,51 @@ function go(view, opts={}){
   render(); window.scrollTo({top:0}); closeMenu();
 }
 
+function libAuthSubmit(){
+  const val = ($('#lib-pass-in')?.value||'').trim();
+  if(val === 'geccssk2027'){
+    try{ sessionStorage.setItem('gecc_library_auth','1'); }catch(e){}
+    S.libraryAuth = true;
+    toast('รหัสผ่านถูกต้อง ยินดีต้อนรับสู่ GECC Library');
+    viewLibrary();
+  } else {
+    const f = $('#f-lib-pass');
+    f?.classList.add('invalid');
+    f?.classList.remove('shake');
+    void f?.offsetWidth;
+    f?.classList.add('shake');
+    $('#lib-pass-in')?.select();
+    toast('รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง', true);
+  }
+}
 function viewLibrary(){
   setCollectionHead('GECC Library','book','คลังข้อมูลมาตรฐานศูนย์ราชการสะดวก จังหวัดศรีสะเกษ');
-  $('#content').innerHTML = `<section class="public-intro"><p>เอกสาร คู่มือ และตัวอย่างสำหรับเตรียมความพร้อม ภาพปกจากเอกสารจริงในคลัง เลือกหมวดเพื่อเปิดโฟลเดอร์ใน Google Drive</p></section>
+  const authed = (typeof sessionStorage!=='undefined' && sessionStorage.getItem('gecc_library_auth')==='1') || S.libraryAuth;
+  if(!authed){
+    $('#content').innerHTML = `<section class="public-intro"><p>คลังข้อมูลมาตรฐานศูนย์ราชการสะดวก จังหวัดศรีสะเกษ จำกัดการเข้าถึงเฉพาะเจ้าหน้าที่และผู้เกี่ยวข้อง</p></section>
+      <div class="library-gate-card">
+        <div class="gate-icon">${ic('lock')}</div>
+        <h2>ระบบรักษาความปลอดภัย GECC Library</h2>
+        <p>กรุณากรอกรหัสผ่านเพื่อเข้าใช้งานเอกสาร คู่มือ และตัวอย่างการเตรียมความพร้อม</p>
+        <div class="field" id="f-lib-pass" style="margin-top:20px;text-align:left">
+          <label for="lib-pass-in" style="font-weight:600;font-size:13px;color:#E6CB82">รหัสผ่านเข้าใช้งาน (Access Code)</label>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
+            <input class="inp" type="password" id="lib-pass-in" autocomplete="current-password" placeholder="กรอกรหัสผ่าน" style="flex:1">
+            <button class="btn btn-ghost btn-icon" data-act="lib-toggle-pass" type="button" aria-label="แสดง/ซ่อนรหัสผ่าน" style="color:#D5DCEE">${ic('eye')}</button>
+          </div>
+          <div class="err" id="lib-pass-err">รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</div>
+        </div>
+        <div style="margin-top:22px;display:flex;gap:12px;justify-content:center">
+          <button class="btn btn-lux" data-act="lib-auth-btn">${ic('unlock')}เข้าใช้งานคลังข้อมูล</button>
+        </div>
+        <div style="margin-top:20px;font-size:12.5px;color:#BDC8E2;display:flex;align-items:center;justify-content:center;gap:6px">
+          ${ic('info')}<span>สำหรับคณะทำงาน MENTOR และหน่วยบริการที่สมัครรับการประเมิน</span>
+        </div>
+      </div>`;
+    setTimeout(()=>$('#lib-pass-in')?.focus(), 50);
+    return;
+  }
+  $('#content').innerHTML = `<section class="public-intro" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px"><p style="margin:0">เอกสาร คู่มือ และตัวอย่างสำหรับเตรียมความพร้อม ภาพปกจากเอกสารจริงในคลัง เลือกหมวดเพื่อเปิดโฟลเดอร์ใน Google Drive</p><button class="btn btn-sm btn-ghost" data-act="lib-lock" style="color:var(--navy);font-size:13px">${ic('lock')}ออกจากระบบ Library</button></section>
     <div class="library-grid">${LIBRARY_FOLDERS.map(f=>`<a class="library-card${f.landscape?' is-landscape':''}" data-visual-card style="--library-color:${esc(f.theme)}" href="${esc(f.url||LIBRARY_ROOT)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(f.name)} เปิดโฟลเดอร์ใน Google Drive"><img class="library-image" src="${esc(f.image)}" alt="ภาพตัวอย่างเอกสารหมวด${esc(f.name)}" loading="lazy" decoding="async"><span class="library-shade" aria-hidden="true"></span><div class="library-copy"><h2>${esc(f.name)}</h2><p>${esc(f.detail)}</p><span class="library-glass">เปิดดูเอกสาร ${ic('right')}</span></div></a>`).join('')}</div>
     <a class="library-source" href="${LIBRARY_ROOT}" target="_blank" rel="noopener noreferrer">ดูโฟลเดอร์ GECC ทั้งหมด ${ic('right')}</a>`;
 }
@@ -2386,16 +2484,87 @@ function viewCommittee(){
     <div class="committee-advisor">${personCard(COMMITTEE_ADVISOR)}</div>
     <div class="committee-grid">${COMMITTEE_MEMBERS.map(personCard).join('')}</div>
     <section class="committee-duties" id="committee-duties"><h2>อำนาจหน้าที่</h2><ol>${COMMITTEE_DUTIES.map(d=>`<li>${esc(d)}</li>`).join('')}</ol></section>
+    <section class="mentor-advisors-section" id="mentor-advisors" style="margin-top:34px">
+      <div class="section-heading" style="margin-bottom:18px">
+        <h2 style="margin:0;color:var(--navy);font-size:25px">ที่ปรึกษา MENTOR</h2>
+        <p style="margin:6px 0 0;color:var(--text-3);font-size:14px">คณะที่ปรึกษา MENTOR ทั้ง 6 ท่าน ประจำกลุ่มที่ 1 – 6 เพื่อขับเคลื่อน ให้คำปรึกษา และตรวจประเมินศูนย์ราชการสะดวก</p>
+      </div>
+      <div class="committee-grid">${MENTOR_ADVISORS.map(personCard).join('')}</div>
+    </section>
     <p class="committee-source"><a href="assets/committee-order-2569.pdf" target="_blank" rel="noopener noreferrer">${ic('file')}อ่านคำสั่งแต่งตั้งคณะทำงาน (PDF)</a></p>`;
+}
+function groupPortalCard(t){
+  const units = DB.units.filter(u=>u.team===t.id);
+  const members = t.members || [];
+  const title = t.name.replace(/^กลุ่มที่\s*\d+\s*:\s*/,'');
+  return `<article class="group-portal-card" data-team="${t.id}">
+    <header class="group-portal-head">
+      <div class="gph-title">
+        <span class="gph-badge">กลุ่มที่ ${t.id}</span>
+        <h2>${esc(title)}</h2>
+      </div>
+      ${t.focus ? `<div class="gph-focus">${ic('target')}<span>${esc(t.focus)}</span></div>` : ''}
+    </header>
+    <div class="group-portal-grid">
+      <!-- ฝ่ายซ้าย: MENTOR ทีมพี่เลี้ยง -->
+      <div class="portal-pane mentor-pane">
+        <div class="pane-head">
+          <div class="pane-title">${ic('users')}<span>ทีมพี่เลี้ยง (MENTOR)</span></div>
+          <button class="btn btn-lux btn-sm" data-act="entry-mentor-team" data-team="${t.id}">${ic('shield')}เข้าสู่ระบบ MENTOR</button>
+        </div>
+        <div class="portal-photo-slot mentor-slot">
+          ${t.photo ? `<img src="${esc(t.photo)}" alt="ภาพทีม MENTOR ${esc(t.name)}" loading="lazy">` : `
+            <div class="slot-placeholder">
+              ${ic('image')}
+              <strong>พื้นที่สำหรับใส่รูปทีม MENTOR</strong>
+              <span>กลุ่มที่ ${t.id} · รอรูปภาพจากหน่วยงาน</span>
+            </div>
+          `}
+        </div>
+        <div class="pane-roster">
+          <h4>${ic('user')}รายชื่อ MENTOR ในกลุ่ม (${members.length} ท่าน)</h4>
+          <ul class="roster-list">
+            ${members.map((m,idx)=>`<li><span class="m-idx">${idx+1}</span><div class="m-info"><strong>${esc(m.name)}</strong>${m.pos?`<small>${esc(m.pos)}</small>`:''}</div></li>`).join('')}
+          </ul>
+        </div>
+      </div>
+      <!-- ฝ่ายขวา: MENTEE หน่วยบริการ -->
+      <div class="portal-pane mentee-pane">
+        <div class="pane-head">
+          <div class="pane-title">${ic('building')}<span>หน่วยบริการในกลุ่ม (MENTEE)</span></div>
+          <button class="btn btn-outline btn-sm" data-act="entry-mentee-team" data-team="${t.id}" style="color:#fff;border-color:rgba(255,255,255,.4)">${ic('building')}เลือกหน่วยบริการ</button>
+        </div>
+        <div class="portal-photo-slot mentee-slot">
+          <div class="slot-placeholder">
+            ${ic('building')}
+            <strong>พื้นที่สำหรับใส่รูปภาพหน่วยบริการ</strong>
+            <span>หน่วยบริการ ${units.length} แห่งในกลุ่มที่ ${t.id} · รอรูปภาพ</span>
+          </div>
+        </div>
+        <div class="pane-roster">
+          <h4>${ic('pin')}หน่วยบริการที่สมัคร (${units.length} แห่ง) · แตะเพื่อเข้าสู่ระบบ</h4>
+          <div class="unit-login-grid">
+            ${units.map(u=>`<button class="unit-login-btn" data-act="entry-unit-direct" data-id="${u.id}" data-team="${t.id}" title="เข้าสู่ระบบสำหรับ ${esc(u.name)}"><div class="ul-text"><strong>${esc(u.name)}</strong><small>${esc(u.district||'ระดับจังหวัด')}</small></div><span class="ul-go">${ic('right')}</span></button>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>`;
 }
 function viewPortfolio(){
   const team=DB.teams.find(t=>t.id===S.entryTeam);
   if(team){ viewPortfolioEntry(team); return; }
-  setCollectionHead('Portfolio / เข้าสู่ระบบ','building','เลือกกลุ่มและประเภทผู้ใช้เพื่อเข้าสู่ระบบ');
-  $('#content').innerHTML = `<section class="public-intro"><h2 tabindex="-1" data-entry-heading>เลือกกลุ่มของท่าน</h2><p>เลือกกลุ่มที่รับผิดชอบ แล้วเลือก MENTOR หรือหน่วยบริการ (MENTEE) เพื่อเข้าสู่ระบบ</p></section>
-    <div class="group-choice-grid" aria-label="เลือกกลุ่มเพื่อเข้าสู่ระบบ">${DB.teams.slice().sort((a,b)=>a.id-b.id).map(groupChoice).join('')}</div>
-    <button class="entry-coordinator" data-act="entry-coord">${ic('shield')}ผู้ประสานงานจังหวัดเข้าสู่ระบบ</button>
-    <section class="central-team" aria-labelledby="central-team-title"><h2 id="central-team-title">ฝ่ายบริหารและประสานงานกลาง</h2><div class="central-grid">${(DB.mentorCoordinators||[]).map(personCard).join('')}</div></section>`;
+  setCollectionHead('เข้าสู่ระบบ','building','เลือกกลุ่มและประเภทผู้ใช้เพื่อเข้าสู่ระบบ');
+  $('#content').innerHTML = `<section class="public-intro" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
+    <div>
+      <h2 tabindex="-1" data-entry-heading style="margin:0 0 6px">เลือกกลุ่มและหน่วยงานเพื่อเข้าสู่ระบบ</h2>
+      <p style="margin:0">เลือกเข้าสู่ระบบ MENTOR หรือหน่วยบริการ (MENTEE) ในกลุ่มที่รับผิดชอบ</p>
+    </div>
+    <button class="btn btn-lux" data-act="entry-coord">${ic('shield')}ผู้ประสานงานจังหวัดเข้าสู่ระบบ</button>
+  </section>
+  <div class="portal-groups-container">
+    ${DB.teams.slice().sort((a,b)=>a.id-b.id).map(groupPortalCard).join('')}
+  </div>`;
   $('#content [data-entry-heading]')?.focus({preventScroll:true});
 }
 
@@ -2655,7 +2824,7 @@ function peek(id){
 function viewPortfolioEntry(team){
   const unitStep=S.rolePick==='mentee';
   const units=DB.units.filter(u=>u.team===team.id);
-  setCollectionHead('Portfolio / เข้าสู่ระบบ','building',unitStep?'เลือกหน่วยบริการเพื่อเข้าสู่ระบบ':'เลือกประเภทผู้ใช้เพื่อเข้าสู่ระบบ');
+  setCollectionHead('เข้าสู่ระบบ','building',unitStep?'เลือกหน่วยบริการเพื่อเข้าสู่ระบบ':'เลือกประเภทผู้ใช้เพื่อเข้าสู่ระบบ');
   $('#content').innerHTML = `<section class="portfolio-entry">
     <h2 class="entry-q" tabindex="-1" data-entry-heading>${unitStep?'เลือกหน่วยบริการของท่าน':'เลือกประเภทผู้ใช้'}</h2>
     <p class="entry-help">${unitStep?'เลือกหน่วยบริการเพื่อเปิดหน้ากรอก PIN':'เลือกบทบาทที่ต้องการใช้งาน แล้วดำเนินการเข้าสู่ระบบ'}</p>
@@ -3718,6 +3887,12 @@ document.addEventListener('click', async e=>{
     case 'dual-list': dualList(el.dataset.p, el.dataset.s); break;
     case 'role-go': { const r=el.dataset.r; if(S.role===r){ go(r==='mentor'?'mentor':'mentee'); } else go('role',{rolePick:null}); break; }
     case 'entry-team': go('portfolio',{entryTeam:+el.dataset.team,rolePick:null}); break;
+    case 'entry-mentor-team': { const tm=+el.dataset.team; pinModal('team',tm,teamName(tm)); break; }
+    case 'entry-mentee-team': { const tm=+el.dataset.team; go('portfolio',{entryTeam:tm,rolePick:'mentee'}); break; }
+    case 'entry-unit-direct': { const u=unitById(el.dataset.id); if(u) pinModal('unit',u.id,u.name); break; }
+    case 'lib-auth-btn': libAuthSubmit(); break;
+    case 'lib-toggle-pass': { const inp=$('#lib-pass-in'); if(inp) inp.type = inp.type==='password'?'text':'password'; break; }
+    case 'lib-lock': { try{ sessionStorage.removeItem('gecc_library_auth'); }catch(e){} S.libraryAuth=false; toast('ออกจากระบบ Library เรียบร้อย'); viewLibrary(); break; }
     case 'entry-mentor': if(S.entryTeam) pinModal('team',S.entryTeam,teamName(S.entryTeam)); break;
     case 'entry-mentee': S.rolePick='mentee'; viewPortfolio(); break;
     case 'entry-unit': { const u=unitById(id); if(u && u.team===S.entryTeam) pinModal('unit',id,u.name); break; }
@@ -3756,6 +3931,7 @@ document.addEventListener('keydown', e=>{
   if(e.key==='Tab' && $('#modal-root .modal')){const nodes=[...$('#modal-root .modal').querySelectorAll('button:not(:disabled),a[href],input:not(:disabled),select:not(:disabled),textarea:not(:disabled),[tabindex="0"]')].filter(x=>x.getClientRects().length);const first=nodes[0],last=nodes.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
   if(e.target.matches('[role="tab"]') && ['ArrowRight','ArrowLeft','Home','End'].includes(e.key)){const tabs=[...e.target.parentElement.querySelectorAll('[role="tab"]')];let i=tabs.indexOf(e.target);i=e.key==='Home'?0:e.key==='End'?tabs.length-1:(i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;e.preventDefault();tabs[i].click();requestAnimationFrame(()=>document.querySelector('#'+tabs[i].id)?.focus());return;}
 
+  if(e.key==='Enter' && e.target.id==='lib-pass-in'){ e.preventDefault(); libAuthSubmit(); return; }
   if(e.key==='Enter' && e.target.id==='pin-in'){ e.preventDefault(); pinOk(); return; }
   if(e.key==='Escape'){ if($('#modal-root').innerHTML) closeModal(); else closeMenu(); }
   if((e.key==='Enter'||e.key===' ') && e.target.matches('tr[data-act], g[data-act], li[data-act]')){ e.preventDefault(); e.target.click(); }
