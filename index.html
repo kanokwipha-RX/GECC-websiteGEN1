@@ -1896,6 +1896,9 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 .library-gate-card .gate-icon svg{width:32px;height:32px;}
 .library-gate-card h2{margin:0 0 8px;font-size:22px;color:#fff;}
 .library-gate-card p{margin:0;font-size:14px;color:#D5DCEE;line-height:1.55;}
+.library-gate-card .inp{background:#fff;color:#0F2263;font-weight:600;}
+.library-gate-card .btn-ghost{color:#F1D58F!important;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);border-radius:10px;height:44px;}
+.library-gate-card .btn-ghost:hover{background:rgba(255,255,255,.2);color:#fff!important;}
 </style>
 <link rel="stylesheet" href="assets/premium.css">
 <script src="assets/motion.js" defer></script>
@@ -2450,8 +2453,8 @@ function viewLibrary(){
         <div class="field" id="f-lib-pass" style="margin-top:20px;text-align:left">
           <label for="lib-pass-in" style="font-weight:600;font-size:13px;color:#E6CB82">รหัสผ่านเข้าใช้งาน (Access Code)</label>
           <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
-            <input class="inp" type="password" id="lib-pass-in" autocomplete="current-password" placeholder="กรอกรหัสผ่าน" style="flex:1">
-            <button class="btn btn-ghost btn-icon" data-act="lib-toggle-pass" type="button" aria-label="แสดง/ซ่อนรหัสผ่าน" style="color:#D5DCEE">${ic('eye')}</button>
+            <input class="inp" type="password" id="lib-pass-in" data-secret-toggle="true" autocomplete="current-password" placeholder="กรอกรหัสผ่าน" style="flex:1">
+            <button class="btn btn-ghost btn-icon" data-act="lib-toggle-pass" type="button" aria-label="แสดง/ซ่อนรหัสผ่าน" title="แสดง/ซ่อนรหัสผ่าน">${ic('eye')}</button>
           </div>
           <div class="err" id="lib-pass-err">รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</div>
         </div>
