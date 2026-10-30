@@ -2370,7 +2370,7 @@ function updatePager(){
   $$('.nav button[data-tab]').forEach(b=>{ if(S.view==='unit'&&S.tab===b.dataset.tab) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
   const el=$('#pager'); if(!el) return; let prev=null, next=null;
   const tn=$('#tnav'); el.innerHTML='';
-  if(!S.role || S.view==='modules' || S.view==='send' || S.view==='library' || S.view==='committee' || S.view==='portfolio'){ if(tn) tn.innerHTML=''; return; }
+  if(!S.role || S.view==='modules' || S.view==='send' || S.view==='library' || S.view==='committee' || S.view==='portfolio' || S.view==='gallery' || S.view==='mentors'){ if(tn) tn.innerHTML=''; return; }
   const pv=v=>({attrs:`data-act="go" data-view="${v}"`, label:PN[v]});
   if(S.view==='unit'){
     const order=Object.keys(TN); const i=order.indexOf(S.tab); const u=unitById(S.unitId);
