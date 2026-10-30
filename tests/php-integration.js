@@ -74,7 +74,9 @@ try {
   database=spawn(join(maria,"mariadbd.exe"),["--no-defaults","--basedir="+resolve(maria,".."),"--datadir="+dataDir,"--port="+dbPort,
     "--bind-address=127.0.0.1","--console","--innodb-buffer-pool-size=64M","--max-connections=30"],{windowsHide:true});
   database.stdout.on("data",append);database.stderr.on("data",append);
+  const libraryHash=phpRun("-r",["echo password_hash('TestLibrary2570!', PASSWORD_ARGON2ID);"]);
   await writeFile(join(privateDir,"config.local.php"),"<?php return ["+
+    "'library_password_hash'=>"+literal(libraryHash)+","+
     "'dsn'=>"+literal("mysql:host=127.0.0.1;port="+dbPort+";dbname=mysql;charset=utf8mb4")+","+
     "'db_user'=>'root','db_password'=>"+literal(password)+",'origin'=>"+literal(origin)+",'base_path'=>'/sskgecc',"+
     "'secure_cookie'=>false,'allow_web_setup'=>true,'setup_token_hash'=>"+literal((await readFile(join(privateDir,"config.example.php"),"utf8")).match(/'setup_token_hash' => '([a-f0-9]+)'/)[1])+","+
@@ -121,6 +123,58 @@ try {
     actors[name]=await login(name,changed);
   }
   const coord=actors["coord-01"],unit=actors["000001"],mentor=actors["mentor-01-01"],other=actors["mentor-02-01"];
+  await check("public detail allowlist, content permissions, Library session and migration idempotence",async()=>{
+    const projection=(await call("public/units")).data.units;assert.equal(projection.length,28);
+    for(const row of projection)assert.deepEqual(Object.keys(row).sort(),['id','name','team','submission','criteria','readiness','workflow','physical','quality','narrative','status','outcomes','score','level','updatedAt'].sort());
+    assert.equal((await call("admin/content")).status,403);
+    assert.equal((await call("admin/content",unit)).status,403);
+    assert.equal((await call("library")).status,401);
+    assert.equal((await call("library",null,"POST",{password:"wrong"})).status,401);
+    const lib=await call("library",null,"POST",{password:"TestLibrary2570!"});assert.equal(lib.status,200);assert.equal(lib.data.folders.length,5);
+    const cookie=lib.headers.get("set-cookie").split(";")[0];
+    assert.equal((await call("library",null,"GET",undefined,{Cookie:cookie})).status,200);
+    assert.equal((await call("library",null,"GET",undefined,{Cookie:cookie+"forged"})).status,401);
+    assert.ok(!(await call("public/content")).data.library);
+    assert.ok(!(await call("state")).data.state.publicContent.library);
+    let c=(await call("admin/content",coord)).data;
+    c.content.albums=[{title:"Private draft",date:"2026-10-30",description:"test",status:"draft",images:[]}];
+    assert.equal((await call("admin/content",coord,"PUT",{revision:c.revision,content:c.content})).status,200);
+    assert.deepEqual((await call("public/content")).data.albums,[]);
+    assert.equal((await call("admin/content",coord,"PUT",{revision:c.revision,content:c.content})).status,409);
+    const malformed=structuredClone(c.content);malformed.mentorAdvisors=[null];
+    c=(await call('admin/content',coord)).data;
+    assert.equal((await call('admin/content',coord,'PUT',{revision:c.revision,content:malformed})).status,400);
+    const image=await readFile('assets/library/meetings.png');
+    const upload=await fetch(base+'api/index.php?route=admin/media',{method:'POST',headers:{Origin:origin,Cookie:coord.cookie,'X-CSRF-Token':coord.csrf},body:image});
+    assert.equal(upload.status,200);const media=await upload.json();
+    assert.equal((await fetch(base+media.src)).status,404);
+    c=(await call("admin/content",coord)).data;
+    c.content.albums=[{title:'Published test',date:'2026-10-30',description:'',status:'published',images:[{src:media.src,alt:'test'}]}];
+    assert.equal((await call("admin/content",coord,"PUT",{revision:c.revision,content:c.content})).status,200);
+    assert.equal((await fetch(base+media.src)).status,200);
+    const invalid=await fetch(base+'api/index.php?route=admin/media',{method:'POST',headers:{Origin:origin,Cookie:coord.cookie,'X-CSRF-Token':coord.csrf},body:Buffer.from('<svg onload=alert(1)>')});assert.equal(invalid.status,400);
+    c=(await call("admin/content",coord)).data;c.content.albums=[];
+    assert.equal((await call("admin/content",coord,"PUT",{revision:c.revision,content:c.content})).status,200);
+    c=(await call("admin/content",coord)).data;
+    const teams=structuredClone(c.teams);teams[0].members[0].photo=media.src;
+    assert.equal((await call("admin/content",coord,"PUT",{revision:c.revision,content:c.content,teams})).status,200);
+    assert.equal((await fetch(base+media.src)).status,200,'published MENTOR portrait is served');
+    const rosterState=(await call("state",coord)).data;
+    const newRoster={units:[...rosterState.state.units.map(u=>({code:u.code,name:u.name,team:u.team,district:u.district})),...Array.from({length:4},(_,i)=>({code:'',name:'Isolated fixture unit '+i,team:1,district:''}))]};
+    const rosterFile=join(root,'fixture-roster.json');await writeFile(rosterFile,JSON.stringify(newRoster));
+    const preview=JSON.parse(phpRun(join(privateDir,'roster.php'),[rosterFile]));assert.equal(preview.applied,false);assert.equal(preview.changes.length,32);
+    const applied=JSON.parse(phpRun(join(privateDir,'roster.php'),[rosterFile,'--apply',String(preview.revision)]));assert.equal(applied.applied,true);
+    const migrated=(await call('state',coord)).data.state;assert.equal(migrated.units.length,32);
+    assert.deepEqual(migrated.units.slice(0,28).map(u=>[u.id,u.code]),rosterState.state.units.map(u=>[u.id,u.code]));
+    assert.deepEqual(migrated.assess,rosterState.state.assess);
+    sql('UPDATE gecc_app_state SET document=?,revision=? WHERE id=1',[JSON.stringify(rosterState.state),applied.revision+1]);
+    const before=(await call("state",coord)).data.state;
+    phpRun(join(privateDir,"migrate-content.php"),["--apply"]);
+    const once=(await call("state",coord)).data;
+    phpRun(join(privateDir,"migrate-content.php"),["--apply"]);
+    assert.equal((await call("state",coord)).data.revision,once.revision);
+    assert.deepEqual(once.state.assess,before.assess);assert.deepEqual(once.state.units,before.units);
+  });
   await check("public projection and auth/CSRF/origin/session boundaries",async()=>{
     const r=await call("state");assert.deepEqual(r.data.state.units,[]);assert.deepEqual(r.data.state.assess,{});
     assert.ok(!r.data.state.pins);
@@ -256,7 +310,7 @@ try {
     await page.evaluate(()=>go("unit",{unitId:"u01",tab:"narr"}));
     await page.locator('textarea[data-bind="narr.0.text"]').fill("บันทึกจาก PHP browser");
     await page.locator("[data-act=save]").first().click();await page.waitForFunction(()=>!S.dirty);
-    await page.reload();await page.waitForFunction(()=>S.coord===true);
+    await page.reload({waitUntil:"domcontentloaded"});await page.waitForFunction(()=>S.coord===true);
     assert.equal(await page.evaluate(()=>DB.assess.u01.narr[0].text),"บันทึกจาก PHP browser");
   });
   await check("PHP import refuses nonempty data, previews missing files and restores only into empty target",async()=>{
@@ -359,7 +413,7 @@ try {
     assert.equal(after.name,"ผู้ประสานงานจังหวัด");
     assert.deepEqual({...after,name:account.name},account,"password, role and scope unchanged");
     const {readdir}=await import("node:fs/promises");
-    const backups=await readdir(join(privateDir,"backups"));assert.equal(backups.length,1);
+    const backups=(await readdir(join(privateDir,"backups"))).filter(name=>name.startsWith("encoding-"));assert.equal(backups.length,1);
     const backup=JSON.parse(await readFile(join(privateDir,"backups",backups[0]),"utf8"));
     assert.deepEqual(backup.state,before.state);assert.ok(!JSON.stringify(backup).includes("password_hash"));
     const fixed=(await call("state",coord)).data;
@@ -374,7 +428,7 @@ try {
       assert.equal(await p.locator(".cdt-m.start em").innerText(),await p.evaluate(()=>thDate(DB.cal.start)),"timeline must retain October 1 in Bangkok");
       await p.pdf({path:"artifacts/php-public-dashboard-print.pdf",format:"A4",printBackground:true});
       assert.equal(await p.locator(".tb-brand .seal img").count(),2);
-      assert.equal(await p.locator("[data-act=dual-list]").count(),0,"public metrics have no private drilldown");
+      assert.equal(await p.locator("[data-act=dual-list]").count(),6,"public metrics offer safe public drilldown");
       assert.equal(await p.evaluate(()=>DB.units.length),0);
       await p.screenshot({path:"artifacts/php-public-dashboard-desktop.png",fullPage:true});
       for (const view of ["exec","portfolio","committee","library"]) {

@@ -343,7 +343,7 @@ window.GECCClient = (() => {
       const h = (r.v / 15) * PH;
       const done = r.v === 15;
       const nm = typeof shortUnit === "function" ? shortUnit(r.name) : r.name;
-      return `<g class="pb-b" role="button" tabindex="0" data-act="go" data-view="portfolio" aria-label="${esc(r.name)} ดำเนินการ ${r.v} จาก 15 ข้อ"><title>${esc(r.name)} · ${r.v}/15 ข้อ</title>
+      return `<g class="pb-b" role="button" tabindex="0" data-public-name="${esc(r.name)}" aria-label="${esc(r.name)} ดำเนินการ ${r.v} จาก 15 ข้อ"><title>${esc(r.name)} · ${r.v}/15 ข้อ</title>
         <rect x="${x}" y="${T}" width="${BW}" height="${PH}" rx="7" class="pb-tr"/>
         ${h > 0 ? `<rect x="${x}" y="${base - h}" width="${BW}" height="${h}" rx="7" fill="url(#pbNavy)"/>` : ""}
         ${done ? `<rect x="${x}" y="${base - h}" width="${BW}" height="5" rx="2.5" fill="url(#pbGold)"/>` : ""}
@@ -368,7 +368,7 @@ window.GECCClient = (() => {
       ["out", "3", "เกณฑ์ 3 ด้านผลลัพธ์", "3 ด้าน · 100 คะแนน"],
     ];
     const row = (k, cls, st, icn, l, v) =>
-      `<button class="mr ${cls}" data-act="go" data-view="portfolio" aria-label="รายชื่อหน่วยบริการ ${l} ${v} แห่ง" title="แตะเพื่อเข้าสู่ระบบ"><span class="mr-i">${ic(icn)}</span><span class="mr-l">${l}</span><b>${v}</b><small>${pc(v)}%</small></button>`;
+      `<button class="mr ${cls}" data-act="crit-list" data-k="${k}" data-s="${st}" aria-label="รายชื่อหน่วยบริการ ${l} ${v} แห่ง" title="กดดูรายละเอียดรายหน่วยบริการ"><span class="mr-i">${ic(icn)}</span><span class="mr-l">${l}</span><b>${v}</b><small>${pc(v)}%</small></button>`;
     return `<div class="grid g3 crit3">${CB.map(([k, no, nm, sb]) => {
       const d = crit?.[k]?.done || 0,
         p = crit?.[k]?.prog || 0,
@@ -399,7 +399,7 @@ window.GECCClient = (() => {
       const k = (buckets[bx] = (buckets[bx] || 0) + 1);
       const cx = X(x.total) + Math.floor((k - 1) / 5) * 8;
       const cy = 112 - ((k - 1) % 5) * 16;
-      dots += `<g class="dot" role="button" tabindex="0" data-act="go" data-view="portfolio" aria-label="${esc(x.name)} ${fmt(x.total, 1)} คะแนน ${LEVEL[x.level]?.l || ''}"><title>${esc(x.name)} · ${fmt(x.total, 1)} คะแนน · ${LEVEL[x.level]?.l || ''}</title><circle cx="${cx}" cy="${cy}" r="7" class="d-${x.level}"/></g>`;
+      dots += `<g class="dot" role="button" tabindex="0" data-public-name="${esc(x.name)}" aria-label="${esc(x.name)} ${fmt(x.total, 1)} คะแนน ${LEVEL[x.level]?.l || ''}"><title>${esc(x.name)} · ${fmt(x.total, 1)} คะแนน · ${LEVEL[x.level]?.l || ''}</title><circle cx="${cx}" cy="${cy}" r="7" class="d-${x.level}"/></g>`;
     });
     return `<div class="strip"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="การกระจายคะแนนของหน่วยบริการเทียบเกณฑ์ผ่าน 240 คะแนน">
       ${bands.map((b) => `<rect x="${X(b[0])}" y="22" width="${X(b[1]) - X(b[0])}" height="104" rx="${b[0] === 150 ? 8 : 0}" class="band-${b[2]}"/><text x="${(X(b[0]) + X(b[1])) / 2}" y="16" text-anchor="middle" class="bandl" font-size="${fs}">${b[3]}</text>`).join("")}
@@ -421,7 +421,7 @@ window.GECCClient = (() => {
       <div class="grid g4" role="group" aria-label="กรองตามสถานะ">
         ${["pass", "fix", "risk", "none"]
           .map(
-            (s) => `<button class="kpi is-${s}" data-act="go" data-view="portfolio" title="เข้าสู่ระบบเพื่อดูรายละเอียด">
+            (s) => `<button class="kpi is-${s}" data-act="go-mdash" data-f="${s}" title="กดดูรายละเอียดรายหน่วยบริการ">
           <span class="kpi-k">${ic(STATUS[s].i)}${STATUS[s].l}</span><span class="kpi-v">${cnt(s)}<small>แห่ง</small></span>
           <span class="kpi-s">${s === "pass" ? "กายภาพครบ คะแนน ≥ 240 ไม่มีข้อบกพร่องค้าง" : s === "fix" ? "คะแนนผ่าน แต่ยังมีข้อบกพร่องต้องแก้ไข" : s === "risk" ? "กายภาพไม่ครบ หรือคะแนนต่ำกว่า 240" : "รอส่งเกณฑ์ให้ครบก่อนคิดผล"}</span></button>`,
           )
@@ -468,11 +468,11 @@ window.GECCClient = (() => {
   function publicDashboard() {
     const r = aggregate;
     executiveHead(r?.lastUpdatedAt);
-    const N = r?.units || 28;
+    const N = r?.units || 0;
     $("#content").innerHTML =
       `${reportBar('Executive_Dashboard_GECC2570','', 'Executive Dashboard · ภาพรวมจังหวัดศรีสะเกษ',r?.lastUpdatedAt)}
       ${countdownHTML(false)}
-      ${r?.submission && r?.readiness ? `<h2 class="section-t" style="margin-top:0">ความพร้อมของหน่วยบริการตามเกณฑ์การประเมิน GECC ด้านกายภาพ ด้านคุณภาพ และด้านผลลัพธ์</h2><section class="card band" aria-label="รายงานการส่งเกณฑ์และแบบประเมินความพร้อม">${dualBandSummary(N,r.submission,r.readiness,false)}<div class="band-f">${ic('clock')}ข้อมูล ณ ${r.lastUpdatedAt?thDateTime(r.lastUpdatedAt):'ยังไม่มีการบันทึก'} · หน่วยบริการที่สมัคร ${fmt(N)} แห่ง · ${fmt(r?.teams||6)} กลุ่ม MENTOR</div></section>`:''}
+      ${r?.submission && r?.readiness ? `<h2 class="section-t" style="margin-top:0">ความพร้อมของหน่วยบริการตามเกณฑ์การประเมิน GECC ด้านกายภาพ ด้านคุณภาพ และด้านผลลัพธ์</h2><section class="card band" aria-label="รายงานการส่งเกณฑ์และแบบประเมินความพร้อม">${dualBandSummary(N,r.submission,r.readiness,true)}<div class="band-f">${ic('clock')}ข้อมูล ณ ${r.lastUpdatedAt?thDateTime(r.lastUpdatedAt):'ยังไม่มีการบันทึก'} · หน่วยบริการที่สมัคร ${fmt(N)} แห่ง · ${fmt(r?.teams||6)} กลุ่ม MENTOR</div></section>`:''}
       <h2 class="section-t">หน่วยบริการที่มีความพร้อมด้านกายภาพ 15 ข้อ (MUST HAVE)</h2>
       ${publicPhysChart(r?.phys)}
       <h2 class="section-t">หน่วยบริการที่มีความพร้อมด้านคุณภาพ และด้านผลลัพธ์</h2>
@@ -480,7 +480,7 @@ window.GECCClient = (() => {
       <h2 class="section-t">ผลการตรวจประเมินจาก MENTOR</h2>
       ${publicMentorEvaluation(N, r)}
       ${publicSurveySection(r?.survey)}
-      <section style="margin-top:20px"><h2 class="section-t">ความก้าวหน้าภาพรวมจังหวัด</h2><p class="summary-note">แสดงข้อมูลรวมของหน่วยบริการที่เข้าร่วมการประเมิน เข้าสู่ระบบเพื่อดูรายละเอียด คะแนน และหลักฐานตามสิทธิ์ของท่าน</p>${
+      <section style="margin-top:20px"><h2 class="section-t">ความก้าวหน้าภาพรวมจังหวัด</h2><p class="summary-note">กดกราฟหรือปุ่มเพื่อดูชื่อหน่วยบริการ สถานะรายข้อ และคะแนน เอกสารหลักฐานและข้อเสนอแนะภายในต้องเข้าสู่ระบบตามสิทธิ์</p>${
         r
           ? `<div class="summary-grid">${[
               ["units", "หน่วยบริการที่เข้าร่วม"],

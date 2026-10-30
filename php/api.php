@@ -47,6 +47,7 @@ function file_checks(object $old, object $next, array $actor): void {
         }
     }
 }
+require_once __DIR__.'/public-features.php';
 function api(): never {
     header('Referrer-Policy: strict-origin-when-cross-origin');header('X-Frame-Options: DENY');
     try {
@@ -89,6 +90,7 @@ function api(): never {
             $cookie($token);reply(['user'=>account_view($a),'csrf'=>$csrf]);
         }
         if ($route==='session'&&$method==='GET') reply(['user'=>$session?account_view($session):null,'csrf'=>$session['csrf']??null]);
+        if (str_starts_with($route,'public/')||$route==='library') feature_routes($route,$method,$session);
         if ($modifying&&(!$session||!hash_equals($session['csrf'],$_SERVER['HTTP_X_CSRF_TOKEN']??''))) fail($session?403:401,$session?'คำขอยืนยันตัวตนไม่ถูกต้อง':'กรุณาเข้าสู่ระบบอีกครั้ง');
         if ($route==='session'&&$method==='DELETE') {
             query('DELETE FROM gecc_sessions WHERE token_hash=?',[hash('sha256',$sid)]);$cookie('',-1);reply(['ok'=>true]);
@@ -105,6 +107,7 @@ function api(): never {
             $cookie('',-1);reply(['ok'=>true]);
         }
         if ($modifying&&!empty($session['must_change'])) fail(403,'กรุณาเปลี่ยนรหัสผ่านก่อนใช้งาน');
+        feature_routes($route,$method,$session);
         if ($route==='state'&&$method==='GET') {[$s,$r]=state();reply(result($s,$r,$session));}
         if ($route==='summary'&&$method==='GET') {[$s]=state();reply(summary($s));}
         if ($route==='state'&&$method==='PUT') {

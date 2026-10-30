@@ -146,7 +146,8 @@ try {
             .evaluate((e) => getComputedStyle(e).fontFamily),
           /IBM Plex Sans Thai/,
         );
-        assert.equal(await p.locator("[data-act=entry-team]").count(), 6);
+        assert.equal(await p.locator(".group-portal-card").count(), 6);
+        await p.evaluate(()=>go("committee"));
         assert.equal(
           await p
             .locator(".has-photo img")
@@ -158,7 +159,7 @@ try {
     );
     for (const width of [360, 390, 768, 1024, 1440]) {
       await p.setViewportSize({ width, height: 900 });
-      for (const view of ["portfolio", "library", "committee", "exec"]) {
+      for (const view of ["portfolio", "library", "committee", "exec", "gallery", "mentors"]) {
         await p.evaluate((v) => go(v), view);
         await p.waitForTimeout(100);
         const overflow = await p.evaluate(
@@ -186,7 +187,7 @@ try {
     checks.push("five responsive widths across four public screens");
     await p.setViewportSize({ width: 390, height: 844 });
     await p.emulateMedia({ colorScheme: "dark" });
-    for (const view of ["portfolio", "library", "committee", "exec"]) {
+    for (const view of ["portfolio", "library", "committee", "exec", "gallery", "mentors"]) {
       await p.evaluate((v) => go(v), view);
       await p.screenshot({
         path: `${artifactRoot}/${view}-390-dark.png`,

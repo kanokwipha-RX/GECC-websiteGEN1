@@ -26,8 +26,9 @@ function allowed(?array $a, ?object $u): bool {
 }
 function project(object $s, ?array $a): object {
     $d=copy_value($s); unset($d->pins,$d->demoStat,$d->mentorRosterVersion);
+    if (($a['role']??'')!=='coord') { $d->publicContent=public_content($s); }
     if (!$a) return (object)['v'=>$d->v,'fy'=>$d->fy,'isSample'=>false,
-        'teams'=>array_map(fn($t)=>(object)array_intersect_key(get_object_vars($t),array_flip(['id','name','photo'])),$d->teams),
+        'teams'=>array_map(fn($t)=>(object)array_intersect_key(get_object_vars($t),array_flip(['id','name','photo','members'])),$d->teams),
         'mentorCoordinators'=>$d->mentorCoordinators??[], 'cal'=>$d->cal, 'publicContent'=>$d->publicContent,
         'units'=>[], 'assess'=>(object)[], 'defects'=>[]];
     $d->units=array_values(array_filter($d->units,fn($u)=>allowed($a,$u)));
@@ -42,12 +43,18 @@ function validate_content(?object $c): void {
     $safe=function($v,$image=false) {
         if (!$v && $image) return;
         if (!is_string($v)||strlen($v)>8192) fail(400,'ลิงก์ไม่ถูกต้อง');
+        if ($image && preg_match('~^api/index\.php\?route=public/media/[a-f0-9]{32}$~D',$v)) return;
         if ($image && preg_match('~^assets/[A-Za-z0-9_./-]+\.(png|jpe?g|webp)$~D',$v) && !str_contains($v,'..')) return;
         $u=parse_url($v);
         if (!$u || ($u['scheme']??'')!=='https' || empty($u['host']) || isset($u['user']) || isset($u['pass'])) fail(400,'อนุญาตเฉพาะลิงก์ HTTPS');
     };
     foreach($c->library as $r) {$safe($r->url??null);$safe($r->image??null,true);}
-    foreach([$c->advisor,...$c->committee] as $p) $safe($p->photo??null,true);
+    foreach([$c->advisor,...$c->committee,...($c->mentorAdvisors??[])] as $person) {
+        if(!is_object($person))fail(400,'ข้อมูลบุคคลไม่ถูกต้อง');
+        foreach(['name','title','pos','role'] as $field)if(isset($person->$field)&&!is_string($person->$field))fail(400,'ชื่อและตำแหน่งต้องเป็นข้อความ');
+    }
+    validate_feature_content($c);
+    foreach([$c->advisor,...$c->committee,...($c->mentorAdvisors??[])] as $p) $safe($p->photo??null,true);
 }
 function validate_assessment(mixed $a): void {
     $fields=['started','date','round','inspector','inspectors','updatedAt','phys','qc','narr','out','ready','survey','ev','rev','adv','sender','quick','wf'];

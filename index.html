@@ -1902,6 +1902,7 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 </style>
 <link rel="stylesheet" href="assets/premium.css">
 <script src="assets/motion.js" defer></script>
+<link rel="stylesheet" href="assets/public-features.css">
 </head>
 <body>
 <a class="skip-link" href="#content">ข้ามไปยังเนื้อหาหลัก</a>
@@ -2391,6 +2392,8 @@ function render(){
   shell();
   const v = S.view;
   if(v==='exec') viewExec();
+  else if(v==='gallery') GECCPublic.gallery();
+  else if(v==='mentors') GECCPublic.mentors();
   else if(v==='committee') viewCommittee();
   else if(v==='library') viewLibrary();
   else if(v==='portfolio') viewPortfolio();
@@ -2485,7 +2488,7 @@ function viewCommittee(){
   setCollectionHead('คณะทำงาน','users','คณะทำงานขับเคลื่อนการดำเนินการศูนย์ราชการสะดวก GECC จังหวัดศรีสะเกษ');
   $('#content').innerHTML = `<section class="public-intro"><h2>คณะทำงาน GECC จังหวัดศรีสะเกษ</h2><p>ตามคำสั่งแต่งตั้งคณะทำงานขับเคลื่อนการดำเนินการศูนย์ราชการสะดวก GECC จังหวัดศรีสะเกษ ลงวันที่ 17 กันยายน 2569 ช่องภาพบุคคลเตรียมไว้สำหรับเพิ่มรูปภายหลัง</p></section>
     <div class="committee-advisor">${personCard(COMMITTEE_ADVISOR)}</div>
-    <div class="committee-grid">${COMMITTEE_MEMBERS.map(personCard).join('')}</div>
+    <div class="committee-advisor">${COMMITTEE_MEMBERS.slice(0,1).map(personCard).join('')}</div><div class="committee-grid">${COMMITTEE_MEMBERS.slice(1,-2).map(personCard).join('')}</div><div class="committee-grid committee-secretaries">${COMMITTEE_MEMBERS.slice(-2).map(personCard).join('')}</div>
     <section class="committee-duties" id="committee-duties"><h2>อำนาจหน้าที่</h2><ol>${COMMITTEE_DUTIES.map(d=>`<li>${esc(d)}</li>`).join('')}</ol></section>
     <section class="mentor-advisors-section" id="mentor-advisors" style="margin-top:34px">
       <div class="section-heading" style="margin-bottom:18px">
@@ -2497,7 +2500,7 @@ function viewCommittee(){
     <p class="committee-source"><a href="assets/committee-order-2569.pdf" target="_blank" rel="noopener noreferrer">${ic('file')}อ่านคำสั่งแต่งตั้งคณะทำงาน (PDF)</a></p>`;
 }
 function groupPortalCard(t){
-  const units = DB.units.filter(u=>u.team===t.id);
+  const units = (window.GECCPublic?.loginUnits||DB.units).filter(u=>u.team===t.id);
   const members = t.members || [];
   const title = t.name.replace(/^กลุ่มที่\s*\d+\s*:\s*/,'');
   return `<article class="group-portal-card" data-team="${t.id}">
@@ -2752,7 +2755,7 @@ function viewMDash(){
     <div class="pc"><div class="pv"><span>ส่งแล้ว</span><b>${fmt(dn/N*100)}%</b></div>${stack(dn,pg,nn)}</div></div>`;
   $('#content').innerHTML = `<div class="mdv">
   ${reportBar('MENTOR_DASHBOARD_GECC2570','', 'MENTOR DASHBOARD')}
-  ${!S.coord?`<div class="mylock">${ic('shield')}<span>แสดงเฉพาะ <b>${esc(teamName(S.team))}</b> · ${infos.length} หน่วยบริการ ตามสิทธิ์ที่เข้าสู่ระบบ</span></div>`:''}<div class="teamtabs" role="group" aria-label="เลือกกลุ่ม MENTOR" style="margin-bottom:16px;${!S.coord?'display:none':''}">${[{id:0,name:'ทุกกลุ่ม (28 หน่วยบริการ)'},...DB.teams].map(t=>`<button data-act="md-team" data-team="${t.id}" aria-pressed="${(S.mdTeam||0)===t.id}">${t.id?teamShort(t.id):esc(t.name)}</button>`).join('')}</div>
+  ${!S.coord?`<div class="mylock">${ic('shield')}<span>แสดงเฉพาะ <b>${esc(teamName(S.team))}</b> · ${infos.length} หน่วยบริการ ตามสิทธิ์ที่เข้าสู่ระบบ</span></div>`:''}<div class="teamtabs" role="group" aria-label="เลือกกลุ่ม MENTOR" style="margin-bottom:16px;${!S.coord?'display:none':''}">${[{id:0,name:`ทุกกลุ่ม (${DB.units.length} หน่วยบริการ)`},...DB.teams].map(t=>`<button data-act="md-team" data-team="${t.id}" aria-pressed="${(S.mdTeam||0)===t.id}">${t.id?teamShort(t.id):esc(t.name)}</button>`).join('')}</div>
   ${S.mdTeam?`<p class="small muted" style="margin:-6px 0 14px">${esc(teamName(S.mdTeam))} · ${infos.length} หน่วยบริการ</p>`:''}
   <h2 class="section-t" style="margin-top:0">งานที่หน่วยบริการส่งมา · รอ MENTOR ตรวจ</h2>
   ${wfQueueHTML(infos)}
@@ -2826,7 +2829,7 @@ function peek(id){
 /* ================= Portfolio: login steps ================= */
 function viewPortfolioEntry(team){
   const unitStep=S.rolePick==='mentee';
-  const units=DB.units.filter(u=>u.team===team.id);
+  const units=(window.GECCPublic?.loginUnits||DB.units).filter(u=>u.team===team.id);
   setCollectionHead('เข้าสู่ระบบ','building',unitStep?'เลือกหน่วยบริการเพื่อเข้าสู่ระบบ':'เลือกประเภทผู้ใช้เพื่อเข้าสู่ระบบ');
   $('#content').innerHTML = `<section class="portfolio-entry">
     <h2 class="entry-q" tabindex="-1" data-entry-heading>${unitStep?'เลือกหน่วยบริการของท่าน':'เลือกประเภทผู้ใช้'}</h2>
@@ -4015,5 +4018,6 @@ demoHash(); window.addEventListener('hashchange',demoHash);
 </script>
 <script src="assets/backup.js"></script>
 <script src="assets/server-client.js"></script>
+<script src="assets/public-features.js"></script>
 </body>
 </html>
