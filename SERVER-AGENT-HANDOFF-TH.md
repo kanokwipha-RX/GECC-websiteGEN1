@@ -4,7 +4,7 @@
 
 Repository: https://github.com/kanokwipha-RX/GECC-websiteGEN1
 
-Branch: `codex/production-readiness`
+Branch: `main`
 
 งานนี้อัปเดต **ระบบ PHP/MariaDB ที่ติดตั้งอยู่แล้ว** ผ่าน DirectAdmin ตามช่องทางที่เจ้าของเลือก ไม่ใช่ติดตั้ง Node/PostgreSQL ใหม่ การ push Git ไม่ได้อัปเดตเว็บไซต์โฮสติ้งโดยอัตโนมัติ
 
@@ -35,8 +35,8 @@ Branch: `codex/production-readiness`
 
 ```bash
 git fetch origin
-git switch codex/production-readiness
-git pull --ff-only origin codex/production-readiness
+git switch main
+git pull --ff-only origin main
 git log -1 --oneline
 npm ci --include=dev
 npm test
@@ -103,7 +103,7 @@ node server/check-production.js https://www.osscsskfda.org/sskgecc/
 ## ข้อความคัดลอกให้ AI agent ทำต่อ
 
 ```text
-คุณกำลังทำงานต่อใน repository GECC-websiteGEN1 branch codex/production-readiness
+คุณกำลังทำงานต่อใน repository GECC-websiteGEN1 branch main
 เป้าหมาย: อัปเดตระบบ PHP/MariaDB เดิมที่ https://www.osscsskfda.org/sskgecc/
 ด้วยชุดแก้ production/local parity และภาษาไทย โดยใช้ DirectAdmin File Manager
 ที่เจ้าของเข้าสู่ระบบไว้ หากไม่มี session ให้ขอเจ้าของเปิดหน้าโฮสต์และเข้าสู่ระบบ
