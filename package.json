@@ -19,7 +19,8 @@
     "check:production": "node server/check-production.js",
     "build:php": "node deploy/build-php.mjs",
     "test:php": "node tests/php-integration.js",
-    "data:import": "node server/manage.js import"
+    "data:import": "node server/manage.js import",
+    "test:content": "node tests/public-features-browser.js"
   },
   "dependencies": {
     "pg": "^8.16.3"

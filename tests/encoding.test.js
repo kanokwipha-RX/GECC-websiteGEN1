@@ -61,7 +61,10 @@ test("update bundle versions assets and excludes setup, credentials and live bac
     assert.ok(!(await readdir(release.publicDir)).includes("setup.html"));
     const html=await readFile(join(release.publicDir,"index.html"),"utf8");
     const refs=[...html.matchAll(/(?:src|href)="((?:assets|shared)\/[\w/-]+\.(?:js|css))\?v=([a-f0-9]+)"/g)];
-    assert.equal(refs.length,6);
+    assert.equal(refs.length,8);
+    assert.ok(!(await readdir(join(release.publicDir,"assets/library"))).includes("sources.json"));
+    assert.ok(!html.includes("geccssk2027"));
+    assert.ok(!html.includes("1wjorBuZYDM3ZOjo44cnxPtchOMnPixBR"));
     for(const [,path,hash] of refs)
       assert.equal(hash,createHash("sha256").update(await readFile(join(release.publicDir,path))).digest("hex").slice(0,12),path);
     assert.match(await readFile(join(release.publicDir,"assets/runtime.js"),"utf8"),/GECC_API_STYLE="php"/);

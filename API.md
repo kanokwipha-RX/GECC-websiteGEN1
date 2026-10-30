@@ -60,3 +60,18 @@ file/audit tables have relational constraints. This deliberate compatibility cho
 avoids rewriting the incumbent criteria/workflow while adding an authoritative
 server boundary. A global revision favors correctness over concurrent edit merging
 at the current 28-organization scale.
+
+## PHP Content v2 endpoints
+
+All routes below use /sskgecc/api/index.php?route=ROUTE.
+
+| Route | Methods | Access and data |
+|---|---|---|
+| public/units | GET | Explicit public per-unit status/score projection; no evidence, narrative or reviewer notes |
+| public/content | GET | Published albums/videos, committee and advisors; no Library links |
+| public/media/:id | GET | Only images referenced by published albums or public persons |
+| admin/content | GET, PUT | Coordinator; PUT {revision,content,teams?}; existing CSRF/session/revision enforcement |
+| admin/media | POST | Coordinator + CSRF, binary JPEG/PNG/WebP <=8 MB; returns {src} for a content reference |
+| library | GET, POST, DELETE | POST {password} requires same-origin; rate limited, HttpOnly cookie; GET requires valid cookie; DELETE revokes cookie |
+
+Content albums: {title,date,description,status,images:[{src,alt}]} with ISO dates and ordered image arrays. Videos: {title,category,url,status}; categories physical/highlight/activity and status draft/published. No schema replacement is required: content migration version 2 extends the existing publicContent document with a private snapshot first.

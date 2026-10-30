@@ -70,7 +70,20 @@ function summary(object $s): array {
     $r = ['units'=>count($s->units),'teams'=>count($s->teams)] + array_fill_keys(['submitted','reviewed','ready','complete','pass','fix','risk','none'],0);
     $r['submission'] = array_fill_keys(['done','prog','none'],0);
     $r['readiness'] = array_fill_keys(['ready','notready','draft','none'],0);
+    $r['crit'] = [
+        'qc' => array_fill_keys(['done','prog','none'], 0),
+        'narr' => array_fill_keys(['done','prog','none'], 0),
+        'out' => array_fill_keys(['done','prog','none'], 0)
+    ];
+    $r['levels'] = array_fill_keys(['gold','silver','blue','below','gate','none'], 0);
+    $r['phys'] = ['full'=>0, 'part'=>0, 'zero'=>0, 'bars'=>[]];
+    $r['survey'] = ['tot'=>0, 'units'=>0, 'avg'=>array_fill_keys(['s3','s4','s5','c1','c2','c5'], null)];
+    $r['scores'] = [];
     $r['lastUpdatedAt'] = null;
+
+    $svWeights = array_fill_keys(['s3','s4','s5','c1','c2','c5'], 0.0);
+    $svSums = array_fill_keys(['s3','s4','s5','c1','c2','c5'], 0.0);
+
     foreach ($s->units as $u) {
         $a = $s->assess->{$u->id} ?? null; $sub = sub_of($a);
         $complete = $sub['phys']==='done' && $sub['qual']==='done' && $sub['out']==='done';
@@ -80,11 +93,63 @@ function summary(object $s): array {
         if (($a->wf->status ?? '')==='submitted') $r['submitted']++;
         if (($a->wf->status ?? '')==='reviewed') $r['reviewed']++;
         if (ready_of($a)['st']==='ready') $r['ready']++;
-        if ($sub['phys']==='done' && $sub['qual']==='done' && $sub['out']==='done') {
+
+        foreach (['qc','narr','out'] as $ck) {
+            $r['crit'][$ck][$sub[$ck]]++;
+        }
+
+        $pv = ($a && !empty($a->started)) ? count(array_filter($a->phys ?? [], fn($v)=>$v===true)) : 0;
+        if ($pv === 15) $r['phys']['full']++;
+        else if ($pv > 0) $r['phys']['part']++;
+        else $r['phys']['zero']++;
+        $r['phys']['bars'][] = ['name'=>$u->name, 'team'=>$u->team, 'v'=>$pv];
+
+        if ($complete) {
             $r['complete']++; $c = calc($a);
             $open = count(array_filter($s->defects,fn($d)=>$d->unitId===$u->id && $d->status!=='closed'))>0;
             $r[!$c['physComplete'] || $c['total']<240 ? 'risk' : ($open?'fix':'pass')]++;
-        } else $r['none']++;
+            $r['levels'][$c['level']]++;
+            $r['scores'][] = ['total'=>$c['total'], 'level'=>$c['level'], 'name'=>$u->name];
+        } else {
+            $r['none']++;
+            $r['levels']['none']++;
+        }
+
+        $sv = $a->survey ?? null;
+        if ($sv && !empty($sv->n) && is_numeric($sv->n) && (float)$sv->n > 0) {
+            $nVal = (float)$sv->n;
+            $hasAny = false;
+            foreach (['s3','s4','s5'] as $sk) {
+                if (isset($sv->sat->$sk) && is_numeric($sv->sat->$sk)) {
+                    $svSums[$sk] += (float)$sv->sat->$sk * $nVal;
+                    $svWeights[$sk] += $nVal;
+                    $hasAny = true;
+                }
+            }
+            foreach (['c1','c2','c5'] as $ck) {
+                if (isset($sv->conf->$ck) && is_numeric($sv->conf->$ck)) {
+                    $svSums[$ck] += (float)$sv->conf->$ck * $nVal;
+                    $svWeights[$ck] += $nVal;
+                    $hasAny = true;
+                }
+            }
+            if ($hasAny) {
+                $r['survey']['tot'] += (int)$nVal;
+                $r['survey']['units']++;
+            }
+        }
     }
+
+    foreach (array_keys($r['survey']['avg']) as $k) {
+        if ($svWeights[$k] > 0) {
+            $r['survey']['avg'][$k] = round($svSums[$k] / $svWeights[$k], 2);
+        }
+    }
+
+    usort($r['phys']['bars'], function($a, $b) {
+        if ($b['v'] !== $a['v']) return $b['v'] <=> $a['v'];
+        return $a['team'] <=> $b['team'];
+    });
+
     return $r;
 }

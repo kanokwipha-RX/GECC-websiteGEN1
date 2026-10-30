@@ -1,4 +1,4 @@
-import { cp, mkdir, readFile, writeFile, access, chmod } from "node:fs/promises";
+import { cp, mkdir, readFile, writeFile, access, chmod, unlink } from "node:fs/promises";
 import { resolve, join, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 import { randomBytes, createHash } from "node:crypto";
@@ -28,6 +28,7 @@ export async function buildPhp(output, {updateOnly=false} = {}) {
     await cp(join(root,"php-public/.htaccess"),join(publicDir,".htaccess"));
   } else await cp(join(root,"php-public"), publicDir, { recursive:true });
   for (const path of ["index.html","assets","shared"]) await cp(join(root,path), join(publicDir,path), {recursive:true});
+  await unlink(join(publicDir,"assets/library/sources.json"));
   await writeFile(join(publicDir,"assets/runtime.js"),
     (await readFile(join(root,"assets/runtime.js"),"utf8"))+'\nwindow.GECC_API_STYLE="php";\n');
   let html = await readFile(join(publicDir,"index.html"),"utf8");
@@ -35,6 +36,10 @@ export async function buildPhp(output, {updateOnly=false} = {}) {
     const hash = createHash("sha256").update(await readFile(join(publicDir,match[1]))).digest("hex").slice(0,12);
     html = html.replaceAll('"'+match[1]+'"','"'+match[1]+'?v='+hash+'"');
   }
+  // Production publishes no Library folder URLs or shared password in page source.
+  html=html.replace(/const LIBRARY_ROOT = [^;]+;/, 'const LIBRARY_ROOT = "";')
+    .replace(/const LIBRARY_FOLDERS = \[[\s\S]*?\n\];/, 'const LIBRARY_FOLDERS = [];')
+    .replaceAll("geccssk2027", "DEMO_ONLY_NOT_A_PRODUCTION_PASSWORD");
   await writeFile(join(publicDir,"index.html"),html);
   await mkdir(join(privateDir,"data"), {recursive:true});
   const criteria = {PHYS:rules.PHYS,QC:rules.QC,NARR:rules.NARR,OUT:rules.OUT};
@@ -49,13 +54,14 @@ export async function buildPhp(output, {updateOnly=false} = {}) {
   await writeFile(join(privateDir,"setup-token.txt"), token+"\n",{flag:"wx",mode:0o600});
   }
   await writeFile(join(output,"README-DEPLOY.txt"),
-    (updateOnly ? "UPDATE ONLY: back up existing site, database and private files first. Do not reinstall or reset data.\nUpload public CONTENTS to existing public_html/sskgecc; gecc-private CONTENTS to existing private directory.\nPreserve config.local.php, accounts.json, installed.lock and files/. Sign in as coordinator, open Settings > ตรวจและซ่อมภาษาไทย, preview and confirm.\n" : "Upload public contents to public_html/sskgecc; upload gecc-private OUTSIDE public_html.\n"+
+    (updateOnly ? "UPDATE ONLY: back up existing site, database and private files first. Do not reinstall or reset data.\nUpload public CONTENTS to existing public_html/sskgecc; gecc-private CONTENTS to existing private directory.\nPreserve config.local.php, accounts.json, installed.lock and files/. Follow RELEASE-CONTENT-V2-TH.md: remove legacy public assets/library/sources.json, configure library_password_hash privately, then run php gecc-private/migrate-content.php --apply. Sign in as coordinator, open Settings > ตรวจและซ่อมภาษาไทย, preview and confirm.\n" : "Upload public contents to public_html/sskgecc; upload gecc-private OUTSIDE public_html.\n"+
     "Copy private config.example.php to config.local.php and fill hosting database credentials.\n"+
     "CLI: php gecc-private/manage.php check; php gecc-private/manage.php install --apply.\n"+
     "No SSH: temporarily enable allow_web_setup, open HTTPS /sskgecc/setup.html, supply setup-token.txt.\n"+
     "After success disable allow_web_setup and remove public setup.html. Passwords stay in private accounts.json.\n"+
     "Never upload the whole release folder into public_html. See PHP-DEPLOYMENT-TH.md in source.\n"),{mode:0o600});
   await cp(join(root,"PHP-DEPLOYMENT-TH.md"),join(output,"PHP-DEPLOYMENT-TH.md"));
+  await cp(join(root,"RELEASE-CONTENT-V2-TH.md"),join(output,"RELEASE-CONTENT-V2-TH.md"));
   return {output,publicDir,privateDir};
 }
 if (process.argv[1] && resolve(process.argv[1])===fileURLToPath(import.meta.url)) {

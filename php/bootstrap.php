@@ -90,3 +90,5 @@ function account_view(array $a): array {
 }
 require_once __DIR__ . '/domain.php';
 require_once __DIR__ . '/policy.php';
+
+require_once __DIR__ . '/public-features.php';

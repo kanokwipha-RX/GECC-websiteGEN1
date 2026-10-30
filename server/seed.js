@@ -29,8 +29,9 @@ export async function initialState() {
   const to = source.indexOf("/* ================= Shell", from);
   state.publicContent = vm.runInNewContext(
     source.slice(from, to) +
-      ";({library:LIBRARY_FOLDERS,advisor:COMMITTEE_ADVISOR,committee:COMMITTEE_MEMBERS,duties:COMMITTEE_DUTIES})",
+      ";({library:LIBRARY_FOLDERS,advisor:COMMITTEE_ADVISOR,committee:COMMITTEE_MEMBERS,duties:COMMITTEE_DUTIES,mentorAdvisors:MENTOR_ADVISORS})",
   );
+  Object.assign(state.publicContent, JSON.parse(await readFile(new URL("../php/data/content-defaults.json", import.meta.url),"utf8")));
   validateContent(state.publicContent);
   for (const t of state.teams) t.photo = `assets/images/group-${t.id}.jpg`;
   return state;
