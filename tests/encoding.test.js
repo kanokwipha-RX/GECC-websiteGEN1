@@ -45,8 +45,8 @@ test("public chart totals use real assessment and readiness states without unit 
   b.out.c21[0]=true;b.out.t3[0]=true;b.ready.c.fill("y");
   s.assess={u01:a,u02:b};
   const got=summary(s);
-  assert.deepEqual(got.submission,{done:1,prog:1,none:26});
-  assert.deepEqual(got.readiness,{ready:1,notready:1,draft:0,none:26});
+  assert.deepEqual(got.submission,{done:1,prog:1,none:30});
+  assert.deepEqual(got.readiness,{ready:1,notready:1,draft:0,none:30});
   assert.equal(got.lastUpdatedAt,a.updatedAt);
   assert.ok(!JSON.stringify(got).includes("u01"));
 });

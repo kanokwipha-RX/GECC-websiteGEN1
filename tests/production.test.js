@@ -31,14 +31,14 @@ test("deployment config separates HTTPS origin and base path", () => {
   assert.throws(() => configuration({ APP_ORIGIN: "https://example.org" }));
 });
 
-test("54 named scoped accounts have unique generated passwords and stable codes", async () => {
+test("58 named scoped accounts have unique generated passwords and stable codes", async () => {
   const s = await initialState();
   const b = prepareAccounts(s);
-  assert.equal(b.accounts.length, 54);
-  assert.equal(b.accounts.filter(a => a.role === "mentee").length, 28);
+  assert.equal(b.accounts.length, 58);
+  assert.equal(b.accounts.filter(a => a.role === "mentee").length, 32);
   assert.equal(b.accounts.filter(a => a.role === "mentor").length, 24);
   assert.equal(b.accounts.filter(a => a.role === "coord").length, 2);
-  assert.equal(new Set(b.accounts.map(a => a.password)).size, 54);
+  assert.equal(new Set(b.accounts.map(a => a.password)).size, 58);
   assert.ok(b.accounts.every(a => a.password.length === 24));
   assert.deepEqual(accountPlan(s), b.accounts.map(({ password, ...a }) => a));
 });
@@ -96,7 +96,7 @@ test("subdirectory serves public API, redirects slash, isolates cookies and pass
   } finally { if (app.listening) await new Promise(r => app.close(r)); await pool.end(); }
 });
 
-test("all 54 generated accounts authenticate with their own scope and require password change", async () => {
+test("all 58 generated accounts authenticate with their own scope and require password change", async () => {
   const pool = await testDatabase();
   const app = createApp({ pool, basePath: "/sskgecc", origin: "http://127.0.0.1" });
   try {
@@ -104,7 +104,7 @@ test("all 54 generated accounts authenticate with their own scope and require pa
     const s = await initialState();
     await pool.query("INSERT INTO app_state(id,document) VALUES(1,$1)", [JSON.stringify(s)]);
     const bundle = prepareAccounts(s);
-    assert.equal((await provisionAccounts(pool, bundle, true)).created, 54);
+    assert.equal((await provisionAccounts(pool, bundle, true)).created, 58);
     await new Promise(r => app.listen(0, "127.0.0.1", r));
     const url = `http://127.0.0.1:${app.address().port}/sskgecc/api/`;
     for (const a of bundle.accounts) {
@@ -117,7 +117,7 @@ test("all 54 generated accounts authenticate with their own scope and require pa
       assert.equal(user.team, a.team);
       const headers = { Cookie: login.headers.get("set-cookie").split(";")[0] };
       const state = await (await fetch(url + "state", { headers })).json();
-      assert.equal(state.state.units.length, a.role === "mentee" ? 1 : a.role === "mentor" ? s.units.filter(u => u.team === a.team).length : 28);
+      assert.equal(state.state.units.length, a.role === "mentee" ? 1 : a.role === "mentor" ? s.units.filter(u => u.team === a.team).length : 32);
       const mutation = await fetch(url + "state", { method: "PUT", headers: { ...headers, Origin: "http://127.0.0.1", "X-CSRF-Token": csrf, "Content-Type": "application/json" }, body: "{}" });
       assert.equal(mutation.status, 403);
     }

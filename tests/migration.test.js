@@ -19,9 +19,9 @@ test("reviewer cannot take a defect from another group by changing its unit iden
 });
 test("initialization uses official roster with no sample scores or credentials", async () => {
   const s = await initialState();
-  assert.equal(s.units.length, 28);
+  assert.equal(s.units.length, 32);
   assert.equal(s.teams.length, 6);
-  assert.equal(new Set(s.units.map((u) => u.code)).size, 28);
+  assert.equal(new Set(s.units.map((u) => u.code )).size, 32);
   assert.equal(s.units[0].code, "000001");
   assert.deepEqual(s.assess, {});
   assert.deepEqual(s.defects, []);
@@ -52,9 +52,9 @@ test("retired unit IDs/codes are not reused and newly created organizations get 
   input.units = input.units.filter((u) => u.id !== "u01");
   const removed = mergeState(s, input, actor);
   const add = project(removed, actor);
-  add.units.push({ id: "u29", name: "Test new organization", team: 1 });
+  add.units.push({ id: "u33", name: "Test new organization", team: 1 });
   const next = mergeState(removed, add, actor);
-  assert.equal(next.units.at(-1).code, "000029");
+  assert.equal(next.units.at(-1).code, "000033");
   const bad = project(next, actor);
   bad.units.push({ id: "u01", name: "Reused identifier", team: 1 });
   assert.throws(() => mergeState(next, bad, actor), /ถูกยกเลิก/);
