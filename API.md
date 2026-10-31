@@ -59,7 +59,7 @@ State records preserve the original JSON shape in versioned JSONB. Account/sessi
 file/audit tables have relational constraints. This deliberate compatibility choice
 avoids rewriting the incumbent criteria/workflow while adding an authoritative
 server boundary. A global revision favors correctness over concurrent edit merging
-at the current 28-organization scale.
+at the current 32-organization scale.
 
 ## PHP Content v2 endpoints
 

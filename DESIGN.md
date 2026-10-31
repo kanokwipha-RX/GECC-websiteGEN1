@@ -21,8 +21,8 @@ spacing/motion/accessibility tokens and shared refinements. Do not duplicate the
   token remains authoritative. Module cards, workflow status, reviewer tiles and
   report buttons use existing semantic surface/text tokens in both themes.
 - Compact countdown uses `.cdn-compact`; `.mini` belongs only to score bars.
-- At up to 600px the four public navigation links use two columns so complete
-  Thai labels are visible; the sticky page header follows the 102px navigation.
+- At up to 600px the six public navigation links use three columns so complete
+  Thai labels are visible; the sticky page header follows the measured navigation height.
 - Public production dashboards reuse executiveHead/countdownHTML/dualBandSummary
   with server aggregates only; private drilldowns remain authenticated. Chart
   panels use --surface in both themes. Photo-free person cards keep copy in flow.

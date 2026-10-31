@@ -1,6 +1,6 @@
 # GECC Sisaket 2570
 
-Government service-centre assessment for 28 organizations across six MENTOR groups.
+Government service-centre assessment for 32 organizations across six MENTOR groups.
 This is an existing assessment application, not an LMS. Preserve all assessment
 criteria, scoring, review/return/reopen flows, evidence and reporting functions.
 
