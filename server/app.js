@@ -239,6 +239,40 @@ export function createApp({
         const { document } = await readState(pool);
         return json(res, 200, summary(document));
       }
+      if (path === "/api/public/login-options" && req.method === "GET") {
+        const { document } = await readState(pool);
+        const { rows: accounts } = await pool.query(
+          "SELECT username,name,role,unit_id,team FROM accounts WHERE active=true",
+        );
+        const username = (matches) => {
+          const found = accounts.filter(matches);
+          return found.length === 1 ? found[0].username : "";
+        };
+        return json(res, 200, {
+          units: (document.units || []).map((u) => ({
+            id: u.id,
+            name: u.name,
+            team: u.team,
+            username: username((a) => u.id && a.role === "mentee" && a.unit_id === u.id),
+          })),
+          mentors: (document.teams || []).flatMap((team) =>
+            (team.members || []).map((person) => ({
+              name: person.name || "",
+              pos: person.pos || "",
+              photo: person.photo || "",
+              team: team.id,
+              username: username((a) => typeof person.name === "string" && person.name.trim() !== "" && a.name === person.name && a.role === "mentor" && a.team === team.id),
+            })),
+          ),
+          advisors: (document.publicContent?.mentorAdvisors || []).map((person) => ({
+            name: person.name || "",
+            title: person.title || "",
+            role: person.role || "",
+            photo: person.photo || "",
+            username: username((a) => typeof person.name === "string" && person.name.trim() !== "" && a.name === person.name && ["mentor", "coord"].includes(a.role) && (!Object.hasOwn(person, "loginUsername") || a.username === person.loginUsername)),
+          })),
+        });
+      }
       if (
         ["/api/import/preview", "/api/import"].includes(path) &&
         req.method === "POST"

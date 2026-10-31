@@ -16,7 +16,7 @@ export function allowed(actor, u) {
     !!actor &&
     !!u &&
     (actor.role === "coord" ||
-      (actor.role === "mentor" && actor.team === u.team) ||
+      (actor.role === "mentor" && (actor.team === 0 || actor.team === u.team)) ||
       (actor.role === "mentee" && actor.unit_id === u.id))
   );
 }

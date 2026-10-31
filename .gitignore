@@ -4,6 +4,7 @@ node_modules/
 !.env.example
 var/
 artifacts/
+output/
 *.log
 php/config.local.php
 php/accounts.json

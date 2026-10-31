@@ -54,6 +54,7 @@ window.GECCClient = (() => {
     applyContent();
   }
   function applyContent() {
+    window.GECCPublic?.resetLoginOptions();
     const c = DB.publicContent;
     if (!c) return;
     if (Array.isArray(c.library))
@@ -132,7 +133,7 @@ window.GECCClient = (() => {
   }
   function context() {
     if (!user) {
-      Object.assign(S, { role: null, team: 0, coord: false, menteeUnit: null });
+      Object.assign(S, { role: null, team: 0, coord: false, allGroups: false, accountName: null, menteeUnit: null });
       return;
     }
     Object.assign(S, {
@@ -140,6 +141,8 @@ window.GECCClient = (() => {
       team: user.role === "mentor" ? user.team : 0,
       mdTeam: user.role === "mentor" ? user.team : 0,
       coord: user.role === "coord",
+      allGroups: user.role === "mentor" && user.team === 0,
+      accountName: user.name,
       menteeUnit: user.unitId || null,
     });
   }
@@ -257,12 +260,14 @@ window.GECCClient = (() => {
     } else render();
     toast(msg);
   }
-  function loginModal(kind, id, label) {
+  function loginModal(kind, id, label, username) {
     S.pinPending = { kind, id };
     const unit = kind === "unit" ? DB.units.find((u) => u.id === id) : null;
+    const selectedUsername = username ?? unit?.code ?? "";
     openModal(
-      `<div class="modal-h"><div><h3>เข้าสู่ระบบ</h3><p>${esc(label)}</p></div><button class="btn btn-ghost btn-icon" data-act="modal-close" aria-label="ปิด">${ic("x")}</button></div><form id="server-login" class="modal-b auth-fields" novalidate><div class="field"><label for="login-name">${kind === "unit" ? "รหัสหน่วยบริการ 6 หลัก" : "ชื่อผู้ใช้รายบุคคล"}</label><input class="inp" id="login-name" name="username" autocomplete="username" ${kind === "unit" ? 'inputmode="numeric" maxlength="6"' : ""} value="${esc(unit?.code || "")}" required></div><div class="field"><label for="login-password">รหัสผ่าน</label><input class="inp" type="password" id="login-password" name="password" autocomplete="current-password" required maxlength="128"></div><p id="login-error" class="auth-help" role="status">${kind === "unit" ? "ใช้รหัส GECC ภายในที่ได้รับจากผู้ประสานงาน" : "ใช้บัญชีส่วนบุคคลที่ผู้ประสานงานกำหนดให้"}</p><button class="btn btn-primary" type="submit">เข้าสู่ระบบ</button></form>`,
+      `<div class="modal-h"><div><h3>เข้าสู่ระบบ</h3><p>${esc(label)}</p></div><button class="btn btn-ghost btn-icon" data-act="modal-close" aria-label="ปิด">${ic("x")}</button></div><form id="server-login" class="modal-b auth-fields" novalidate><div class="field"><label for="login-name">${kind === "unit" ? "รหัสหน่วยบริการ 6 หลัก" : "ชื่อผู้ใช้รายบุคคล"}</label><input class="inp" id="login-name" name="username" autocomplete="username" ${kind === "unit" ? 'inputmode="numeric" maxlength="6"' : ""} value="${esc(selectedUsername)}" ${selectedUsername?'readonly':''} required aria-describedby="login-error"></div><div class="field"><label for="login-password">รหัสผ่าน</label><input class="inp" type="password" id="login-password" name="password" autocomplete="current-password" required maxlength="128" aria-describedby="login-error"></div><p id="login-error" class="auth-help" role="status">${selectedUsername ? "กรอกรหัสผ่านของบัญชีที่เลือก" : "ยังไม่ได้เชื่อมรายชื่อนี้กับบัญชี กรอกชื่อผู้ใช้ที่ได้รับจากผู้ประสานงาน หรือติดต่อผู้ประสานงานเพื่อตรวจสอบ"}</p><button class="btn btn-primary" type="submit">เข้าสู่ระบบ</button></form>`,
     );
+    if(selectedUsername) $("#login-password")?.focus();
   }
   function invalidField(input) {
     input.closest(".field")?.classList.add("invalid");
@@ -737,18 +742,13 @@ window.GECCClient = (() => {
       report(error);
     }
   });
-  // Public portfolio keeps its group/role steps. Organizations type their private account code.
+  // Public login selection is owned by the step-by-step entry view.
   document.addEventListener(
     "click",
     (e) => {
       if (!server) return;
       const el = e.target.closest("[data-act]");
       if (!el) return;
-      if (el.dataset.act === "entry-mentee") {
-        e.stopImmediatePropagation();
-        e.preventDefault();
-        loginModal("unit", null, "หน่วยบริการ · " + teamName(S.entryTeam));
-      }
       if (el.dataset.act === "load-sample") {
         e.stopImmediatePropagation();
         e.preventDefault();

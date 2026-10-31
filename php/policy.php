@@ -22,7 +22,7 @@ function same(mixed $a, mixed $b): bool {
     return $a === $b;
 }
 function allowed(?array $a, ?object $u): bool {
-    return $a && $u && ($a['role']==='coord' || ($a['role']==='mentor' && (int)$a['team']===$u->team) || ($a['role']==='mentee' && $a['unit_id']===$u->id));
+    return $a && $u && ($a['role']==='coord' || ($a['role']==='mentor' && $a['team']!==null && ((int)$a['team']===0 || (int)$a['team']===$u->team)) || ($a['role']==='mentee' && $a['unit_id']===$u->id));
 }
 function project(object $s, ?array $a): object {
     $d=copy_value($s); unset($d->pins,$d->demoStat,$d->mentorRosterVersion);

@@ -1,6 +1,21 @@
 import { readFile } from "node:fs/promises";
 import vm from "node:vm";
 import { validateContent } from "./policy.js";
+export function initializeUnitCodes(state) {
+  const used = new Set();
+  for (const unit of state.units) {
+    if (unit.code == null) continue;
+    if (!/^\d{6}$/.test(unit.code) || used.has(unit.code))
+      throw new Error("Invalid or duplicate unit code");
+    used.add(unit.code);
+  }
+  let next = Math.max(state.nextUnitCode || 1, ...[...used].map(code => Number(code) + 1));
+  for (const unit of state.units) if (unit.code == null) {
+    if (next > 999999) throw new Error("Unit code range exhausted");
+    unit.code = String(next++).padStart(6, "0");
+  }
+  state.nextUnitCode = next;
+}
 export async function initialState() {
   const state = JSON.parse(
     await readFile(
@@ -12,8 +27,7 @@ export async function initialState() {
   state.defects = [];
   state.isSample = false;
   delete state.pins;
-  state.units.forEach((u, i) => (u.code = String(i + 1).padStart(6, "0")));
-  state.nextUnitCode = state.units.length + 1;
+  initializeUnitCodes(state);
   state.retiredUnitIds = [];
   state.cal = {
     start: "2026-10-01",

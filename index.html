@@ -1973,42 +1973,723 @@ const NEWB = '<span class="new" title="เกณฑ์ที่ปรับเ�
 /* ================= เกณฑ์ GECC 2570 ================= */
 /* n:true = เกณฑ์ที่ปรับเพิ่มใหม่ ตามอินโฟกราฟิก "มีอะไรใหม่ใน GECC 2570" */
 const GROUP_PHOTOS = Object.fromEntries([1,2,3,4,5,6].map(id=>[id,`assets/images/group-${id}.jpg`]));
+const OFFICIAL_UNITS = [
+  {
+    "id": "u01",
+    "name": "ที่ทำการปกครองอำเภอกันทรลักษ์",
+    "code": "000001",
+    "district": "กันทรลักษ์",
+    "kind": "",
+    "team": 1,
+    "prev": ""
+  },
+  {
+    "id": "u02",
+    "name": "ที่ทำการปกครองอำเภอขุนหาญ",
+    "code": "000002",
+    "district": "ขุนหาญ",
+    "kind": "",
+    "team": 1,
+    "prev": ""
+  },
+  {
+    "id": "u03",
+    "name": "ที่ทำการปกครองอำเภอพยุห์",
+    "code": "000003",
+    "district": "พยุห์",
+    "kind": "",
+    "team": 1,
+    "prev": ""
+  },
+  {
+    "id": "u04",
+    "name": "ที่ทำการปกครองอำเภอโนนคูณ",
+    "code": "000004",
+    "district": "โนนคูณ",
+    "kind": "",
+    "team": 1,
+    "prev": ""
+  },
+  {
+    "id": "u05",
+    "name": "ที่ทำการปกครองอำเภอห้วยทับทัน",
+    "code": "000005",
+    "district": "ห้วยทับทัน",
+    "kind": "",
+    "team": 1,
+    "prev": ""
+  },
+  {
+    "id": "u29",
+    "code": "000029",
+    "name": "ปกครองอำเภอเมืองศรีสะเกษ",
+    "district": "",
+    "kind": "",
+    "team": 1,
+    "prev": ""
+  },
+  {
+    "id": "u06",
+    "name": "ที่ทำการปกครองอำเภออุทุมพรพิสัย",
+    "code": "000006",
+    "district": "อุทุมพรพิสัย",
+    "kind": "",
+    "team": 2,
+    "prev": ""
+  },
+  {
+    "id": "u07",
+    "name": "ที่ทำการปกครองอำเภอราษีไศล",
+    "code": "000007",
+    "district": "ราษีไศล",
+    "kind": "",
+    "team": 2,
+    "prev": ""
+  },
+  {
+    "id": "u08",
+    "name": "ที่ทำการปกครองอำเภอเมืองจันทร์",
+    "code": "000008",
+    "district": "เมืองจันทร์",
+    "kind": "",
+    "team": 2,
+    "prev": ""
+  },
+  {
+    "id": "u09",
+    "name": "ที่ทำการปกครองอำเภอบึงบูรพ์",
+    "code": "000009",
+    "district": "บึงบูรพ์",
+    "kind": "",
+    "team": 2,
+    "prev": ""
+  },
+  {
+    "id": "u30",
+    "code": "000030",
+    "name": "ท้องถิ่นจังหวัด",
+    "district": "",
+    "kind": "",
+    "team": 2,
+    "prev": ""
+  },
+  {
+    "id": "u31",
+    "code": "000031",
+    "name": "ปกครองโพธิ์ศรีสุวรรณ",
+    "district": "",
+    "kind": "",
+    "team": 2,
+    "prev": ""
+  },
+  {
+    "id": "u11",
+    "name": "สำนักงานที่ดินจังหวัดศรีสะเกษ สาขากันทรารมย์",
+    "code": "000011",
+    "district": "กันทรารมย์",
+    "kind": "",
+    "team": 3,
+    "prev": ""
+  },
+  {
+    "id": "u12",
+    "name": "สำนักงานที่ดินจังหวัดศรีสะเกษ สาขากันทรลักษ์",
+    "code": "000012",
+    "district": "กันทรลักษ์",
+    "kind": "",
+    "team": 3,
+    "prev": ""
+  },
+  {
+    "id": "u13",
+    "name": "สำนักงานที่ดินจังหวัดศรีสะเกษ สาขาอุทุมพรพิสัย",
+    "code": "000013",
+    "district": "อุทุมพรพิสัย",
+    "kind": "",
+    "team": 3,
+    "prev": ""
+  },
+  {
+    "id": "u14",
+    "name": "สำนักงานโยธาธิการและผังเมืองจังหวัดศรีสะเกษ",
+    "code": "000014",
+    "district": "ระดับจังหวัด",
+    "kind": "",
+    "team": 3,
+    "prev": ""
+  },
+  {
+    "id": "u24",
+    "name": "สำนักงานคลังจังหวัดศรีสะเกษ",
+    "code": "000024",
+    "district": "ระดับจังหวัด",
+    "kind": "",
+    "team": 3,
+    "prev": ""
+  },
+  {
+    "id": "u16",
+    "name": "สำนักงานคุมประพฤติจังหวัดศรีสะเกษ",
+    "code": "000016",
+    "district": "ระดับจังหวัด",
+    "kind": "",
+    "team": 4,
+    "prev": ""
+  },
+  {
+    "id": "u17",
+    "name": "สำนักงานจัดหางานจังหวัดศรีสะเกษ",
+    "code": "000017",
+    "district": "ระดับจังหวัด",
+    "kind": "",
+    "team": 4,
+    "prev": ""
+  },
+  {
+    "id": "u18",
+    "name": "สำนักงานสวัสดิการและคุ้มครองแรงงานจังหวัดศรีสะเกษ",
+    "code": "000018",
+    "district": "ระดับจังหวัด",
+    "kind": "",
+    "team": 4,
+    "prev": ""
+  },
+  {
+    "id": "u19",
+    "name": "สำนักงานพัฒนาสังคมและความมั่นคงของมนุษย์จังหวัดศรีสะเกษ",
+    "code": "000019",
+    "district": "ระดับจังหวัด",
+    "kind": "",
+    "team": 4,
+    "prev": ""
+  },
+  {
+    "id": "u32",
+    "code": "000032",
+    "name": "แรงงานจังหวัดศรีสะเกษ",
+    "district": "",
+    "kind": "",
+    "team": 4,
+    "prev": ""
+  },
+  {
+    "id": "u20",
+    "name": "โรงพยาบาลราษีไศล",
+    "code": "000020",
+    "district": "ราษีไศล",
+    "kind": "",
+    "team": 5,
+    "prev": ""
+  },
+  {
+    "id": "u21",
+    "name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านทับทิมสยาม07",
+    "code": "000021",
+    "district": "",
+    "kind": "",
+    "team": 5,
+    "prev": ""
+  },
+  {
+    "id": "u22",
+    "name": "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านม่วงแยก",
+    "code": "000022",
+    "district": "",
+    "kind": "",
+    "team": 5,
+    "prev": ""
+  },
+  {
+    "id": "u23",
+    "name": "สำนักงานป้องกันและบรรเทาสาธารณภัยจังหวัดศรีสะเกษ",
+    "code": "000023",
+    "district": "ระดับจังหวัด",
+    "kind": "",
+    "team": 5,
+    "prev": ""
+  },
+  {
+    "id": "u15",
+    "name": "เรือนจำจังหวัดศรีสะเกษ",
+    "code": "000015",
+    "district": "ระดับจังหวัด",
+    "kind": "",
+    "team": 5,
+    "prev": ""
+  },
+  {
+    "id": "u10",
+    "name": "ศูนย์ดำรงธรรมจังหวัดศรีสะเกษ",
+    "code": "000010",
+    "district": "ระดับจังหวัด",
+    "kind": "",
+    "team": 6,
+    "prev": ""
+  },
+  {
+    "id": "u25",
+    "name": "สำนักงานสถิติจังหวัดศรีสะเกษ",
+    "code": "000025",
+    "district": "ระดับจังหวัด",
+    "kind": "",
+    "team": 6,
+    "prev": ""
+  },
+  {
+    "id": "u26",
+    "name": "สำนักงานพัฒนาชุมชนจังหวัดศรีสะเกษ",
+    "code": "000026",
+    "district": "ระดับจังหวัด",
+    "kind": "",
+    "team": 6,
+    "prev": ""
+  },
+  {
+    "id": "u27",
+    "name": "สำนักงานวัฒนธรรมจังหวัดศรีสะเกษ",
+    "code": "000027",
+    "district": "ระดับจังหวัด",
+    "kind": "",
+    "team": 6,
+    "prev": ""
+  },
+  {
+    "id": "u28",
+    "name": "สำนักงานพระพุทธศาสนาจังหวัดศรีสะเกษ",
+    "code": "000028",
+    "district": "ระดับจังหวัด",
+    "kind": "",
+    "team": 6,
+    "prev": ""
+  }
+];
+const LEGACY_ROSTER = {"units":[{"id":"u01","name":"ที่ทำการปกครองอำเภอกันทรลักษ์","team":1},{"id":"u02","name":"ที่ทำการปกครองอำเภอขุนหาญ","team":1},{"id":"u03","name":"ที่ทำการปกครองอำเภอพยุห์","team":1},{"id":"u04","name":"ที่ทำการปกครองอำเภอโนนคูณ","team":1},{"id":"u05","name":"ที่ทำการปกครองอำเภอห้วยทับทัน","team":1},{"id":"u06","name":"ที่ทำการปกครองอำเภออุทุมพรพิสัย","team":2},{"id":"u07","name":"ที่ทำการปกครองอำเภอราษีไศล","team":2},{"id":"u08","name":"ที่ทำการปกครองอำเภอเมืองจันทร์","team":2},{"id":"u09","name":"ที่ทำการปกครองอำเภอบึงบูรพ์","team":2},{"id":"u10","name":"ศูนย์ดำรงธรรมจังหวัดศรีสะเกษ","team":2},{"id":"u11","name":"สำนักงานที่ดินจังหวัดศรีสะเกษ สาขากันทรารมย์","team":3},{"id":"u12","name":"สำนักงานที่ดินจังหวัดศรีสะเกษ สาขากันทรลักษ์","team":3},{"id":"u13","name":"สำนักงานที่ดินจังหวัดศรีสะเกษ สาขาอุทุมพรพิสัย","team":3},{"id":"u14","name":"สำนักงานโยธาธิการและผังเมืองจังหวัดศรีสะเกษ","team":3},{"id":"u15","name":"เรือนจำจังหวัดศรีสะเกษ","team":4},{"id":"u16","name":"สำนักงานคุมประพฤติจังหวัดศรีสะเกษ","team":4},{"id":"u17","name":"สำนักงานจัดหางานจังหวัดศรีสะเกษ","team":4},{"id":"u18","name":"สำนักงานสวัสดิการและคุ้มครองแรงงานจังหวัดศรีสะเกษ","team":4},{"id":"u19","name":"สำนักงานพัฒนาสังคมและความมั่นคงของมนุษย์จังหวัดศรีสะเกษ","team":4},{"id":"u20","name":"โรงพยาบาลราษีไศล","team":5},{"id":"u21","name":"โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านทับทิมสยาม07","team":5},{"id":"u22","name":"โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านม่วงแยก","team":5},{"id":"u23","name":"สำนักงานป้องกันและบรรเทาสาธารณภัยจังหวัดศรีสะเกษ","team":5},{"id":"u24","name":"สำนักงานคลังจังหวัดศรีสะเกษ","team":6},{"id":"u25","name":"สำนักงานสถิติจังหวัดศรีสะเกษ","team":6},{"id":"u26","name":"สำนักงานพัฒนาชุมชนจังหวัดศรีสะเกษ","team":6},{"id":"u27","name":"สำนักงานวัฒนธรรมจังหวัดศรีสะเกษ","team":6},{"id":"u28","name":"สำนักงานพระพุทธศาสนาจังหวัดศรีสะเกษ","team":6}],"teams":[{"id":1,"names":["นางสาวชลธิชา พูลทวี","นางสาวณัฐพร ส่งสุข","นายศรายุทธ สีละออง","นายยุคลธร ฐิติเดชวรกุล"]},{"id":2,"names":["นางสาววรัตน์ สีละออง","นางสาวพรรษา ปัญญาคม","นายรณกร ศรีฤทธิประดิษฐ์","นางสาวอุไรรัตน์ ภิญโญ"]},{"id":3,"names":["นายลือชัย สิมมา","นายธนพล คนไว","นายยุทธนา เพิ่มบุญ","นายชัยมงคล อินทรีย์"]},{"id":4,"names":["น.ส.นุชรินทร์ วงศ์ฤทธิ์","นางจิราภรณ์ นาดูน","ภญ.ฐิติพร อินศร","นางสาวศรีไพร ศรีอ่อน"]},{"id":5,"names":["ภญ.ณัฐธิดา ถาวรยุตติการต์","นางสาวภัทรพร ผักกระโทก","นายภัทรวัฒน์ ศรีกลัด","นางสาววัชราภรณ์ ตรีเกียรติก้อง"]},{"id":6,"names":["นายบุญชวัฒน์ ปัญช์ญญาแดง","นายอัครภัทร แรตตีกรวย","นายคเณศ เสมาเงิน","นางสาวสุภัสสร เจริญทัศน์"]}]};
 const OFFICIAL_GROUPS = [
- {name:'กลุ่มที่ 1: งานปกครองอำเภอ', units:[['ที่ทำการปกครองอำเภอกันทรลักษ์','กันทรลักษ์'],['ที่ทำการปกครองอำเภอขุนหาญ','ขุนหาญ'],['ที่ทำการปกครองอำเภอพยุห์','พยุห์'],['ที่ทำการปกครองอำเภอโนนคูณ','โนนคูณ'],['ที่ทำการปกครองอำเภอห้วยทับทัน','ห้วยทับทัน']]},
- {name:'กลุ่มที่ 2: งานปกครองอำเภอ และอำนวยความเป็นธรรม', units:[['ที่ทำการปกครองอำเภออุทุมพรพิสัย','อุทุมพรพิสัย'],['ที่ทำการปกครองอำเภอราษีไศล','ราษีไศล'],['ที่ทำการปกครองอำเภอเมืองจันทร์','เมืองจันทร์'],['ที่ทำการปกครองอำเภอบึงบูรพ์','บึงบูรพ์'],['ศูนย์ดำรงธรรมจังหวัดศรีสะเกษ','ระดับจังหวัด']]},
- {name:'กลุ่มที่ 3: งานบริการที่ดิน โครงสร้างพื้นฐาน และผังเมือง', units:[['สำนักงานที่ดินจังหวัดศรีสะเกษ สาขากันทรารมย์','กันทรารมย์'],['สำนักงานที่ดินจังหวัดศรีสะเกษ สาขากันทรลักษ์','กันทรลักษ์'],['สำนักงานที่ดินจังหวัดศรีสะเกษ สาขาอุทุมพรพิสัย','อุทุมพรพิสัย'],['สำนักงานโยธาธิการและผังเมืองจังหวัดศรีสะเกษ','ระดับจังหวัด']]},
- {name:'กลุ่มที่ 4: งานกระบวนการยุติธรรม แรงงาน และสวัสดิการสังคม', units:[['เรือนจำจังหวัดศรีสะเกษ','ระดับจังหวัด'],['สำนักงานคุมประพฤติจังหวัดศรีสะเกษ','ระดับจังหวัด'],['สำนักงานจัดหางานจังหวัดศรีสะเกษ','ระดับจังหวัด'],['สำนักงานสวัสดิการและคุ้มครองแรงงานจังหวัดศรีสะเกษ','ระดับจังหวัด'],['สำนักงานพัฒนาสังคมและความมั่นคงของมนุษย์จังหวัดศรีสะเกษ','ระดับจังหวัด']]},
- {name:'กลุ่มที่ 5: งานสาธารณสุขและป้องกันภัย', units:[['โรงพยาบาลราษีไศล','ราษีไศล'],['โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านทับทิมสยาม07',''],['โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านม่วงแยก',''],['สำนักงานป้องกันและบรรเทาสาธารณภัยจังหวัดศรีสะเกษ','ระดับจังหวัด']]},
- {name:'กลุ่มที่ 6: งานบริหารจัดการ คลัง สถิติ ชุมชน วัฒนธรรม และศาสนา', units:[['สำนักงานคลังจังหวัดศรีสะเกษ','ระดับจังหวัด'],['สำนักงานสถิติจังหวัดศรีสะเกษ','ระดับจังหวัด'],['สำนักงานพัฒนาชุมชนจังหวัดศรีสะเกษ','ระดับจังหวัด'],['สำนักงานวัฒนธรรมจังหวัดศรีสะเกษ','ระดับจังหวัด'],['สำนักงานพระพุทธศาสนาจังหวัดศรีสะเกษ','ระดับจังหวัด']]}
+  {
+    "name": "กลุ่มที่ 1: งานปกครองอำเภอ",
+    "units": [
+      [
+        "ที่ทำการปกครองอำเภอกันทรลักษ์",
+        "กันทรลักษ์",
+        "u01",
+        "000001"
+      ],
+      [
+        "ที่ทำการปกครองอำเภอขุนหาญ",
+        "ขุนหาญ",
+        "u02",
+        "000002"
+      ],
+      [
+        "ที่ทำการปกครองอำเภอพยุห์",
+        "พยุห์",
+        "u03",
+        "000003"
+      ],
+      [
+        "ที่ทำการปกครองอำเภอโนนคูณ",
+        "โนนคูณ",
+        "u04",
+        "000004"
+      ],
+      [
+        "ที่ทำการปกครองอำเภอห้วยทับทัน",
+        "ห้วยทับทัน",
+        "u05",
+        "000005"
+      ],
+      [
+        "ปกครองอำเภอเมืองศรีสะเกษ",
+        "",
+        "u29",
+        "000029"
+      ]
+    ]
+  },
+  {
+    "name": "กลุ่มที่ 2: งานปกครองอำเภอ และอำนวยความเป็นธรรม",
+    "units": [
+      [
+        "ที่ทำการปกครองอำเภออุทุมพรพิสัย",
+        "อุทุมพรพิสัย",
+        "u06",
+        "000006"
+      ],
+      [
+        "ที่ทำการปกครองอำเภอราษีไศล",
+        "ราษีไศล",
+        "u07",
+        "000007"
+      ],
+      [
+        "ที่ทำการปกครองอำเภอเมืองจันทร์",
+        "เมืองจันทร์",
+        "u08",
+        "000008"
+      ],
+      [
+        "ที่ทำการปกครองอำเภอบึงบูรพ์",
+        "บึงบูรพ์",
+        "u09",
+        "000009"
+      ],
+      [
+        "ท้องถิ่นจังหวัด",
+        "",
+        "u30",
+        "000030"
+      ],
+      [
+        "ปกครองโพธิ์ศรีสุวรรณ",
+        "",
+        "u31",
+        "000031"
+      ]
+    ]
+  },
+  {
+    "name": "กลุ่มที่ 3: งานบริการที่ดิน โครงสร้างพื้นฐาน และผังเมือง",
+    "units": [
+      [
+        "สำนักงานที่ดินจังหวัดศรีสะเกษ สาขากันทรารมย์",
+        "กันทรารมย์",
+        "u11",
+        "000011"
+      ],
+      [
+        "สำนักงานที่ดินจังหวัดศรีสะเกษ สาขากันทรลักษ์",
+        "กันทรลักษ์",
+        "u12",
+        "000012"
+      ],
+      [
+        "สำนักงานที่ดินจังหวัดศรีสะเกษ สาขาอุทุมพรพิสัย",
+        "อุทุมพรพิสัย",
+        "u13",
+        "000013"
+      ],
+      [
+        "สำนักงานโยธาธิการและผังเมืองจังหวัดศรีสะเกษ",
+        "ระดับจังหวัด",
+        "u14",
+        "000014"
+      ],
+      [
+        "สำนักงานคลังจังหวัดศรีสะเกษ",
+        "ระดับจังหวัด",
+        "u24",
+        "000024"
+      ]
+    ]
+  },
+  {
+    "name": "กลุ่มที่ 4: งานกระบวนการยุติธรรม แรงงาน และสวัสดิการสังคม",
+    "units": [
+      [
+        "สำนักงานคุมประพฤติจังหวัดศรีสะเกษ",
+        "ระดับจังหวัด",
+        "u16",
+        "000016"
+      ],
+      [
+        "สำนักงานจัดหางานจังหวัดศรีสะเกษ",
+        "ระดับจังหวัด",
+        "u17",
+        "000017"
+      ],
+      [
+        "สำนักงานสวัสดิการและคุ้มครองแรงงานจังหวัดศรีสะเกษ",
+        "ระดับจังหวัด",
+        "u18",
+        "000018"
+      ],
+      [
+        "สำนักงานพัฒนาสังคมและความมั่นคงของมนุษย์จังหวัดศรีสะเกษ",
+        "ระดับจังหวัด",
+        "u19",
+        "000019"
+      ],
+      [
+        "แรงงานจังหวัดศรีสะเกษ",
+        "",
+        "u32",
+        "000032"
+      ]
+    ]
+  },
+  {
+    "name": "กลุ่มที่ 5: งานสาธารณสุขและป้องกันภัย",
+    "units": [
+      [
+        "โรงพยาบาลราษีไศล",
+        "ราษีไศล",
+        "u20",
+        "000020"
+      ],
+      [
+        "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านทับทิมสยาม07",
+        "",
+        "u21",
+        "000021"
+      ],
+      [
+        "โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านม่วงแยก",
+        "",
+        "u22",
+        "000022"
+      ],
+      [
+        "สำนักงานป้องกันและบรรเทาสาธารณภัยจังหวัดศรีสะเกษ",
+        "ระดับจังหวัด",
+        "u23",
+        "000023"
+      ],
+      [
+        "เรือนจำจังหวัดศรีสะเกษ",
+        "ระดับจังหวัด",
+        "u15",
+        "000015"
+      ]
+    ]
+  },
+  {
+    "name": "กลุ่มที่ 6: งานบริหารจัดการ คลัง สถิติ ชุมชน วัฒนธรรม และศาสนา",
+    "units": [
+      [
+        "ศูนย์ดำรงธรรมจังหวัดศรีสะเกษ",
+        "ระดับจังหวัด",
+        "u10",
+        "000010"
+      ],
+      [
+        "สำนักงานสถิติจังหวัดศรีสะเกษ",
+        "ระดับจังหวัด",
+        "u25",
+        "000025"
+      ],
+      [
+        "สำนักงานพัฒนาชุมชนจังหวัดศรีสะเกษ",
+        "ระดับจังหวัด",
+        "u26",
+        "000026"
+      ],
+      [
+        "สำนักงานวัฒนธรรมจังหวัดศรีสะเกษ",
+        "ระดับจังหวัด",
+        "u27",
+        "000027"
+      ],
+      [
+        "สำนักงานพระพุทธศาสนาจังหวัดศรีสะเกษ",
+        "ระดับจังหวัด",
+        "u28",
+        "000028"
+      ]
+    ]
+  }
 ];
 const MENTOR_COORDINATORS = [
   {name:'ภญ.มัลลิกา สุพล', role:'ที่ปรึกษา MENTOR และเลขานุการทีม Mentor', pos:'เภสัชกรชำนาญการพิเศษ'},
   {name:'ภญ.กนกวิภา ประกอบศรี', role:'Mentor และผู้ช่วยเลขานุการทีม MENTOR', pos:'เภสัชกรชำนาญการพิเศษ'}
 ];
 const MENTOR_MEMBERS = {
- 1:{focus:'งานฝ่ายปกครองอำเภอเมือง และผู้บริหารที่ดินจังหวัด', m:[['นางสาวชลธิชา พูลทวี','ปลัดอำเภอ (ที่ทำการปกครองอำเภอเมืองศรีสะเกษ)'],['นางสาวณัฐพร ส่งสุข','ปลัดอำเภอ (ที่ทำการปกครองอำเภอเมืองศรีสะเกษ)'],['นายศรายุทธ สีละออง','ปลัดอำเภอ (ที่ทำการปกครองอำเภอเมืองศรีสะเกษ)'],['นายยุคลธร ฐิติเดชวรกุล','เจ้าพนักงานที่ดินจังหวัดศรีสะเกษ (สำนักงานที่ดินจังหวัดศรีสะเกษ)']]},
- 2:{focus:'งานฝ่ายปกครอง และวิชาการที่ดินระดับเชี่ยวชาญ', m:[['นางสาววรัตน์ สีละออง','ปลัดอำเภอ (ที่ทำการปกครองอำเภอไพรบึง)'],['นางสาวพรรษา ปัญญาคม','ที่ทำการปกครองอำเภอไพรบึง'],['นายรณกร ศรีฤทธิประดิษฐ์','ปลัดอำเภอ (ที่ทำการปกครองอำเภอขุขันธ์)'],['นางสาวอุไรรัตน์ ภิญโญ','นักวิชาการที่ดินชำนาญการพิเศษ (สำนักงานที่ดินจังหวัดศรีสะเกษ)']]},
- 3:{focus:'งานด้านเทคนิค วิศวกรรม ระบบสารสนเทศ และ GIS', m:[['นายลือชัย สิมมา','วิศวกร ระดับ 9 (การไฟฟ้าส่วนภูมิภาคจังหวัดศรีสะเกษ)'],['นายธนพล คนไว','วิศวกร ระดับ 4 (การไฟฟ้าส่วนภูมิภาคจังหวัดศรีสะเกษ)'],['นายยุทธนา เพิ่มบุญ','ที่ทำการปกครองอำเภอกันทรารมย์'],['นายชัยมงคล อินทรีย์','เจ้าหน้าที่ด้านระบบสารสนเทศภูมิศาสตร์ (สำนักงานที่ดินจังหวัดศรีสะเกษ)']]},
- 4:{focus:'งานบัญชี การเงิน สารสนเทศ และสนับสนุนระบบงาน', m:[['น.ส.นุชรินทร์ วงศ์ฤทธิ์','นักบัญชี 7 (การประปาส่วนภูมิภาคสาขาศรีสะเกษ)'],['นางจิราภรณ์ นาดูน','พนักงานการเงินและบัญชี 6 (การประปาส่วนภูมิภาคสาขาศรีสะเกษ)'],['ภญ.ฐิติพร อินศร','เภสัชกรชำนาญการพิเศษ'],['นางสาวศรีไพร ศรีอ่อน','พนักงานบันทึกข้อมูล (สำนักงานที่ดินจังหวัดศรีสะเกษ)']]},
- 5:{focus:'งานบริการประชาชน สาธารณสุข ขนส่ง และนักวิชาการ', m:[['ภญ.ณัฐธิดา ถาวรยุตติการต์','เภสัชกรชำนาญการ'],['นางสาวภัทรพร ผักกระโทก','สำนักงานขนส่งจังหวัดศรีสะเกษ'],['นายภัทรวัฒน์ ศรีกลัด','นักวิเคราะห์นโยบายและแผนชำนาญการ'],['นางสาววัชราภรณ์ ตรีเกียรติก้อง','นักวิชาการที่ดินปฏิบัติการ (สำนักงานที่ดินจังหวัดศรีสะเกษ)']]},
- 6:{focus:'งานศูนย์ดำรงธรรมจังหวัด งานกฎหมาย และเจ้าพนักงานอาวุโส', m:[['นายบุญชวัฒน์ ปัญช์ญญาแดง','ผู้อำนวยการกลุ่มงานศูนย์ดำรงธรรมจังหวัด (สำนักงานจังหวัดศรีสะเกษ)'],['นายอัครภัทร แรตตีกรวย','นิติกรชำนาญการ รักษาราชการแทนตำแหน่งนิติกรชำนาญการพิเศษ (สำนักงานจังหวัดศรีสะเกษ)'],['นายคเณศ เสมาเงิน','นักวิเคราะห์นโยบายและแผนปฏิบัติการ (สำนักงานจังหวัดศรีสะเกษ)'],['นางสาวสุภัสสร เจริญทัศน์','เจ้าพนักงานที่ดินอาวุโส (สำนักงานที่ดินจังหวัดศรีสะเกษ)']]}
+  "1": {
+    "focus": "งานปกครองอำเภอ",
+    "m": [
+      [
+        "นายยุคลธร ฐิติเดชวรกุล",
+        "เจ้าพนักงานที่ดินจังหวัดศรีสะเกษ",
+        "assets/images/mentor-group-1-1.jpg",
+        "หัวหน้าทีม"
+      ],
+      [
+        "นางสาวณัฐพร ส่งสุข",
+        "ปลัดอำเภอ ที่ทำการปกครองอำเภอเมืองศรีสะเกษ",
+        "assets/images/mentor-group-1-2.jpg",
+        "MENTOR"
+      ],
+      [
+        "นายศรายุทธ สีละออง",
+        "ปลัดอำเภอ ที่ทำการปกครองอำเภอเมืองศรีสะเกษ",
+        "assets/images/mentor-group-1-3.jpg",
+        "MENTOR"
+      ],
+      [
+        "นางสาวชลธิชา พูลทวี",
+        "ปลัดอำเภอ ที่ทำการปกครองอำเภอเมืองศรีสะเกษ",
+        "assets/images/mentor-group-1-4.jpg",
+        "MENTOR"
+      ]
+    ]
+  },
+  "2": {
+    "focus": "งานปกครองอำเภอ และอำนวยความเป็นธรรม",
+    "m": [
+      [
+        "นางสกาวรัตน์ สีละออง",
+        "ปลัดอำเภอ ที่ทำการปกครองอำเภอไพรบึง",
+        "assets/images/mentor-group-2-1.jpg",
+        "หัวหน้าทีม"
+      ],
+      [
+        "นางสาวอุไรรัตน์ ภิญโญ",
+        "นักวิชาการที่ดินชำนาญการพิเศษ สำนักงานที่ดินจังหวัดศรีสะเกษ",
+        "assets/images/mentor-group-2-2.jpg",
+        "MENTOR"
+      ],
+      [
+        "นางสาวพรรษา ปัญญาคม",
+        "ปลัดอำเภอ ที่ทำการปกครองอำเภอไพรบึง",
+        "assets/images/mentor-group-2-3.jpg",
+        "MENTOR"
+      ],
+      [
+        "นายรนกร ศรีฤทธิประดิษฐ์",
+        "ปลัดอำเภอ ที่ทำการปกครองอำเภอขุขันธ์",
+        "assets/images/mentor-group-2-4.jpg",
+        "MENTOR"
+      ]
+    ]
+  },
+  "3": {
+    "focus": "งานบริการที่ดิน โครงสร้างพื้นฐาน และผังเมือง",
+    "m": [
+      [
+        "นายลือชัย สิมมา",
+        "วิศวกร ระดับ 9 การไฟฟ้าส่วนภูมิภาคจังหวัดศรีสะเกษ",
+        "assets/images/mentor-group-3-1.jpg",
+        "หัวหน้าทีม"
+      ],
+      [
+        "นางสาวสุภัสสร เจริญทัศน์",
+        "เจ้าพนักงานที่ดินอาวุโส สำนักงานที่ดินจังหวัดศรีสะเกษ",
+        "assets/images/mentor-group-3-2.jpg",
+        "MENTOR"
+      ],
+      [
+        "นายธนพล คนไว",
+        "วิศวกร ระดับ 4 การไฟฟ้าส่วนภูมิภาคจังหวัดศรีสะเกษ",
+        "assets/images/mentor-group-3-3.jpg",
+        "MENTOR"
+      ],
+      [
+        "นายยุทธนา เพิ่มบุญ",
+        "เจ้าหน้าที่ปกครอง ที่ทำการปกครองอำเภอกันทรารมย์",
+        "assets/images/mentor-group-3-4.jpg",
+        "MENTOR"
+      ]
+    ]
+  },
+  "4": {
+    "focus": "งานกระบวนการยุติธรรม แรงงาน และสวัสดิการสังคม",
+    "m": [
+      [
+        "ภญ.ฐิติพร อินศร",
+        "เภสัชกรชำนาญการพิเศษ สสจ.ศรีสะเกษ",
+        "assets/images/mentor-group-4-1.jpg",
+        "หัวหน้าทีม"
+      ],
+      [
+        "น.ส.นุชรินทร์ วงศ์ฤทธิ์",
+        "นักบัญชี 7 การประปาส่วนภูมิภาคสาขาศรีสะเกษ",
+        "assets/images/mentor-group-4-2.jpg",
+        "MENTOR"
+      ],
+      [
+        "นางจิราภรณ์ นาดูน",
+        "พนักงานการเงินและบัญชี 6 การประปาส่วนภูมิภาคสาขาศรีสะเกษ",
+        "assets/images/mentor-group-4-3.jpg",
+        "MENTOR"
+      ],
+      [
+        "นางสาวศรีไพร ศรีอ่อน",
+        "พนักงานบันทึกข้อมูล สำนักงานที่ดินจังหวัดศรีสะเกษ",
+        "assets/images/mentor-group-4-4.jpg",
+        "MENTOR"
+      ]
+    ]
+  },
+  "5": {
+    "focus": "งานสาธารณสุขและป้องกันภัย",
+    "m": [
+      [
+        "ภญ.กนกวิภา ประกอบศรี",
+        "เภสัชกรชำนาญการพิเศษ สสจ.ศรีสะเกษ",
+        "assets/images/mentor-group-5-1.jpg",
+        "หัวหน้าทีม"
+      ],
+      [
+        "ภญ.ณัฐธิดา ถาวรยุตติการต์",
+        "เภสัชกรชำนาญการ สสจ.ศรีสะเกษ",
+        "assets/images/mentor-group-5-2.jpg",
+        "MENTOR"
+      ],
+      [
+        "นางสาววัชราภรณ์ ตรีเกียรติก้อง",
+        "นักวิชาการที่ดินปฏิบัติการ สำนักงานที่ดินจังหวัดศรีสะเกษ",
+        "assets/images/mentor-group-5-3.jpg",
+        "MENTOR"
+      ],
+      [
+        "นางสาวภัทราพร ผักกระโทก",
+        "นักวิชาการขนส่งปฏิบัติการ สำนักงานขนส่งจังหวัดศรีสะเกษ",
+        "assets/images/mentor-group-5-4.jpg",
+        "MENTOR"
+      ]
+    ]
+  },
+  "6": {
+    "focus": "งานบริหารจัดการ คลัง สถิติ ชุมชน วัฒนธรรม และศาสนา",
+    "m": [
+      [
+        "นายบุญชวัฒน์ ปัญช์ญ์ญาแดง",
+        "ผู้อำนวยการกลุ่มงานศูนย์ดำรงธรรมจังหวัด สำนักงานจังหวัดศรีสะเกษ",
+        "assets/images/mentor-group-6-1.jpg",
+        "หัวหน้าทีม"
+      ],
+      [
+        "นายอัครภัทร นรัตถรักษา",
+        "นิติกรชำนาญการ รักษาราชการแทนตำแหน่งนิติกรชำนาญการพิเศษ สำนักงานจังหวัดศรีสะเกษ",
+        "assets/images/mentor-group-6-2.jpg",
+        "MENTOR"
+      ],
+      [
+        "นายภพรัตน์ ศรีกุล",
+        "นักวิเคราะห์นโยบายและแผนชำนาญการ สำนักงานจังหวัดศรีสะเกษ",
+        "assets/images/mentor-group-6-3.jpg",
+        "MENTOR"
+      ],
+      [
+        "นายชัยมงคล อินทรีย์",
+        "เจ้าหน้าที่ด้านระบบสารสนเทศภูมิศาสตร์ สำนักงานที่ดินจังหวัดศรีสะเกษ",
+        "assets/images/mentor-group-6-4.jpg",
+        "MENTOR"
+      ]
+    ]
+  }
 };
 const mentorLead = id => MENTOR_MEMBERS[id]?.m[0]?.[0]||'';
-const defMembers = id => (MENTOR_MEMBERS[id]?.m||[]).map(([name,pos])=>({name,pos}));
+const defMembers = id => (MENTOR_MEMBERS[id]?.m||[]).map(([name,pos,photo,role])=>({name,pos,photo,role}));
 function migrate(db){
   if(!Array.isArray(db.mentorCoordinators)) db.mentorCoordinators=MENTOR_COORDINATORS.map(x=>({...x}));
   db.teams.forEach(t=>{
     t.name=String(t.name||'').replace(/\s*\(?โซนที่\s*1\)?/g,'').trim();
-    const oldNames=t.id===4?[MENTOR_MEMBERS[4].m[0][0],MENTOR_MEMBERS[4].m[1][0],MENTOR_MEMBERS[4].m[3][0]]:MENTOR_MEMBERS[t.id]?.m.map(m=>m[0])||[];
+    const oldNames=LEGACY_ROSTER.teams.find(x=>x.id===t.id)?.names||[];
     const seeded=Array.isArray(t.members)&&t.members.length===oldNames.length&&t.members.every((m,i)=>m.name===oldNames[i]);
-    if(!Array.isArray(t.members)||(!db.mentorRosterVersion&&seeded)){
-      const photos=new Map((t.members||[]).map(m=>[m.name,m.photo]));
-      t.members=defMembers(t.id).map(m=>photos.get(m.name)?{...m,photo:photos.get(m.name)}:m);
-    }
+    if(!Array.isArray(t.members)||((db.mentorRosterVersion||0)<2&&seeded)) t.members=defMembers(t.id);
+    else t.members.forEach(m=>{const known=defMembers(t.id).find(x=>x.name===m.name);if(known&&!m.photo)m.photo=known.photo;});
     if(!t.lead) t.lead=mentorLead(t.id);
     if(t.focus===undefined) t.focus=MENTOR_MEMBERS[t.id]?.focus||'';
   });
-  db.mentorRosterVersion=1;
+  db.mentorRosterVersion=2;
+  if((db.rosterVersion||0)<2){
+    for(const official of OFFICIAL_UNITS){
+      const current=db.units.find(u=>u.id===official.id),before=LEGACY_ROSTER.units.find(u=>u.id===official.id);
+      if(!current&&!before&&!db.units.some(u=>u.name===official.name)) db.units.push({...official});
+      else if(current&&before&&current.name===before.name&&current.team===before.team) Object.assign(current,{name:official.name,team:official.team,code:current.code||official.code});
+    }
+    db.rosterVersion=2;
+  }
   Object.entries(db.assess||{}).forEach(([uid,a])=>{ if(!Array.isArray(a.inspectors)){ const u=db.units.find(x=>x.id===uid); const t=u&&db.teams.find(x=>x.id===u.team); a.inspectors = (db.isSample && a.started && t) ? t.members.slice(0,2).map(m=>m.name) : []; a.inspector = a.inspectors.join(', ') || (db.isSample?'':a.inspector||''); } });
   return db;
 }
@@ -2057,10 +2738,8 @@ function restore(){ try{ const s=localStorage.getItem(KEY); if(s) return JSON.pa
 /* ================= Data model ================= */
 function defaultTeams(){ return OFFICIAL_GROUPS.map((g,i)=>({id:i+1, name:g.name, photo:GROUP_PHOTOS[i+1], lead:mentorLead(i+1), focus:MENTOR_MEMBERS[i+1]?.focus||'', members:defMembers(i+1)})); }
 function blankDB(){
-  const units=[]; let n=1;
-  OFFICIAL_GROUPS.forEach((g,ti)=>g.units.forEach(([name,district])=>{ units.push({id:'u'+String(n).padStart(2,'0'), name, district, team:ti+1, kind:'', prev:''}); n++; }));
-  const teams = defaultTeams();
-  return { v:2, isSample:false, fy:2570, teams, mentorCoordinators:MENTOR_COORDINATORS.map(x=>({...x})), mentorRosterVersion:1, units, assess:{}, defects:[], createdAt:new Date().toISOString() };
+  const teams=defaultTeams();
+  return {v:2,isSample:false,fy:2570,teams,mentorCoordinators:MENTOR_COORDINATORS.map(x=>({...x})),mentorRosterVersion:2,rosterVersion:2,units:OFFICIAL_UNITS.map(u=>({...u})),assess:{},defects:[],createdAt:new Date().toISOString()};
 }
 function sampleDB(){
   const r=mulberry32(2570); const db=blankDB(); db.isSample=true; const NONE=[4,12,19,24,26], PROG=[1,6,9,11,15,17,21,23,27];
@@ -2248,7 +2927,7 @@ let DB = window.GECC_SERVER ? blankDB() : ensurePins(migrate(storedDB || sampleD
 if(needsMentorMigration) persist();
 if(DB.isSample && !DB.demoStat){ seedStatDemo(DB); DB.demoStat=1; persist(); }
 if(!storedDB && !window.GECC_SERVER) persist();
-const S = { evOpen:{}, view:'exec', role:null, team:0, entryTeam:null, menteeUnit:null, unitId:null, tab:'phys', onlyNew:false, draft:null, dirty:false, execFilter:'all', sort:{k:'total',d:-1}, defFilter:'active', q:'', rolePick:null };
+const S = { evOpen:{}, view:'exec', role:null, team:0, entryPath:null, entryTeam:null, menteeUnit:null, unitId:null, tab:'phys', onlyNew:false, draft:null, dirty:false, execFilter:'all', sort:{k:'total',d:-1}, defFilter:'active', q:'', rolePick:null };
 const LIBRARY_ROOT = 'https://drive.google.com/drive/folders/1wjorBuZYDM3ZOjo44cnxPtchOMnPixBR';
 const LIBRARY_FOLDERS = [
   {name:'เอกสารการประชุม', url:'https://drive.google.com/drive/folders/1q_q4ZnNuCvYHB3-Gj73wJuMVBAQWZf27', image:'assets/library/meetings.png', detail:'วาระและเอกสารประกอบการประชุม', theme:'151 48% 23%'},
@@ -2258,20 +2937,78 @@ const LIBRARY_FOLDERS = [
   {name:'เกณฑ์ประเมิน 2570', url:'https://drive.google.com/drive/folders/1UA0GSSFT_lszbsGRIPEjrZXU9SoxXrkc', image:'assets/library/criteria.png', detail:'หลักเกณฑ์และคู่มือการประเมิน GECC 2570', theme:'151 48% 23%'}
 ];
 // Verified from official provincial news dated 26 October 2569.
-const COMMITTEE_ADVISOR = {name:'นายอนุรัตน์ ธรรมประจำจิต', title:'ผู้ว่าราชการจังหวัดศรีสะเกษ', role:'ที่ปรึกษาคณะทำงาน', photo:'assets/images/committee-advisor.jpg'};
+const COMMITTEE_ADVISOR = {
+  "title": "ผู้ว่าราชการจังหวัดศรีสะเกษ",
+  "photo": "assets/images/committee-01.jpg",
+  "name": "นายอนุรัตน์ ธรรมประจำจิต",
+  "role": "ที่ปรึกษาคณะทำงาน"
+};
 const COMMITTEE_MEMBERS = [
-  {name:'นายธาตรี สิริรุ่งวนิช', title:'รองผู้ว่าราชการจังหวัดศรีสะเกษ (กลุ่มภารกิจด้านเศรษฐกิจ)', role:'หัวหน้าคณะทำงาน', photo:'assets/images/committee-chair.jpg'},
-  {name:'ดร.ชูวิทย์ นาเพีย', title:'รองอธิการบดีมหาวิทยาลัยราชภัฏศรีสะเกษ', role:'คณะทำงาน'},
-  {title:'ปลัดจังหวัดศรีสะเกษ', role:'คณะทำงาน'},
-  {title:'หัวหน้าสำนักงานจังหวัดศรีสะเกษ', role:'คณะทำงาน'},
-  {title:'นายแพทย์สาธารณสุขจังหวัดศรีสะเกษ', role:'คณะทำงาน'},
-  {title:'เจ้าพนักงานที่ดินจังหวัดศรีสะเกษ', role:'คณะทำงาน'},
-  {title:'คลังจังหวัดศรีสะเกษ', role:'คณะทำงาน'},
-  {title:'สถิติจังหวัดศรีสะเกษ', role:'คณะทำงาน'},
-  {title:'ผู้อำนวยการโรงพยาบาลราษีไศล', role:'คณะทำงาน'},
-  {name:'นายสมัย คำเหลือ', title:'สาธารณสุขอำเภอขุนหาญ', role:'คณะทำงาน'},
-  {name:'นางสาวมัลลิกา สุพล', title:'เภสัชกรชำนาญการพิเศษ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ', role:'คณะทำงานและเลขานุการ'},
-  {name:'นางสาวกนกวิภา ประกอบศรี', title:'เภสัชกรชำนาญการพิเศษ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ', role:'คณะทำงานและผู้ช่วยเลขานุการ'}
+  {
+    "title": "รองผู้ว่าราชการจังหวัดศรีสะเกษ (กลุ่มภารกิจด้านเศรษฐกิจ)",
+    "photo": "assets/images/committee-02.jpg",
+    "name": "นายธาตรี สิริรุ่งวนิช",
+    "role": "หัวหน้าคณะทำงาน"
+  },
+  {
+    "title": "รองอธิการบดีมหาวิทยาลัยราชภัฏศรีสะเกษ",
+    "name": "ดร.ชูวิทย์ นาเพีย",
+    "role": "คณะทำงาน",
+    "photo": "assets/images/committee-03.jpg"
+  },
+  {
+    "role": "คณะทำงาน",
+    "title": "ปลัดจังหวัดศรีสะเกษ",
+    "photo": "assets/images/committee-04.jpg"
+  },
+  {
+    "role": "คณะทำงาน",
+    "title": "หัวหน้าสำนักงานจังหวัดศรีสะเกษ",
+    "photo": "assets/images/committee-05.jpg"
+  },
+  {
+    "role": "คณะทำงาน",
+    "title": "นายแพทย์สาธารณสุขจังหวัดศรีสะเกษ",
+    "photo": "assets/images/committee-06.jpg"
+  },
+  {
+    "role": "คณะทำงาน",
+    "title": "เจ้าพนักงานที่ดินจังหวัดศรีสะเกษ",
+    "photo": "assets/images/committee-07.jpg"
+  },
+  {
+    "role": "คณะทำงาน",
+    "title": "คลังจังหวัดศรีสะเกษ",
+    "photo": "assets/images/committee-08.jpg"
+  },
+  {
+    "role": "คณะทำงาน",
+    "title": "สถิติจังหวัดศรีสะเกษ",
+    "photo": "assets/images/committee-09.jpg"
+  },
+  {
+    "role": "คณะทำงาน",
+    "title": "ผู้อำนวยการโรงพยาบาลราษีไศล",
+    "photo": "assets/images/committee-10.jpg"
+  },
+  {
+    "title": "สาธารณสุขอำเภอขุนหาญ",
+    "name": "นายสมัย คำเหลือ",
+    "role": "คณะทำงาน",
+    "photo": "assets/images/committee-11.jpg"
+  },
+  {
+    "title": "เภสัชกรชำนาญการพิเศษ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ",
+    "name": "นางสาวมัลลิกา สุพล",
+    "role": "คณะทำงานและเลขานุการ",
+    "photo": "assets/images/committee-12.jpg"
+  },
+  {
+    "title": "เภสัชกรชำนาญการพิเศษ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ",
+    "name": "นางสาวกนกวิภา ประกอบศรี",
+    "role": "คณะทำงานและผู้ช่วยเลขานุการ",
+    "photo": "assets/images/committee-13.jpg"
+  }
 ];
 const COMMITTEE_DUTIES = [
   'บูรณาการหน่วยงาน สนับสนุน และขับเคลื่อนให้ส่วนราชการ อำเภอ และหน่วยงานภาครัฐในจังหวัดศรีสะเกษ สมัครขอรับรองมาตรฐานศูนย์ราชการสะดวก GECC',
@@ -2281,12 +3018,48 @@ const COMMITTEE_DUTIES = [
 ];
 
 const MENTOR_ADVISORS = [
-  {name:'นางสาวชลธิชา พูลทวี', title:'ปลัดอำเภอ (ที่ทำการปกครองอำเภอเมืองศรีสะเกษ)', role:'ที่ปรึกษา MENTOR กลุ่มที่ 1'},
-  {name:'นางสาววรัตน์ สีละออง', title:'ปลัดอำเภอ (ที่ทำการปกครองอำเภอไพรบึง)', role:'ที่ปรึกษา MENTOR กลุ่มที่ 2'},
-  {name:'นายลือชัย สิมมา', title:'วิศวกร ระดับ 9 (การไฟฟ้าส่วนภูมิภาคจังหวัดศรีสะเกษ)', role:'ที่ปรึกษา MENTOR กลุ่มที่ 3'},
-  {name:'น.ส.นุชรินทร์ วงศ์ฤทธิ์', title:'นักบัญชี 7 (การประปาส่วนภูมิภาคสาขาศรีสะเกษ)', role:'ที่ปรึกษา MENTOR กลุ่มที่ 4'},
-  {name:'ภญ.ณัฐธิดา ถาวรยุตติการต์', title:'เภสัชกรชำนาญการ', role:'ที่ปรึกษา MENTOR กลุ่มที่ 5'},
-  {name:'นายบุญชวัฒน์ ปัญช์ญญาแดง', title:'ผู้อำนวยการกลุ่มงานศูนย์ดำรงธรรมจังหวัด (สำนักงานจังหวัดศรีสะเกษ)', role:'ที่ปรึกษา MENTOR กลุ่มที่ 6'}
+  {
+    "name": "นายยุคลธร ฐิติเดชวรกุล",
+    "title": "เจ้าพนักงานที่ดินจังหวัดศรีสะเกษ",
+    "role": "ที่ปรึกษา MENTOR",
+    "photo": "assets/images/advisor-1.jpg",
+    "loginUsername": "advisor-01"
+  },
+  {
+    "name": "ภญ.มัลลิกา สุพล",
+    "title": "เภสัชกรชำนาญการพิเศษ",
+    "role": "ที่ปรึกษา MENTOR",
+    "photo": "assets/images/advisor-2.jpg",
+    "loginUsername": "advisor-02"
+  },
+  {
+    "name": "นายบุญชวัฒน์ ปัญช์ญ์ญาแดง",
+    "title": "ผู้อำนวยการกลุ่มงานศูนย์ดำรงธรรมจังหวัด",
+    "role": "ที่ปรึกษา MENTOR",
+    "photo": "assets/images/advisor-3.jpg",
+    "loginUsername": "advisor-03"
+  },
+  {
+    "name": "นางสกาวรัตน์ สีละออง",
+    "title": "ปลัดอำเภอ ที่ทำการปกครองอำเภอไพรบึง",
+    "role": "ที่ปรึกษา MENTOR",
+    "photo": "assets/images/advisor-4.jpg",
+    "loginUsername": "advisor-04"
+  },
+  {
+    "name": "นายศรายุทธ สีละออง",
+    "title": "ปลัดอำเภอ ที่ทำการปกครองอำเภอเมืองศรีสะเกษ",
+    "role": "ที่ปรึกษา MENTOR",
+    "photo": "assets/images/advisor-5.jpg",
+    "loginUsername": "advisor-05"
+  },
+  {
+    "name": "ภญ.กนกวิภา ประกอบศรี",
+    "title": "เภสัชกรชำนาญการพิเศษ",
+    "role": "ที่ปรึกษา MENTOR",
+    "photo": "assets/images/advisor-6.jpg",
+    "loginUsername": "advisor-06"
+  }
 ];
 
 /* ================= Shell ================= */
@@ -2320,8 +3093,10 @@ function shell(){
      <div class="main">
        <nav class="site-nav no-print" aria-label="เมนูหลักของเว็บไซต์"><div class="site-nav-in"><span class="site-nav-name">SISAKET GECC 2570</span><div class="site-nav-links">
          <button data-act="go" data-view="exec" ${S.view==='exec'?'aria-current="page"':''}>หน้าหลัก</button>
-         <button data-act="go" data-view="committee" ${S.view==='committee'?'aria-current="page"':''}>คณะทำงาน</button>
-         <button data-act="go" data-view="library" ${S.view==='library'?'aria-current="page"':''}>GECC Library</button>
+         <button data-act="go" data-view="committee" ${S.view==='committee'?'aria-current="page"':''}>คณะทำงาน GECC</button>
+         <button data-act="go" data-view="mentors" ${S.view==='mentors'?'aria-current="page"':''}>MENTOR</button>
+         <button data-act="go" data-view="library" ${S.view==='library'?'aria-current="page"':''}>Library</button>
+         <button data-act="go" data-view="gallery" ${S.view==='gallery'?'aria-current="page"':''}>Gallery</button>
          <button data-act="go" data-view="portfolio" ${S.view==='portfolio'?'aria-current="page"':''}>เข้าสู่ระบบ</button>
        </div></div></nav>
        <header class="topbar"><div class="topbar-in">
@@ -2350,7 +3125,7 @@ function viewForms(){
   setHead('แบบตรวจประเมิน GECC 2570','เลือกกลุ่ม MENTOR และหน่วยบริการก่อนเริ่มตรวจหรือกรอกรายละเอียด');
   $('#content').innerHTML = `
   <h2 class="section-t" style="margin-top:0">ขั้นที่ 1 เลือกกลุ่ม MENTOR</h2>
-  <div class="team-pick pick">${DB.teams.map(tm=>{ const n=DB.units.filter(x=>x.team===tm.id).length; return `<button data-act="pick-team" data-team="${tm.id}" aria-pressed="${t===tm.id}" ${S.role==='mentor'&&!S.coord&&S.team!==tm.id?'disabled title="อยู่นอกกลุ่มของท่าน"':''}><span class="pk-c">${t===tm.id?ic('tick'):tm.id}</span><span><b>${esc(tm.name)}</b><span>${n} หน่วยบริการ · MENTOR ${(tm.members||[]).length} คน</span></span></button>`; }).join('')}</div>
+  <div class="team-pick pick">${DB.teams.map(tm=>{ const n=DB.units.filter(x=>x.team===tm.id).length; return `<button data-act="pick-team" data-team="${tm.id}" aria-pressed="${t===tm.id}" ${S.role==='mentor'&&!S.coord&&!S.allGroups&&S.team!==tm.id?'disabled title="อยู่นอกกลุ่มของท่าน"':''}><span class="pk-c">${t===tm.id?ic('tick'):tm.id}</span><span><b>${esc(tm.name)}</b><span>${n} หน่วยบริการ · MENTOR ${(tm.members||[]).length} คน</span></span></button>`; }).join('')}</div>
   <h2 class="section-t" id="step2">ขั้นที่ 2 เลือกหน่วยบริการที่จะตรวจ</h2>
   ${t?`<div class="ugrid pickgrid">${units.map(x=>{ const i=unitInfo(x); return `<button class="ut ${i.subAll} ${uid===x.id?'sel':''}" data-act="pick-unit" data-id="${x.id}" aria-pressed="${uid===x.id}"><span class="ut-i">${ic(uid===x.id?'tick':SUBL[i.subAll][1])}</span><span class="ut-n">${esc(x.name)}</span><span class="ut-s">${esc(x.district||'ไม่ระบุอำเภอ')} · ${i.subAll==='done'?'ส่งครบ':i.subAll==='prog'?'ระหว่างดำเนินการ':'ยังไม่ส่ง'}</span></button>`; }).join('')}</div>`
     :`<div class="card empty">${ic('users')}<h3>เลือกกลุ่ม MENTOR ก่อน</h3><p>เมื่อเลือกกลุ่มในขั้นที่ 1 รายชื่อหน่วยบริการในกลุ่มจะแสดงที่นี่</p></div>`}
@@ -2422,7 +3197,7 @@ function go(view, opts={}){
     confirmDlg('ยังไม่ได้บันทึกผลการตรวจ','หากออกจากหน้านี้ การแก้ไขที่ยังไม่บันทึกจะหายไป','ออกโดยไม่บันทึก', ()=>{ S.dirty=false; S.draft=null; go(view,opts); }, true);
     return;
   }
-  if(view==='portfolio' && !Object.prototype.hasOwnProperty.call(opts,'entryTeam')) Object.assign(opts,{entryTeam:null,rolePick:null});
+  if(view==='portfolio' && !Object.prototype.hasOwnProperty.call(opts,'entryTeam')) Object.assign(opts,{entryPath:null,entryTeam:null,rolePick:null});
   Object.assign(S, opts); S.view=view; if(view!=='unit'){ S.draft=null; S.dirty=false; }
   render(); window.scrollTo({top:0}); closeMenu();
 }
@@ -2480,20 +3255,22 @@ function groupChoice(t){
   const photo=t.photo||GROUP_PHOTOS[t.id];
   return `<button class="group-choice showcase-card${photo?' has-photo':''}" data-visual-card data-act="entry-team" data-team="${t.id}" aria-label="เลือก${esc(t.name)} เพื่อเข้าสู่ระบบ"><span class="group-choice-media">${photo?`<img src="${esc(photo)}" alt="ภาพประกอบ${esc(t.name)}" loading="lazy" width="500" height="500">`:ic(['building','shield','pin','file','user','chart'][t.id-1])}<span class="group-choice-number">${String(t.id).padStart(2,'0')}</span></span><span class="group-choice-overlay"></span><span class="group-choice-copy"><strong>กลุ่มที่ ${t.id}</strong><small>${esc(title)}</small><span class="group-choice-action">เลือกกลุ่มเพื่อเข้าสู่ระบบ ${ic('right')}</span></span></button>`;
 }
-function personCard(m){
+function personCard(m,options={}){
   const title=m.title||m.pos||'';
-  return `<article class="committee-card showcase-card${m.photo?' has-photo':''}" data-visual-card><div class="committee-card-media">${m.photo?`<img src="${esc(m.photo)}" alt="รูป ${esc(m.name||title)}" loading="lazy" width="500" height="500">`:`${ic('user')}<span>รอรูปบุคคล</span>`}</div><div class="committee-card-copy"><span class="committee-card-role">${esc(m.role||'')}</span><h3>${esc(m.name||title)}</h3>${m.name?`<p>${esc(title)}</p>`:''}</div></article>`;
+  const interactive=typeof options.action==='string';
+  const tag=interactive?'button':'article';
+  return `<${tag} class="committee-card showcase-card${m.photo?' has-photo':''}${interactive?' entry-person':''}" data-visual-card${interactive?` type="button" data-act="${esc(options.action)}" data-index="${options.index}" aria-label="เลือก ${esc(m.name||title)} เพื่อเข้าสู่ระบบ"`:''}><div class="committee-card-media">${m.photo?`<img src="${esc(m.photo)}" alt="รูป ${esc(m.name||title)}" loading="lazy" width="500" height="500">`:`${ic('user')}<span>รอรูปบุคคล</span>`}</div><div class="committee-card-copy"><span class="committee-card-role">${esc(m.role||'')}</span><h3>${esc(m.name||title)}</h3>${m.name?`<p>${esc(title)}</p>`:''}${interactive?`<span class="entry-person-action">เข้าสู่ระบบ ${ic('right')}</span>`:''}</div></${tag}>`;
 }
 function viewCommittee(){
-  setCollectionHead('คณะทำงาน','users','คณะทำงานขับเคลื่อนการดำเนินการศูนย์ราชการสะดวก GECC จังหวัดศรีสะเกษ');
-  $('#content').innerHTML = `<section class="public-intro"><h2>คณะทำงาน GECC จังหวัดศรีสะเกษ</h2><p>ตามคำสั่งแต่งตั้งคณะทำงานขับเคลื่อนการดำเนินการศูนย์ราชการสะดวก GECC จังหวัดศรีสะเกษ ลงวันที่ 17 กันยายน 2569 ช่องภาพบุคคลเตรียมไว้สำหรับเพิ่มรูปภายหลัง</p></section>
+  setCollectionHead('คณะทำงาน GECC','users','คณะทำงานขับเคลื่อนการดำเนินการศูนย์ราชการสะดวก GECC จังหวัดศรีสะเกษ');
+  $('#content').innerHTML = `<section class="public-intro"><h2>คณะทำงาน GECC จังหวัดศรีสะเกษ</h2><p>ตามคำสั่งแต่งตั้งคณะทำงานขับเคลื่อนการดำเนินการศูนย์ราชการสะดวก GECC จังหวัดศรีสะเกษ ลงวันที่ 17 กันยายน 2569</p></section>
     <div class="committee-advisor">${personCard(COMMITTEE_ADVISOR)}</div>
-    <div class="committee-advisor">${COMMITTEE_MEMBERS.slice(0,1).map(personCard).join('')}</div><div class="committee-grid">${COMMITTEE_MEMBERS.slice(1,-2).map(personCard).join('')}</div><div class="committee-grid committee-secretaries">${COMMITTEE_MEMBERS.slice(-2).map(personCard).join('')}</div>
+    <div class="committee-advisor">${COMMITTEE_MEMBERS.slice(0,1).map(personCard).join('')}</div><div class="committee-grid">${COMMITTEE_MEMBERS.slice(1,-3).map(personCard).join('')}</div><div class="committee-grid committee-secretaries">${COMMITTEE_MEMBERS.slice(-3).map(personCard).join('')}</div>
     <section class="committee-duties" id="committee-duties"><h2>อำนาจหน้าที่</h2><ol>${COMMITTEE_DUTIES.map(d=>`<li>${esc(d)}</li>`).join('')}</ol></section>
     <section class="mentor-advisors-section" id="mentor-advisors" style="margin-top:34px">
       <div class="section-heading" style="margin-bottom:18px">
         <h2 style="margin:0;color:var(--navy);font-size:25px">ที่ปรึกษา MENTOR</h2>
-        <p style="margin:6px 0 0;color:var(--text-3);font-size:14px">คณะที่ปรึกษา MENTOR ทั้ง 6 ท่าน ประจำกลุ่มที่ 1 – 6 เพื่อขับเคลื่อน ให้คำปรึกษา และตรวจประเมินศูนย์ราชการสะดวก</p>
+        <p style="margin:6px 0 0;color:var(--text-3);font-size:14px">คณะที่ปรึกษา MENTOR ทั้ง 6 ท่าน</p>
       </div>
       <div class="committee-grid">${MENTOR_ADVISORS.map(personCard).join('')}</div>
     </section>
@@ -2557,21 +3334,36 @@ function groupPortalCard(t){
     </div>
   </article>`;
 }
+function loginChoices(){
+  if(window.GECC_SERVER) return window.GECCPublic?.loginOptions||null;
+  return {units:DB.units,mentors:DB.teams.flatMap(t=>(t.members||[]).map(m=>({...m,team:t.id}))),advisors:MENTOR_ADVISORS};
+}
+function entryFocus(){ $('#content [data-entry-heading]')?.focus({preventScroll:true}); }
 function viewPortfolio(){
+  setCollectionHead('เข้าสู่ระบบ','shield','เลือกช่องทางเข้าสู่ระบบ แล้วทำตามขั้นตอน');
+  const path=S.entryPath;
+  if(!['advisor','mentor','mentee'].includes(path)){
+    $('#content').innerHTML=`<section class="portfolio-entry login-wizard"><h2 class="entry-q" tabindex="-1" data-entry-heading>เลือกช่องทางเข้าสู่ระบบ</h2><p class="entry-help">เลือกประเภทผู้ใช้งานของท่าน</p><div class="ecards entry-channels">${[
+      ['advisor','user','ที่ปรึกษา MENTOR','เลือกชื่อที่ปรึกษาเพื่อเข้าสู่ระบบ'],
+      ['mentor','users','MENTOR','เลือกกลุ่มและชื่อของท่าน'],
+      ['mentee','building','หน่วยบริการที่สมัคร','เลือกกลุ่มและหน่วยบริการของท่าน']
+    ].map(([key,icon,title,description])=>`<button type="button" class="ecard" data-visual-card data-act="entry-path" data-path="${key}"><span class="ei">${ic(icon)}</span><b>${title}</b><span class="d">${description}</span><span class="eg">เลือกช่องทางนี้ ${ic('right')}</span></button>`).join('')}</div></section>`;
+    entryFocus();return;
+  }
+  const choices=loginChoices();
+  if(!choices){
+    const failed=window.GECCPublic?.loginError;
+    $('#content').innerHTML=`<section class="portfolio-entry login-wizard"><h2 class="entry-q" tabindex="-1" data-entry-heading>${failed?'โหลดรายชื่อไม่สำเร็จ':'กำลังโหลดรายชื่อ…'}</h2><p class="entry-help" role="${failed?'alert':'status'}">${failed?'ตรวจสอบการเชื่อมต่อ แล้วลองโหลดรายชื่ออีกครั้ง':'รอสักครู่ ระบบกำลังตรวจรายชื่อจากเซิร์ฟเวอร์'}</p>${failed?'<button class="btn btn-primary" data-act="entry-retry">ลองโหลดรายชื่ออีกครั้ง</button>':''}<button class="entry-back" data-act="entry-back" data-step="path">${ic('left')}กลับไปเลือกช่องทาง</button></section>`;
+    entryFocus();return;
+  }
+  if(path==='advisor'){
+    $('#content').innerHTML=`<section class="portfolio-entry login-wizard"><p class="entry-progress">ขั้นตอน 2 จาก 3</p><h2 class="entry-q" tabindex="-1" data-entry-heading>เลือกชื่อที่ปรึกษา MENTOR</h2><p class="entry-help">แตะที่ชื่อหรือรูปของท่านเพื่อเข้าสู่ระบบ</p><div class="committee-grid entry-people">${choices.advisors.map((m,index)=>personCard(m,{action:'entry-person',index})).join('')}</div><button class="entry-back" data-act="entry-back" data-step="path">${ic('left')}กลับไปเลือกช่องทาง</button></section>`;
+    entryFocus();return;
+  }
   const team=DB.teams.find(t=>t.id===S.entryTeam);
-  if(team){ viewPortfolioEntry(team); return; }
-  setCollectionHead('เข้าสู่ระบบ','building','เลือกกลุ่มและประเภทผู้ใช้เพื่อเข้าสู่ระบบ');
-  $('#content').innerHTML = `<section class="public-intro" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
-    <div>
-      <h2 tabindex="-1" data-entry-heading style="margin:0 0 6px">เลือกกลุ่มและหน่วยงานเพื่อเข้าสู่ระบบ</h2>
-      <p style="margin:0">เลือกเข้าสู่ระบบ MENTOR หรือหน่วยบริการ (MENTEE) ในกลุ่มที่รับผิดชอบ</p>
-    </div>
-    <button class="btn btn-lux" data-act="entry-coord">${ic('shield')}ผู้ประสานงานจังหวัดเข้าสู่ระบบ</button>
-  </section>
-  <div class="portal-groups-container">
-    ${DB.teams.slice().sort((a,b)=>a.id-b.id).map(groupPortalCard).join('')}
-  </div>`;
-  $('#content [data-entry-heading]')?.focus({preventScroll:true});
+  if(team){viewPortfolioEntry(team);return;}
+  $('#content').innerHTML=`<section class="portfolio-entry login-wizard"><p class="entry-progress">ขั้นตอน 2 จาก 4</p><h2 class="entry-q" tabindex="-1" data-entry-heading>เลือกกลุ่มของท่าน</h2><p class="entry-help">เลือกกลุ่มเพื่อดูรายชื่อ${path==='mentor'?' MENTOR':'หน่วยบริการ'}ทั้งหมดในกลุ่ม</p><div class="group-choice-grid">${DB.teams.slice().sort((a,b)=>a.id-b.id).map(groupChoice).join('')}</div><button class="entry-back" data-act="entry-back" data-step="path">${ic('left')}กลับไปเลือกช่องทาง</button></section>`;
+  entryFocus();
 }
 
 /* ================= Shared widgets ================= */
@@ -2729,7 +3521,7 @@ function viewExec(){
   drawStrip();
 }
 function viewMDash(){
-  if(S.role==='mentor'&&!S.coord) S.mdTeam=S.team; else if(S.mdTeam===undefined) S.mdTeam=0;
+  if(S.role==='mentor'&&!S.coord&&!S.allGroups) S.mdTeam=S.team; else if(S.mdTeam===undefined) S.mdTeam=0;
   const infos = allInfo(S.mdTeam||0); const N=infos.length; const as=infos.filter(x=>x.assessed);
   const cS=(k,v)=>infos.filter(x=>x.sub[k]===v).length;
   const all={done:infos.filter(x=>x.subAll==='done').length, prog:infos.filter(x=>x.subAll==='prog').length, none:infos.filter(x=>x.subAll==='none').length};
@@ -2755,7 +3547,7 @@ function viewMDash(){
     <div class="pc"><div class="pv"><span>ส่งแล้ว</span><b>${fmt(dn/N*100)}%</b></div>${stack(dn,pg,nn)}</div></div>`;
   $('#content').innerHTML = `<div class="mdv">
   ${reportBar('MENTOR_DASHBOARD_GECC2570','', 'MENTOR DASHBOARD')}
-  ${!S.coord?`<div class="mylock">${ic('shield')}<span>แสดงเฉพาะ <b>${esc(teamName(S.team))}</b> · ${infos.length} หน่วยบริการ ตามสิทธิ์ที่เข้าสู่ระบบ</span></div>`:''}<div class="teamtabs" role="group" aria-label="เลือกกลุ่ม MENTOR" style="margin-bottom:16px;${!S.coord?'display:none':''}">${[{id:0,name:`ทุกกลุ่ม (${DB.units.length} หน่วยบริการ)`},...DB.teams].map(t=>`<button data-act="md-team" data-team="${t.id}" aria-pressed="${(S.mdTeam||0)===t.id}">${t.id?teamShort(t.id):esc(t.name)}</button>`).join('')}</div>
+  ${!S.coord&&!S.allGroups?`<div class="mylock">${ic('shield')}<span>แสดงเฉพาะ <b>${esc(teamName(S.team))}</b> · ${infos.length} หน่วยบริการ ตามสิทธิ์ที่เข้าสู่ระบบ</span></div>`:''}<div class="teamtabs" role="group" aria-label="เลือกกลุ่ม MENTOR" style="margin-bottom:16px;${!S.coord&&!S.allGroups?'display:none':''}">${[{id:0,name:`ทุกกลุ่ม (${DB.units.length} หน่วยบริการ)`},...DB.teams].map(t=>`<button data-act="md-team" data-team="${t.id}" aria-pressed="${(S.mdTeam||0)===t.id}">${t.id?teamShort(t.id):esc(t.name)}</button>`).join('')}</div>
   ${S.mdTeam?`<p class="small muted" style="margin:-6px 0 14px">${esc(teamName(S.mdTeam))} · ${infos.length} หน่วยบริการ</p>`:''}
   <h2 class="section-t" style="margin-top:0">งานที่หน่วยบริการส่งมา · รอ MENTOR ตรวจ</h2>
   ${wfQueueHTML(infos)}
@@ -2828,16 +3620,11 @@ function peek(id){
 
 /* ================= Portfolio: login steps ================= */
 function viewPortfolioEntry(team){
-  const unitStep=S.rolePick==='mentee';
-  const units=(window.GECCPublic?.loginUnits||DB.units).filter(u=>u.team===team.id);
-  setCollectionHead('เข้าสู่ระบบ','building',unitStep?'เลือกหน่วยบริการเพื่อเข้าสู่ระบบ':'เลือกประเภทผู้ใช้เพื่อเข้าสู่ระบบ');
-  $('#content').innerHTML = `<section class="portfolio-entry">
-    <h2 class="entry-q" tabindex="-1" data-entry-heading>${unitStep?'เลือกหน่วยบริการของท่าน':'เลือกประเภทผู้ใช้'}</h2>
-    <p class="entry-help">${unitStep?'เลือกหน่วยบริการเพื่อเปิดหน้ากรอก PIN':'เลือกบทบาทที่ต้องการใช้งาน แล้วดำเนินการเข้าสู่ระบบ'}</p>
-    ${!unitStep?`<div class="ecards"><button class="ecard" data-visual-card data-act="entry-mentor"><span class="ei">${ic('users')}</span><b>MENTOR</b><span class="d">ตรวจประเมิน ให้คะแนน และให้ข้อเสนอแนะกับหน่วยบริการในกลุ่ม</span><span class="eg">เข้าสู่ระบบ MENTOR ${ic('right')}</span></button><button class="ecard" data-visual-card data-act="entry-mentee"><span class="ei">${ic('building')}</span><b>หน่วยบริการ (MENTEE)</b><span class="d">ส่งแบบประเมินความพร้อม แนบหลักฐาน และติดตามผลการตรวจ</span><span class="eg">เลือกหน่วยบริการ ${ic('right')}</span></button></div><button class="entry-back" data-act="entry-back" data-step="group">${ic('left')}กลับไปเลือกกลุ่ม</button>`:''}
-    ${unitStep?`${units.length?`<div class="entry-unit-grid">${units.map(u=>`<button class="entry-unit" data-act="entry-unit" data-id="${u.id}"><span>${esc(u.name)}</span>${ic('right')}</button>`).join('')}</div>`:'<p class="entry-s">ยังไม่มีหน่วยบริการในกลุ่มนี้</p>'}<button class="entry-back" data-act="entry-back" data-step="type">${ic('left')}กลับไปเลือกประเภทผู้ใช้</button>`:''}
-  </section>`;
-  $('#content [data-entry-heading]')?.focus({preventScroll:true});
+  const choices=loginChoices();if(!choices){viewPortfolio();return;}
+  const mentee=S.entryPath==='mentee';
+  const list=(mentee?choices.units:choices.mentors).filter(p=>p.team===team.id);
+  $('#content').innerHTML=`<section class="portfolio-entry login-wizard"><p class="entry-progress">ขั้นตอน 3 จาก 4</p><h2 class="entry-q" tabindex="-1" data-entry-heading>${mentee?'เลือกหน่วยบริการของท่าน':'เลือกชื่อ MENTOR'}</h2><p class="entry-help">${esc(team.name)}</p>${list.length?(mentee?`<div class="entry-unit-grid">${list.map(u=>`<button type="button" class="entry-unit" data-act="entry-unit" data-id="${esc(u.id)}"><span>${esc(u.name)}</span>${ic('right')}</button>`).join('')}</div>`:`<div class="mentor-roster entry-people">${list.map((m,index)=>personCard(m,{action:'entry-person',index})).join('')}</div>`):'<p class="entry-s">ยังไม่มีรายชื่อในกลุ่มนี้ กรุณาติดต่อผู้ประสานงาน</p>'}<button class="entry-back" data-act="entry-back" data-step="group">${ic('left')}กลับไปเลือกกลุ่ม</button></section>`;
+  entryFocus();
 }
 function modList(){
   if(S.role==='mentor'){ const team=S.team; const open=allInfo(team).reduce((s,x)=>s+x.open.length,0);
@@ -2987,7 +3774,7 @@ function pinOk(){
   if(p.kind==='unit'){ S.role='mentee'; S.menteeUnit=p.id; S.team=0; S.coord=false; go('modules'); toast('เข้าสู่ระบบ · '+unitById(p.id).name); }
   else { S.role='mentor'; S.team=p.kind==='coord'?0:+p.id; S.coord=S.team===0; S.mdTeam=S.team; S.menteeUnit=null; go('modules'); toast(`เข้าสู่ระบบในบทบาท MENTOR · ${S.team?teamName(S.team):'ผู้ประสานงานจังหวัด'}`); }
 }
-function canAccessUnit(u){ return !!u && (S.role==='mentee' ? S.menteeUnit===u.id : S.role==='mentor' && (S.coord || u.team===S.team)); }
+function canAccessUnit(u){ return !!u && (S.role==='mentee' ? S.menteeUnit===u.id : S.role==='mentor' && (S.coord || S.allGroups || u.team===S.team)); }
 function denyUnit(){ toast('หน่วยบริการนี้อยู่นอกกลุ่มของท่าน เปิดได้เฉพาะหน่วยบริการในกลุ่มที่เข้าสู่ระบบ',true); }
 /* ================= นับถอยหลังวันปิดรับสมัคร GECC 2570 ================= */
 function cal(){ DB.cal=DB.cal||{}; const c=DB.cal; c.start=c.start||'2026-10-01'; c.prov=c.prov||'2026-12-04'; c.open=c.open||'2026-11-16'; c.close=c.close||'2026-12-25'; return c; }
@@ -3104,13 +3891,13 @@ function viewModules(){
     <p class="mods-f">SISAKET GECC PROJECT · พัฒนาและดูแลระบบ: Kanok_rx สำนักงานสาธารณสุขจังหวัดศรีสะเกษ</p>
   </div></section>`;
 }
-function teamTabs(){ if(!S.coord) return ''; return `<div class="teamtabs" role="group" aria-label="เลือกทีม">${[{id:0,name:'ทุกทีม'},...DB.teams].map(t=>`<button data-act="set-team" data-team="${t.id}" aria-pressed="${S.team===t.id}">${esc(t.name)}</button>`).join('')}</div>`; }
+function teamTabs(){ if(!S.coord&&!S.allGroups) return ''; return `<div class="teamtabs" role="group" aria-label="เลือกทีม">${[{id:0,name:'ทุกทีม'},...DB.teams].map(t=>`<button data-act="set-team" data-team="${t.id}" aria-pressed="${S.team===t.id}">${esc(t.name)}</button>`).join('')}</div>`; }
 function viewMentor(){
   const infos=allInfo(S.team); const as=infos.filter(x=>x.assessed);
   const open=infos.reduce((s,x)=>s+x.open.length,0), recheck=infos.reduce((s,x)=>s+x.open.filter(d=>d.status==='recheck').length,0), overdue=infos.reduce((s,x)=>s+x.overdue.length,0);
   setHead(S.team?esc(teamName(S.team)):'แดชบอร์ด MENTOR ทุกทีม', 'ติดตามผลตรวจ ข้อบกพร่อง การแก้ไข และการตรวจซ้ำ', `<button class="btn btn-ghost" data-act="go" data-view="defects">${ic('repeat')}<span class="lbl-t">ข้อบกพร่อง</span></button>`);
   infos.sort((a,b)=>b.priority-a.priority);
-  $('#content').innerHTML = `${S.coord?teamTabs():''}
+  $('#content').innerHTML = `${S.coord||S.allGroups?teamTabs():''}
   <div class="grid g4" style="margin-top:16px">
     <div class="card kpi"><span class="kpi-k">${ic('building')}หน่วยบริการในทีม</span><span class="kpi-v">${infos.length}<small>แห่ง</small></span><span class="kpi-s">ประเมินแล้ว ${as.length} แห่ง · ผ่านเกณฑ์ ${infos.filter(x=>x.status==='pass').length} แห่ง</span></div>
     <div class="card kpi is-risk"><span class="kpi-k">${ic('alert')}ข้อบกพร่องค้าง</span><span class="kpi-v">${open}<small>รายการ</small></span><span class="kpi-s">เกินกำหนดแก้ไข ${overdue} รายการ</span></div>
@@ -3471,7 +4258,7 @@ function wfReturn(uid){
   <div class="modal-f"><button class="btn" data-act="modal-close">ยกเลิก</button><button class="btn btn-primary" data-act="wf-return-ok" data-id="${uid}">${ic('repeat')}ส่งกลับให้แก้ไข</button></div>`);
 }
 function wfQueueHTML(infos){
-  const alertH=wfAlertHTML(S.mdTeam||(S.role==='mentor'&&!S.coord?S.team:0));
+  const alertH=wfAlertHTML(S.mdTeam||(S.role==='mentor'&&!S.coord&&!S.allGroups?S.team:0));
   const rows=infos.map(x=>({x,k:wfOf(x.a),w:x.a?.wf||{}}));
   const c=k=>rows.filter(o=>o.k===k).length;
   const wait=rows.filter(o=>o.k==='submitted').sort((a,b)=>(a.w.submittedAt||'').localeCompare(b.w.submittedAt||''));
@@ -3637,7 +4424,7 @@ function tabHTML(a,c,ro,info){
   return '';
 }
 function inspPick(a,ro){
-  const u=unitById(S.unitId); const t=DB.teams.find(x=>x.id===u?.team); const ms=t?.members||[]; const sel=new Set(a.inspectors||[]);
+  const u=unitById(S.unitId); const t=DB.teams.find(x=>x.id===u?.team); const ms=[...(t?.members||[])]; if(window.GECC_SERVER && (S.allGroups||S.coord) && S.accountName && !ms.some(m=>m.name===S.accountName)) ms.push({name:S.accountName,pos:'ที่ปรึกษา MENTOR'}); const sel=new Set(a.inspectors||[]);
   return `<div class="insp" id="insp-box"><div class="insp-h"><div><b>MENTOR ผู้ตรวจประเมินหน่วยบริการนี้</b><span>${esc(t?.name||'')}${t?.focus?` · ${esc(t.focus)}`:''}</span></div><span class="insp-c" id="insp-c">เลือกแล้ว ${sel.size} คน</span></div>
     ${ms.length?`<div class="mgrid">${ms.map((m,i)=>`<label class="mchip"><input type="checkbox" value="${esc(m.name)}" data-bind="insp.${i}" ${sel.has(m.name)?'checked':''} ${ro?'disabled':''}><span class="mc-a">${ic('user')}</span><span class="mc-t"><b>${esc(m.name)}</b><span>${esc(m.pos||'ไม่ได้ระบุตำแหน่ง/หน่วยบริการ')}</span></span><span class="mc-k">${ic('tick')}</span></label>`).join('')}</div>`:`<p class="muted small">ยังไม่มีรายชื่อ MENTOR ในกลุ่มนี้ เพิ่มได้ที่ MENTOR › จัดการข้อมูล</p>`}
     <div class="err" id="insp-err">กรุณาเลือก MENTOR ผู้ตรวจอย่างน้อย 1 คน</div></div>`;
@@ -3794,7 +4581,7 @@ function viewSettings(){
   <div class="card" style="margin-top:16px"><div class="card-h"><div><h3>สำรองและนำเข้าข้อมูล</h3><p>ข้อมูลทั้งหมดถูกเก็บในเบราว์เซอร์เครื่องนี้เท่านั้น${storageOK?'':' (เบราว์เซอร์นี้ไม่อนุญาตการจัดเก็บถาวร)'} ควรส่งออกไฟล์สำรองอย่างสม่ำเสมอ</p></div></div>
     <div class="card-b row"><button class="btn" data-backup-bundle>ส่งออกพร้อมไฟล์แนบ</button><button class="btn" data-act="export">${ic('download')}ส่งออกข้อมูล (JSON)</button><label class="btn" style="cursor:pointer">${ic('upload')}นำเข้าข้อมูล<input type="file" accept="application/json,.json" data-act-change="import" class="sr"></label>
       <span class="spacer"></span>
-      ${DB.isSample?`<button class="btn btn-primary" data-act="start-real">${ic('database')}ล้างตัวเลขร่าง เริ่มบันทึกจริง</button>`:`<button class="btn" data-act="load-official">${ic('refresh')}โหลดรายชื่อหน่วยบริการ 28 แห่งใหม่</button><button class="btn" data-act="load-sample">${ic('refresh')}โหลดตัวเลขร่าง</button>`}
+      ${DB.isSample?`<button class="btn btn-primary" data-act="start-real">${ic('database')}ล้างตัวเลขร่าง เริ่มบันทึกจริง</button>`:`<button class="btn" data-act="load-official">${ic('refresh')}โหลดรายชื่อหน่วยบริการ 32 แห่งใหม่</button><button class="btn" data-act="load-sample">${ic('refresh')}โหลดตัวเลขร่าง</button>`}
       <button class="btn btn-danger" data-act="reset-all">${ic('trash')}ลบผลการตรวจทั้งหมด</button></div></div>`;
 }
 
@@ -3855,7 +4642,7 @@ document.addEventListener('click', async e=>{
     case 'print': window.print(); break;
     case 'exec-filter': S.execFilter = (S.execFilter===el.dataset.f||el.dataset.f==='all')?'all':el.dataset.f; (S.view==='mdash'?viewMDash:viewExec)(); break;
     case 'go-mdash': if(!S.role){ go('role',{rolePick:null}); toast('กรุณาเลือกกลุ่มและเข้าสู่ระบบ MENTOR'); break; } S.execFilter=el.dataset.f; go('mdash'); setTimeout(()=>$('#md-table')?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'}),60); break;
-    case 'md-team': if(!S.coord){ denyUnit(); break; } S.mdTeam=+el.dataset.team; viewMDash(); break;
+    case 'md-team': if(!S.coord&&!S.allGroups){ denyUnit(); break; } S.mdTeam=+el.dataset.team; viewMDash(); break;
     case 'sort': { const k=el.dataset.k; S.sort = S.sort.k===k?{k,d:-S.sort.d}:{k,d:k==='name'?1:-1}; (S.view==='mdash'?viewMDash:viewExec)(); break; }
     case 'peek': peek(id); break;
     case 'modal-close': closeModal(); break;
@@ -3864,7 +4651,7 @@ document.addEventListener('click', async e=>{
     case 'pick-unit': S.pickUnit=id; viewForms(); $('#step3')?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'nearest'}); break;
     case 'start-assess': { if(!S.pickTeam||!S.pickUnit){ toast('กรุณาเลือกกลุ่ม MENTOR และหน่วยบริการก่อน',true); return; }
       if(S.role!=='mentor'){ go('role',{rolePick:'mentor'}); toast('กรุณาเข้าสู่ระบบ MENTOR ด้วย PIN ก่อน',true); break; }
-      if(!S.coord && S.team!==S.pickTeam){ toast('หน่วยบริการนี้อยู่นอกกลุ่มของท่าน',true); break; }
+      if(!S.coord && !S.allGroups && S.team!==S.pickTeam){ toast('หน่วยบริการนี้อยู่นอกกลุ่มของท่าน',true); break; }
       S.draft=null; go('unit',{unitId:S.pickUnit, tab:'phys', from:'forms'}); toast(`เริ่มตรวจ ${unitById(S.pickUnit).name}`); break; }
     case 'ev-open': case 'rev-open': { const k=el.dataset.k; S.evOpen[(act==='ev-open'?'e:':'r:')+k]=true; viewUnitKeep(); const t=$(`#${act==='ev-open'?'evt':'rvt'}-${k.replace(':','-')}`); t&&t.focus(); break; }
     case 'ev-del': { const k=el.dataset.k, fid=el.dataset.fid; confirmDlg('ลบไฟล์แนบนี้?','ไฟล์จะถูกลบเมื่อกดบันทึก','ลบไฟล์',()=>{ const e=S.draft.ev?.[k]; if(e){ e.files=(e.files||[]).filter(f=>f.id!==fid); } S.dirty=true; viewUnitKeep(); toast('ลบไฟล์แล้ว กดบันทึกเพื่อยืนยัน'); }, true); break; }
@@ -3892,7 +4679,18 @@ document.addEventListener('click', async e=>{
     case 'phys-miss': physMissModal(+el.dataset.i); break;
     case 'dual-list': dualList(el.dataset.p, el.dataset.s); break;
     case 'role-go': { const r=el.dataset.r; if(S.role===r){ go(r==='mentor'?'mentor':'mentee'); } else go('role',{rolePick:null}); break; }
+    case 'entry-path': go('portfolio',{entryPath:el.dataset.path,entryTeam:null,rolePick:null}); break;
     case 'entry-team': go('portfolio',{entryTeam:+el.dataset.team,rolePick:null}); break;
+    case 'entry-person': {
+      const options=loginChoices();if(!options) break;
+      const list=S.entryPath==='advisor'?options.advisors:options.mentors.filter(m=>m.team===S.entryTeam);
+      const person=list[+el.dataset.index];if(!person) break;
+      if(window.GECC_SERVER) GECCClient.loginModal('person',null,person.name,person.username||'');
+      else if(S.entryPath==='mentor') pinModal('team',S.entryTeam,person.name);
+      else toast('บัญชีที่ปรึกษาใช้ในระบบจริง หลังยืนยันบัญชีและสิทธิ์กับผู้ประสานงาน',true);
+      break;
+    }
+    case 'entry-retry': window.GECCPublic?.loadLoginOptions(true); break;
     case 'entry-mentor-team': { const tm=+el.dataset.team; pinModal('team',tm,teamName(tm)); break; }
     case 'entry-mentee-team': { const tm=+el.dataset.team; go('portfolio',{entryTeam:tm,rolePick:'mentee'}); break; }
     case 'entry-unit-direct': { const u=unitById(el.dataset.id); if(u) pinModal('unit',u.id,u.name); break; }
@@ -3901,14 +4699,14 @@ document.addEventListener('click', async e=>{
     case 'lib-lock': { try{ sessionStorage.removeItem('gecc_library_auth'); }catch(e){} S.libraryAuth=false; toast('ออกจากระบบ Library เรียบร้อย'); viewLibrary(); break; }
     case 'entry-mentor': if(S.entryTeam) pinModal('team',S.entryTeam,teamName(S.entryTeam)); break;
     case 'entry-mentee': S.rolePick='mentee'; viewPortfolio(); break;
-    case 'entry-unit': { const u=unitById(id); if(u && u.team===S.entryTeam) pinModal('unit',id,u.name); break; }
+    case 'entry-unit': { const u=loginChoices()?.units.find(u=>u.id===id); if(u && u.team===S.entryTeam){ if(window.GECC_SERVER) GECCClient.loginModal('unit',id,u.name,u.username||''); else pinModal('unit',id,u.name); } break; }
     case 'entry-coord': pinModal('coord',0,'ผู้ประสานงานจังหวัด'); break;
-    case 'entry-back': if(el.dataset.step==='group') go('portfolio',{entryTeam:null,rolePick:null}); else { S.rolePick=null; viewPortfolio(); } break;
+    case 'entry-back': go('portfolio',{entryPath:el.dataset.step==='path'?null:S.entryPath,entryTeam:null,rolePick:null}); break;
     case 'pin-ok': if(window.GECC_SERVER) await GECCClient.login(); else pinOk(); break;
     case 'logout': if(window.GECC_SERVER){ await GECCClient.logout(); break; } go('exec',{role:null, team:0, menteeUnit:null, coord:false}); break;
-    case 'set-team': if(S.coord){ S.team=+el.dataset.team; render(); } break;
-    case 'open-unit': { closeModal(); const u=unitById(id); if(S.role==='mentor' && S.team && u.team!==S.team){ toast('หน่วยบริการนี้ไม่อยู่ในความรับผิดชอบของทีมท่าน',true); return; } S.draft=null; go('unit',{unitId:id, tab:'phys', from:'mentor'}); break; }
-    case 'open-form': { const u=unitById(id); if(S.role==='mentor' && S.team && u.team!==S.team){ toast('หน่วยบริการนี้ไม่อยู่ในความรับผิดชอบของกลุ่มท่าน',true); return; } S.draft=null; go('unit',{unitId:id, tab:'phys', from:'forms'}); break; }
+    case 'set-team': if(S.coord||S.allGroups){ S.team=+el.dataset.team; render(); } break;
+    case 'open-unit': { closeModal(); const u=unitById(id); if(S.role==='mentor' && !S.coord && !S.allGroups && S.team && u.team!==S.team){ toast('หน่วยบริการนี้ไม่อยู่ในความรับผิดชอบของทีมท่าน',true); return; } S.draft=null; go('unit',{unitId:id, tab:'phys', from:'mentor'}); break; }
+    case 'open-form': { const u=unitById(id); if(S.role==='mentor' && !S.coord && !S.allGroups && S.team && u.team!==S.team){ toast('หน่วยบริการนี้ไม่อยู่ในความรับผิดชอบของกลุ่มท่าน',true); return; } S.draft=null; go('unit',{unitId:id, tab:'phys', from:'forms'}); break; }
     case 'back': go(S.from==='forms'?'forms':S.from==='mdash'?'mdash':S.from==='udash'?'udash':(S.role==='mentee'?'mentee':'mentor')); break;
     case 'tab': S.tab=el.dataset.tab; viewUnitKeep(); break;
     case 'mentee-tab': S.draft=null; go('unit',{unitId:S.menteeUnit, tab:el.dataset.tab, from:'mentee'}); break;
@@ -3926,8 +4724,8 @@ document.addEventListener('click', async e=>{
     case 'unit-add': { await saveSettings(true); const n=DB.units.length+1; let i=window.GECC_SERVER?(DB.nextUnitCode||n):n; while(DB.units.some(u=>u.id==='u'+String(i).padStart(2,'0'))) i++; DB.units.push({id:'u'+String(i).padStart(2,'0'), name:`หน่วยบริการที่ ${n}`, district:'', team:S.team||1, kind:'', prev:''}); await persist(); viewSettings(); toast('เพิ่มหน่วยบริการแล้ว'); break; }
     case 'unit-del': { const u=unitById(id); confirmDlg(`ลบ “${esc(u.name)}”?`,'ผลการตรวจและข้อบกพร่องของหน่วยบริการนี้จะถูกลบด้วย','ลบหน่วยบริการ',async ()=>{ DB.units=DB.units.filter(x=>x.id!==id); delete DB.assess[id]; DB.defects=DB.defects.filter(d=>d.unitId!==id); await persist(); viewSettings(); toast('ลบหน่วยบริการแล้ว'); }, true); break; }
     case 'export': exportJSON(); break;
-    case 'start-real': confirmDlg('ล้างตัวเลขร่างและเริ่มบันทึกจริง?','ระบบจะโหลดรายชื่อหน่วยบริการที่สมัครจริง 28 แห่ง 6 กลุ่ม โดยยังไม่มีผลการตรวจ','เริ่มบันทึกจริง',async ()=>{ DB=blankDB(); await persist(); render(); toast('พร้อมบันทึกข้อมูลจริงแล้ว'); }); break;
-    case 'load-official': confirmDlg('โหลดรายชื่อหน่วยบริการ 28 แห่งใหม่?','รายชื่อ กลุ่ม และผลการตรวจทั้งหมดในเครื่องนี้จะถูกแทนที่ด้วยรายชื่อตั้งต้น ควรส่งออกไฟล์สำรองก่อน','โหลดรายชื่อใหม่',async ()=>{ DB=blankDB(); await persist(); render(); toast('โหลดรายชื่อหน่วยบริการ 28 แห่งแล้ว'); }, true); break;
+    case 'start-real': confirmDlg('ล้างตัวเลขร่างและเริ่มบันทึกจริง?','ระบบจะโหลดรายชื่อหน่วยบริการที่สมัครจริง 32 แห่ง 6 กลุ่ม โดยยังไม่มีผลการตรวจ','เริ่มบันทึกจริง',async ()=>{ DB=blankDB(); await persist(); render(); toast('พร้อมบันทึกข้อมูลจริงแล้ว'); }); break;
+    case 'load-official': confirmDlg('โหลดรายชื่อหน่วยบริการ 32 แห่งใหม่?','รายชื่อ กลุ่ม และผลการตรวจทั้งหมดในเครื่องนี้จะถูกแทนที่ด้วยรายชื่อตั้งต้น ควรส่งออกไฟล์สำรองก่อน','โหลดรายชื่อใหม่',async ()=>{ DB=blankDB(); await persist(); render(); toast('โหลดรายชื่อหน่วยบริการ 32 แห่งแล้ว'); }, true); break;
     case 'load-sample': confirmDlg('โหลดข้อมูลตัวอย่าง?','ข้อมูลปัจจุบันทั้งหมดจะถูกแทนที่ด้วยตัวเลขร่างสำหรับสาธิต ควรส่งออกไฟล์สำรองก่อน','โหลดตัวเลขร่าง',async ()=>{ DB=sampleDB(); await persist(); render(); toast('โหลดข้อมูลตัวอย่างแล้ว'); }, true); break;
     case 'reset-all': confirmDlg('ลบผลการตรวจทั้งหมด?','ผลการตรวจและข้อบกพร่องของทุกหน่วยบริการจะถูกลบ รายชื่อหน่วยบริการและทีมยังคงอยู่','ลบผลการตรวจทั้งหมด',async ()=>{ DB.assess={}; DB.defects=[]; DB.isSample=false; await persist(); render(); toast('ลบผลการตรวจทั้งหมดแล้ว'); }, true); break;
   }

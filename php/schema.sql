@@ -1,3 +1,4 @@
+-- MENTOR team=0 explicitly grants review access to all groups; it does not grant coordinator administration.
 CREATE TABLE IF NOT EXISTS gecc_app_state (
  id TINYINT UNSIGNED PRIMARY KEY CHECK(id=1),
  revision BIGINT UNSIGNED NOT NULL DEFAULT 1,

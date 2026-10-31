@@ -54,7 +54,7 @@ export async function buildPhp(output, {updateOnly=false} = {}) {
   await writeFile(join(privateDir,"setup-token.txt"), token+"\n",{flag:"wx",mode:0o600});
   }
   await writeFile(join(output,"README-DEPLOY.txt"),
-    (updateOnly ? "UPDATE ONLY: back up existing site, database and private files first. Do not reinstall or reset data.\nUpload public CONTENTS to existing public_html/sskgecc; gecc-private CONTENTS to existing private directory.\nPreserve config.local.php, accounts.json, installed.lock and files/. Follow RELEASE-CONTENT-V2-TH.md: remove legacy public assets/library/sources.json, configure library_password_hash privately, then run php gecc-private/migrate-content.php --apply. Sign in as coordinator, open Settings > ตรวจและซ่อมภาษาไทย, preview and confirm.\n" : "Upload public contents to public_html/sskgecc; upload gecc-private OUTSIDE public_html.\n"+
+    (updateOnly ? "UPDATE ONLY: back up existing site, database and private files first. Do not reinstall or reset data.\nUpload public CONTENTS to existing public_html/sskgecc; gecc-private CONTENTS to existing private directory.\nPreserve config.local.php, accounts.json, installed.lock and files/. Follow RELEASE-CONTENT-V2-TH.md and RELEASE-ROSTER-2570-TH.md: remove legacy public assets/library/sources.json and configure library_password_hash privately. Apply Content v2 if missing, then preview php gecc-private/content-refresh.php and apply only with its current revision after checking conflicts and account identity. No account permissions are changed by refresh.\n" : "Upload public contents to public_html/sskgecc; upload gecc-private OUTSIDE public_html.\n"+
     "Copy private config.example.php to config.local.php and fill hosting database credentials.\n"+
     "CLI: php gecc-private/manage.php check; php gecc-private/manage.php install --apply.\n"+
     "No SSH: temporarily enable allow_web_setup, open HTTPS /sskgecc/setup.html, supply setup-token.txt.\n"+
@@ -62,6 +62,7 @@ export async function buildPhp(output, {updateOnly=false} = {}) {
     "Never upload the whole release folder into public_html. See PHP-DEPLOYMENT-TH.md in source.\n"),{mode:0o600});
   await cp(join(root,"PHP-DEPLOYMENT-TH.md"),join(output,"PHP-DEPLOYMENT-TH.md"));
   await cp(join(root,"RELEASE-CONTENT-V2-TH.md"),join(output,"RELEASE-CONTENT-V2-TH.md"));
+  await cp(join(root,"RELEASE-ROSTER-2570-TH.md"),join(output,"RELEASE-ROSTER-2570-TH.md"));
   return {output,publicDir,privateDir};
 }
 if (process.argv[1] && resolve(process.argv[1])===fileURLToPath(import.meta.url)) {

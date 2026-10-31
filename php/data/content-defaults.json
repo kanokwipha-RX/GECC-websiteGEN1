@@ -1,1 +1,218 @@
-{"albums": [], "videos": [{"title": "ที่ดิน", "category": "physical", "url": "https://youtu.be/SdC2g6AkotE", "status": "published"}, {"title": "ไฟฟ้า", "category": "physical", "url": "https://youtu.be/BdIgMo_laHk", "status": "published"}, {"title": "สสจ.", "category": "physical", "url": "https://drive.google.com/file/d/1iuE46Q_0NX8mANzZDdmUdSfyQYGWP-E9/view", "status": "published"}, {"title": "ที่ดิน", "category": "highlight", "url": "https://youtu.be/UgtOfqhBWU0", "status": "published"}, {"title": "ไฟฟ้า", "category": "highlight", "url": "", "status": "published"}, {"title": "สสจ.", "category": "highlight", "url": "https://drive.google.com/file/d/1vicDgdaiNTb9BM9jqIP2sBJEhEYNS8QW/view", "status": "published"}]}
+{
+  "albums": [
+    {
+      "title": "กิจกรรม GECC · 29 ตุลาคม 2569",
+      "date": "2026-10-29",
+      "description": "",
+      "status": "published",
+      "images": [
+        {
+          "src": "assets/gallery/gallery-2026-10-29-01.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 1"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-02.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 2"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-03.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 3"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-04.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 4"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-05.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 5"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-06.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 6"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-07.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 7"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-08.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 8"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-09.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 9"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-10.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 10"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-11.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 11"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-12.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 12"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-13.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 13"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-14.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 14"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-16.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 15"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-17.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 16"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-18.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 17"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-19.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 18"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-20.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 19"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-21.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 20"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-22.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 21"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-23.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 22"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-24.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 23"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-25.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 24"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-26.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 25"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-27.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 26"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-28.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 27"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-29.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 28"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-30.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 29"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-31.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 30"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-32.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 31"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-33.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 32"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-34.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 33"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-35.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 34"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-36.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 35"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-37.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 36"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-38.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 37"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-39.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 38"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-41.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 39"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-42.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 40"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-43.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 41"
+        },
+        {
+          "src": "assets/gallery/gallery-2026-10-29-48.jpg",
+          "alt": "ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ 42"
+        }
+      ]
+    }
+  ],
+  "videos": [
+    {
+      "title": "ที่ดิน",
+      "category": "physical",
+      "url": "https://youtu.be/SdC2g6AkotE",
+      "status": "published"
+    },
+    {
+      "title": "ไฟฟ้า",
+      "category": "physical",
+      "url": "https://youtu.be/BdIgMo_laHk",
+      "status": "published"
+    },
+    {
+      "title": "สสจ.",
+      "category": "physical",
+      "url": "https://drive.google.com/file/d/1iuE46Q_0NX8mANzZDdmUdSfyQYGWP-E9/view",
+      "status": "published"
+    },
+    {
+      "title": "ที่ดิน",
+      "category": "highlight",
+      "url": "https://youtu.be/UgtOfqhBWU0",
+      "status": "published"
+    },
+    {
+      "title": "ไฟฟ้า",
+      "category": "highlight",
+      "url": "",
+      "status": "published"
+    },
+    {
+      "title": "สสจ.",
+      "category": "highlight",
+      "url": "https://drive.google.com/file/d/1vicDgdaiNTb9BM9jqIP2sBJEhEYNS8QW/view",
+      "status": "published"
+    }
+  ]
+}

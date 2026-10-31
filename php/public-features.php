@@ -23,6 +23,28 @@ function public_content(object $s): object {
     foreach(['albums','videos'] as $key) $c->$key=array_values(array_filter($c->$key??[],fn($v)=>($v->status??'draft')==='published'));
     return $c;
 }
+function public_login_options(object $s,array $accounts):array {
+    $username=function(callable $matches)use($accounts):string {
+        $found=array_values(array_filter($accounts,$matches));
+        return count($found)===1?$found[0]['username']:'';
+    };
+    $units=array_map(fn($u)=>[
+        'id'=>$u->id,'name'=>$u->name,'team'=>$u->team,
+        'username'=>$username(fn($a)=>($u->id??'')!==''&&$a['role']==='mentee'&&$a['unit_id']===$u->id)
+    ],$s->units??[]);
+    $mentors=[];
+    foreach($s->teams??[] as $team)foreach($team->members??[] as $person){
+        $name=$person->name??'';
+        $mentors[]=['name'=>$name,'pos'=>$person->pos??'','photo'=>$person->photo??'','team'=>$team->id,
+            'username'=>$username(fn($a)=>is_string($name)&&trim($name)!==''&&$a['name']===$name&&$a['role']==='mentor'&&(int)$a['team']===$team->id)];
+    }
+    $advisors=array_map(function($person)use($username){
+        $name=$person->name??'';
+        return ['name'=>$name,'title'=>$person->title??'','role'=>$person->role??'','photo'=>$person->photo??'',
+            'username'=>$username(fn($a)=>is_string($name)&&trim($name)!==''&&$a['name']===$name&&in_array($a['role'],['mentor','coord'],true)&&(!property_exists($person,'loginUsername')||$a['username']===$person->loginUsername))];
+    },$s->publicContent->mentorAdvisors??[]);
+    return ['units'=>$units,'mentors'=>$mentors,'advisors'=>$advisors];
+}
 function validate_feature_content(object $content):void {
         foreach(['albums','videos','mentorAdvisors'] as $k)if(isset($content->$k)&&(!is_array($content->$k)||count($content->$k)>200))fail(400,'จำนวนเนื้อหาไม่ถูกต้อง');
         foreach($content->albums??[] as $a){
@@ -37,6 +59,11 @@ function validate_feature_content(object $content):void {
 
 }
 function feature_routes(string $route,string $method,?array $actor): void {
+    if($route==='public/login-options'&&$method==='GET'){
+        [$s]=state();
+        $accounts=query('SELECT username,name,role,unit_id,team FROM gecc_accounts WHERE active=1')->fetchAll();
+        reply(public_login_options($s,$accounts));
+    }
     if($route==='public/units'&&$method==='GET'){[$s]=state();reply(['units'=>public_units($s)]);}
     if($route==='public/content'&&$method==='GET'){[$s]=state();reply(public_content($s));}
     if($route==='library') {

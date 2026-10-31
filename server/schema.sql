@@ -1,3 +1,4 @@
+-- MENTOR team=0 explicitly grants review access to all groups; it does not grant coordinator administration.
 CREATE TABLE IF NOT EXISTS app_state (
  id integer PRIMARY KEY CHECK (id=1), revision integer NOT NULL DEFAULT 1,
  document jsonb NOT NULL, updated_at timestamptz NOT NULL DEFAULT now()
