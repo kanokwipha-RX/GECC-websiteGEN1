@@ -14,6 +14,16 @@ function preview(saved){
   return sandbox.window.GECCPublic;
 }
 
+test('Gallery shows full agency names for existing video labels',()=>{
+  const context={};
+  vm.runInNewContext(source.slice(source.indexOf('  const galleryVideoNames='),source.indexOf('  async function gallery('))+';this.name=galleryVideoName;',context);
+  assert.equal(context.name('ที่ดิน'),'สำนักงานที่ดินจังหวัดศรีสะเกษ');
+  assert.equal(context.name('ไฟฟ้า'),'การไฟฟ้าส่วนภูมิภาคจังหวัดศรีสะเกษ');
+  assert.equal(context.name('สสจ.'),'ศูนย์บริการผลิตภัณฑ์สุขภาพเบ็ดเสร็จ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ');
+  assert.equal(context.name('ชื่อวิดีโอใหม่'),'ชื่อวิดีโอใหม่');
+  assert.equal(context.name('constructor'),'constructor');
+});
+
 test('Gallery defaults include all 42 supplied photos in numeric order and retain existing videos',()=>{
   const browserDefaults=plain(preview().defaults);
   assert.deepEqual(browserDefaults,serverDefaults);

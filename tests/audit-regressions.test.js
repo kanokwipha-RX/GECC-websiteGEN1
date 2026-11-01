@@ -25,11 +25,12 @@ test('HTML challenges and malformed JSON produce Thai recovery messages without 
   }
 });
 
-test('survey links remain pending until a credential-free HTTPS destination is configured',()=>{
+test('survey links use the supplied default and validate configured destinations',()=>{
   const source=readFileSync('assets/public-features.js','utf8');
   const context={DB:{publicContent:{}},URL,safe:x=>String(x).replaceAll('&','&amp;').replaceAll('"','&quot;')};vm.createContext(context);
   vm.runInContext(source.slice(source.indexOf('  function surveyLinkHTML('),source.indexOf('  function decorate(')),context);
-  for(const value of ['',undefined,'javascript:alert(1)','https://user:password@example.org/']){context.DB.publicContent.surveyUrl=value;assert.match(context.surveyLinkHTML(),/disabled/);}
+  for(const value of ['',undefined]){context.DB.publicContent.surveyUrl=value;assert.match(context.surveyLinkHTML(),/href="https:\/\/gecc-survey\.vercel\.app\/s\/demo-amphoe-a"/);}
+  for(const value of ['javascript:alert(1)','https://user:password@example.org/']){context.DB.publicContent.surveyUrl=value;assert.match(context.surveyLinkHTML(),/disabled/);}
   context.DB.publicContent.surveyUrl='https://example.org/survey';assert.match(context.surveyLinkHTML(),/href="https:\/\/example.org\/survey"/);
   const base={library:[],committee:[],duties:[],advisor:{photo:''}};
   assert.throws(()=>validateContent({...base,surveyUrl:'javascript:alert(1)'}));

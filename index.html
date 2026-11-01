@@ -102,7 +102,6 @@ body::before{ content:""; position:fixed; inset:0 0 auto; height:env(safe-area-i
 .top-act{ margin-left:auto; display:flex; gap:8px; align-items:center; flex-wrap:nowrap; justify-content:flex-end; flex:none; }
 .page-t{ flex:1; }
 .content{ padding:28px 32px 40px; max-width:1440px; width:100%; margin:0 auto; flex:1; }
-.footer{ padding:20px 32px 28px; color:var(--text-3); font-size:13px; border-top:1px solid var(--border); display:flex; flex-wrap:wrap; gap:6px 18px; justify-content:space-between; }
 
 .banner{ display:flex; gap:12px; align-items:flex-start; padding:12px 32px; background:var(--gold-50); border-bottom:1px solid var(--gold-100); color:var(--text); font-size:14.5px; }
 .banner svg{ width:20px; height:20px; color:var(--gold); flex:none; margin-top:2px; }
@@ -910,7 +909,6 @@ body.lux-top::before{ background:#0B1A4C; }
   .topbar-in{ padding:10px 20px; min-height:60px; }
   .content{ padding:20px 20px 32px; }
   .banner{ padding:10px 20px; }
-  .footer{ padding:18px 20px 24px; }
   .g3{ grid-template-columns:1fr 1fr; }
   .savebar{ margin:20px -20px -32px; padding-left:20px; padding-right:20px; }
   .meta-grid{ grid-template-columns:1fr 1fr; }
@@ -970,7 +968,7 @@ body.lux-top::before{ background:#0B1A4C; }
   .lvl-tile img{ width:44px; height:44px; }
 }
 @media print{
-  .side,.topbar,.banner,.footer,.no-print,.tabs,.savebar,.ws-head,.scrim{ display:none!important; }
+  .side,.topbar,.banner,.no-print,.tabs,.savebar,.ws-head,.scrim{ display:none!important; }
   .shell{ display:block; }
   .content{ padding:0; max-width:none; }
   body{ background:#fff; color:#000; font-size:14px; }
@@ -1141,7 +1139,7 @@ button.mr:focus-visible{ outline:3px solid var(--gold-500); outline-offset:2px; 
 /* ===== public / bare layouts ===== */
 .shell.pub{ grid-template-columns:minmax(0,1fr); }
 .shell.pub .side,.shell.pub .scrim,.shell.pub .menu-btn{ display:none!important; }
-.shell.bare .topbar,.shell.bare .banner,.shell.bare .footer{ display:none!important; }
+.shell.bare .topbar,.shell.bare .banner{ display:none!important; }
 .shell.bare .content{ max-width:none; padding:0; }
 /* entry */
 .entry{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:calc(40px + env(safe-area-inset-top,0px)) 20px 40px; background:radial-gradient(900px 520px at 100% 0%, rgba(43,76,170,.55), transparent 60%), radial-gradient(700px 420px at 0% 100%, rgba(201,162,74,.20), transparent 60%), linear-gradient(160deg,#0D1E57 0%,#071233 100%); }
@@ -3108,7 +3106,6 @@ function shell(){
        ${DB.isSample && S.view==='exec'?`<div class="banner no-print" role="note">${ic('info')}<div class="bt"><b>ตัวเลขร่างเพื่อดูภาพรวม</b> ตัวเลขการส่งเกณฑ์และคะแนนทั้งหมดเป็นข้อมูลจำลอง ยังไม่ใช่ผลการตรวจจริงของหน่วยบริการ เมื่อพร้อมใช้งานจริง ไปที่ MENTOR › จัดการข้อมูล เพื่อล้างตัวเลขร่าง</div></div>`:''}
       <main class="content" id="content" tabindex="-1"></main>
       <nav class="pager no-print" id="pager" aria-label="เปลี่ยนหน้า"></nav>
-      <footer class="footer"><span>SISAKET GECC PROJECT · ยกระดับมาตรฐานบริการภาครัฐ สะดวก รวดเร็ว เข้าถึงง่าย โปร่งใส</span><span>อ้างอิง: หลักเกณฑ์มาตรฐาน GECC ประจำปี พ.ศ. 2570</span></footer>
     </div>
   </div>`;
 }
