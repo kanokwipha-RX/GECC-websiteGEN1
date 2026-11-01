@@ -76,7 +76,7 @@ function content_refresh_plan(object $live, object $wanted, object $base, array 
         $next->teams[$index]=refresh_value($next->teams[$index],$original,$team,'teams.'.$team->id,$changes,$conflicts);
     }
     foreach(['advisor','committee','mentorAdvisors','duties'] as $key)if(isset($wanted->publicContent->$key))
-        $next->publicContent->$key=refresh_value($live->publicContent->$key??null,$base->publicContent->$key??null,$wanted->publicContent->$key,'publicContent.'.$key,$changes,$conflicts);
+        $next->publicContent->$key=refresh_value($live->publicContent->$key??($base->publicContent->$key??null),$base->publicContent->$key??null,$wanted->publicContent->$key,'publicContent.'.$key,$changes,$conflicts);
     $next->publicContent->albums=$live->publicContent->albums??[];
     foreach($wanted->publicContent->albums??[] as $album) {
         $match=fn($a)=>(isset($a->id,$album->id)&&$a->id===$album->id)||(($a->date??'')===($album->date??'')&&$a->title===$album->title);
