@@ -3963,7 +3963,7 @@ function viewAnalytics(){
       <tbody>${as.sort((a,b)=>a.c.total-b.c.total).map(x=>`<tr><td class="l" title="${esc(x.u.name)}">${esc(x.u.name)}</td>${x.c.qcList.map(v=>`<td class="${hc(v,10)}">${fmt(v,1)}</td>`).join('')}<td class="${hc(x.c.sat,40)}">${x.c.sat}</td><td class="${hc(x.c.conv,30)}">${x.c.conv}</td><td class="${hc(x.c.tech,30)}">${x.c.tech}</td><td class="${x.c.level==='gate'||x.c.level==='below'?'h0':'h3'}">${fmt(x.c.total,1)}</td></tr>`).join('')}</tbody></table></div>
       <div class="legend"><span class="lv"><i style="background:var(--bad)"></i>ต่ำกว่าร้อยละ 50</span><span class="lv"><i style="background:var(--warn)"></i>50–69</span><span class="lv"><i style="background:var(--navy)"></i>70–84</span><span class="lv"><i style="background:var(--ok)"></i>85 ขึ้นไป</span></div>`:`<div class="empty">${ic('chart')}<h3>ยังไม่มีข้อมูลสำหรับวิเคราะห์</h3><p>บันทึกผลการตรวจอย่างน้อย 1 หน่วยบริการเพื่อดูการวิเคราะห์</p></div>`}</div></div>
   <div class="grid g2" style="margin-top:16px">
-    <div class="card"><div class="card-h"><div><h3>เกณฑ์ด้านกายภาพที่ยังไม่ผ่าน</h3><p>จำนวนหน่วยบริการที่ยังไม่ดำเนินการในแต่ละข้อ</p></div></div><div class="card-b">${physMiss.length?`<ol class="plist">${physMiss.map(o=>`<li><div><div class="pt">ข้อ ${o.i+1} ${esc(o.p.s)} ${o.p.n?NEWB:''}</div></div><div class="pv"><b>${o.n}</b>แห่ง</div></li>`).join('')}</ol>`:`<div class="empty">${ic('check')}<h3>ทุกหน่วยบริการผ่านกายภาพครบ 15 ข้อ</h3></div>`}</div></div>
+    <div class="card"><div class="card-h"><div><h3>เกณฑ์ด้านกายภาพที่ยังไม่ผ่าน</h3><p>จำนวนหน่วยบริการที่ยังไม่ดำเนินการในแต่ละข้อ</p></div></div><div class="card-b">${physMiss.length?`<ol class="plist">${physMiss.map(o=>`<li><div><div class="pt">ข้อ ${o.i+1} ${esc(o.p.s)} ${o.p.n?NEWB:''}</div></div><div class="pv"><b>${o.n}</b>แห่ง</div></li>`).join('')}</ol>`:`${physicalEmptyHTML(infos)}`}</div></div>
     <div class="card"><div class="card-h"><div><h3 class="row" style="gap:8px">${NEWB} ความพร้อมตามเกณฑ์ใหม่ปี 2570</h3><p>เรียงจากข้อที่หน่วยบริการดำเนินการได้น้อยที่สุด · ประเมินแล้ว ${as.length} แห่ง</p></div></div><div class="card-b dim">${as.length?newItems.slice(0,10).map(o=>dimRow(`${o.ref} ${esc(o.t)}`, `${o.done}<small>/${as.length}</small>`, pct(o.done,as.length))).join(''):`<div class="empty">${ic('chart')}<h3>ยังไม่มีข้อมูล</h3></div>`}</div></div>
   </div>`;
 }
@@ -3987,10 +3987,16 @@ function heatHTML(infos){
   return `<div class="tbl-wrap"><table class="heat heat2"><thead><tr><th class="l">หน่วยบริการ</th>${QC.map((q,i)=>`<th title="${esc(q.t)}"><b>${i+1}</b><span>${QSHORT[i]}</span></th>`).join('')}<th><b>40</b><span>พึงพอใจ</span></th><th><b>30</b><span>สะดวก</span></th><th><b>30</b><span>เทคโนโลยี</span></th><th><b>300</b><span>รวม</span></th></tr></thead><tbody>${body}${foot}</tbody></table></div>
     <div class="legend"><span class="lv"><i style="background:var(--bad)"></i>ต่ำกว่าร้อยละ 50</span><span class="lv"><i style="background:var(--warn)"></i>50–69</span><span class="lv"><i style="background:var(--navy)"></i>70–84</span><span class="lv"><i style="background:var(--ok)"></i>85 ขึ้นไป</span><span>แถวล่างสุด = ค่าเฉลี่ยรายประเด็น · แตะชื่อหน่วยบริการเพื่อเปิด DASHBOARD</span></div>`;
 }
+function physicalEmptyHTML(infos, index=null){
+  const complete=infos.filter(x=>x.a?.started && (index===null ? x.a.phys : [x.a.phys[index]]).every(v=>v===true)).length;
+  const all=infos.length>0 && complete===infos.length;
+  const title=all ? (index===null?'ทุกหน่วยบริการผ่านกายภาพครบ 15 ข้อ':'ทุกหน่วยบริการผ่านข้อนี้แล้ว') : complete ? `มีผลผ่าน ${complete} จาก ${infos.length} หน่วยบริการ` : 'ยังไม่มีผลตรวจครบทุกหน่วยบริการ';
+  return `<div class="empty">${ic(all?'check':'clock')}<h3>${title}</h3>${all?'':'<p>รอผลตรวจให้ครบก่อนสรุปว่าผ่านทั้งหมด</p>'}</div>`;
+}
 function physMissModal(i){
   const infos=allInfo(S.mdTeam||0).filter(x=>x.a&&x.a.started&&x.a.phys[i]!==true).sort((a,b)=>a.u.team-b.u.team);
   openModal(`<div class="modal-h"><span class="dl-badge r">${ic('alert')}</span><div style="flex:1;min-width:0"><h3>กายภาพ ข้อ ${i+1} · ${esc(PHYS[i].s)}</h3><p>หน่วยบริการที่ยังไม่ผ่าน ${infos.length} แห่ง${PHYS[i].n?' · เกณฑ์ใหม่ปี 2570':''}</p></div><button class="btn btn-ghost btn-icon" data-act="modal-close" aria-label="ปิด">${ic('x')}</button></div>
-  <div class="modal-b"><p class="small muted" style="margin:0">${esc(PHYS[i].t)}</p>${infos.length?`<ul class="flist dl">${infos.map(x=>{ const v=x.a.phys[i]; const rv=(x.a.rev||{})['phys:'+i]?.text; return `<li><button class="dl-i" data-act="open-udash" data-id="${x.u.id}"><span class="fn">${esc(x.u.name)}</span><span class="fg">${esc(teamName(x.u.team))}</span></button><div class="subchips"><span class="sc ${v===false?'none':'prog'}">${ic(v===false?'xc':'clock')}${v===false?'ไม่มี':'ยังไม่ตอบ'}</span></div>${rv?`<div class="evq m" style="margin-top:4px"><p>${esc(rv)}</p></div>`:''}</li>`; }).join('')}</ul>`:`<div class="empty" style="padding:18px">${ic('check')}<h3>ทุกหน่วยบริการผ่านข้อนี้แล้ว</h3></div>`}</div>
+  <div class="modal-b"><p class="small muted" style="margin:0">${esc(PHYS[i].t)}</p>${infos.length?`<ul class="flist dl">${infos.map(x=>{ const v=x.a.phys[i]; const rv=(x.a.rev||{})['phys:'+i]?.text; return `<li><button class="dl-i" data-act="open-udash" data-id="${x.u.id}"><span class="fn">${esc(x.u.name)}</span><span class="fg">${esc(teamName(x.u.team))}</span></button><div class="subchips"><span class="sc ${v===false?'none':'prog'}">${ic(v===false?'xc':'clock')}${v===false?'ไม่มี':'ยังไม่ตอบ'}</span></div>${rv?`<div class="evq m" style="margin-top:4px"><p>${esc(rv)}</p></div>`:''}</li>`; }).join('')}</ul>`:`${physicalEmptyHTML(allInfo(S.mdTeam||0),i)}`}</div>
   <div class="modal-f"><button class="btn btn-primary" data-act="modal-close">ปิด</button></div>`);
 }
 function analyticsHTML(infos){
@@ -4004,7 +4010,7 @@ function analyticsHTML(infos){
   return `  <div class="card" style="margin-top:16px"><div class="card-h"><div><h3>คะแนนรายประเด็นของแต่ละหน่วยบริการ</h3><p>Checklist 10 ประเด็น (เต็มประเด็นละ 10) และด้านผลลัพธ์ · แยกตามกลุ่ม · ช่วยชี้ว่าแต่ละหน่วยบริการอ่อนประเด็นใด</p></div></div>
     <div class="card-b">${heatHTML(infos)}</div></div>
   <div class="grid g2" style="margin-top:16px">
-    <div class="card"><div class="card-h"><div><h3>เกณฑ์ด้านกายภาพที่ยังไม่ผ่าน</h3><p>จำนวนหน่วยบริการที่ยังไม่ผ่านในแต่ละข้อ · แตะหัวข้อเพื่อดูรายชื่อ</p></div></div><div class="card-b">${physMiss.length?`<ol class="plist">${physMiss.map(o=>`<li><button type="button" class="plk" data-act="phys-miss" data-i="${o.i}" aria-label="ดูหน่วยบริการที่ยังไม่ผ่านข้อ ${o.i+1}"><div><div class="pt">ข้อ ${o.i+1} ${esc(o.p.s)} ${o.p.n?NEWB:''}</div><div class="pd">แตะเพื่อดูรายชื่อหน่วยบริการ</div></div><div class="pv"><b>${o.n}</b>แห่ง</div></button></li>`).join('')}</ol>`:`<div class="empty">${ic('check')}<h3>ทุกหน่วยบริการผ่านกายภาพครบ 15 ข้อ</h3></div>`}</div></div>
+    <div class="card"><div class="card-h"><div><h3>เกณฑ์ด้านกายภาพที่ยังไม่ผ่าน</h3><p>จำนวนหน่วยบริการที่ยังไม่ผ่านในแต่ละข้อ · แตะหัวข้อเพื่อดูรายชื่อ</p></div></div><div class="card-b">${physMiss.length?`<ol class="plist">${physMiss.map(o=>`<li><button type="button" class="plk" data-act="phys-miss" data-i="${o.i}" aria-label="ดูหน่วยบริการที่ยังไม่ผ่านข้อ ${o.i+1}"><div><div class="pt">ข้อ ${o.i+1} ${esc(o.p.s)} ${o.p.n?NEWB:''}</div><div class="pd">แตะเพื่อดูรายชื่อหน่วยบริการ</div></div><div class="pv"><b>${o.n}</b>แห่ง</div></button></li>`).join('')}</ol>`:`${physicalEmptyHTML(infos)}`}</div></div>
     <div class="card"><div class="card-h"><div><h3 class="row" style="gap:8px">${NEWB} ความพร้อมตามเกณฑ์ใหม่ปี 2570</h3><p>เรียงจากข้อที่หน่วยบริการดำเนินการได้น้อยที่สุด · ประเมินแล้ว ${as.length} แห่ง</p></div></div><div class="card-b dim">${as.length?newItems.slice(0,10).map(o=>dimRow(`${o.ref} ${esc(o.t)}`, `${o.done}<small>/${as.length}</small>`, pct(o.done,as.length))).join(''):`<div class="empty">${ic('chart')}<h3>ยังไม่มีข้อมูล</h3></div>`}</div></div>
   </div>`;
 }
@@ -4015,7 +4021,7 @@ function viewUnit(){
   S.lock = wfOf(DB.assess[u.id])==='reviewed'; const ro = S.role!=='mentor' || S.lock;
   if(!S.draft){ S.draft = clone(DB.assess[u.id] || blankAssess()); S.dirty=false; }
   const a=S.draft; const c=calc(a); const info=unitInfo(u);
-  setHead(`<span class="ut-title">${esc(u.name)}</span>`, `${ro?'แบบประเมิน':'แบบตรวจประเมิน'} GECC 2570 · ${esc(teamName(u.team))}`, S.from==='forms'&&!ro?`<button class="btn" data-act="go" data-view="forms">${ic('repeat')}<span class="lbl-t">เปลี่ยนหน่วยบริการ</span></button>`:'');
+  setHead(`<span class="ut-title">${esc(u.name)}</span>`, `${ro?'แบบประเมิน':'แบบตรวจประเมิน'} GECC 2570 · ${esc(teamName(u.team))}`, S.from==='forms'&&!ro?`<button class="btn" data-act="go" data-view="forms" aria-label="เปลี่ยนหน่วยบริการ">${ic('repeat')}<span class="lbl-t">เปลี่ยนหน่วยบริการ</span></button>`:'');
   const RS=readyOf(a).st; const tabs=[['ready','แบบประเมินความพร้อม',RS==='ready'?'พร้อม':RS==='notready'?'ไม่พร้อม':'ยังไม่ส่ง'],['phys','ด้านกายภาพ',`${c.physYes}/15`],['qc','คุณภาพ: Checklist',`${fmt(c.qc,1)}`],['narr','คุณภาพ: บรรยาย',`${fmt(c.narr,1)}`],['out','ด้านผลลัพธ์',`${fmt(c.out)}`],['svy','ความพึงพอใจ/เชื่อมั่น',svDone(a.survey)?'ส่งแล้ว':'ยังไม่ส่ง'],['sum','แบบสรุปผล',''],['def','ข้อบกพร่อง',`${info.open.length}`]];
   $('#content').innerHTML = `
   ${wfBanner(DB.assess[u.id],u,true)}
@@ -4587,16 +4593,18 @@ function viewSettings(){
 
 /* ================= Modals ================= */
 let modalReturnFocus=null;
-function openModal(html){
+function openModal(html, {dismissible=true}={}){
   const r=$('#modal-root'); if(!r.firstChild) modalReturnFocus=document.activeElement;
   r.innerHTML=`<div class="modal-bg" data-act="modal-bg"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;
   const modal=r.querySelector('.modal'), title=modal.querySelector('h3,h2');
+  modal.dataset.dismissible=String(dismissible);
   if(title){title.id='modal-title';modal.setAttribute('aria-labelledby',title.id);}else modal.setAttribute('aria-label','รายละเอียด');
   $('#app').inert=true;document.querySelectorAll('.skip-link,#connection-notice').forEach(el=>el.inert=true);document.body.classList.add('modal-open');
   const f=modal.querySelector('input:not([disabled]),select:not([disabled]),textarea:not([disabled])')||modal.querySelector('.btn:not(.btn-danger)')||modal.querySelector('button');
   queueMicrotask(()=>f?.focus());
 }
-function closeModal(){
+function closeModal({force=false}={}){
+  if(!force && $('#modal-root .modal')?.dataset.dismissible==='false') return false;
   $('#modal-root').innerHTML='';$('#app').inert=false;document.querySelectorAll('.skip-link,#connection-notice').forEach(el=>el.inert=false);document.body.classList.remove('modal-open');
   const entry=!!S.pinPending&&S.view==='portfolio';if(entry) S.pinPending=null;
   const target=modalReturnFocus?.isConnected?modalReturnFocus:entry?$('#content [data-entry-heading]'):$('#page-t h1');

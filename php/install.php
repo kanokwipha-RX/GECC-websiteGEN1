@@ -56,7 +56,8 @@ function install(): array {
         // are a separate atomic transaction. Never drop/replace existing records.
         if (empty(config()['schema_preinstalled'])) {
             $sql=file_get_contents(__DIR__.'/schema.sql');
-            foreach(explode(';',$sql) as $statement) if (trim($statement)!=='') db()->exec($statement);
+            // Execute the trusted schema together; semicolons inside SQL comments are not statement boundaries.
+            db()->exec($sql);
         } else {
             foreach(['app_state','accounts','sessions','files','audit','login_attempts','schema_version'] as $table)
                 query('SELECT 1 FROM gecc_'.$table.' LIMIT 1');

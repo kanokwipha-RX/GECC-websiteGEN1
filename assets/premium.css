@@ -224,6 +224,16 @@ textarea {
 .content h3 {
   overflow-wrap: anywhere;
 }
+/* Card headers inherit the active theme instead of retaining a light gradient in dark mode. */
+.card > .card-h {
+  background: var(--surface-2);
+}
+.card > .card-h h3 {
+  color: var(--text);
+}
+.card > .card-h p {
+  color: var(--text-2);
+}
 .content p,
 .field label,
 .help,
@@ -394,6 +404,26 @@ body.modal-open {
 }
 .content-editor legend {
   font-weight: 600;
+}
+@media (max-width: 1023px) {
+  .topbar:not(.lux) .topbar-in {
+    flex-wrap: wrap;
+  }
+  .topbar:not(.lux) .topbar-in > .page-t {
+    flex: 1 1 calc(100% - 64px);
+  }
+  .topbar:not(.lux) .page-t h1 {
+    white-space: normal;
+    overflow: visible;
+    display: block;
+    -webkit-line-clamp: unset;
+  }
+  .topbar:not(.lux) .topbar-in > .tnav {
+    margin-left: auto;
+  }
+  .topbar:not(.lux) .topbar-in > .top-act {
+    margin-left: 0;
+  }
 }
 @media (max-width: 600px) {
   .summary-grid {

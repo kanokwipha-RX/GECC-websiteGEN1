@@ -90,15 +90,15 @@ try {
   await waitFor(async()=>{const r=await fetch(base+"api/index.php?route=health");return r.status===503;});
   browser=await chromium.launch();const ctx=await browser.newContext({viewport:{width:390,height:900}});
   const page=await ctx.newPage();page.on("pageerror",e=>jsErrors.push(e.message));
-  await check("one-time web installer creates MariaDB schema and 54 accounts, then closes itself",async()=>{
+  await check("one-time web installer creates MariaDB schema and 58 accounts, then closes itself",async()=>{
     const denied=await call("setup",null,"POST",{token:"0".repeat(64)});assert.equal(denied.status,403);
     await page.goto(base+"setup.html");
     await page.locator("#token").fill((await readFile(join(privateDir,"setup-token.txt"),"utf8")).trim());
     await page.locator("#submit").click();
-    await page.waitForFunction(()=>document.getElementById("status").textContent.includes("สำเร็จ"),{timeout:120000});
-    assert.equal(sql("SELECT COUNT(*) AS n FROM gecc_accounts")[0].n,54);
+    await page.waitForFunction(()=>document.getElementById("status").textContent.includes("สำเร็จ"),null,{timeout:120000});
+    assert.equal(sql("SELECT COUNT(*) AS n FROM gecc_accounts")[0].n,58);
     assert.equal((await call("setup",null,"POST",{token:"0".repeat(64)})).status,404);
-    const rerun=JSON.parse(phpRun(join(privateDir,"manage.php"),["install","--apply"]));assert.equal(rerun.skipped,54);
+    const rerun=JSON.parse(phpRun(join(privateDir,"manage.php"),["install","--apply"]));assert.equal(rerun.skipped,58);
     assert.equal((await call("health")).status,200);
     const charset=sql("SELECT DISTINCT TABLE_COLLATION FROM information_schema.TABLES WHERE TABLE_SCHEMA='gecc_isolated'");
     assert.ok(charset.every(r=>r.TABLE_COLLATION.startsWith("utf8mb4")));
@@ -106,11 +106,11 @@ try {
   const bundle=JSON.parse(await readFile(join(privateDir,"accounts.json"),"utf8"));
   const official=JSON.parse(await readFile(join(privateDir,"data/seed.json"),"utf8"));
   const passwords=Object.fromEntries(bundle.accounts.map(a=>[a.username,a.password]));
-  await check("all 54 PHP accounts authenticate with correct scope and mandatory password change",async()=>{
+  await check("all 58 PHP accounts authenticate with correct scope and mandatory password change",async()=>{
     for(const a of bundle.accounts){
       const actor=await login(a.username,a.password);assert.equal(actor.user.mustChange,true);
       const r=await call("state",actor);assert.equal(r.status,200);
-      assert.equal(r.data.state.units.length,a.role==="mentee"?1:a.role==="mentor"?official.units.filter(u=>u.team===a.team).length:28);
+      assert.equal(r.data.state.units.length,a.role==="mentee"?1:a.role==="mentor"?official.units.filter(u=>u.team===a.team).length:32);
       assert.equal((await call("state",actor,"PUT",{})).status,403);
     }
   });
@@ -124,7 +124,7 @@ try {
   }
   const coord=actors["coord-01"],unit=actors["000001"],mentor=actors["mentor-01-01"],other=actors["mentor-02-01"];
   await check("public detail allowlist, content permissions, Library session and migration idempotence",async()=>{
-    const projection=(await call("public/units")).data.units;assert.equal(projection.length,28);
+    const projection=(await call("public/units")).data.units;assert.equal(projection.length,32);
     for(const row of projection)assert.deepEqual(Object.keys(row).sort(),['id','name','team','submission','criteria','readiness','workflow','physical','quality','narrative','status','outcomes','score','level','updatedAt'].sort());
     assert.equal((await call("admin/content")).status,403);
     assert.equal((await call("admin/content",unit)).status,403);
@@ -160,12 +160,14 @@ try {
     assert.equal((await call("admin/content",coord,"PUT",{revision:c.revision,content:c.content,teams})).status,200);
     assert.equal((await fetch(base+media.src)).status,200,'published MENTOR portrait is served');
     const rosterState=(await call("state",coord)).data;
-    const newRoster={units:[...rosterState.state.units.map(u=>({code:u.code,name:u.name,team:u.team,district:u.district})),...Array.from({length:4},(_,i)=>({code:'',name:'Isolated fixture unit '+i,team:1,district:''}))]};
+    const legacyRoster=structuredClone(rosterState.state);legacyRoster.units=legacyRoster.units.slice(0,28);
+    sql('UPDATE gecc_app_state SET document=? WHERE id=1',[JSON.stringify(legacyRoster)]);
+    const newRoster={units:[...legacyRoster.units.map(u=>({code:u.code,name:u.name,team:u.team,district:u.district})),...Array.from({length:4},(_,i)=>({code:'',name:'Isolated fixture unit '+i,team:1,district:''}))]};
     const rosterFile=join(root,'fixture-roster.json');await writeFile(rosterFile,JSON.stringify(newRoster));
     const preview=JSON.parse(phpRun(join(privateDir,'roster.php'),[rosterFile]));assert.equal(preview.applied,false);assert.equal(preview.changes.length,32);
     const applied=JSON.parse(phpRun(join(privateDir,'roster.php'),[rosterFile,'--apply',String(preview.revision)]));assert.equal(applied.applied,true);
     const migrated=(await call('state',coord)).data.state;assert.equal(migrated.units.length,32);
-    assert.deepEqual(migrated.units.slice(0,28).map(u=>[u.id,u.code]),rosterState.state.units.map(u=>[u.id,u.code]));
+    assert.deepEqual(migrated.units.slice(0,28).map(u=>[u.id,u.code]),legacyRoster.units.map(u=>[u.id,u.code]));
     assert.deepEqual(migrated.assess,rosterState.state.assess);
     sql('UPDATE gecc_app_state SET document=?,revision=? WHERE id=1',[JSON.stringify(rosterState.state),applied.revision+1]);
     const before=(await call("state",coord)).data.state;
@@ -262,6 +264,34 @@ try {
     const r=await call("state",unit,"PUT",own);assert.equal(r.status,200);
     assert.equal(r.data.state.defects[0].history.at(-1).by,unit.user.name);
   });
+  await check("account maintenance previews missing units and reconciles reviewers without resetting identities or passwords",async()=>{
+    const maintenance=join(privateDir,'account-maintenance.php');
+    const before=(await call('state',coord)).data;
+    const missing=sql("SELECT * FROM gecc_accounts WHERE username='000032'")[0];
+    sql('DELETE FROM gecc_sessions WHERE account_id=?',[missing.id]);sql('DELETE FROM gecc_audit WHERE account_id=?',[missing.id]);sql('DELETE FROM gecc_accounts WHERE id=?',[missing.id]);
+    const checkAccounts=()=>JSON.parse(phpRun(maintenance,['check']));
+    assert.equal(checkAccounts().unitsWithoutLogin.length,1);
+    const prepared=JSON.parse(phpRun(maintenance,['prepare-units','unit-accounts-test.json']));assert.equal(prepared.prepared,1);
+    assert.ok(!JSON.stringify(prepared).includes('password'));
+    assert.throws(()=>phpRun(maintenance,['apply-units','unit-accounts-test.json',String(before.revision-1)]));
+    const applied=JSON.parse(phpRun(maintenance,['apply-units','unit-accounts-test.json',String(before.revision)]));assert.equal(applied.pending,1);
+    assert.equal(checkAccounts().unitsWithoutLogin.length,0);
+    assert.equal(JSON.parse(phpRun(maintenance,['apply-units','unit-accounts-test.json',String(before.revision)])).skipped,1);
+    assert.throws(()=>phpRun(maintenance,['prepare-units','../leak.json']));
+    const reviewer=sql("SELECT * FROM gecc_accounts WHERE username='mentor-03-02'")[0];
+    sql('UPDATE gecc_accounts SET team=6 WHERE id=?',[reviewer.id]);
+    const manifest={format:'gecc-reviewer-reconciliation-v1',accounts:[{username:reviewer.username,expectedName:reviewer.name,expectedTeam:6,name:reviewer.name,team:3,identityConfirmed:false}]};
+    const file=join(privateDir,'reviewer-reconciliation-test.json');await writeFile(file,JSON.stringify(manifest));
+    assert.throws(()=>phpRun(maintenance,['check-reviewers','reviewer-reconciliation-test.json']));
+    manifest.accounts[0].identityConfirmed=true;await writeFile(file,JSON.stringify(manifest));
+    assert.equal(JSON.parse(phpRun(maintenance,['check-reviewers','reviewer-reconciliation-test.json'])).pending,1);
+    const oldSession=await login(reviewer.username,passwords[reviewer.username]);
+    assert.equal(JSON.parse(phpRun(maintenance,['apply-reviewers','reviewer-reconciliation-test.json',String(before.revision)])).pending,1);
+    assert.equal((await call('session',oldSession)).data.user,null);
+    const after=sql('SELECT * FROM gecc_accounts WHERE id=?',[reviewer.id])[0];assert.equal(after.team,3);assert.equal(after.password_hash,reviewer.password_hash);assert.equal(after.must_change,reviewer.must_change);
+    assert.equal(JSON.parse(phpRun(maintenance,['apply-reviewers','reviewer-reconciliation-test.json',String(before.revision)])).skipped,1);
+    assert.deepEqual((await call('state',coord)).data,before,'account maintenance must preserve assessments, evidence and revision');
+  });
   const axe=await readFile("node_modules/axe-core/axe.min.js","utf8");
   await check("PHP frontend login, first-password change, forms, save/reload and responsive axe checks",async()=>{
     await page.goto(base);await page.waitForSelector(".summary-grid");
@@ -280,7 +310,7 @@ try {
     await page.evaluate(()=>GECCClient.loginModal("coord",0,"ผู้ประสานงาน"));
     await page.locator("#login-name").fill("coord-01");await page.locator("#login-password").fill(changed);
     await page.locator("#server-login button[type=submit]").click();
-    await page.waitForFunction(()=>S.coord===true&&DB.units.length===28);
+    await page.waitForFunction(()=>S.coord===true&&DB.units.length===32);
     for(const scheme of ["light","dark"])for(const width of [390,1440]){
       await page.emulateMedia({colorScheme:scheme});await page.setViewportSize({width,height:1000});
       for(const view of ["modules","mdash","forms","defects","settings"]){
@@ -307,7 +337,13 @@ try {
         axeStates.push({view:"assessment "+tab,scheme,width:390,violations});
       }
     }
-    await page.evaluate(()=>go("unit",{unitId:"u01",tab:"narr"}));
+    await page.evaluate(()=>go("unit",{unitId:"u01",tab:"narr",from:"forms"}));
+    for(const width of [360,390,768]){
+      await page.setViewportSize({width,height:1000});
+      assert.ok(await page.locator('#page-t').evaluate(el=>el.getBoundingClientRect().width>200),'unit title retains readable width at '+width);
+      assert.equal(await page.getByRole('button',{name:'เปลี่ยนหน่วยบริการ',exact:true}).count(),1);
+    }
+    await page.setViewportSize({width:390,height:1000});
     await page.locator('textarea[data-bind="narr.0.text"]').fill("บันทึกจาก PHP browser");
     await page.locator("[data-act=save]").first().click();await page.waitForFunction(()=>!S.dirty);
     await page.reload({waitUntil:"domcontentloaded"});await page.waitForFunction(()=>S.coord===true);
@@ -331,6 +367,9 @@ try {
       await p.evaluate(()=>GECCClient.loginModal("coord",0,"ผู้ประสานงาน"));
       await p.locator("#login-name").fill("coord-02");await p.locator("#login-password").fill(passwords["coord-02"]);
       await p.locator("#server-login button[type=submit]").click();await p.waitForSelector("#password-form");
+      await p.keyboard.press('Escape');assert.equal(await p.locator('#password-form').count(),1);
+      await p.locator('.modal-bg').click({position:{x:2,y:2}});assert.equal(await p.locator('#password-form').count(),1);
+      assert.equal(await p.getByRole('button',{name:'ออกจากระบบ',exact:true}).count(),1);
       await p.locator("#old-password").fill(passwords["coord-02"]);await p.locator("#new-password").fill(changed);
       await p.locator("#repeat-password").fill("Mismatch-password-2570");
       await p.locator("#password-form button[type=submit]").click();
@@ -343,8 +382,9 @@ try {
       await p.locator("#server-login button[type=submit]").click();await p.waitForFunction(()=>S.coord===true);
       await p.evaluate(()=>go("unit",{unitId:"u01",tab:"narr"}));
       await p.locator('textarea[data-bind="narr.0.text"]').fill("PHP unsaved draft");
-      await p.route(/\/api\/index\.php\?route=state$/,r=>r.request().method()==="PUT"?r.abort():r.continue());
+      await p.route(/\/api\/index\.php\?route=state$/,r=>r.request().method()==="PUT"?r.fulfill({status:200,contentType:'text/html',body:'<!doctype html><title>One moment</title>'}):r.continue());
       await p.locator("[data-act=save]").first().click();await p.waitForSelector("#connection-notice.error");
+      assert.match(await p.locator('#connection-notice.error').innerText(),/ข้อมูลร่างยังไม่ถูกบันทึก/);
       assert.equal(await p.evaluate(()=>S.dirty),true);
       assert.equal(await p.evaluate(()=>S.draft.narr[0].text),"PHP unsaved draft");
     }finally{await context.close();}

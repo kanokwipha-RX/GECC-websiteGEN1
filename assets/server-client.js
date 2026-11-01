@@ -28,24 +28,28 @@ window.GECCClient = (() => {
       ...(csrf ? { "X-CSRF-Token": csrf } : {}),
       ...options.headers,
     };
-    const response = await fetch(apiUrl(path), {
-      credentials: "same-origin",
-      ...options,
-      headers,
-    });
+    let response;
+    try {
+      response = await fetch(apiUrl(path), { credentials: "same-origin", ...options, headers });
+    } catch {
+      throw new TypeError("เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาตรวจอินเทอร์เน็ตแล้วลองใหม่ ข้อมูลร่างยังไม่ถูกบันทึก");
+    }
+    if (response.status === 204) return null;
+    if (!/\bapplication\/(?:[\w.-]+\+)?json\b/i.test(response.headers.get("Content-Type") || "")) {
+      throw Object.assign(new Error("เซิร์ฟเวอร์กำลังตรวจสอบคำขอหรือส่งข้อมูลไม่สมบูรณ์ กรุณารอสักครู่แล้วลองใหม่ ข้อมูลร่างยังไม่ถูกบันทึก"), { status: 502 });
+    }
+    let data;
+    try { data = await response.json(); }
+    catch { throw Object.assign(new Error("ข้อมูลตอบกลับจากเซิร์ฟเวอร์ไม่สมบูรณ์ กรุณาลองใหม่ ข้อมูลร่างยังไม่ถูกบันทึก"), { status: 502 }); }
     if (!response.ok) {
-      let message = response.status === 404
+      const message = response.status === 404
         ? "ยังไม่พบระบบข้อมูลกลาง กรุณาให้ผู้ดูแลตรวจสอบการเชื่อมต่อเซิร์ฟเวอร์"
         : "เชื่อมต่อระบบไม่สำเร็จ กรุณาลองใหม่";
-      try {
-        message = (await response.json()).error || message;
-      } catch {}
-      const error = new Error(message);
-      error.status = response.status;
-      throw error;
+      throw Object.assign(new Error(typeof data?.error === "string" ? data.error : message), { status: response.status });
     }
-    return response.status === 204 ? null : response.json();
+    return data;
   }
+
   function accept(result) {
     revision = result.revision;
     confirmed = clone(result.state);
@@ -121,6 +125,7 @@ window.GECCClient = (() => {
       server &&
       (error.status === 409 ||
         error.status === 401 ||
+        error.status === 502 ||
         error instanceof TypeError)
     )
       blocked = true;
@@ -182,6 +187,7 @@ window.GECCClient = (() => {
     if (blocked)
       throw new Error("กรุณาเก็บสำเนาร่างและโหลดข้อมูลล่าสุดก่อนบันทึก");
     if (!user) throw new Error("กรุณาเข้าสู่ระบบก่อนบันทึก");
+    if (user.mustChange) throw new Error("กรุณาตั้งรหัสผ่านใหม่ก่อนเริ่มกรอกข้อมูล");
     if (busy) throw new Error("กำลังบันทึก กรุณารอสักครู่");
     busy = true;
     try {
@@ -323,6 +329,7 @@ window.GECCClient = (() => {
       return;
     }
     await request("/api/session", { method: "DELETE" });
+    closeModal({ force: true });
     user = null;
     csrf = null;
     S.draft = null;
@@ -539,7 +546,8 @@ window.GECCClient = (() => {
   }
   function passwordModal(required = false) {
     openModal(
-      `<div class="modal-h"><h3>${required ? "ตั้งรหัสผ่านใหม่ก่อนใช้งาน" : "เปลี่ยนรหัสผ่าน"}</h3>${required ? "" : '<button class="btn" data-act="modal-close">ปิด</button>'}</div><form id="password-form" novalidate class="modal-b auth-fields"><div class="field"><label for="old-password">รหัสผ่านปัจจุบัน</label><input class="inp" type="password" id="old-password" autocomplete="current-password" required maxlength="128"></div><div class="field"><label for="new-password">รหัสผ่านใหม่ 12–128 ตัวอักษร</label><input class="inp" type="password" id="new-password" autocomplete="new-password" minlength="12" maxlength="128" required></div><div class="field"><label for="repeat-password">ยืนยันรหัสผ่านใหม่</label><input class="inp" type="password" id="repeat-password" autocomplete="new-password" minlength="12" maxlength="128" required></div><p role="status" id="password-error" class="auth-help">หลังเปลี่ยนรหัสผ่าน กรุณาเข้าสู่ระบบใหม่</p><button class="btn btn-primary" type="submit">บันทึกรหัสผ่านใหม่</button></form>`,
+      `<div class="modal-h"><h3>${required ? "ตั้งรหัสผ่านใหม่ก่อนใช้งาน" : "เปลี่ยนรหัสผ่าน"}</h3>${required ? '<button class="btn" type="button" data-server-action="logout">ออกจากระบบ</button>' : '<button class="btn" data-act="modal-close">ปิด</button>'}</div><form id="password-form" novalidate class="modal-b auth-fields"><div class="field"><label for="old-password">รหัสผ่านปัจจุบัน</label><input class="inp" type="password" id="old-password" autocomplete="current-password" required maxlength="128"></div><div class="field"><label for="new-password">รหัสผ่านใหม่ 12–128 ตัวอักษร</label><input class="inp" type="password" id="new-password" autocomplete="new-password" minlength="12" maxlength="128" required></div><div class="field"><label for="repeat-password">ยืนยันรหัสผ่านใหม่</label><input class="inp" type="password" id="repeat-password" autocomplete="new-password" minlength="12" maxlength="128" required></div><p role="status" id="password-error" class="auth-help">หลังเปลี่ยนรหัสผ่าน กรุณาเข้าสู่ระบบใหม่</p><button class="btn btn-primary" type="submit">บันทึกรหัสผ่านใหม่</button></form>`,
+      { dismissible: !required },
     );
   }
   let decorating = false;
@@ -693,7 +701,7 @@ window.GECCClient = (() => {
         });
         user = null;
         csrf = null;
-        closeModal();
+        closeModal({ force: true });
         S.view = "portfolio";
         await boot();
         toast("เปลี่ยนรหัสผ่านแล้ว กรุณาเข้าสู่ระบบใหม่");
@@ -728,6 +736,7 @@ window.GECCClient = (() => {
     if (!action) return;
     try {
       if (action === "password") passwordModal();
+      if (action === "logout") await logout();
       if (action === "accounts") await accountsModal();
       if (action === "audit") {
         const data = await request("/api/audit");

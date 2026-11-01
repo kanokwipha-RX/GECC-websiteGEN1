@@ -411,6 +411,7 @@ export function validateContent(content) {
     !content.advisor
   )
     fail(400, "ข้อมูลเผยแพร่ไม่ครบ");
+  if (content.surveyUrl !== undefined && content.surveyUrl !== "") safe(content.surveyUrl);
   for (const row of content.library) {
     safe(row.url);
     safe(row.image, true);

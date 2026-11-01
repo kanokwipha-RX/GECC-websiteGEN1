@@ -1,0 +1,47 @@
+{
+  "format": "gecc-advisor-grants-v1",
+  "accounts": [
+    {
+      "username": "advisor-01",
+      "name": "นายยุคลธร ฐิติเดชวรกุล",
+      "role": "mentor",
+      "team": null,
+      "grantConfirmed": false
+    },
+    {
+      "username": "advisor-02",
+      "name": "ภญ.มัลลิกา สุพล",
+      "role": "coord",
+      "team": null,
+      "grantConfirmed": false
+    },
+    {
+      "username": "advisor-03",
+      "name": "นายบุญชวัฒน์ ปัญช์ญ์ญาแดง",
+      "role": "mentor",
+      "team": null,
+      "grantConfirmed": false
+    },
+    {
+      "username": "advisor-04",
+      "name": "นางสกาวรัตน์ สีละออง",
+      "role": "mentor",
+      "team": null,
+      "grantConfirmed": false
+    },
+    {
+      "username": "advisor-05",
+      "name": "นายศรายุทธ สีละออง",
+      "role": "mentor",
+      "team": null,
+      "grantConfirmed": false
+    },
+    {
+      "username": "advisor-06",
+      "name": "ภญ.กนกวิภา ประกอบศรี",
+      "role": "coord",
+      "team": null,
+      "grantConfirmed": false
+    }
+  ]
+}

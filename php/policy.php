@@ -48,6 +48,7 @@ function validate_content(?object $c): void {
         $u=parse_url($v);
         if (!$u || ($u['scheme']??'')!=='https' || empty($u['host']) || isset($u['user']) || isset($u['pass'])) fail(400,'อนุญาตเฉพาะลิงก์ HTTPS');
     };
+    if(isset($c->surveyUrl)&&$c->surveyUrl!=='')$safe($c->surveyUrl);
     foreach($c->library as $r) {$safe($r->url??null);$safe($r->image??null,true);}
     foreach([$c->advisor,...$c->committee,...($c->mentorAdvisors??[])] as $person) {
         if(!is_object($person))fail(400,'ข้อมูลบุคคลไม่ถูกต้อง');

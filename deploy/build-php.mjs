@@ -22,7 +22,7 @@ export async function buildPhp(output, {updateOnly=false} = {}) {
   windowsPrivate(output,true);
   const excluded = new Set(["config.local.php","accounts.json","setup-token.txt","installed.lock","files","backups",
     ...(updateOnly ? ["config.example.php","install.php","schema.sql","manage.php"] : [])]);
-  await cp(join(root,"php"), privateDir, { recursive:true, filter: path => !excluded.has(basename(path)) });
+  await cp(join(root,"php"), privateDir, { recursive:true, filter: path => !excluded.has(basename(path)) && !/^(?:unit-accounts|reviewer-reconciliation).*\.json$/.test(basename(path)) });
   if (updateOnly) {
     await mkdir(publicDir,{recursive:true});
     await cp(join(root,"php-public/.htaccess"),join(publicDir,".htaccess"));
@@ -63,6 +63,10 @@ export async function buildPhp(output, {updateOnly=false} = {}) {
   await cp(join(root,"PHP-DEPLOYMENT-TH.md"),join(output,"PHP-DEPLOYMENT-TH.md"));
   await cp(join(root,"RELEASE-CONTENT-V2-TH.md"),join(output,"RELEASE-CONTENT-V2-TH.md"));
   await cp(join(root,"RELEASE-ROSTER-2570-TH.md"),join(output,"RELEASE-ROSTER-2570-TH.md"));
+  await cp(join(root,"SERVER-UPDATE-AUDIT-2026-11-01-TH.md"),join(output,"SERVER-UPDATE-AUDIT-2026-11-01-TH.md"));
+  await cp(join(root,"docs/server-update-audit-examples"),join(output,"examples"),{recursive:true});
+  await mkdir(join(output,"docs"),{recursive:true});
+  await cp(join(root,"docs/audit-remediation-2026-11-01.md"),join(output,"docs/audit-remediation-2026-11-01.md"));
   return {output,publicDir,privateDir};
 }
 if (process.argv[1] && resolve(process.argv[1])===fileURLToPath(import.meta.url)) {

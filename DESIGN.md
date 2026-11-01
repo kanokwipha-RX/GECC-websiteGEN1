@@ -28,6 +28,10 @@ spacing/motion/accessibility tokens and shared refinements. Do not duplicate the
   panels use --surface in both themes. Photo-free person cards keep copy in flow.
 
 ## Review checklist (all screens)
+- Shared card headers use --surface-2 with --text/--text-2; deliberately navy
+  result headers retain white foreground. Mobile workspace headers place the
+  full unit title on a row before pager/actions. Icon actions retain accessible
+  Thai names when their visible labels are hidden.
 1. Existing shell -> site navigation -> header -> content -> pager -> footer retained.
 2. Native buttons/actions and anchors/external documents retain existing handlers.
 3. Shared .btn/.inp/.card/status widgets reused; no second visual control system.

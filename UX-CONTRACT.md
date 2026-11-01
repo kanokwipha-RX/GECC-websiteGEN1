@@ -35,6 +35,10 @@ reopen. Coordinator: all groups, settings and accounts. Locked assessments requi
 explicit reopen reason. Server generates audit actor/timestamps and workflow logs.
 
 New async actions retain button geometry and disable repeats while pending.
+Mandatory first-password dialogs cannot be dismissed by Escape/backdrop; explicit
+logout remains available. Ordinary dialogs keep their existing close behavior.
+Unexpected HTML or malformed JSON from the API stops uncertain writes, preserves
+the draft, and shows Thai recovery guidance. Writes are never automatically retried.
 Session expiry and version conflict must stop save; explicit reload requires
 confirmation if a draft is dirty. Import never silently overwrites existing data.
 

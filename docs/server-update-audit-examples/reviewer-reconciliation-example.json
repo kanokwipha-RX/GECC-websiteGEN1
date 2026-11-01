@@ -1,0 +1,21 @@
+{
+  "format": "gecc-reviewer-reconciliation-v1",
+  "accounts": [
+    {
+      "username": "mentor-06-04",
+      "expectedName": "นางสาวสุภัสสร เจริญทัศน์",
+      "expectedTeam": 6,
+      "name": "นางสาวสุภัสสร เจริญทัศน์",
+      "team": 3,
+      "identityConfirmed": false
+    },
+    {
+      "username": "mentor-03-04",
+      "expectedName": "นายชัยมงคล อินทรีย์",
+      "expectedTeam": 3,
+      "name": "นายชัยมงคล อินทรีย์",
+      "team": 6,
+      "identityConfirmed": false
+    }
+  ]
+}

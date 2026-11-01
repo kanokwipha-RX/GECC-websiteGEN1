@@ -8,6 +8,8 @@ output/
 *.log
 php/config.local.php
 php/accounts.json
+php/unit-accounts*.json
+php/reviewer-reconciliation*.json
 accounts.json
 php/setup-token.txt
 php/installed.lock
