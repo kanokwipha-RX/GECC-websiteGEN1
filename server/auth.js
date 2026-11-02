@@ -9,7 +9,7 @@ const scrypt = promisify(scryptCallback);
 export const hashToken = (value) =>
   createHash("sha256").update(value).digest("hex");
 export function passwordValid(value) {
-  return typeof value === "string" && value.length >= 12 && value.length <= 128;
+  return typeof value === "string" && value.length >= 8 && value.length <= 128;
 }
 export async function hashPassword(value) {
   if (!passwordValid(value)) throw new Error("รหัสผ่านต้องมี 12–128 ตัวอักษร");

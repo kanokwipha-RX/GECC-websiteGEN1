@@ -266,12 +266,115 @@ window.GECCClient = (() => {
     } else render();
     toast(msg);
   }
+  
+  function forgotPasswordModal(kind, id, label, prefillUsername) {
+    const unit = kind === "unit" ? DB.units.find((u) => u.id === id) : null;
+    const initialUser = prefillUsername ?? unit?.code ?? "";
+    const isUnit = kind === "unit" || /^\d{6}$/.test(initialUser);
+    openModal(
+      `<div class="modal-h"><div class="dl-badge o">${ic("help")}</div><div style="flex:1;min-width:0"><h3>ลืมรหัสผ่าน / รีเซ็ตรหัสผ่าน</h3><p>${esc(label || "รีเซ็ตรหัสผ่านเข้าสู่ระบบ")}</p></div><button class="btn btn-ghost btn-icon" data-act="modal-close" aria-label="ปิด">${ic("x")}</button></div>
+      <form id="server-reset-password" class="modal-b auth-fields" novalidate>
+        <div class="pin-demo" style="margin-bottom:12px;background:#F0FDF4;border:1px solid #BBF7D0;color:#166534;border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.5;">
+          ${ic("info")} <span>ระบบจะรีเซ็ตรหัสผ่านของท่านกลับเป็นรหัสผ่านเริ่มต้น <b>Gecc2027ssk</b> เมื่อเข้าสู่ระบบแล้ว ระบบจะให้ท่านตั้งรหัสผ่านใหม่ทันที</span>
+        </div>
+        <div class="field">
+          <label for="reset-name">ชื่อผู้ใช้หรือรหัสหน่วยบริการ 6 หลัก</label>
+          <input class="inp" id="reset-name" name="username" value="${esc(initialUser)}" required placeholder="เช่น 000001 หรือ mentor-01-01" aria-describedby="reset-error">
+        </div>
+        <div class="field">
+          <label for="reset-unit-select">หรือเลือกจากรายชื่อหน่วยบริการ (32 แห่ง)</label>
+          <select class="inp" id="reset-unit-select">
+            <option value="">-- เลือกหน่วยบริการเพื่อดึงรหัส 6 หลักอัตโนมัติ --</option>
+            ${DB.units.map(u => `<option value="${esc(u.code)}" ${u.code === initialUser ? "selected" : ""}>${esc(u.code + " · " + u.name)}</option>`).join("")}
+          </select>
+        </div>
+        <div class="field">
+          <label for="reset-mentor-select">หรือเลือกจากรายชื่อ MENTOR</label>
+          <select class="inp" id="reset-mentor-select">
+            <option value="">-- เลือกชื่อ MENTOR --</option>
+            ${DB.teams.flatMap(t => (t.members || []).map((m, idx) => {
+              const un = "mentor-" + String(t.id).padStart(2, "0") + "-" + String(idx + 1).padStart(2, "0");
+              return `<option value="${un}" ${un === initialUser ? "selected" : ""}>${esc(m.name + " (" + t.name + ")")}</option>`;
+            })).join("")}
+          </select>
+        </div>
+        <div class="field">
+          <label for="reset-pin">รหัสยืนยันการรีเซ็ต (PIN จังหวัด: 2570)</label>
+          <input class="inp" id="reset-pin" name="resetPin" value="2570" placeholder="2570" maxlength="20" aria-describedby="reset-error">
+          <span class="help" style="font-size:12px;color:#64748B;">กรอกรหัส 2570 เพื่อยืนยันการรีเซ็ต</span>
+        </div>
+        <p id="reset-error" class="auth-help" role="status"></p>
+        <div style="display:flex;gap:8px;margin-top:14px;">
+          <button class="btn" type="button" data-server-action="back-to-login" data-kind="${esc(kind || "")}" data-id="${esc(id || "")}" data-label="${esc(label || "")}" data-user="${esc(initialUser)}">กลับไปหน้าล็อกอิน</button>
+          <button class="btn btn-primary" type="submit" style="flex:1;">รีเซ็ตรหัสผ่านเป็น Gecc2027ssk</button>
+        </div>
+      </form>`
+    );
+    const uSel = $("#reset-unit-select");
+    const mSel = $("#reset-mentor-select");
+    const nameInp = $("#reset-name");
+    if (uSel && nameInp) {
+      uSel.addEventListener("change", () => {
+        if (uSel.value) {
+          nameInp.value = uSel.value;
+          if (mSel) mSel.value = "";
+        }
+      });
+    }
+    if (mSel && nameInp) {
+      mSel.addEventListener("change", () => {
+        if (mSel.value) {
+          nameInp.value = mSel.value;
+          if (uSel) uSel.value = "";
+        }
+      });
+    }
+  }
+
+  async function submitResetPassword(form) {
+    const userInp = $("#reset-name");
+    const pinInp = $("#reset-pin");
+    const username = userInp?.value.trim();
+    const resetPin = pinInp?.value.trim();
+    if (!username) {
+      invalidField(userInp);
+      $("#reset-error").textContent = "กรุณากรอกชื่อผู้ใช้หรือรหัสหน่วยบริการ";
+      return;
+    }
+    const button = form.querySelector("button[type=submit]");
+    button.disabled = true;
+    button.setAttribute("aria-busy", "true");
+    try {
+      const res = await request("/api/reset-password", {
+        method: "POST",
+        body: JSON.stringify({ username, resetPin }),
+      });
+      toast("รีเซ็ตรหัสผ่านเป็น Gecc2027ssk เรียบร้อยแล้ว");
+      loginModal(S.pinPending?.kind || "unit", S.pinPending?.id, S.pinPending?.label || "เข้าสู่ระบบ", username);
+      const passInp = $("#login-password");
+      if (passInp) {
+        passInp.value = "Gecc2027ssk";
+        const err = $("#login-error");
+        if (err) {
+          err.textContent = "รหัสผ่านถูกรีเซ็ตเป็น Gecc2027ssk แล้ว กด 'เข้าสู่ระบบ' เพื่อตั้งรหัสผ่านใหม่";
+          err.style.color = "#059669";
+        }
+        passInp.focus();
+      }
+    } catch (err) {
+      $("#reset-error").textContent = err.message;
+      invalidField(pinInp || userInp);
+    } finally {
+      button.disabled = false;
+      button.removeAttribute("aria-busy");
+    }
+  }
   function loginModal(kind, id, label, username) {
     S.pinPending = { kind, id };
     const unit = kind === "unit" ? DB.units.find((u) => u.id === id) : null;
     const selectedUsername = username ?? unit?.code ?? "";
     openModal(
-      `<div class="modal-h"><div><h3>เข้าสู่ระบบ</h3><p>${esc(label)}</p></div><button class="btn btn-ghost btn-icon" data-act="modal-close" aria-label="ปิด">${ic("x")}</button></div><form id="server-login" class="modal-b auth-fields" novalidate><div class="field"><label for="login-name">${kind === "unit" ? "รหัสหน่วยบริการ 6 หลัก" : "ชื่อผู้ใช้รายบุคคล"}</label><input class="inp" id="login-name" name="username" autocomplete="username" ${kind === "unit" ? 'inputmode="numeric" maxlength="6"' : ""} value="${esc(selectedUsername)}" ${selectedUsername?'readonly':''} required aria-describedby="login-error"></div><div class="field"><label for="login-password">รหัสผ่าน</label><input class="inp" type="password" id="login-password" name="password" autocomplete="current-password" required maxlength="128" aria-describedby="login-error"></div><p id="login-error" class="auth-help" role="status">${selectedUsername ? "กรอกรหัสผ่านของบัญชีที่เลือก" : "ยังไม่ได้เชื่อมรายชื่อนี้กับบัญชี กรอกชื่อผู้ใช้ที่ได้รับจากผู้ประสานงาน หรือติดต่อผู้ประสานงานเพื่อตรวจสอบ"}</p><button class="btn btn-primary" type="submit">เข้าสู่ระบบ</button></form>`,
+      `<div class="modal-h"><div><h3>เข้าสู่ระบบ</h3><p>${esc(label)}</p></div><button class="btn btn-ghost btn-icon" data-act="modal-close" aria-label="ปิด">${ic("x")}</button></div><form id="server-login" class="modal-b auth-fields" novalidate><div class="field"><label for="login-name">${kind === "unit" ? "รหัสหน่วยบริการ 6 หลัก" : "ชื่อผู้ใช้รายบุคคล"}</label><input class="inp" id="login-name" name="username" autocomplete="username" ${kind === "unit" ? 'inputmode="numeric" maxlength="6"' : ""} value="${esc(selectedUsername)}" ${selectedUsername?'readonly':''} required aria-describedby="login-error"></div><div class="field"><div style="display:flex;justify-content:space-between;align-items:center;"><label for="login-password">รหัสผ่าน</label><button type="button" class="btn btn-link" data-server-action="forgot-password" style="background:none;border:none;padding:0;font-size:12px;color:#2563EB;cursor:pointer;text-decoration:underline;">ลืมรหัสผ่าน? รีเซ็ต</button></div><input class="inp" type="password" id="login-password" name="password" autocomplete="current-password" required maxlength="128" aria-describedby="login-error"></div><p id="login-error" class="auth-help" role="status">${selectedUsername ? "กรอกรหัสผ่านของบัญชีที่เลือก (รหัสเริ่มต้น: Gecc2027ssk)" : "ยังไม่ได้เชื่อมรายชื่อนี้กับบัญชี กรอกชื่อผู้ใช้ที่ได้รับจากผู้ประสานงาน หรือติดต่อผู้ประสานงานเพื่อตรวจสอบ"}</p><button class="btn btn-primary" type="submit">เข้าสู่ระบบ</button></form>`,
     );
     if(selectedUsername) $("#login-password")?.focus();
   }
@@ -546,7 +649,7 @@ window.GECCClient = (() => {
   }
   function passwordModal(required = false) {
     openModal(
-      `<div class="modal-h"><h3>${required ? "ตั้งรหัสผ่านใหม่ก่อนใช้งาน" : "เปลี่ยนรหัสผ่าน"}</h3>${required ? '<button class="btn" type="button" data-server-action="logout">ออกจากระบบ</button>' : '<button class="btn" data-act="modal-close">ปิด</button>'}</div><form id="password-form" novalidate class="modal-b auth-fields"><div class="field"><label for="old-password">รหัสผ่านปัจจุบัน</label><input class="inp" type="password" id="old-password" autocomplete="current-password" required maxlength="128"></div><div class="field"><label for="new-password">รหัสผ่านใหม่ 12–128 ตัวอักษร</label><input class="inp" type="password" id="new-password" autocomplete="new-password" minlength="12" maxlength="128" required></div><div class="field"><label for="repeat-password">ยืนยันรหัสผ่านใหม่</label><input class="inp" type="password" id="repeat-password" autocomplete="new-password" minlength="12" maxlength="128" required></div><p role="status" id="password-error" class="auth-help">หลังเปลี่ยนรหัสผ่าน กรุณาเข้าสู่ระบบใหม่</p><button class="btn btn-primary" type="submit">บันทึกรหัสผ่านใหม่</button></form>`,
+      `<div class="modal-h"><h3>${required ? "ตั้งรหัสผ่านใหม่ก่อนใช้งาน" : "เปลี่ยนรหัสผ่าน"}</h3>${required ? '<button class="btn" type="button" data-server-action="logout">ออกจากระบบ</button>' : '<button class="btn" data-act="modal-close">ปิด</button>'}</div><form id="password-form" novalidate class="modal-b auth-fields"><div class="field"><label for="old-password">รหัสผ่านปัจจุบัน</label><input class="inp" type="password" id="old-password" autocomplete="current-password" required maxlength="128"></div><div class="field"><label for="new-password">รหัสผ่านใหม่ 8–128 ตัวอักษร</label><input class="inp" type="password" id="new-password" autocomplete="new-password" minlength="8" maxlength="128" required></div><div class="field"><label for="repeat-password">ยืนยันรหัสผ่านใหม่</label><input class="inp" type="password" id="repeat-password" autocomplete="new-password" minlength="8" maxlength="128" required></div><p role="status" id="password-error" class="auth-help">หลังเปลี่ยนรหัสผ่าน กรุณาเข้าสู่ระบบใหม่</p><button class="btn btn-primary" type="submit">บันทึกรหัสผ่านใหม่</button></form>`,
       { dismissible: !required },
     );
   }
@@ -735,6 +838,15 @@ window.GECCClient = (() => {
       .serverAction;
     if (!action) return;
     try {
+      if (action === "forgot-password") {
+        forgotPasswordModal(S.pinPending?.kind, S.pinPending?.id, S.pinPending?.label, $("#login-name")?.value);
+        return;
+      }
+      if (action === "back-to-login") {
+        const b = e.target.closest("[data-server-action]");
+        loginModal(b.dataset.kind, b.dataset.id, b.dataset.label, b.dataset.user);
+        return;
+      }
       if (action === "password") passwordModal();
       if (action === "logout") await logout();
       if (action === "accounts") await accountsModal();
@@ -877,7 +989,7 @@ window.GECCClient = (() => {
   function accountsModal() {
     return request("/api/accounts").then((data) => {
       openModal(
-        `<div class="modal-h"><h3>บัญชีผู้ใช้</h3><button class="btn" data-act="modal-close">ปิด</button></div><div class="modal-b"><div class="tbl-wrap"><table class="tbl"><thead><tr><th>ชื่อผู้ใช้</th><th>ชื่อ</th><th>บทบาท</th><th>การใช้งาน</th></tr></thead><tbody>${data.accounts.map((a) => `<tr><td>${esc(a.username)}</td><td>${esc(a.name)}</td><td>${esc(a.role === "coord" ? "ผู้ประสานงาน" : a.role === "mentor" ? "MENTOR" : "หน่วยบริการ")}</td><td><button class="btn btn-sm" data-account-id="${esc(a.id)}" data-account-active="${!a.active}">${a.active ? "ปิดบัญชี" : "เปิดบัญชี"}</button><button class="btn btn-sm" data-account-reset="${esc(a.id)}">ตั้งรหัสผ่านชั่วคราวใหม่</button></td></tr>`).join("")}</tbody></table></div><h4>เพิ่มบัญชี</h4><form id="account-form" novalidate class="auth-fields"><div class="field"><label for="account-role">บทบาท</label><select class="inp" id="account-role" name="role"><option value="mentee">หน่วยบริการ</option><option value="mentor">MENTOR</option><option value="coord">ผู้ประสานงานจังหวัด</option></select></div><div class="field"><label for="account-unit">หน่วยบริการ (สำหรับบัญชีหน่วยบริการ)</label><select class="inp" name="unitId" id="account-unit">${DB.units.map((u) => `<option value="${esc(u.id)}">${esc(u.code + " · " + u.name)}</option>`).join("")}</select></div><div class="field"><label for="account-team">กลุ่ม MENTOR</label><select class="inp" name="team" id="account-team">${DB.teams.map((t) => `<option value="${t.id}">${esc(t.name)}</option>`).join("")}</select></div><div class="field"><label for="account-name">ชื่อผู้ใช้ (สำหรับผู้ตรวจและผู้ประสานงาน)</label><input class="inp" name="username" id="account-name" autocomplete="off" maxlength="80"></div><div class="field"><label for="account-display">ชื่อที่แสดง</label><input class="inp" name="name" id="account-display" required maxlength="200"></div><div class="field"><label for="account-pass">รหัสผ่านชั่วคราว 12–128 ตัวอักษร</label><input class="inp" type="password" name="password" id="account-pass" autocomplete="new-password" minlength="12" maxlength="128" required></div><p id="account-error" role="status" class="auth-help">รหัสบัญชีหน่วยบริการจะใช้รหัส 6 หลักโดยอัตโนมัติ ผู้ใช้ต้องเปลี่ยนรหัสผ่านเมื่อเข้าใช้ครั้งแรก</p><button class="btn btn-primary">เพิ่มบัญชี</button></form></div>`,
+        `<div class="modal-h"><h3>บัญชีผู้ใช้</h3><button class="btn" data-act="modal-close">ปิด</button></div><div class="modal-b"><div class="tbl-wrap"><table class="tbl"><thead><tr><th>ชื่อผู้ใช้</th><th>ชื่อ</th><th>บทบาท</th><th>การใช้งาน</th></tr></thead><tbody>${data.accounts.map((a) => `<tr><td>${esc(a.username)}</td><td>${esc(a.name)}</td><td>${esc(a.role === "coord" ? "ผู้ประสานงาน" : a.role === "mentor" ? "MENTOR" : "หน่วยบริการ")}</td><td><button class="btn btn-sm" data-account-id="${esc(a.id)}" data-account-active="${!a.active}">${a.active ? "ปิดบัญชี" : "เปิดบัญชี"}</button><button class="btn btn-sm" data-account-reset="${esc(a.id)}">ตั้งรหัสผ่านชั่วคราวใหม่</button></td></tr>`).join("")}</tbody></table></div><h4>เพิ่มบัญชี</h4><form id="account-form" novalidate class="auth-fields"><div class="field"><label for="account-role">บทบาท</label><select class="inp" id="account-role" name="role"><option value="mentee">หน่วยบริการ</option><option value="mentor">MENTOR</option><option value="coord">ผู้ประสานงานจังหวัด</option></select></div><div class="field"><label for="account-unit">หน่วยบริการ (สำหรับบัญชีหน่วยบริการ)</label><select class="inp" name="unitId" id="account-unit">${DB.units.map((u) => `<option value="${esc(u.id)}">${esc(u.code + " · " + u.name)}</option>`).join("")}</select></div><div class="field"><label for="account-team">กลุ่ม MENTOR</label><select class="inp" name="team" id="account-team">${DB.teams.map((t) => `<option value="${t.id}">${esc(t.name)}</option>`).join("")}</select></div><div class="field"><label for="account-name">ชื่อผู้ใช้ (สำหรับผู้ตรวจและผู้ประสานงาน)</label><input class="inp" name="username" id="account-name" autocomplete="off" maxlength="80"></div><div class="field"><label for="account-display">ชื่อที่แสดง</label><input class="inp" name="name" id="account-display" required maxlength="200"></div><div class="field"><label for="account-pass">รหัสผ่านชั่วคราว 8–128 ตัวอักษร</label><input class="inp" type="password" name="password" id="account-pass" autocomplete="new-password" minlength="8" maxlength="128" required></div><p id="account-error" role="status" class="auth-help">รหัสบัญชีหน่วยบริการจะใช้รหัส 6 หลักโดยอัตโนมัติ ผู้ใช้ต้องเปลี่ยนรหัสผ่านเมื่อเข้าใช้ครั้งแรก</p><button class="btn btn-primary">เพิ่มบัญชี</button></form></div>`,
       );
     });
   }
@@ -896,7 +1008,7 @@ window.GECCClient = (() => {
     if (!b) return;
     if (b.dataset.accountReset) {
       openModal(
-        `<div class="modal-h"><h3>ตั้งรหัสผ่านชั่วคราวใหม่</h3><button class="btn" data-act="modal-close">ยกเลิก</button></div><form class="modal-b auth-fields" id="reset-account-form" novalidate data-id="${esc(b.dataset.accountReset)}"><div class="field"><label for="reset-account-pass">รหัสผ่านชั่วคราว 12–128 ตัวอักษร</label><input class="inp" id="reset-account-pass" type="password" autocomplete="new-password" required minlength="12" maxlength="128" aria-describedby="reset-error"></div><p role="status" id="reset-error"></p><button type="submit" class="btn btn-primary">ตั้งรหัสผ่านใหม่</button></form>`,
+        `<div class="modal-h"><h3>ตั้งรหัสผ่านชั่วคราวใหม่</h3><button class="btn" data-act="modal-close">ยกเลิก</button></div><form class="modal-b auth-fields" id="reset-account-form" novalidate data-id="${esc(b.dataset.accountReset)}"><div class="field"><label for="reset-account-pass">รหัสผ่านชั่วคราว 8–128 ตัวอักษร</label><input class="inp" id="reset-account-pass" type="password" autocomplete="new-password" required minlength="8" maxlength="128" aria-describedby="reset-error"></div><p role="status" id="reset-error"></p><button type="submit" class="btn btn-primary">ตั้งรหัสผ่านใหม่</button></form>`,
       );
       return;
     }
@@ -925,7 +1037,7 @@ window.GECCClient = (() => {
     const form = e.target;
     if (!form.checkValidity()) {
       invalidField($("#reset-account-pass"));
-      $("#reset-error").textContent = "รหัสผ่านต้องมี 12–128 ตัวอักษร";
+      $("#reset-error").textContent = "รหัสผ่านต้องมี 8–128 ตัวอักษร";
       return;
     }
     if (form.dataset.pending === "true") return;

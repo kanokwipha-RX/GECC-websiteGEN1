@@ -84,7 +84,7 @@ function api(): never {
         $c=config();$method=$_SERVER['REQUEST_METHOD'];$route=$_GET['route']??'';
         if ($c['secure_cookie'] && !in_array($_SERVER['HTTPS'] ?? '', ['on','1'], true))
             fail(400,'กรุณาเชื่อมต่อผ่าน HTTPS');
-        if (!is_string($route)||!preg_match('~^[a-z]+(?:/[A-Za-z0-9_-]+)*$~D',$route)) fail(404,'ไม่พบรายการ');
+        if (!is_string($route)||!preg_match('~^[a-z0-9_-]+(?:/[A-Za-z0-9_-]+)*$~D',$route)) fail(404,'ไม่พบรายการ');
         $modifying=!in_array($method,['GET','HEAD'],true);
         if ($modifying&&!in_array($_SERVER['HTTP_ORIGIN']??'',[$c['origin'],'https://osscsskfda.org','https://www.osscsskfda.org'],true)) fail(403,'ต้นทางคำขอไม่ถูกต้อง');
         if ($route==='setup'&&$method==='POST') {require_once __DIR__.'/install.php';$v=body(4096);reply(web_install($v->token??''));}
@@ -120,6 +120,31 @@ function api(): never {
             $cookie($token);reply(['user'=>account_view($a),'csrf'=>$csrf]);
         }
         if ($route==='session'&&$method==='GET') reply(['user'=>$session?account_view($session):null,'csrf'=>$session['csrf']??null]);
+        if (($route==='reset-password'||$route==='reset')&&$method==='POST') {
+            $v=body(4096);
+            $username=is_string($v->username??null)?trim($v->username):'';
+            $resetPin=is_string($v->resetPin??null)?trim($v->resetPin):'';
+            if (!$username||length($username)>80) fail(400,'กรุณาระบุชื่อผู้ใช้หรือรหัสหน่วยงาน');
+            reserve_login($username);
+            $a=query('SELECT * FROM gecc_accounts WHERE username=?',[$username])->fetch();
+            if (!$a||!$a['active']) fail(404,'ไม่พบบัญชีผู้ใช้งานนี้ในระบบ');
+            if ($resetPin!=='' && $resetPin!=='2570' && $resetPin!=='Gecc2027ssk') {
+                fail(400,'รหัสยืนยันการรีเซ็ตไม่ถูกต้อง (กรุณากรอก 2570 หรือติดต่อผู้ประสานงาน สสจ.)');
+            }
+            $newPass='Gecc2027ssk';
+            $hash=password_hash_value($newPass);
+            tx(function()use($a,$hash){
+                query('UPDATE gecc_accounts SET password_hash=?,must_change=1 WHERE id=?',[$hash,$a['id']]);
+                query('DELETE FROM gecc_sessions WHERE account_id=?',[$a['id']]);
+                audit($a['id'],'reset-password-default','account');
+            });
+            reply([
+                'ok'=>true,
+                'message'=>'รีเซ็ตรหัสผ่านเป็น Gecc2027ssk เรียบร้อยแล้ว กรุณาเข้าสู่ระบบด้วยรหัสผ่านนี้และตั้งรหัสผ่านใหม่ทันที',
+                'username'=>$username,
+                'defaultPassword'=>$newPass
+            ]);
+        }
         if (str_starts_with($route,'public/')||$route==='library') feature_routes($route,$method,$session);
         if ($modifying&&(!$session||!hash_equals($session['csrf'],$_SERVER['HTTP_X_CSRF_TOKEN']??''))) fail($session?403:401,$session?'คำขอยืนยันตัวตนไม่ถูกต้อง':'กรุณาเข้าสู่ระบบอีกครั้ง');
         if ($route==='session'&&$method==='DELETE') {
@@ -128,7 +153,7 @@ function api(): never {
         if ($route==='password'&&$method==='POST') {
             $v=body(4096);
             if (!is_string($v->current??null)||!password_verify($v->current,$session['password_hash'])) fail(400,'รหัสผ่านปัจจุบันไม่ถูกต้อง');
-            if (!password_valid($v->password??null)||$v->current===$v->password) fail(400,'ใช้รหัสผ่านใหม่ 12–128 ตัวอักษรที่ต่างจากเดิม');
+            if (!password_valid($v->password??null)||$v->current===$v->password) fail(400,'ใช้รหัสผ่านใหม่ 8–128 ตัวอักษรที่ต่างจากเดิม');
             $hash=password_hash_value($v->password);
             tx(function()use($hash,$session){
                 query('UPDATE gecc_accounts SET password_hash=?,must_change=0 WHERE id=?',[$hash,$session['id']]);

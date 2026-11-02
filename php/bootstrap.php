@@ -79,7 +79,7 @@ function save_state(object $s, int $r, string $actor, string $action, string $re
     return result($s, $r + 1, $GLOBALS['actor'] ?? null);
 }
 function result(object $s, int $r, ?array $a): array { return ['state' => project($s, $a), 'revision' => $r, 'summary' => summary($s)]; }
-function password_valid(mixed $p): bool { return is_string($p) && length($p) >= 12 && length($p) <= 128; }
+function password_valid(mixed $p): bool { return is_string($p) && length($p) >= 8 && length($p) <= 128; }
 function password_hash_value(mixed $p): string {
     if (!password_valid($p)) fail(400, 'รหัสผ่านต้องมี 12–128 ตัวอักษร');
     return password_hash($p, PASSWORD_ARGON2ID);
