@@ -3092,7 +3092,6 @@ function shell(){
        <nav class="site-nav no-print" aria-label="เมนูหลักของเว็บไซต์"><div class="site-nav-in"><span class="site-nav-name">SISAKET GECC 2570</span><div class="site-nav-links">
          <button data-act="go" data-view="exec" ${S.view==='exec'?'aria-current="page"':''}>หน้าหลัก</button>
          <button data-act="go" data-view="committee" ${S.view==='committee'?'aria-current="page"':''}>คณะทำงาน GECC</button>
-          <button data-act="go" data-view="units" ${S.view==='units'?'aria-current="page"':''}>ข้อมูลหน่วยงานที่สมัคร GECC2570</button>
          <button data-act="go" data-view="mentors" ${S.view==='mentors'?'aria-current="page"':''}>MENTOR</button>
          <button data-act="go" data-view="library" ${S.view==='library'?'aria-current="page"':''}>Library</button>
          <button data-act="go" data-view="gallery" ${S.view==='gallery'?'aria-current="page"':''}>Gallery</button>
@@ -3143,7 +3142,7 @@ function updatePager(){
   $$('.nav button[data-tab]').forEach(b=>{ if(S.view==='unit'&&S.tab===b.dataset.tab) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
   const el=$('#pager'); if(!el) return; let prev=null, next=null;
   const tn=$('#tnav'); el.innerHTML='';
-  if(!S.role || S.view==='modules' || S.view==='send' || S.view==='library' || S.view==='committee' || S.view==='portfolio' || S.view==='gallery' || S.view==='mentors' || S.view==='units'){ if(tn) tn.innerHTML=''; return; }
+  if(!S.role || S.view==='modules' || S.view==='send' || S.view==='library' || S.view==='committee' || S.view==='portfolio' || S.view==='gallery' || S.view==='mentors'){ if(tn) tn.innerHTML=''; return; }
   const pv=v=>({attrs:`data-act="go" data-view="${v}"`, label:PN[v]});
   if(S.view==='unit'){
     const order=Object.keys(TN); const i=order.indexOf(S.tab); const u=unitById(S.unitId);
@@ -3165,7 +3164,6 @@ function render(){
   shell();
   const v = S.view;
   if(v==='exec') viewExec();
-  else if(v==='units') viewUnits();
   else if(v==='gallery') GECCPublic.gallery();
   else if(v==='mentors') GECCPublic.mentors();
   else if(v==='committee') viewCommittee();
@@ -3643,7 +3641,7 @@ function modList(){
     {c:'#9A7124', i:'dashboard', t:'Executive Dashboard', d:'ภาพรวมจังหวัดศรีสะเกษ', a:'data-view="exec"'}];
 }
 /* ================= ช่องทางด่วน: แนบ PDF ส่งให้ MENTOR ================= */
-const QTOPICS=[['ready','แบบประเมินความพร้อม (ลงนามแล้ว)'],['phys','เกณฑ์ที่ 1 ด้านกายภาพ'],['qc','เกณฑ์ที่ 2.1 ด้านคุณภาพ: Checklist'],['narr','เกณฑ์ที่ 2.2 ด้านคุณภาพ: บรรยาย'],['out','เกณฑ์ที่ 3 ด้านผลลัพธ์'],['svy','ผลสำรวจความพึงพอใจ/ความเชื่อมั่น'],['fix','เอกสารแก้ไขตามข้อเสนอแนะ MENTOR'],['other','เอกสารอื่น ๆ']];
+const QTOPICS=[['ready','แบบประเมินความพร้อม (ลงนามแล้ว)'],['unitinfo','ข้อมูลหน่วยงานที่สมัคร GECC2570'],['phys','เกณฑ์ที่ 1 ด้านกายภาพ'],['qc','เกณฑ์ที่ 2.1 ด้านคุณภาพ: Checklist'],['narr','เกณฑ์ที่ 2.2 ด้านคุณภาพ: บรรยาย'],['out','เกณฑ์ที่ 3 ด้านผลลัพธ์'],['svy','ผลสำรวจความพึงพอใจ/ความเชื่อมั่น'],['fix','เอกสารแก้ไขตามข้อเสนอแนะ MENTOR'],['other','เอกสารอื่น ๆ']];
 const qTopic=k=>(QTOPICS.find(t=>t[0]===k)||[,'เอกสารอื่น ๆ'])[1];
 function extBadge(name){
   const ext = ((name||'').split('.').pop()||'FILE').toUpperCase().slice(0,5);
@@ -3840,8 +3838,9 @@ function menteeHome(){
   setHead(S.view==='send'?'ส่งข้อมูลให้จังหวัด':'สถานะหน่วยบริการ · DASHBOARD','');
   const x=unitInfo(u); const a=x.a; const cc=(a&&a.started)?calc(a):null; const sub=subOf(a||{}); const R=readyOf(a); const wf=wfOf(a); const w=a?.wf||{};
   const SL={done:['ส่งแล้ว','ok'],prog:['ระหว่างดำเนินการ','wait'],none:['ยังไม่ส่ง','idle']};
-  const steps=[
+    const steps=[
     ['ready','file','แบบประเมินความพร้อม','เกณฑ์บังคับก่อนสมัคร · กรอก ลงนาม และแนบเอกสาร', R.st==='ready'?['พร้อม · ส่งแล้ว','ok']:R.st==='notready'?['ส่งแล้ว · ยังไม่พร้อม','ret']:R.st==='draft'?['กรอกยังไม่ครบ','wait']:['ยังไม่ส่ง','idle']],
+    ['unitinfo','building','ข้อมูลหน่วยงานที่สมัคร GECC2570','รหัสหน่วยงาน ข้อมูลทั่วไป และกลุ่มคณะทำงาน MENTOR', ['พร้อม','ok']],
     ['phys','building','เกณฑ์ที่ 1 ด้านกายภาพ','Self Checklist 15 ข้อ (MUST HAVE)', [SL[sub.phys][0]+(cc?` · ${cc.physYes}/15`:''),SL[sub.phys][1]]],
     ['qc','clipboard','เกณฑ์ที่ 2.1 ด้านคุณภาพ: Checklist','แบบประเมินคุณภาพการบริการ 10 ประเด็น', SL[sub.qc]],
     ['narr','pencil','เกณฑ์ที่ 2.2 ด้านคุณภาพ: บรรยาย','บรรยายความโดดเด่นและความเป็นต้นแบบ 10 ข้อ', SL[sub.narr]],
@@ -3849,7 +3848,8 @@ function menteeHome(){
     ['svy','star','ผลสำรวจความพึงพอใจ/ความเชื่อมั่น','กรอกผลสำรวจที่หน่วยบริการดำเนินการแล้ว', svDone(a?.survey)?['ส่งแล้ว','ok']:(a?.survey?['ระหว่างดำเนินการ','wait']:['ยังไม่ส่ง','idle'])],
     ['sum','repeat','แบบสรุปผลและข้อบกพร่อง','ผลการตรวจ ข้อเสนอแนะจาก MENTOR และการแจ้งแก้ไข', x.open.length?[`ข้อบกพร่องค้าง ${x.open.length}`,'ret']:['ไม่มีข้อบกพร่องค้าง','ok']]
   ];
-  const doneN=steps.slice(0,6).filter(s=>s[4][1]==='ok').length;
+  const doneN=steps.filter(s=>['ready','phys','qc','narr','out','svy'].includes(s[0])&&s[4][1]==='ok').length;
+
   const wfL=WF[wf];
   const submitBtn = (wf==='submitted') ? `<div class="gsub-row"><div class="gsub-state wait">${ic('upload')}<div><b>ส่งแล้ว · รอ MENTOR ตรวจ</b><span>ส่งเมื่อ ${thDateTime(w.submittedAt)} · รอ ${daysSince(w.submittedAt)} วัน</span>${senderLine(a)}</div></div><button class="gbtn-out" data-act="wf-submit" data-id="${u.id}">${ic('upload')}ส่งข้อมูลเพิ่มเติม</button></div>`
     : (wf==='reviewed') ? `<div class="gsub-row"><div class="gsub-state ok">${ic('shield')}<div><b>MENTOR ตรวจแล้ว</b><span>ตรวจโดย ${esc((w.reviewedBy||[]).join(', '))} · ${thDateTime(w.reviewedAt)}</span></div></div></div>`
@@ -3889,79 +3889,22 @@ ${S.view==='send'?`    <div class="send-hero"><h1>ส่งข้อมูลใ
 `}    <p class="mods-f">SISAKET GECC PROJECT · พัฒนาและดูแลระบบ: Kanok_rx สำนักงานสาธารณสุขจังหวัดศรีสะเกษ</p>
   </div></section>`;
 }
-function viewUnits(){
-  setCollectionHead('ข้อมูลหน่วยงานที่สมัคร GECC 2570','building','รายชื่อหน่วยงานภาครัฐที่สมัครรับการประเมินศูนย์ราชการสะดวก จังหวัดศรีสะเกษ รวม 32 หน่วยงาน');
-  const selTeam = S.unitsTeam != null ? S.unitsTeam : 0;
-  const q = (S.unitsQ || '').trim().toLowerCase();
-  const allU = DB.units || OFFICIAL_UNITS;
-  const filtered = allU.filter(u => {
-    if(selTeam > 0 && u.team !== selTeam) return false;
-    if(q){
-      const matchName = (u.name || '').toLowerCase().includes(q);
-      const matchCode = (u.code || '').toLowerCase().includes(q);
-      const matchDist = (u.district || '').toLowerCase().includes(q);
-      return matchName || matchCode || matchDist;
-    }
-    return true;
-  });
-
-  const teamCounts = [0, 1, 2, 3, 4, 5, 6].map(t => {
-    return t === 0 ? allU.length : allU.filter(u => u.team === t).length;
-  });
-
-  $('#content').innerHTML = `
-    <section class="public-intro" style="margin-bottom:24px">
-      <h2 style="font-size:26px;font-weight:700;color:var(--navy-900);margin:0 0 8px">ข้อมูลหน่วยงานที่สมัคร GECC 2570</h2>
-      <p style="color:var(--ink-500);margin:0 0 16px">จังหวัดศรีสะเกษ มีหน่วยงานภาครัฐสมัครขอรับการรับรองมาตรฐานศูนย์ราชการสะดวก ประจำปีงบประมาณ พ.ศ. 2570 รวม <b>32 หน่วยงาน</b> แบ่งเป็น 6 คณะทำงาน MENTOR</p>
-      
-      <div class="feature-tools" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;background:#fff;padding:14px 18px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
-        <div style="flex:1;min-width:240px;position:relative">
-          <input class="inp" id="units-search-in" value="${esc(S.unitsQ||'')}" placeholder="ค้นหาชื่อหน่วยงาน, รหัส หรืออำเภอ…" style="width:100%;padding-left:36px" data-input="units-q">
-          <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ink-400)">${ic('search')}</span>
-        </div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <button class="btn btn-sm ${selTeam===0?'btn-primary':''}" data-act="filter-units-team" data-team="0">ทั้งหมด (${teamCounts[0]})</button>
-          ${[1,2,3,4,5,6].map(t => `<button class="btn btn-sm ${selTeam===t?'btn-primary':''}" data-act="filter-units-team" data-team="${t}">คณะที่ ${t} (${teamCounts[t]})</button>`).join('')}
-        </div>
-      </div>
-    </section>
-
-    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:16px;margin-bottom:32px">
-      ${filtered.length ? filtered.map(u => {
-        const a = DB.assess[u.id];
-        const wf = a?.wf?.status;
-        const stLabel = wf === 'reviewed' ? 'ตรวจแล้ว' : wf === 'submitted' ? 'รอตรวจ' : a?.started ? 'กำลังดำเนินการ' : 'ยังไม่บันทึก';
-        const stColor = wf === 'reviewed' ? '#059669' : wf === 'submitted' ? '#D97706' : a?.started ? '#2563EB' : '#64748B';
-        const teamObj = DB.teams.find(t => t.id === u.team);
-        return `
-          <div class="card" style="padding:18px;display:flex;flex-direction:column;justify-content:space-between;border-radius:14px;border:1px solid rgba(0,0,0,.08);box-shadow:0 2px 8px rgba(0,0,0,.04);background:#fff">
-            <div>
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-                <span style="font-family:monospace;font-size:12px;font-weight:700;color:var(--navy-700);background:#EEF2FF;padding:3px 8px;border-radius:6px;border:1px solid #C7D2FE">รหัส ${esc(u.code||'000000')}</span>
-                <span style="font-size:12px;font-weight:600;color:${stColor};background:${stColor}15;padding:3px 8px;border-radius:6px">${stLabel}</span>
-              </div>
-              <h3 style="font-size:16px;font-weight:700;color:var(--navy-900);margin:0 0 8px;line-height:1.4">${esc(u.name)}</h3>
-              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
-                <span style="font-size:12px;color:var(--navy-800);background:var(--gold-soft,#FEF3C7);padding:2px 8px;border-radius:4px;font-weight:600">${esc(teamObj?.name || 'คณะทำงานที่ ' + u.team)}</span>
-                ${u.district ? `<span style="font-size:12px;color:#475569;background:#F1F5F9;padding:2px 8px;border-radius:4px">${esc(u.district)}</span>` : ''}
-                <span style="font-size:12px;color:#0F766E;background:#CCFBF1;padding:2px 8px;border-radius:4px">เป้าหมาย 2570</span>
-              </div>
-            </div>
-            <div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid #F1F5F9">
-              <button class="btn btn-sm btn-lux" style="flex:1" data-public-id="${esc(u.id)}">${ic('clipboard')}เกณฑ์และผลตรวจ</button>
-              <button class="btn btn-sm" style="flex:1" data-act="login-unit-direct" data-id="${esc(u.id)}">${ic('right')}เข้าสู่ระบบ</button>
-            </div>
-          </div>
-        `;
-      }).join('') : `
-        <div class="empty" style="grid-column:1/-1;padding:48px 20px;text-align:center">
-          <div style="font-size:40px;margin-bottom:12px">🔍</div>
-          <h3>ไม่พบหน่วยงานที่ตรงกับคำค้นหา</h3>
-          <p style="color:var(--ink-500)">ลองเปลี่ยนคำค้นหา หรือเลือกแท็บ "ทั้งหมด"</p>
-        </div>
-      `}
+function unitInfoModal(uid){
+  const u=unitById(uid); if(!u) return;
+  const a=DB.assess[uid]; const tm=DB.teams.find(t=>t.id===u.team);
+  const qfiles=(a?.quick||[]).filter(q=>q.topic==='unitinfo').flatMap(q=>q.files);
+  openModal(`<div class="modal-h"><span class="dl-badge" style="background:var(--gold-grad);color:#0A1640">${ic('building')}</span><div style="flex:1;min-width:0"><h3>ข้อมูลหน่วยงานที่สมัคร GECC 2570</h3><p>${esc(u.name)}</p></div><button class="btn btn-ghost btn-icon" data-act="modal-close" aria-label="ปิด">${ic('x')}</button></div>
+  <div class="modal-b">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px">
+      <div style="background:#F8FAFC;padding:12px 16px;border-radius:10px;border:1px solid #E2E8F0"><small style="color:var(--ink-400);display:block;margin-bottom:4px">รหัสหน่วยงาน</small><b style="font-family:monospace;font-size:16px;color:var(--navy-800)">${esc(u.code||'–')}</b></div>
+      <div style="background:#F8FAFC;padding:12px 16px;border-radius:10px;border:1px solid #E2E8F0"><small style="color:var(--ink-400);display:block;margin-bottom:4px">อำเภอ / ที่ตั้ง</small><b style="font-size:15px;color:var(--navy-800)">${esc(u.district||'ไม่ระบุอำเภอ')}</b></div>
+      <div style="background:#F8FAFC;padding:12px 16px;border-radius:10px;border:1px solid #E2E8F0"><small style="color:var(--ink-400);display:block;margin-bottom:4px">คณะทำงาน MENTOR</small><b style="font-size:15px;color:var(--navy-800)">${esc(tm?.name||('กลุ่มที่ '+u.team))}</b></div>
+      <div style="background:#F8FAFC;padding:12px 16px;border-radius:10px;border:1px solid #E2E8F0"><small style="color:var(--ink-400);display:block;margin-bottom:4px">ประเภทการสมัคร</small><b style="font-size:15px;color:var(--navy-800)">${u.kind==='renew'?'ต่ออายุการรับรอง':'ขอรับการรับรองใหม่'} (ปี ${DB.fy})</b></div>
     </div>
-  `;
+    ${tm?.members?.length?`<div style="margin-bottom:16px"><h4 style="margin:0 0 10px;font-size:15px;color:var(--navy-900)">คณะผู้ตรวจประเมิน (MENTOR ประจำกลุ่ม)</h4><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px">${tm.members.map(m=>`<div style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #E2E8F0;padding:8px 12px;border-radius:8px"><span style="width:32px;height:32px;border-radius:50%;background:var(--navy-50,#EEF2FF);color:var(--navy-700);display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:12px">${ic('user')}</span><div style="min-width:0;flex:1"><div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(m.name)}</div><small style="color:var(--ink-400);font-size:11px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(m.pos||m.role||'')}</small></div></div>`).join('')}</div></div>`:''}
+    ${qfiles.length?`<div><h4 style="margin:0 0 8px;font-size:15px;color:var(--navy-900)">เอกสารแนบในหัวข้อนี้ (${qfiles.length} ไฟล์)</h4><div class="evf">${qfiles.map(f=>`<button class="fch" data-act="quick-view" data-uid="${uid}" data-fid="${f.id}" title="${esc(f.name)}">${extBadge(f.name)}<span class="fmeta"><b>${esc(f.name)}</b><span>${fsize(f.size)}</span></span></button>`).join('')}</div></div>`:''}
+  </div>
+  <div class="modal-f"><button class="btn" data-act="modal-close">ปิด</button><button class="btn btn-lux" data-act="quick-send" data-id="${uid}">${ic('upload')}ส่งเอกสารให้ MENTOR</button></div>`);
 }
 
 
@@ -4779,11 +4722,9 @@ document.addEventListener('click', async e=>{
     case 'open-review': { const u=unitById(id); closeModal(); if(!canAccessUnit(u)){ if(!S.role){ go('role',{rolePick:'mentor'}); } else denyUnit(); break; } S.draft=null; go('unit',{unitId:id, tab:'ready', from:'mdash'}); break; }
     case 'crit-list': critList(el.dataset.k, el.dataset.s); break;
     case 'mod': { if(el.dataset.tab){ S.draft=null; go('unit',{unitId:S.menteeUnit, tab:el.dataset.tab, from:''}); } else go(el.dataset.view); break; }
-    case 'udash-tab': S.draft=null; go('unit',{unitId:el.dataset.id, tab:el.dataset.tab, from:S.role==='mentee'?'':'udash'}); break;
+    case 'udash-tab': { if(el.dataset.tab==='unitinfo'){ unitInfoModal(el.dataset.id); break; } S.draft=null; go('unit',{unitId:el.dataset.id, tab:el.dataset.tab, from:S.role==='mentee'?'':'udash'}); break; }
     case 'open-udash': { const u=unitById(id); closeModal(); if(!canAccessUnit(u)){ if(!S.role){ go('role',{rolePick:'mentor'}); } else denyUnit(); break; } if(S.role==='mentee'){ go('modules'); break; } go('udash',{unitId:id}); break; }
-    case 'filter-units-team': S.unitsTeam = +el.dataset.team; viewUnits(); break;
-      case 'login-unit-direct': { const u=unitById(id); if(u){ if(window.GECC_SERVER) GECCClient.loginModal('unit',id,u.name,u.username||''); else pinModal('unit',id,u.name); } break; }
-      case 'quick-send': quickSendModal(el.dataset.id); break;
+    case 'quick-send': quickSendModal(el.dataset.id); break;
     case 'quick-send-ok': await quickSend(el.dataset.id, el); break;
     case 'quick-rm': S.quickFiles.splice(+el.dataset.i,1); quickPick([]); break;
     case 'quick-view': await quickView(el.dataset.uid, el.dataset.fid); break;
@@ -4871,8 +4812,7 @@ document.addEventListener('input', e=>{
   const el=e.target;
   if(el.id==='q-sname'||el.id==='q-stel'||el.id==='w-sname'||el.id==='w-stel'){ el.closest('.field')?.classList.remove('invalid'); }
   if(el.dataset.bind && (el.type==='text'||el.tagName==='TEXTAREA'||el.type==='url'||el.type==='number')){ bind(el); return; }
-  if(el.dataset.input==='units-q'){ S.unitsQ=el.value; const pos=el.selectionStart; viewUnits(); const n=$('[data-input="units-q"]'); if(n){ n.focus(); try{ n.setSelectionRange(pos,pos); }catch(_){} } return; }
-    if(el.dataset.input==='q'){ S.q=el.value.trim(); const pos=el.selectionStart; (S.view==='mdash'?viewMDash:viewExec)(); const n=$('[data-input="q"]'); n.focus(); try{ n.setSelectionRange(pos,pos);}catch(_){} }
+  if(el.dataset.input==='q'){ S.q=el.value.trim(); const pos=el.selectionStart; (S.view==='mdash'?viewMDash:viewExec)(); const n=$('[data-input="q"]'); n.focus(); try{ n.setSelectionRange(pos,pos);}catch(_){} }
 });
 window.addEventListener('beforeunload', e=>{ if(S.dirty){ e.preventDefault(); e.returnValue=''; } });
 
