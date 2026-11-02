@@ -34,7 +34,7 @@ try {
  const page=await browser.newPage({viewport:{width:1440,height:1000},reducedMotion:'reduce'});await prepare(page);
  await page.goto(origin(preview),{waitUntil:'domcontentloaded'});
  await page.waitForSelector('.site-nav');
- assert.deepEqual(await names(page,'.site-nav-links>button'),['หน้าหลัก','คณะทำงาน GECC','MENTOR','Library','Gallery','เข้าสู่ระบบ']);checks.push('Navigation order');await page.screenshot({path:'output/playwright/content-refresh-baseline.png',fullPage:false});
+ assert.deepEqual(await names(page,'.site-nav-links>button'),['หน้าหลัก','คณะทำงาน GECC','ข้อมูลหน่วยงานที่สมัคร GECC2570','MENTOR','Library','Gallery','เข้าสู่ระบบ']);checks.push('Navigation order');await page.screenshot({path:'output/playwright/content-refresh-baseline.png',fullPage:false});
  await nav(page,'committee');await pictures(page);
  assert.equal(await page.locator('#content .committee-card').count(),19);
  assert.equal(await page.locator('.committee-secretaries>.committee-card').count(),3);

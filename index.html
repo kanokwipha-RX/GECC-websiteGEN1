@@ -3092,6 +3092,7 @@ function shell(){
        <nav class="site-nav no-print" aria-label="เมนูหลักของเว็บไซต์"><div class="site-nav-in"><span class="site-nav-name">SISAKET GECC 2570</span><div class="site-nav-links">
          <button data-act="go" data-view="exec" ${S.view==='exec'?'aria-current="page"':''}>หน้าหลัก</button>
          <button data-act="go" data-view="committee" ${S.view==='committee'?'aria-current="page"':''}>คณะทำงาน GECC</button>
+          <button data-act="go" data-view="units" ${S.view==='units'?'aria-current="page"':''}>ข้อมูลหน่วยงานที่สมัคร GECC2570</button>
          <button data-act="go" data-view="mentors" ${S.view==='mentors'?'aria-current="page"':''}>MENTOR</button>
          <button data-act="go" data-view="library" ${S.view==='library'?'aria-current="page"':''}>Library</button>
          <button data-act="go" data-view="gallery" ${S.view==='gallery'?'aria-current="page"':''}>Gallery</button>
@@ -3135,14 +3136,14 @@ function viewForms(){
   </div></div>`;
 }
 /* ================= Pager: ย้อนกลับ / หน้าถัดไป ทุกหน้า ================= */
-const PN={send:'ส่งข้อมูลให้จังหวัด',udash:'สถานะหน่วยบริการ',modules:'เลือกระบบงาน',exec:'Executive Dashboard',mdash:'MENTOR DASHBOARD',forms:'แบบตรวจประเมิน GECC',role:'เลือกบทบาทผู้ใช้งาน',mentor:'แดชบอร์ดทีม',defects:'ข้อบกพร่องและตรวจซ้ำ',analytics:'วิเคราะห์ข้อมูล',settings:'จัดการข้อมูล',mentee:'สถานะหน่วยบริการ'};
+const PN={units:'ข้อมูลหน่วยงานที่สมัคร GECC2570',send:'ส่งข้อมูลให้จังหวัด',udash:'สถานะหน่วยบริการ',modules:'เลือกระบบงาน',exec:'Executive Dashboard',mdash:'MENTOR DASHBOARD',forms:'แบบตรวจประเมิน GECC',role:'เลือกบทบาทผู้ใช้งาน',mentor:'แดชบอร์ดทีม',defects:'ข้อบกพร่องและตรวจซ้ำ',analytics:'วิเคราะห์ข้อมูล',settings:'จัดการข้อมูล',mentee:'สถานะหน่วยบริการ'};
 const TN={ready:'แบบประเมินความพร้อม',phys:'ด้านกายภาพ',qc:'คุณภาพ: Checklist',narr:'คุณภาพ: บรรยาย',out:'ด้านผลลัพธ์',svy:'ความพึงพอใจ/ความเชื่อมั่น',sum:'แบบสรุปผล',def:'ข้อบกพร่อง'};
 function pageSeq(){ if(S.role==='mentor') return S.coord?['modules','mdash','forms','defects','settings']:['modules','mdash','forms','defects']; return ['modules','send','exec']; }
 function updatePager(){
   $$('.nav button[data-tab]').forEach(b=>{ if(S.view==='unit'&&S.tab===b.dataset.tab) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
   const el=$('#pager'); if(!el) return; let prev=null, next=null;
   const tn=$('#tnav'); el.innerHTML='';
-  if(!S.role || S.view==='modules' || S.view==='send' || S.view==='library' || S.view==='committee' || S.view==='portfolio' || S.view==='gallery' || S.view==='mentors'){ if(tn) tn.innerHTML=''; return; }
+  if(!S.role || S.view==='modules' || S.view==='send' || S.view==='library' || S.view==='committee' || S.view==='portfolio' || S.view==='gallery' || S.view==='mentors' || S.view==='units'){ if(tn) tn.innerHTML=''; return; }
   const pv=v=>({attrs:`data-act="go" data-view="${v}"`, label:PN[v]});
   if(S.view==='unit'){
     const order=Object.keys(TN); const i=order.indexOf(S.tab); const u=unitById(S.unitId);
@@ -3164,6 +3165,7 @@ function render(){
   shell();
   const v = S.view;
   if(v==='exec') viewExec();
+  else if(v==='units') viewUnits();
   else if(v==='gallery') GECCPublic.gallery();
   else if(v==='mentors') GECCPublic.mentors();
   else if(v==='committee') viewCommittee();
@@ -3643,12 +3645,18 @@ function modList(){
 /* ================= ช่องทางด่วน: แนบ PDF ส่งให้ MENTOR ================= */
 const QTOPICS=[['ready','แบบประเมินความพร้อม (ลงนามแล้ว)'],['phys','เกณฑ์ที่ 1 ด้านกายภาพ'],['qc','เกณฑ์ที่ 2.1 ด้านคุณภาพ: Checklist'],['narr','เกณฑ์ที่ 2.2 ด้านคุณภาพ: บรรยาย'],['out','เกณฑ์ที่ 3 ด้านผลลัพธ์'],['svy','ผลสำรวจความพึงพอใจ/ความเชื่อมั่น'],['fix','เอกสารแก้ไขตามข้อเสนอแนะ MENTOR'],['other','เอกสารอื่น ๆ']];
 const qTopic=k=>(QTOPICS.find(t=>t[0]===k)||[,'เอกสารอื่น ๆ'])[1];
+function extBadge(name){
+  const ext = ((name||'').split('.').pop()||'FILE').toUpperCase().slice(0,5);
+  const isPdf = ext==='PDF', isDoc = /^(DOC|DOCX)$/.test(ext), isXls = /^(XLS|XLSX)$/.test(ext), isPpt = /^(PPT|PPTX)$/.test(ext), isImg = /^(JPG|JPEG|PNG|WEBP|GIF)$/.test(ext);
+  const bg = isPdf ? '#EF4444' : isDoc ? '#2563EB' : isXls ? '#059669' : isPpt ? '#EA580C' : isImg ? '#8B5CF6' : 'var(--navy-600,#0A1640)';
+  return `<span class="fpdf" style="width:30px;height:30px;font-size:9px;background:${bg};color:#fff;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0">${esc(ext)}</span>`;
+}
 function quickSendModal(uid){
   S.quickFiles=[]; const last=lastSender(DB.assess[uid]);
-  openModal(`<div class="modal-h"><span class="dl-badge" style="background:var(--gold-grad);color:#0A1640">${ic('upload')}</span><div style="flex:1;min-width:0"><h3>ส่งเอกสาร PDF ให้ MENTOR</h3><p>${esc(unitById(uid).name)}</p></div><button class="btn btn-ghost btn-icon" data-act="modal-close" aria-label="ปิด">${ic('x')}</button></div>
+  openModal(`<div class="modal-h"><span class="dl-badge" style="background:var(--gold-grad);color:#0A1640">${ic('upload')}</span><div style="flex:1;min-width:0"><h3>ส่งเอกสารให้ MENTOR</h3><p>${esc(unitById(uid).name)}</p></div><button class="btn btn-ghost btn-icon" data-act="modal-close" aria-label="ปิด">${ic('x')}</button></div>
   <div class="modal-b">
     <div class="field" id="f-qt"><label for="q-topic">1. เอกสารนี้เป็นของหัวข้อใด</label><select class="inp" id="q-topic"><option value="">เลือกหัวข้อ</option>${QTOPICS.map(([k,l])=>`<option value="${k}">${l}</option>`).join('')}</select><div class="err">กรุณาเลือกหัวข้อ</div></div>
-    <div class="field" id="f-qf"><span class="lbl">2. เลือกไฟล์ PDF</span><label class="qdrop" for="q-file">${ic('file')}<b>แตะเพื่อเลือกไฟล์ PDF</b><span>เลือกได้หลายไฟล์ · ไม่เกิน 10 MB ต่อไฟล์</span><input type="file" id="q-file" accept="application/pdf,.pdf" multiple class="sr" data-act-change="quick-files"></label><div class="qsel" id="q-sel"></div><div class="err">กรุณาเลือกไฟล์ PDF อย่างน้อย 1 ไฟล์</div></div>
+    <div class="field" id="f-qf"><span class="lbl">2. เลือกไฟล์เอกสาร / รูปภาพ / หลักฐาน</span><label class="qdrop" for="q-file">${ic('file')}<b>แตะเพื่อเลือกไฟล์</b><span>เลือกได้หลายไฟล์ · ไม่เกิน 25 MB ต่อไฟล์ (รองรับทุกนามสกุลไฟล์)</span><input type="file" id="q-file" multiple class="sr" data-act-change="quick-files"></label><div class="qsel" id="q-sel"></div><div class="err">กรุณาเลือกไฟล์อย่างน้อย 1 ไฟล์</div></div>
     <div class="field"><label for="q-note">3. ข้อความถึง MENTOR (ถ้ามี)</label><textarea class="inp" id="q-note" style="min-height:90px" placeholder="เช่น ส่งภาพที่จอดรถผู้พิการตามข้อเสนอแนะข้อ 15"></textarea></div>
     <div class="qsend"><span class="lbl">4. ผู้ส่งรายงาน</span>
       <div class="grid g3" style="margin-top:6px">
@@ -3660,14 +3668,16 @@ function quickSendModal(uid){
   </div>
   <div class="modal-f"><button class="btn" data-act="modal-close">ยกเลิก</button><button class="btn btn-lux" data-act="quick-send-ok" data-id="${uid}">${ic('upload')}ส่งให้ MENTOR</button></div>`);
 }
+
 function quickPick(files){
   const ok=[], bad=[];
-  [...files].forEach(f=>{ if(!(/pdf/i.test(f.type)||/\.pdf$/i.test(f.name))) bad.push(f.name+' (ไม่ใช่ PDF)'); else if(f.size>10*1048576) bad.push(f.name+' (เกิน 10 MB)'); else ok.push(f); });
+  [...files].forEach(f=>{ if(f.size>25*1048576) bad.push(f.name+' (เกิน 25 MB)'); else ok.push(f); });
   S.quickFiles=[...(S.quickFiles||[]), ...ok];
   if(bad.length) toast('ไม่รับไฟล์: '+bad.join(', '),true);
-  const box=$('#q-sel'); if(box) box.innerHTML=S.quickFiles.map((f,i)=>`<span class="qchip"><span class="fpdf" style="width:30px;height:30px;font-size:10px">PDF</span><span>${esc(f.name)}<small>${fsize(f.size)}</small></span><button type="button" data-act="quick-rm" data-i="${i}" aria-label="เอาไฟล์ ${esc(f.name)} ออก">${ic('x')}</button></span>`).join('');
+  const box=$('#q-sel'); if(box) box.innerHTML=S.quickFiles.map((f,i)=>`<span class="qchip">${extBadge(f.name)}<span>${esc(f.name)}<small>${fsize(f.size)}</small></span><button type="button" data-act="quick-rm" data-i="${i}" aria-label="เอาไฟล์ ${esc(f.name)} ออก">${ic('x')}</button></span>`).join('');
   if(S.quickFiles.length) $('#f-qf')?.classList.remove('invalid');
 }
+
 async function quickSend(uid,btn){
   const topic=$('#q-topic').value, note=$('#q-note').value.trim(), notify=$('#q-notify').checked; let ok=true;
   const sender={name:$('#q-sname').value.trim(), pos:$('#q-spos').value.trim(), tel:$('#q-stel').value.trim()}; const digits=sender.tel.replace(/\D/g,'');
@@ -3677,7 +3687,7 @@ async function quickSend(uid,btn){
   if(!(S.quickFiles||[]).length){ $('#f-qf').classList.add('invalid'); ok=false; }
   if(!ok) return;
   btn.classList.add('loading');
-  const files=[]; for(const f of S.quickFiles){ const id='fq'+uid+Date.now().toString(36)+Math.random().toString(36).slice(2,6); await FDB.put(id,f); files.push({id, name:f.name, type:'application/pdf', size:f.size, by:'mentee', at:new Date().toISOString()}); }
+  const files=[]; for(const f of S.quickFiles){ const id='fq'+uid+Date.now().toString(36)+Math.random().toString(36).slice(2,6); await FDB.put(id,f); files.push({id, name:f.name, type:f.type||'application/octet-stream', size:f.size, by:'mentee', at:new Date().toISOString()}); }
   const a=clone(DB.assess[uid]||blankAssess()); a.started=true; a.updatedAt=new Date().toISOString(); a.quick=a.quick||[];
   a.quick.unshift({id:'q'+Date.now().toString(36), topic, note, sender, files, at:new Date().toISOString()}); a.sender=sender;
   if(notify){ a.wf=a.wf||{status:'draft',log:[],round:0}; a.wf.log=a.wf.log||[]; const now=new Date().toISOString(); if(a.wf.status!=='submitted') a.wf.round=(a.wf.round||0)+1; a.wf.status='submitted'; a.wf.submittedAt=now; a.wf.log.push({at:now,status:'submitted',by:'หน่วยบริการ',note:'ส่งเอกสารผ่านช่องทางด่วน: '+qTopic(topic)}); }
@@ -3687,13 +3697,19 @@ async function quickView(uid,fid){
   const q=(DB.assess[uid]?.quick||[]).flatMap(x=>x.files).find(f=>f.id===fid); if(!q) return;
   const b=await FDB.get(fid); if(!b){ toast('ไม่พบไฟล์ในเบราว์เซอร์นี้ ไฟล์อาจถูกแนบจากเครื่องอื่น',true); return; }
   const url=THUMB[fid]||(THUMB[fid]=URL.createObjectURL(b));
-  openModal(`<div class="modal-h"><div style="flex:1;min-width:0"><h3 style="overflow-wrap:anywhere">${esc(q.name)}</h3><p>${fsize(q.size)} · ส่งโดยหน่วยบริการ · ${thDateTime(q.at)}</p></div><button class="btn btn-ghost btn-icon" data-act="modal-close" aria-label="ปิด">${ic('x')}</button></div><div class="modal-b"><iframe class="pdfv" src="${url}" title="${esc(q.name)}"></iframe></div><div class="modal-f"><button class="btn" data-act="att-dl" data-fid="${fid}" data-name="${esc(q.name)}">${ic('download')}ดาวน์โหลด</button><a class="btn" href="${url}" target="_blank" rel="noopener">${ic('right')}เปิดในหน้าต่างใหม่</a><button class="btn btn-primary" data-act="modal-close">ปิด</button></div>`);
+  const isImg = (q.type && q.type.startsWith('image/')) || /\.(png|jpe?g|webp|gif|bmp)$/i.test(q.name);
+  const isPdf = q.type==='application/pdf' || /\.pdf$/i.test(q.name);
+  const preview = isImg ? `<div style="text-align:center;padding:12px;background:#f8fafc;border-radius:12px;max-height:70vh;overflow:auto"><img src="${url}" alt="${esc(q.name)}" style="max-width:100%;max-height:65vh;object-fit:contain;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.08)"></div>`
+    : isPdf ? `<iframe class="pdfv" src="${url}" title="${esc(q.name)}"></iframe><p class="tiny muted">หากเอกสารไม่แสดง ให้กดปุ่มเปิดในหน้าต่างใหม่</p>`
+    : `<div style="text-align:center;padding:40px 20px;background:#f8fafc;border-radius:12px"><div style="font-size:48px;line-height:1;margin-bottom:12px">📄</div><h4 style="margin:0 0 8px;word-break:break-all">${esc(q.name)}</h4><p style="color:var(--ink-500);margin:0 0 16px">${fsize(q.size)} · ไฟล์เอกสาร</p><button class="btn btn-primary" data-act="att-dl" data-fid="${fid}" data-name="${esc(q.name)}">${ic('download')}ดาวน์โหลดไฟล์นี้เพื่อเปิดดู</button></div>`;
+  openModal(`<div class="modal-h"><div style="flex:1;min-width:0"><h3 style="overflow-wrap:anywhere">${esc(q.name)}</h3><p>${fsize(q.size)} · ส่งโดยหน่วยบริการ · ${thDateTime(q.at)}</p></div><button class="btn btn-ghost btn-icon" data-act="modal-close" aria-label="ปิด">${ic('x')}</button></div><div class="modal-b">${preview}</div><div class="modal-f"><button class="btn" data-act="att-dl" data-fid="${fid}" data-name="${esc(q.name)}">${ic('download')}ดาวน์โหลด</button><a class="btn" href="${url}" target="_blank" rel="noopener">${ic('right')}เปิดในหน้าต่างใหม่</a><button class="btn btn-primary" data-act="modal-close">ปิด</button></div>`);
 }
+
 function quickListHTML(a,uid,title){
   const L=a?.quick||[]; if(!L.length) return '';
-  return `<div class="card qlist" style="margin-top:16px"><div class="card-h"><div><h3>${title||'เอกสาร PDF ที่หน่วยบริการส่งผ่านช่องทางด่วน'}</h3><p>${L.length} ครั้ง · ${L.reduce((s,x)=>s+x.files.length,0)} ไฟล์ · กดชื่อไฟล์เพื่อเปิดดู</p></div></div><div class="card-b"><ul class="ql">${L.map(x=>`<li><div class="ql-h"><span class="ql-t">${esc(qTopic(x.topic))}</span><span class="ql-d">${thDateTime(x.at)}</span></div>${x.sender?`<p class="ql-s">${ic('user')}<span>ผู้ส่ง: <b>${esc(x.sender.name)}</b>${x.sender.pos?` · ${esc(x.sender.pos)}`:''}${x.sender.tel?` · โทร <a href="tel:${esc(x.sender.tel.replace(/[^0-9+]/g,''))}">${esc(x.sender.tel)}</a>`:''}</span></p>`:''}${x.note?`<p class="ql-n">${esc(x.note)}</p>`:''}<div class="evf" style="margin-top:6px">${x.files.map(f=>`<button class="fch pdf" data-act="quick-view" data-uid="${uid}" data-fid="${f.id}" title="${esc(f.name)}"><span class="fpdf">PDF</span><span class="fmeta"><b>${esc(f.name)}</b><span>${fsize(f.size)}</span></span></button>`).join('')}</div></li>`).join('')}</ul></div></div>`;
+  return `<div class="card qlist" style="margin-top:16px"><div class="card-h"><div><h3>${title||'เอกสารที่หน่วยบริการส่งผ่านช่องทางด่วน'}</h3><p>${L.length} ครั้ง · ${L.reduce((s,x)=>s+x.files.length,0)} ไฟล์ · กดชื่อไฟล์เพื่อเปิดดู</p></div></div><div class="card-b"><ul class="ql">${L.map(x=>`<li><div class="ql-h"><span class="ql-t">${esc(qTopic(x.topic))}</span><span class="ql-d">${thDateTime(x.at)}</span></div>${x.sender?`<p class="ql-s">${ic('user')}<span>ผู้ส่ง: <b>${esc(x.sender.name)}</b>${x.sender.pos?` · ${esc(x.sender.pos)}`:''}${x.sender.tel?` · โทร <a href="tel:${esc(x.sender.tel.replace(/[^0-9+]/g,''))}">${esc(x.sender.tel)}</a>`:''}</span></p>`:''}${x.note?`<p class="ql-n">${esc(x.note)}</p>`:''}<div class="evf" style="margin-top:6px">${x.files.map(f=>`<button class="fch" data-act="quick-view" data-uid="${uid}" data-fid="${f.id}" title="${esc(f.name)}">${extBadge(f.name)}<span class="fmeta"><b>${esc(f.name)}</b><span>${fsize(f.size)}</span></span></button>`).join('')}</div></li>`).join('')}</ul></div></div>`;
 }
-/* ================= ดาวน์โหลดไฟล์ / ส่งออก PDF ================= */
+
 async function saveFile(filename, blob){
   try{ if(window.claude && typeof window.claude.use==='function'){ const dl=await window.claude.use('downloads'); if(dl){ try{ await dl.save({filename, data:blob}); toast('ดาวน์โหลดแล้ว: '+filename); }catch(e){ if(e && e.code==='declined') return; toast('ดาวน์โหลดไม่สำเร็จ ('+(e?.code||'error')+')',true); } return; } } }catch(e){}
   try{ const u=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=u; a.download=filename; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(u); a.remove(); },800); toast('ดาวน์โหลดแล้ว: '+filename); }catch(e){ toast('ดาวน์โหลดไม่สำเร็จในหน้านี้',true); }
@@ -3845,7 +3861,7 @@ function menteeHome(){
       ${S.view==='send'?bareNav(['modules','DASHBOARD หน่วยบริการ'],['exec','Executive Dashboard']):bareNav(['role','หน้าเข้าสู่ระบบ'],['send','ส่งข้อมูลให้จังหวัด'])}</div>
     ${S.view==='send'?'':countdownHTML(true)}
 
-${S.view==='send'?`    <div class="send-hero"><h1>ส่งข้อมูลให้จังหวัด</h1><p>${esc(u.name)} · ส่งเกณฑ์การประเมินมาตรฐาน GECC ประจำปี พ.ศ. ${DB.fy}</p><button class="sh-btn" data-act="quick-send" data-id="${u.id}" aria-label="คลิกที่นี่เพื่อแนบไฟล์ PDF ส่งให้ MENTOR"><span class="sh-ic">${ic('upload')}</span><span class="sh-l">คลิกที่นี่</span><span class="sh-s">แนบไฟล์ PDF ส่งให้ MENTOR ได้ทันที</span></button></div>
+${S.view==='send'?`    <div class="send-hero"><h1>ส่งข้อมูลให้จังหวัด</h1><p>${esc(u.name)} · ส่งเกณฑ์การประเมินมาตรฐาน GECC ประจำปี พ.ศ. ${DB.fy}</p><button class="sh-btn" data-act="quick-send" data-id="${u.id}" aria-label="คลิกที่นี่เพื่อแนบไฟล์ส่งให้ MENTOR"><span class="sh-ic">${ic('upload')}</span><span class="sh-l">คลิกที่นี่</span><span class="sh-s">แนบไฟล์เอกสาร / รูปภาพ ส่งให้ MENTOR ได้ทันที</span></button></div>
     ${quickListHTML(a,u.id,'เอกสาร PDF ที่ส่งให้ MENTOR แล้ว')}
 
     <section class="card gsend" style="margin-top:0">
@@ -3873,6 +3889,82 @@ ${S.view==='send'?`    <div class="send-hero"><h1>ส่งข้อมูลใ
 `}    <p class="mods-f">SISAKET GECC PROJECT · พัฒนาและดูแลระบบ: Kanok_rx สำนักงานสาธารณสุขจังหวัดศรีสะเกษ</p>
   </div></section>`;
 }
+function viewUnits(){
+  setCollectionHead('ข้อมูลหน่วยงานที่สมัคร GECC 2570','building','รายชื่อหน่วยงานภาครัฐที่สมัครรับการประเมินศูนย์ราชการสะดวก จังหวัดศรีสะเกษ รวม 32 หน่วยงาน');
+  const selTeam = S.unitsTeam != null ? S.unitsTeam : 0;
+  const q = (S.unitsQ || '').trim().toLowerCase();
+  const allU = DB.units || OFFICIAL_UNITS;
+  const filtered = allU.filter(u => {
+    if(selTeam > 0 && u.team !== selTeam) return false;
+    if(q){
+      const matchName = (u.name || '').toLowerCase().includes(q);
+      const matchCode = (u.code || '').toLowerCase().includes(q);
+      const matchDist = (u.district || '').toLowerCase().includes(q);
+      return matchName || matchCode || matchDist;
+    }
+    return true;
+  });
+
+  const teamCounts = [0, 1, 2, 3, 4, 5, 6].map(t => {
+    return t === 0 ? allU.length : allU.filter(u => u.team === t).length;
+  });
+
+  $('#content').innerHTML = `
+    <section class="public-intro" style="margin-bottom:24px">
+      <h2 style="font-size:26px;font-weight:700;color:var(--navy-900);margin:0 0 8px">ข้อมูลหน่วยงานที่สมัคร GECC 2570</h2>
+      <p style="color:var(--ink-500);margin:0 0 16px">จังหวัดศรีสะเกษ มีหน่วยงานภาครัฐสมัครขอรับการรับรองมาตรฐานศูนย์ราชการสะดวก ประจำปีงบประมาณ พ.ศ. 2570 รวม <b>32 หน่วยงาน</b> แบ่งเป็น 6 คณะทำงาน MENTOR</p>
+      
+      <div class="feature-tools" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;background:#fff;padding:14px 18px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+        <div style="flex:1;min-width:240px;position:relative">
+          <input class="inp" id="units-search-in" value="${esc(S.unitsQ||'')}" placeholder="ค้นหาชื่อหน่วยงาน, รหัส หรืออำเภอ…" style="width:100%;padding-left:36px" data-input="units-q">
+          <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ink-400)">${ic('search')}</span>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn btn-sm ${selTeam===0?'btn-primary':''}" data-act="filter-units-team" data-team="0">ทั้งหมด (${teamCounts[0]})</button>
+          ${[1,2,3,4,5,6].map(t => `<button class="btn btn-sm ${selTeam===t?'btn-primary':''}" data-act="filter-units-team" data-team="${t}">คณะที่ ${t} (${teamCounts[t]})</button>`).join('')}
+        </div>
+      </div>
+    </section>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:16px;margin-bottom:32px">
+      ${filtered.length ? filtered.map(u => {
+        const a = DB.assess[u.id];
+        const wf = a?.wf?.status;
+        const stLabel = wf === 'reviewed' ? 'ตรวจแล้ว' : wf === 'submitted' ? 'รอตรวจ' : a?.started ? 'กำลังดำเนินการ' : 'ยังไม่บันทึก';
+        const stColor = wf === 'reviewed' ? '#059669' : wf === 'submitted' ? '#D97706' : a?.started ? '#2563EB' : '#64748B';
+        const teamObj = DB.teams.find(t => t.id === u.team);
+        return `
+          <div class="card" style="padding:18px;display:flex;flex-direction:column;justify-content:space-between;border-radius:14px;border:1px solid rgba(0,0,0,.08);box-shadow:0 2px 8px rgba(0,0,0,.04);background:#fff">
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                <span style="font-family:monospace;font-size:12px;font-weight:700;color:var(--navy-700);background:#EEF2FF;padding:3px 8px;border-radius:6px;border:1px solid #C7D2FE">รหัส ${esc(u.code||'000000')}</span>
+                <span style="font-size:12px;font-weight:600;color:${stColor};background:${stColor}15;padding:3px 8px;border-radius:6px">${stLabel}</span>
+              </div>
+              <h3 style="font-size:16px;font-weight:700;color:var(--navy-900);margin:0 0 8px;line-height:1.4">${esc(u.name)}</h3>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
+                <span style="font-size:12px;color:var(--navy-800);background:var(--gold-soft,#FEF3C7);padding:2px 8px;border-radius:4px;font-weight:600">${esc(teamObj?.name || 'คณะทำงานที่ ' + u.team)}</span>
+                ${u.district ? `<span style="font-size:12px;color:#475569;background:#F1F5F9;padding:2px 8px;border-radius:4px">${esc(u.district)}</span>` : ''}
+                <span style="font-size:12px;color:#0F766E;background:#CCFBF1;padding:2px 8px;border-radius:4px">เป้าหมาย 2570</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid #F1F5F9">
+              <button class="btn btn-sm btn-lux" style="flex:1" data-public-id="${esc(u.id)}">${ic('clipboard')}เกณฑ์และผลตรวจ</button>
+              <button class="btn btn-sm" style="flex:1" data-act="login-unit-direct" data-id="${esc(u.id)}">${ic('right')}เข้าสู่ระบบ</button>
+            </div>
+          </div>
+        `;
+      }).join('') : `
+        <div class="empty" style="grid-column:1/-1;padding:48px 20px;text-align:center">
+          <div style="font-size:40px;margin-bottom:12px">🔍</div>
+          <h3>ไม่พบหน่วยงานที่ตรงกับคำค้นหา</h3>
+          <p style="color:var(--ink-500)">ลองเปลี่ยนคำค้นหา หรือเลือกแท็บ "ทั้งหมด"</p>
+        </div>
+      `}
+    </div>
+  `;
+}
+
+
 function viewModules(){
   if(!S.role){ go('role'); return; }
   if(S.role==='mentee'){ menteeHome(); return; }
@@ -4123,8 +4215,11 @@ async function compressImage(file){
 const fsize = b => b>1048576?`${fmt(b/1048576,1)} MB`:`${fmt(Math.max(1,b/1024))} KB`;
 function fileChip(key,f){
   const mine=f.by===S.role; const who=f.by==='mentor'?'MENTOR':'หน่วยบริการ';
-  return `<span class="fwrap"><button class="fch ${f.type==='application/pdf'?'pdf':'img'}" data-act="file-view" data-k="${key}" data-fid="${f.id}" title="${esc(f.name)}">${f.type==='application/pdf'?`<span class="fpdf">PDF</span>`:`<img data-thumb="${f.id}" alt="">`}<span class="fmeta"><b>${esc(f.name)}</b><span>${fsize(f.size)} · ${who}</span></span></button>${mine?`<button class="fdel" data-act="ev-del" data-k="${key}" data-fid="${f.id}" aria-label="ลบไฟล์ ${esc(f.name)}">${ic('x')}</button>`:''}</span>`;
+  const isImg = (f.type && f.type.startsWith('image/')) || /\.(png|jpe?g|webp|gif|bmp)$/i.test(f.name);
+  const visual = isImg ? `<img data-thumb="${f.id}" alt="">` : extBadge(f.name);
+  return `<span class="fwrap"><button class="fch ${isImg?'img':'doc'}" data-act="file-view" data-k="${key}" data-fid="${f.id}" title="${esc(f.name)}">${visual}<span class="fmeta"><b>${esc(f.name)}</b><span>${fsize(f.size)} · ${who}</span></span></button>${mine?`<button class="fdel" data-act="ev-del" data-k="${key}" data-fid="${f.id}" aria-label="ลบไฟล์ ${esc(f.name)}">${ic('x')}</button>`:''}</span>`;
 }
+
 function evBar(key,a,narr=false){
   const e=(a.ev||{})[key]||{}; const rv=(a.rev||{})[key]||{}; const files=e.files||[]; const isMe=S.role==='mentee'&&!S.lock, isMt=S.role==='mentor'&&!S.lock; const id=key.replace(':','-');
   const openE=!!S.evOpen['e:'+key]||!!e.text, openR=!!S.evOpen['r:'+key]||!!rv.text; const canAttach=isMe||isMt;
@@ -4151,22 +4246,34 @@ async function addFiles(key,list,kind){
   if(!list.length) return; const a=S.draft; a.ev=a.ev||{}; const e=a.ev[key]=a.ev[key]||{text:'',files:[]}; e.files=e.files||[];
   toast('กำลังเตรียมไฟล์…'); let added=0;
   for(const f of list){
-    if(kind==='pdf'){ if(!/pdf/i.test(f.type)&&!/\.pdf$/i.test(f.name)){ toast('รองรับเฉพาะไฟล์ PDF',true); continue; } if(f.size>10*1048576){ toast(`${f.name} มีขนาดเกิน 10 MB`,true); continue; } }
-    else { if(!/^image\//.test(f.type)){ toast('รองรับเฉพาะไฟล์รูปภาพ',true); continue; } if(f.size>30*1048576){ toast(`${f.name} มีขนาดใหญ่เกินไป`,true); continue; } }
+    if(f.size>25*1048576){ toast(`${f.name} มีขนาดเกิน 25 MB`,true); continue; }
     if(e.files.length>=10){ toast('แนบได้สูงสุด 10 ไฟล์ต่อข้อ',true); break; }
-    const blob=kind==='img'?await compressImage(f):f; const id='f'+uid(); await FDB.put(id,blob,kind==='img'?f.name.replace(/\.[^.]+$/,'')+'.jpg':f.name);
-    e.files.push({id, name:kind==='img'?f.name.replace(/\.[^.]+$/,'')+'.jpg':f.name, type:kind==='img'?'image/jpeg':'application/pdf', size:blob.size, by:S.role, at:new Date().toISOString()}); added++;
+    const isImg = kind==='img' || /^image\//.test(f.type);
+    const blob = isImg ? await compressImage(f) : f;
+    const saveName = isImg ? f.name.replace(/\.[^.]+$/,'')+'.jpg' : f.name;
+    const mime = isImg ? 'image/jpeg' : (f.type || 'application/octet-stream');
+    const id = 'f' + uid();
+    await FDB.put(id, blob, saveName);
+    e.files.push({id, name: saveName, type: mime, size: blob.size, by: S.role, at: new Date().toISOString()});
+    added++;
   }
   if(added){ a.started=true; S.dirty=true; viewUnitKeep(); toast(`แนบแล้ว ${added} ไฟล์ · กดบันทึกเพื่อส่งข้อมูล`); }
 }
+
 async function viewFile(key,fid){
   const f=((S.draft?.ev||{})[key]?.files||[]).find(x=>x.id===fid); if(!f) return;
   const b=await FDB.get(fid); if(!b){ toast('ไม่พบไฟล์ในเบราว์เซอร์นี้ ไฟล์อาจถูกแนบจากเครื่องอื่น',true); return; }
-  const url=THUMB[fid]||(THUMB[fid]=URL.createObjectURL(b)); const pdf=f.type==='application/pdf';
+  const url=THUMB[fid]||(THUMB[fid]=URL.createObjectURL(b));
+  const isImg = (f.type && f.type.startsWith('image/')) || /\.(png|jpe?g|webp|gif|bmp)$/i.test(f.name);
+  const isPdf = f.type==='application/pdf' || /\.pdf$/i.test(f.name);
+  const content = isImg ? `<img class="imgv" src="${url}" alt="${esc(f.name)}">`
+    : isPdf ? `<iframe class="pdfv" src="${url}" title="${esc(f.name)}"></iframe><p class="tiny muted">หากเอกสารไม่แสดง ให้กดปุ่มเปิดในหน้าต่างใหม่</p>`
+    : `<div style="text-align:center;padding:36px 16px;background:#f8fafc;border-radius:12px"><div style="font-size:48px;line-height:1;margin-bottom:12px">📄</div><h4 style="margin:0 0 8px;word-break:break-all">${esc(f.name)}</h4><p style="color:var(--ink-500);margin:0 0 16px">${fsize(f.size)} · ไฟล์เอกสาร</p><button class="btn btn-primary" data-act="att-dl" data-fid="${fid}" data-name="${esc(f.name)}">${ic('download')}ดาวน์โหลดไฟล์นี้เพื่อเปิดดู</button></div>`;
   openModal(`<div class="modal-h"><div style="flex:1;min-width:0"><h3 style="overflow-wrap:anywhere">${esc(f.name)}</h3><p>${fsize(f.size)} · แนบโดย${f.by==='mentor'?' MENTOR':'หน่วยบริการ'} · ${thDateTime(f.at)}</p></div><button class="btn btn-ghost btn-icon" data-act="modal-close" aria-label="ปิด">${ic('x')}</button></div>
-    <div class="modal-b">${pdf?`<iframe class="pdfv" src="${url}" title="${esc(f.name)}"></iframe><p class="tiny muted">หากเอกสารไม่แสดง ให้กดปุ่มเปิดในหน้าต่างใหม่</p>`:`<img class="imgv" src="${url}" alt="${esc(f.name)}">`}</div>
+    <div class="modal-b">${content}</div>
     <div class="modal-f"><button class="btn" data-act="att-dl" data-fid="${fid}" data-name="${esc(f.name)}">${ic('download')}ดาวน์โหลด</button><a class="btn" href="${url}" target="_blank" rel="noopener">${ic('right')}เปิดในหน้าต่างใหม่</a><button class="btn btn-primary" data-act="modal-close">ปิด</button></div>`);
 }
+
 function hydrateThumbs(){ $$('img[data-thumb]').forEach(async im=>{ const id=im.dataset.thumb; let u=THUMB[id]; if(!u){ const b=await FDB.get(id); if(!b){ im.closest('.fch')?.classList.add('miss'); return; } u=THUMB[id]=URL.createObjectURL(b); } im.src=u; }); }
 
 /* ================= Executive: readiness, per-criterion, charts, survey ================= */
@@ -4674,7 +4781,9 @@ document.addEventListener('click', async e=>{
     case 'mod': { if(el.dataset.tab){ S.draft=null; go('unit',{unitId:S.menteeUnit, tab:el.dataset.tab, from:''}); } else go(el.dataset.view); break; }
     case 'udash-tab': S.draft=null; go('unit',{unitId:el.dataset.id, tab:el.dataset.tab, from:S.role==='mentee'?'':'udash'}); break;
     case 'open-udash': { const u=unitById(id); closeModal(); if(!canAccessUnit(u)){ if(!S.role){ go('role',{rolePick:'mentor'}); } else denyUnit(); break; } if(S.role==='mentee'){ go('modules'); break; } go('udash',{unitId:id}); break; }
-    case 'quick-send': quickSendModal(el.dataset.id); break;
+    case 'filter-units-team': S.unitsTeam = +el.dataset.team; viewUnits(); break;
+      case 'login-unit-direct': { const u=unitById(id); if(u){ if(window.GECC_SERVER) GECCClient.loginModal('unit',id,u.name,u.username||''); else pinModal('unit',id,u.name); } break; }
+      case 'quick-send': quickSendModal(el.dataset.id); break;
     case 'quick-send-ok': await quickSend(el.dataset.id, el); break;
     case 'quick-rm': S.quickFiles.splice(+el.dataset.i,1); quickPick([]); break;
     case 'quick-view': await quickView(el.dataset.uid, el.dataset.fid); break;
@@ -4752,7 +4861,7 @@ document.addEventListener('change', async e=>{
   if(el.dataset.actChange==='only-new'){ S.onlyNew=el.checked; viewUnitKeep(); return; }
   if(el.id==='q-topic'){ $('#f-qt')?.classList.toggle('invalid', !el.value); }
   if(el.dataset.actChange==='quick-files'){ quickPick(el.files); el.value=''; return; }
-  if(el.dataset.actChange==='ev-img'||el.dataset.actChange==='ev-pdf'){ await addFiles(el.dataset.k,[...el.files], el.dataset.actChange==='ev-img'?'img':'pdf'); el.value=''; return; }
+  if(el.dataset.actChange==='ev-img'||el.dataset.actChange==='ev-pdf'||el.dataset.actChange==='ev-file'){ await addFiles(el.dataset.k,[...el.files], el.dataset.actChange==='ev-img'?'img':'file'); el.value=''; return; }
   if(el.dataset.actChange==='import'){ importJSON(el.files[0]); el.value=''; return; }
   if(el.id==='d-due'){ $('#d-due-th').textContent=thDate(el.value,true); }
   if(el.id==='mentee-unit'){ $('#f-unit').classList.remove('invalid'); }
@@ -4762,7 +4871,8 @@ document.addEventListener('input', e=>{
   const el=e.target;
   if(el.id==='q-sname'||el.id==='q-stel'||el.id==='w-sname'||el.id==='w-stel'){ el.closest('.field')?.classList.remove('invalid'); }
   if(el.dataset.bind && (el.type==='text'||el.tagName==='TEXTAREA'||el.type==='url'||el.type==='number')){ bind(el); return; }
-  if(el.dataset.input==='q'){ S.q=el.value.trim(); const pos=el.selectionStart; (S.view==='mdash'?viewMDash:viewExec)(); const n=$('[data-input="q"]'); n.focus(); try{ n.setSelectionRange(pos,pos);}catch(_){} }
+  if(el.dataset.input==='units-q'){ S.unitsQ=el.value; const pos=el.selectionStart; viewUnits(); const n=$('[data-input="units-q"]'); if(n){ n.focus(); try{ n.setSelectionRange(pos,pos); }catch(_){} } return; }
+    if(el.dataset.input==='q'){ S.q=el.value.trim(); const pos=el.selectionStart; (S.view==='mdash'?viewMDash:viewExec)(); const n=$('[data-input="q"]'); n.focus(); try{ n.setSelectionRange(pos,pos);}catch(_){} }
 });
 window.addEventListener('beforeunload', e=>{ if(S.dirty){ e.preventDefault(); e.returnValue=''; } });
 

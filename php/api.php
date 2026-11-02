@@ -14,11 +14,41 @@ function body(int $max=2097152, bool $raw=false): mixed {
     try {$v=decode($data);} catch(\JsonException) {fail(400,'ข้อมูล JSON ไม่ถูกต้อง');}
     if (!is_object($v)) fail(400,'ข้อมูล JSON ไม่ถูกต้อง'); return $v;
 }
-function file_type(string $b): ?string {
-    if (str_starts_with($b,'%PDF-')) return 'application/pdf';
-    if (str_starts_with($b,"\x89PNG\r\n\x1a\n")) return 'image/png';
-    if (str_starts_with($b,"\xff\xd8\xff")) return 'image/jpeg';
-    if (substr($b,0,4)==='RIFF' && substr($b,8,4)==='WEBP') return 'image/webp';
+function file_type(string $b, string $name = ""): ?string {
+    if (str_starts_with($b,"%PDF-")) return "application/pdf";
+    if (str_starts_with($b,"\x89PNG\r\n\x1a\n")) return "image/png";
+    if (str_starts_with($b,"\xff\xd8\xff")) return "image/jpeg";
+    if (substr($b,0,4)==="RIFF" && substr($b,8,4)==="WEBP") return "image/webp";
+    if (str_starts_with($b,"GIF87a") || str_starts_with($b,"GIF89a")) return "image/gif";
+    if (str_starts_with($b,"BM")) return "image/bmp";
+    $lower = strtolower(substr($b, 0, 512));
+    if (str_contains($lower, "<?php") || str_contains($lower, "<script") || str_starts_with($lower, "<!doctype html") || str_starts_with($lower, "<html")) return null;
+    $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+    if ($ext === "pdf" && !str_starts_with($b, "%PDF-")) return null;
+    if (in_array($ext, ["png", "jpg", "jpeg", "webp", "gif", "bmp"], true)) return null;
+    if (str_starts_with($b, "PK\x03\x04") || str_starts_with($b, "PK\x05\x06")) {
+        if ($ext === "docx") return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+        if ($ext === "xlsx") return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        if ($ext === "pptx") return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+        return "application/zip";
+    }
+    if (str_starts_with($b, "\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1")) {
+        if ($ext === "doc") return "application/msword";
+        if ($ext === "xls") return "application/vnd.ms-excel";
+        if ($ext === "ppt") return "application/vnd.ms-powerpoint";
+        return "application/octet-stream";
+    }
+    $mimes = [
+        "doc"=>"application/msword","docx"=>"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "xls"=>"application/vnd.ms-excel","xlsx"=>"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "ppt"=>"application/vnd.ms-powerpoint","pptx"=>"application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "odt"=>"application/vnd.oasis.opendocument.text","ods"=>"application/vnd.oasis.opendocument.spreadsheet","odp"=>"application/vnd.oasis.opendocument.presentation",
+        "txt"=>"text/plain","csv"=>"text/csv","rtf"=>"application/rtf",
+        "zip"=>"application/zip","rar"=>"application/x-rar-compressed","7z"=>"application/x-7z-compressed","tar"=>"application/x-tar","gz"=>"application/gzip",
+        "mp4"=>"video/mp4","mp3"=>"audio/mpeg","mov"=>"video/quicktime",
+    ];
+    if ($ext !== "" && isset($mimes[$ext])) return $mimes[$ext];
+    if ($ext !== "" && preg_match("/^[a-z0-9]{1,10}$/", $ext)) return "application/octet-stream";
     return null;
 }
 function reserve_login(string $username): void {
@@ -180,10 +210,10 @@ function api(): never {
                 $unit=$_SERVER['HTTP_X_UNIT_ID']??'';[$s]=state();
                 if (!allowed($session,find($s->units,fn($u)=>$u->id===$unit))) fail(403,'ไม่มีสิทธิ์แนบไฟล์');
                 if (($s->assess->$unit->wf->status??'')==='reviewed') fail(409,'ผลตรวจถูกล็อก');
-                $bytes=body(10485760,true);$mime=file_type($bytes);
-                if (!$mime) fail(400,'รับเฉพาะ PDF, JPEG, PNG หรือ WebP ที่ถูกต้อง ขนาดไม่เกิน 10 MB');
                 $name=mb_substr(preg_replace('~[\x00-\x1f/\\\\]~','_',rawurldecode($_SERVER['HTTP_X_FILE_NAME']??$id)),0,200);
                 if (!mb_check_encoding($name,'UTF-8')) fail(400,'ชื่อไฟล์ไม่ถูกต้อง');
+                $bytes=body(26214400,true);$mime=file_type($bytes,$name);
+                if (!$mime) fail(400,'ไฟล์ไม่ถูกต้องหรือไม่รองรับ ขนาดไม่เกิน 25 MB');
                 $fp=@fopen($file,'x+b');if (!$fp) fail(409,'รหัสไฟล์ซ้ำ กรุณาแนบไฟล์ใหม่');
                 try {
                     if (fwrite($fp,$bytes)!==strlen($bytes)) fail(503,'บันทึกไฟล์ไม่สำเร็จ');

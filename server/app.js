@@ -55,7 +55,7 @@ async function body(req, max = 2 * 1024 * 1024, raw = false) {
     fail(400, "ข้อมูล JSON ไม่ถูกต้อง");
   }
 }
-export function fileType(b) {
+export function fileType(b, name = "") {
   if (b.subarray(0, 5).toString() === "%PDF-") return "application/pdf";
   if (b.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])))
     return "image/png";
@@ -65,6 +65,37 @@ export function fileType(b) {
     b.subarray(8, 12).toString() === "WEBP"
   )
     return "image/webp";
+  if (b.subarray(0, 6).toString() === "GIF87a" || b.subarray(0, 6).toString() === "GIF89a")
+    return "image/gif";
+  if (b.subarray(0, 2).toString() === "BM") return "image/bmp";
+  const lower = b.subarray(0, 512).toString("utf8").toLowerCase();
+  if (lower.includes("<?php") || lower.includes("<script") || lower.startsWith("<!doctype html") || lower.startsWith("<html")) return null;
+  const ext = String(name || "").split(".").pop().toLowerCase();
+  if (ext === "pdf" && b.subarray(0, 5).toString() !== "%PDF-") return null;
+  if (["png", "jpg", "jpeg", "webp", "gif", "bmp"].includes(ext)) return null;
+  if (b.subarray(0, 4).equals(Buffer.from([0x50, 0x4B, 0x03, 0x04])) || b.subarray(0, 4).equals(Buffer.from([0x50, 0x4B, 0x05, 0x06]))) {
+    if (ext === "docx") return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    if (ext === "xlsx") return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    if (ext === "pptx") return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+    return "application/zip";
+  }
+  if (b.subarray(0, 8).equals(Buffer.from([0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1]))) {
+    if (ext === "doc") return "application/msword";
+    if (ext === "xls") return "application/vnd.ms-excel";
+    if (ext === "ppt") return "application/vnd.ms-powerpoint";
+    return "application/octet-stream";
+  }
+  const mimes = {
+    doc: "application/msword", docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    xls: "application/vnd.ms-excel", xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ppt: "application/vnd.ms-powerpoint", pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    odt: "application/vnd.oasis.opendocument.text", ods: "application/vnd.oasis.opendocument.spreadsheet", odp: "application/vnd.oasis.opendocument.presentation",
+    txt: "text/plain", csv: "text/csv", rtf: "application/rtf",
+    zip: "application/zip", rar: "application/x-rar-compressed", "7z": "application/x-7z-compressed", tar: "application/x-tar", gz: "application/gzip",
+    mp4: "video/mp4", mp3: "audio/mpeg", mov: "video/quicktime",
+  };
+  if (ext && mimes[ext]) return mimes[ext];
+  if (ext && /^[a-z0-9]{1,10}$/.test(ext)) return "application/octet-stream";
   return null;
 }
 function collectFiles(a) {
@@ -475,13 +506,6 @@ export function createApp({
             fail(403, "ไม่มีสิทธิ์แนบไฟล์");
           if (document.assess[uid]?.wf?.status === "reviewed")
             fail(409, "ผลตรวจถูกล็อก");
-          const bytes = await body(req, 10 * 1024 * 1024, true);
-          const mime = fileType(bytes);
-          if (!mime || !bytes.length)
-            fail(
-              400,
-              "รับเฉพาะ PDF, JPEG, PNG หรือ WebP ที่ถูกต้อง ขนาดไม่เกิน 10 MB",
-            );
           let name;
           try {
             name = decodeURIComponent(req.headers["x-file-name"] || id);
@@ -489,6 +513,13 @@ export function createApp({
             fail(400, "ชื่อไฟล์ไม่ถูกต้อง");
           }
           name = name.replace(/[\x00-\x1f/\\]/g, "_").slice(0, 200);
+          const bytes = await body(req, 25 * 1024 * 1024, true);
+          const mime = fileType(bytes, name);
+          if (!mime || !bytes.length)
+            fail(
+              400,
+              "ไฟล์ไม่ถูกต้องหรือไม่รองรับ ขนาดไม่เกิน 25 MB",
+            );
           await mkdir(root, { recursive: true });
           await writeFile(resolve(root, id), bytes, { flag: "wx" }).catch(() =>
             fail(409, "รหัสไฟล์ซ้ำ กรุณาแนบไฟล์ใหม่"),
