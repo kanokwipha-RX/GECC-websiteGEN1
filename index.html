@@ -3958,7 +3958,7 @@ function viewUnitsContent(){
         const teamObj = DB.teams.find(t => t.id === u.team);
         const teamTitle = teamObj ? teamObj.name : `กลุ่มที่ ${u.team}`;
         return `
-          <div class="card" style="padding:10px 12px;min-height:4cm;display:flex;flex-direction:column;justify-content:space-between;border-radius:10px;border:1px solid ${hasF?'rgba(16,185,129,.25)':'rgba(0,0,0,.08)'};box-shadow:0 2px 8px rgba(0,0,0,.04);background:#fff">
+          <div class="card" style="padding:10px 12px;min-height:4cm;display:flex;flex-direction:column;justify-content:space-between;border-radius:10px;border:1px solid ${hasF?'rgba(16,185,129,.35)':'#EEDDB2'};box-shadow:0 2px 10px rgba(138,100,23,.07);background:linear-gradient(165deg, #FFFDF9 0%, #FAF3E3 100%)">
             <div>
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
                 <span style="font-family:monospace;font-size:10.5px;font-weight:700;color:var(--navy-700);background:#EEF2FF;padding:2px 6px;border-radius:4px;border:1px solid #C7D2FE">รหัส ${esc(u.code||'000000')}</span>
@@ -3973,7 +3973,7 @@ function viewUnitsContent(){
               </div>
 
               <!-- รายการไฟล์แนบ -->
-              <div style="margin-top:4px;padding-top:6px;border-top:1px dashed #E2E8F0">
+              <div style="margin-top:4px;padding-top:6px;border-top:1px dashed #EEDDB2">
                 <div style="font-size:11px;font-weight:700;color:var(--navy-900);margin-bottom:4px;display:flex;align-items:center;gap:4px">
                   ${ic('file')}<span>ไฟล์ข้อมูลหน่วยงาน:</span>
                 </div>
@@ -3998,14 +3998,14 @@ function viewUnitsContent(){
                     `).join('')}
                   </div>
                 ` : `
-                  <div style="background:#F8FAFC;padding:6px 8px;border-radius:6px;text-align:center;color:#94A3B8;font-size:10.5px;border:1px dashed #CBD5E1">
+                  <div style="background:rgba(255,255,255,.7);padding:6px 8px;border-radius:6px;text-align:center;color:#9E874D;font-size:10.5px;border:1px dashed #E2CF9F">
                     ยังไม่มีการอัปโหลดไฟล์ในหัวข้อนี้
                   </div>
                 `}
               </div>
             </div>
 
-            <div style="margin-top:8px;padding-top:6px;border-top:1px solid #F1F5F9;display:flex;gap:4px">
+            <div style="margin-top:8px;padding-top:6px;border-top:1px solid #EEDDB2;display:flex;gap:4px">
               <button class="btn btn-sm btn-ghost" style="flex:1;font-size:10.5px;padding:3px 6px;line-height:1.2" data-public-id="${esc(u.id)}">${ic('clipboard')} เกณฑ์และผลตรวจ</button>
               ${(S.role==='mentee'&&S.menteeUnit===u.id)||S.role==='mentor' ? `<button class="btn btn-sm btn-lux" style="font-size:10.5px;padding:3px 6px;line-height:1.2" data-act="quick-send" data-id="${esc(u.id)}">${ic('upload')} ส่งเพิ่ม</button>` : ''}
             </div>
