@@ -139,7 +139,7 @@ window.GECCPublic = (() => {
   },true);
   const oldRender=render;render=function(){oldRender();decorate();};
   function surveyLinkHTML(){
-    const value=DB.publicContent?.surveyUrl || 'https://gecc-survey.vercel.app/s/demo-amphoe-a';
+    const value=DB.publicContent?.surveyUrl || 'https://gecc-survey.sskru-survey.workers.dev/login?gecc=1';
     try{const u=new URL(value);if(typeof value==='string'&&value.length<=2048&&u.protocol==='https:'&&!u.username&&!u.password)return `<a class="btn" href="${safe(u.href)}" target="_blank" rel="noopener noreferrer">ประเมินความพึงพอใจผู้รับบริการ</a>`;}catch{}
     return '<button class="btn" type="button" disabled aria-describedby="survey-pending">ประเมินความพึงพอใจผู้รับบริการ</button><span id="survey-pending" role="status">รอยืนยันลิงก์แบบสำรวจ</span>';
   }

@@ -1908,6 +1908,8 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 <div id="modal-root"></div>
 <div class="toasts" id="toasts" aria-live="polite" role="status"></div>
 
+<script src="assets/library-examples-data.js?v=2570b"></script>
+<script src="assets/library-examples-ui.js?v=2570b"></script>
 <script src="shared/criteria.js"></script>
 <script>
 "use strict";
@@ -3293,7 +3295,8 @@ function viewLibrary(){
     ${librarySubNav()}
     <section class="public-intro" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px"><p style="margin:0">เอกสาร คู่มือ และตัวอย่างสำหรับเตรียมความพร้อม ภาพปกจากเอกสารจริงในคลัง เลือกหมวดเพื่อเปิดโฟลเดอร์ใน Google Drive</p><button class="btn btn-sm btn-ghost" data-act="lib-lock" style="color:var(--navy);font-size:13px">${ic('lock')}ออกจากระบบ Library</button></section>
     <div class="library-grid">${LIBRARY_FOLDERS.map(f=>`<a class="library-card${f.landscape?' is-landscape':''}" data-visual-card style="--library-color:${esc(f.theme)}" href="${esc(f.url||LIBRARY_ROOT)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(f.name)} เปิดโฟลเดอร์ใน Google Drive"><img class="library-image" src="${esc(f.image)}" alt="ภาพตัวอย่างเอกสารหมวด${esc(f.name)}" loading="lazy" decoding="async"><span class="library-shade" aria-hidden="true"></span><div class="library-copy"><h2>${esc(f.name)}</h2><p>${esc(f.detail)}</p><span class="library-glass">เปิดดูเอกสาร ${ic('right')}</span></div></a>`).join('')}</div>
-    <a class="library-source" href="${LIBRARY_ROOT}" target="_blank" rel="noopener noreferrer">ดูโฟลเดอร์ GECC ทั้งหมด ${ic('right')}</a>`;
+    <a class="library-source" href="${LIBRARY_ROOT}" target="_blank" rel="noopener noreferrer">ดูโฟลเดอร์ GECC ทั้งหมด ${ic('right')}</a>
+    ${typeof libraryExamplesSectionHTML==='function'?libraryExamplesSectionHTML():''}`;
 }
 
 function groupChoice(t){
@@ -4963,6 +4966,14 @@ document.addEventListener('click', async e=>{
       break;
     }
     case 'lib-tab': S.libTab = el.dataset.tab; viewLibrary(); break;
+    case 'open-ex-modal': if(typeof openExampleModal==='function') openExampleModal(el.dataset.exId); break;
+    case 'ex-subfolder': {
+      if (S._currentExModal && typeof renderExampleModalContent==='function') {
+        S._currentExModal.filter = el.dataset.sub;
+        renderExampleModalContent();
+      }
+      break;
+    }
     case 'entry-retry': window.GECCPublic?.loadLoginOptions(true); break;
     case 'entry-mentor-team': { const tm=+el.dataset.team; pinModal('team',tm,teamName(tm)); break; }
     case 'entry-mentee-team': { const tm=+el.dataset.team; go('portfolio',{entryTeam:tm,rolePick:'mentee'}); break; }
