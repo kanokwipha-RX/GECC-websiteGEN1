@@ -3202,7 +3202,8 @@ function go(view, opts={}){
 
 function libAuthSubmit(){
   const val = ($('#lib-pass-in')?.value||'').trim();
-  if(val === 'geccssk2027'){
+  const clean = val.toLowerCase();
+  if(clean === 'geccssk2027' || clean === 'gecc2027ssk'){
     try{ sessionStorage.setItem('gecc_library_auth','1'); }catch(e){}
     S.libraryAuth = true;
     toast('รหัสผ่านถูกต้อง ยินดีต้อนรับสู่ GECC Library');
@@ -3252,22 +3253,15 @@ function librarySubNav(){
   `;
 }
 function viewLibrary(){
-  const tab = S.libTab || 'folders';
-  if(tab === 'units'){
-    setCollectionHead('ข้อมูลหน่วยงานที่สมัคร GECC2570','building','ข้อมูลหน่วยงานที่สมัครและเอกสารที่ส่งผ่านหัวข้อ ข้อมูลหน่วยงานที่สมัคร GECC2570');
-    viewUnitsContent();
-    return;
-  }
   setCollectionHead('GECC Library','book','คลังข้อมูลมาตรฐานศูนย์ราชการสะดวก จังหวัดศรีสะเกษ');
   const authed = (typeof sessionStorage!=='undefined' && sessionStorage.getItem('gecc_library_auth')==='1') || S.libraryAuth;
   if(!authed){
     $('#content').innerHTML = `
-      ${librarySubNav()}
       <section class="public-intro"><p>คลังข้อมูลมาตรฐานศูนย์ราชการสะดวก จังหวัดศรีสะเกษ จำกัดการเข้าถึงเฉพาะเจ้าหน้าที่และผู้เกี่ยวข้อง</p></section>
       <div class="library-gate-card">
         <div class="gate-icon">${ic('lock')}</div>
         <h2>ระบบรักษาความปลอดภัย GECC Library</h2>
-        <p>กรุณากรอกรหัสผ่านเพื่อเข้าใช้งานเอกสาร คู่มือ และตัวอย่างการเตรียมความพร้อม</p>
+        <p>กรุณากรอกรหัสผ่านเพื่อเข้าใช้งานเอกสาร คู่มือ และข้อมูลหน่วยงานที่สมัคร GECC 2570</p>
         <div class="field" id="f-lib-pass" style="margin-top:20px;text-align:left">
           <label for="lib-pass-in" style="font-weight:600;font-size:13px;color:#E6CB82">รหัสผ่านเข้าใช้งาน (Access Code)</label>
           <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
@@ -3286,13 +3280,21 @@ function viewLibrary(){
     setTimeout(()=>$('#lib-pass-in')?.focus(), 50);
     return;
   }
+
+  // เข้าสู่ระบบ Library สำเร็จแล้ว: สามารถสลับดูระหว่างแท็บคลังเอกสาร และแท็บข้อมูลหน่วยงานได้
+  const tab = S.libTab || 'folders';
+  if(tab === 'units'){
+    setCollectionHead('ข้อมูลหน่วยงานที่สมัคร GECC2570','building','ข้อมูลหน่วยงานที่สมัครและเอกสารที่ส่งผ่านหัวข้อ ข้อมูลหน่วยงานที่สมัคร GECC2570');
+    viewUnitsContent();
+    return;
+  }
+
   $('#content').innerHTML = `
     ${librarySubNav()}
     <section class="public-intro" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px"><p style="margin:0">เอกสาร คู่มือ และตัวอย่างสำหรับเตรียมความพร้อม ภาพปกจากเอกสารจริงในคลัง เลือกหมวดเพื่อเปิดโฟลเดอร์ใน Google Drive</p><button class="btn btn-sm btn-ghost" data-act="lib-lock" style="color:var(--navy);font-size:13px">${ic('lock')}ออกจากระบบ Library</button></section>
     <div class="library-grid">${LIBRARY_FOLDERS.map(f=>`<a class="library-card${f.landscape?' is-landscape':''}" data-visual-card style="--library-color:${esc(f.theme)}" href="${esc(f.url||LIBRARY_ROOT)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(f.name)} เปิดโฟลเดอร์ใน Google Drive"><img class="library-image" src="${esc(f.image)}" alt="ภาพตัวอย่างเอกสารหมวด${esc(f.name)}" loading="lazy" decoding="async"><span class="library-shade" aria-hidden="true"></span><div class="library-copy"><h2>${esc(f.name)}</h2><p>${esc(f.detail)}</p><span class="library-glass">เปิดดูเอกสาร ${ic('right')}</span></div></a>`).join('')}</div>
     <a class="library-source" href="${LIBRARY_ROOT}" target="_blank" rel="noopener noreferrer">ดูโฟลเดอร์ GECC ทั้งหมด ${ic('right')}</a>`;
 }
-
 
 function groupChoice(t){
   const title=t.name.replace(/^กลุ่มที่\s*\d+\s*:\s*/,'');
@@ -3896,6 +3898,8 @@ function getUnitInfoData(uid){
 
 function viewUnits(){ S.libTab='units'; if(S.view!=='library') go('library'); else viewLibrary(); }
 function viewUnitsContent(){
+  const authed = (typeof sessionStorage!=='undefined' && sessionStorage.getItem('gecc_library_auth')==='1') || S.libraryAuth;
+  if(!authed){ S.libTab = 'units'; viewLibrary(); return; }
   setCollectionHead('ข้อมูลหน่วยงานที่สมัคร GECC2570', 'building', 'ข้อมูลหน่วยงานที่สมัครและเอกสารที่ส่งผ่านหัวข้อ ข้อมูลหน่วยงานที่สมัคร GECC2570');
 
   const selTeam = S.unitsTeam != null ? S.unitsTeam : 0;
@@ -3938,7 +3942,7 @@ function viewUnitsContent(){
           <h2 style="font-size:24px;font-weight:700;color:var(--navy-900);margin:0 0 6px">หน่วยงานที่สมัคร GECC 2570</h2>
           <p style="color:var(--ink-500);margin:0;font-size:14.5px">รวม <b>32 หน่วยงาน</b> · ส่งเอกสารข้อมูลหน่วยงานแล้ว <b style="color:#059669">${totalSubmitted} หน่วยงาน</b> (${totalFiles} ไฟล์)</p>
         </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button class="btn btn-sm btn-ghost" data-act="lib-lock" style="color:var(--navy);font-size:13px">${ic('lock')}ออกจากระบบ Library</button>
           <div style="background:#F0FDF4;border:1px solid #BBF7D0;padding:8px 14px;border-radius:10px;text-align:center">
             <div style="font-size:18px;font-weight:700;color:#166534">${totalSubmitted} / 32</div>
             <div style="font-size:11px;color:#15803D;font-weight:600">หน่วยงานที่ส่งไฟล์แล้ว</div>
