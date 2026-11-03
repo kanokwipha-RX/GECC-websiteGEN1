@@ -1970,7 +1970,7 @@ const NEWB = '<span class="new" title="เกณฑ์ที่ปรับเ�
 
 /* ================= เกณฑ์ GECC 2570 ================= */
 /* n:true = เกณฑ์ที่ปรับเพิ่มใหม่ ตามอินโฟกราฟิก "มีอะไรใหม่ใน GECC 2570" */
-const GROUP_PHOTOS = Object.fromEntries([1,2,3,4,5,6].map(id=>[id,`assets/images/group-${id}.jpg`]));
+const GROUP_PHOTOS = Object.fromEntries([1,2,3,4,5,6].map(id=>[id, id===4?'assets/images/group-4-v2.jpg?v=2570b':id===5?'assets/images/group-5-v2.jpg?v=2570b':`assets/images/group-${id}.jpg?v=2570b`]));
 const OFFICIAL_UNITS = [
   {
     "id": "u01",
@@ -3251,7 +3251,9 @@ function viewLibrary(){
 }
 function groupChoice(t){
   const title=t.name.replace(/^กลุ่มที่\s*\d+\s*:\s*/,'');
-  const photo=t.photo||GROUP_PHOTOS[t.id];
+  let photo=t.photo||GROUP_PHOTOS[t.id];
+  if(t.id===4) photo='assets/images/group-4-v2.jpg?v=2570b';
+  if(t.id===5) photo='assets/images/group-5-v2.jpg?v=2570b';
   return `<button class="group-choice showcase-card${photo?' has-photo':''}" data-visual-card data-act="entry-team" data-team="${t.id}" aria-label="เลือก${esc(t.name)} เพื่อเข้าสู่ระบบ"><span class="group-choice-media">${photo?`<img src="${esc(photo)}" alt="ภาพประกอบ${esc(t.name)}" loading="lazy" width="500" height="500">`:ic(['building','shield','pin','file','user','chart'][t.id-1])}<span class="group-choice-number">${String(t.id).padStart(2,'0')}</span></span><span class="group-choice-overlay"></span><span class="group-choice-copy"><strong>กลุ่มที่ ${t.id}</strong><small>${esc(title)}</small><span class="group-choice-action">เลือกกลุ่มเพื่อเข้าสู่ระบบ ${ic('right')}</span></span></button>`;
 }
 function personCard(m,options={}){
