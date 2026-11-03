@@ -294,7 +294,7 @@ try {
   });
   const axe=await readFile("node_modules/axe-core/axe.min.js","utf8");
   await check("PHP frontend login, first-password change, forms, save/reload and responsive axe checks",async()=>{
-    await page.goto(base);await page.waitForSelector(".summary-grid");
+    await page.goto(base);await page.waitForSelector(".pbc");
     assert.equal(await page.evaluate(()=>window.GECC_API_STYLE),"php");
     for(const scheme of ["light","dark"])for(const width of [390,1440]){
       await page.emulateMedia({colorScheme:scheme});await page.setViewportSize({width,height:1000});
@@ -363,7 +363,7 @@ try {
     const context=await browser.newContext({viewport:{width:390,height:900}});
     try{
       const p=await context.newPage();p.on("pageerror",e=>jsErrors.push(e.message));
-      await p.goto(base);await p.waitForSelector(".summary-grid");
+      await p.goto(base);await p.waitForSelector(".pbc");
       await p.evaluate(()=>GECCClient.loginModal("coord",0,"ผู้ประสานงาน"));
       await p.locator("#login-name").fill("coord-02");await p.locator("#login-password").fill(passwords["coord-02"]);
       await p.locator("#server-login button[type=submit]").click();await p.waitForSelector("#password-form");
@@ -493,7 +493,7 @@ try {
     const smoke=await checkProduction(base);assert.equal(smoke.transport,"php");assert.equal(smoke.ok,true);
     // A fresh anonymous context must never get a role from the old demo hash.
     const context=await browser.newContext();try{
-      const p=await context.newPage();await p.goto(base+"#demo-mentor");await p.waitForSelector(".summary-grid");
+      const p=await context.newPage();await p.goto(base+"#demo-mentor");await p.waitForSelector(".pbc");
       assert.equal(await p.evaluate(()=>S.role),null);assert.equal(await p.evaluate(()=>localStorage.getItem(KEY)),null);
     }finally{await context.close();}
   });

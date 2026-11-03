@@ -316,13 +316,13 @@ try {
   const c = await central.newPage();
   c.on("pageerror", (e) => errors.push(e.message));
   await c.goto(origin);
-  await c.waitForFunction(() => document.querySelector(".summary-grid"));
+  await c.waitForFunction(() => document.querySelector(".pbc"));
   await check(
     "server public page has only aggregates and ignores demo login hash",
     async () => {
       assert.equal(await c.evaluate(() => DB.units.length), 0);
       await c.goto(origin + "/#demo-mentor");
-      await c.waitForFunction(() => document.querySelector(".summary-grid"));
+      await c.waitForFunction(() => document.querySelector(".pbc"));
       assert.equal(await c.evaluate(() => S.role), null);
     },
   );
@@ -548,7 +548,7 @@ try {
       const p = await context.newPage();
       p.on("pageerror", e => errors.push(e.message));
       await p.goto(origin + "/");
-      await p.waitForSelector(".summary-grid");
+      await p.waitForSelector(".pbc");
       await p.evaluate(() => GECCClient.loginModal("unit", "u02", "หน่วยบริการ"));
       await p.locator("#login-name").fill("000002");
       await p.locator("#login-password").fill("Browser-test-password");

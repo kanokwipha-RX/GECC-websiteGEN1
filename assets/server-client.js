@@ -594,26 +594,7 @@ window.GECCClient = (() => {
       ${publicCritBoxes(N, r?.crit)}
       <h2 class="section-t">ผลการตรวจประเมินจาก MENTOR</h2>
       ${publicMentorEvaluation(N, r)}
-      ${publicSurveySection(r?.survey)}
-      <section style="margin-top:20px"><h2 class="section-t">ความก้าวหน้าภาพรวมจังหวัด</h2><p class="summary-note">กดกราฟหรือปุ่มเพื่อดูชื่อหน่วยบริการ สถานะรายข้อ และคะแนน เอกสารหลักฐานและข้อเสนอแนะภายในต้องเข้าสู่ระบบตามสิทธิ์</p>${
-        r
-          ? `<div class="summary-grid">${[
-              ["units", "หน่วยบริการที่เข้าร่วม"],
-              ["teams", "กลุ่ม MENTOR"],
-              ["complete", "ส่งเกณฑ์ครบ 3 ด้าน"],
-              ["reviewed", "MENTOR ยืนยันตรวจแล้ว"],
-              ["ready", "ประเมินว่าพร้อม"],
-              ["submitted", "รอ MENTOR ตรวจ"],
-              ["pass", "ผ่านเกณฑ์และไม่มีข้อบกพร่องค้าง"],
-              ["fix", "ผ่านคะแนนและรอแก้ไขข้อบกพร่อง"],
-            ]
-              .map(
-                ([k, l]) =>
-                  `<div class="summary-item"><strong>${fmt(r[k])}</strong><span>${l}</span></div>`,
-              )
-              .join("")}</div>`
-          : '<p role="status">ยังโหลดข้อมูลภาพรวมไม่ได้ กรุณาลองโหลดข้อมูลล่าสุดอีกครั้ง</p>'
-      }<button class="btn btn-primary" data-act="go" data-view="portfolio">${ic("shield")}เข้าสู่ระบบ</button></section>`;
+      ${publicSurveySection(r?.survey)}`;
   }
   async function putFile(id, blob, name) {
     const uid = S.unitId || S.menteeUnit;
