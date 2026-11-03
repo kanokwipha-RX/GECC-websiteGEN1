@@ -3165,7 +3165,7 @@ function render(){
   shell();
   const v = S.view;
   if(v==='exec') viewExec();
-  else if(v==='units') viewUnits();
+  else if(v==='units'){ S.libTab='units'; go('library'); return; }
   else if(v==='gallery') GECCPublic.gallery();
   else if(v==='mentors') GECCPublic.mentors();
   else if(v==='committee') viewCommittee();
@@ -3218,11 +3218,32 @@ function libAuthSubmit(){
     toast('รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง', true);
   }
 }
+function librarySubNav(){
+  const tab = S.libTab || 'folders';
+  return `
+    <nav class="library-subnav no-print" role="tablist" aria-label="เมนู Library" style="display:flex;gap:10px;margin:0 0 22px;border-bottom:2px solid #E2E8F0;padding-bottom:12px;align-items:center;flex-wrap:wrap">
+      <button class="btn ${tab!=='units'?'btn-primary':'btn-ghost'}" role="tab" aria-selected="${tab!=='units'?'true':'false'}" data-act="lib-tab" data-tab="folders" style="font-size:14px;padding:9px 20px;border-radius:10px;display:inline-flex;align-items:center;gap:8px;font-weight:600">
+        ${ic('folder')}<span>คลังเอกสารและคู่มือ GECC</span>
+      </button>
+      <button class="btn ${tab==='units'?'btn-primary':'btn-ghost'}" role="tab" aria-selected="${tab==='units'?'true':'false'}" data-act="lib-tab" data-tab="units" style="font-size:14px;padding:9px 20px;border-radius:10px;display:inline-flex;align-items:center;gap:8px;font-weight:600">
+        ${ic('building')}<span>ข้อมูลหน่วยงานที่สมัคร GECC2570</span>
+      </button>
+    </nav>
+  `;
+}
 function viewLibrary(){
+  const tab = S.libTab || 'folders';
+  if(tab === 'units'){
+    setCollectionHead('ข้อมูลหน่วยงานที่สมัคร GECC2570','building','ข้อมูลหน่วยงานที่สมัครและเอกสารที่ส่งผ่านหัวข้อ ข้อมูลหน่วยงานที่สมัคร GECC2570');
+    viewUnitsContent();
+    return;
+  }
   setCollectionHead('GECC Library','book','คลังข้อมูลมาตรฐานศูนย์ราชการสะดวก จังหวัดศรีสะเกษ');
   const authed = (typeof sessionStorage!=='undefined' && sessionStorage.getItem('gecc_library_auth')==='1') || S.libraryAuth;
   if(!authed){
-    $('#content').innerHTML = `<section class="public-intro"><p>คลังข้อมูลมาตรฐานศูนย์ราชการสะดวก จังหวัดศรีสะเกษ จำกัดการเข้าถึงเฉพาะเจ้าหน้าที่และผู้เกี่ยวข้อง</p></section>
+    $('#content').innerHTML = `
+      ${librarySubNav()}
+      <section class="public-intro"><p>คลังข้อมูลมาตรฐานศูนย์ราชการสะดวก จังหวัดศรีสะเกษ จำกัดการเข้าถึงเฉพาะเจ้าหน้าที่และผู้เกี่ยวข้อง</p></section>
       <div class="library-gate-card">
         <div class="gate-icon">${ic('lock')}</div>
         <h2>ระบบรักษาความปลอดภัย GECC Library</h2>
@@ -3245,10 +3266,14 @@ function viewLibrary(){
     setTimeout(()=>$('#lib-pass-in')?.focus(), 50);
     return;
   }
-  $('#content').innerHTML = `<section class="public-intro" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px"><p style="margin:0">เอกสาร คู่มือ และตัวอย่างสำหรับเตรียมความพร้อม ภาพปกจากเอกสารจริงในคลัง เลือกหมวดเพื่อเปิดโฟลเดอร์ใน Google Drive</p><button class="btn btn-sm btn-ghost" data-act="lib-lock" style="color:var(--navy);font-size:13px">${ic('lock')}ออกจากระบบ Library</button></section>
+  $('#content').innerHTML = `
+    ${librarySubNav()}
+    <section class="public-intro" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px"><p style="margin:0">เอกสาร คู่มือ และตัวอย่างสำหรับเตรียมความพร้อม ภาพปกจากเอกสารจริงในคลัง เลือกหมวดเพื่อเปิดโฟลเดอร์ใน Google Drive</p><button class="btn btn-sm btn-ghost" data-act="lib-lock" style="color:var(--navy);font-size:13px">${ic('lock')}ออกจากระบบ Library</button></section>
     <div class="library-grid">${LIBRARY_FOLDERS.map(f=>`<a class="library-card${f.landscape?' is-landscape':''}" data-visual-card style="--library-color:${esc(f.theme)}" href="${esc(f.url||LIBRARY_ROOT)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(f.name)} เปิดโฟลเดอร์ใน Google Drive"><img class="library-image" src="${esc(f.image)}" alt="ภาพตัวอย่างเอกสารหมวด${esc(f.name)}" loading="lazy" decoding="async"><span class="library-shade" aria-hidden="true"></span><div class="library-copy"><h2>${esc(f.name)}</h2><p>${esc(f.detail)}</p><span class="library-glass">เปิดดูเอกสาร ${ic('right')}</span></div></a>`).join('')}</div>
     <a class="library-source" href="${LIBRARY_ROOT}" target="_blank" rel="noopener noreferrer">ดูโฟลเดอร์ GECC ทั้งหมด ${ic('right')}</a>`;
 }
+
+
 function groupChoice(t){
   const title=t.name.replace(/^กลุ่มที่\s*\d+\s*:\s*/,'');
   let photo=t.photo||GROUP_PHOTOS[t.id];
@@ -3849,8 +3874,10 @@ function getUnitInfoData(uid){
   return { quick, files };
 }
 
-function viewUnits(){
-  setCollectionHead('หน่วยงานที่สมัคร GECC 2570', 'building', 'ข้อมูลหน่วยงานที่สมัครและเอกสารที่ส่งผ่านหัวข้อ ข้อมูลหน่วยงานที่สมัคร GECC2570');
+function viewUnits(){ S.libTab='units'; if(S.view!=='library') go('library'); else viewLibrary(); }
+function viewUnitsContent(){
+  setCollectionHead('ข้อมูลหน่วยงานที่สมัคร GECC2570', 'building', 'ข้อมูลหน่วยงานที่สมัครและเอกสารที่ส่งผ่านหัวข้อ ข้อมูลหน่วยงานที่สมัคร GECC2570');
+
   const selTeam = S.unitsTeam != null ? S.unitsTeam : 0;
   const q = (S.unitsQ || '').trim().toLowerCase();
   const stFilter = S.unitsStatus || 'all';
@@ -3884,6 +3911,7 @@ function viewUnits(){
   });
 
   $('#content').innerHTML = `
+    ${librarySubNav()}
     <section class="public-intro" style="margin-bottom:20px">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;margin-bottom:16px">
         <div>
@@ -4910,6 +4938,7 @@ document.addEventListener('click', async e=>{
       else toast('บัญชีที่ปรึกษาใช้ในระบบจริง หลังยืนยันบัญชีและสิทธิ์กับผู้ประสานงาน',true);
       break;
     }
+    case 'lib-tab': S.libTab = el.dataset.tab; viewLibrary(); break;
     case 'entry-retry': window.GECCPublic?.loadLoginOptions(true); break;
     case 'entry-mentor-team': { const tm=+el.dataset.team; pinModal('team',tm,teamName(tm)); break; }
     case 'entry-mentee-team': { const tm=+el.dataset.team; go('portfolio',{entryTeam:tm,rolePick:'mentee'}); break; }
