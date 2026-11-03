@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="th">
 <head>
 <meta charset="utf-8">
@@ -3254,7 +3254,7 @@ function librarySubNav(){
 }
 function viewLibrary(){
   setCollectionHead('GECC Library','book','คลังข้อมูลมาตรฐานศูนย์ราชการสะดวก จังหวัดศรีสะเกษ');
-  const authed = (typeof sessionStorage!=='undefined' && sessionStorage.getItem('gecc_library_auth')==='1') || S.libraryAuth;
+  const authed = !!S.libraryAuth;
   if(!authed){
     $('#content').innerHTML = `
       <section class="public-intro"><p>คลังข้อมูลมาตรฐานศูนย์ราชการสะดวก จังหวัดศรีสะเกษ จำกัดการเข้าถึงเฉพาะเจ้าหน้าที่และผู้เกี่ยวข้อง</p></section>
@@ -3898,7 +3898,7 @@ function getUnitInfoData(uid){
 
 function viewUnits(){ S.libTab='units'; if(S.view!=='library') go('library'); else viewLibrary(); }
 function viewUnitsContent(){
-  const authed = (typeof sessionStorage!=='undefined' && sessionStorage.getItem('gecc_library_auth')==='1') || S.libraryAuth;
+  const authed = !!S.libraryAuth;
   if(!authed){ S.libTab = 'units'; viewLibrary(); return; }
   setCollectionHead('ข้อมูลหน่วยงานที่สมัคร GECC2570', 'building', 'ข้อมูลหน่วยงานที่สมัครและเอกสารที่ส่งผ่านหัวข้อ ข้อมูลหน่วยงานที่สมัคร GECC2570');
 

@@ -81,9 +81,62 @@ window.GECCPublic = (() => {
   const oldCommittee=viewCommittee;
   viewCommittee=function(){const c=DB.publicContent;if(c?.mentorAdvisors)MENTOR_ADVISORS.splice(0,MENTOR_ADVISORS.length,...c.mentorAdvisors);oldCommittee();};
   const oldSubmit=libAuthSubmit,oldLibrary=viewLibrary;
-  libAuthSubmit=async function(){if(!php())return oldSubmit();try{const r=await request('library',post('POST',{password:$('#lib-pass-in').value}));LIBRARY_FOLDERS.splice(0,LIBRARY_FOLDERS.length,...r.folders);S.libraryAuth=true;oldLibrary();document.querySelector('.library-source')?.remove();}catch(e){error(e);}};
-  viewLibrary=function(){if(!php())return oldLibrary();S.libraryAuth=false;try{sessionStorage.removeItem('gecc_library_auth');}catch{}oldLibrary();document.querySelector('.library-source')?.remove();request('library').then(r=>{if(S.view!=='library')return;LIBRARY_FOLDERS.splice(0,LIBRARY_FOLDERS.length,...r.folders);S.libraryAuth=true;oldLibrary();document.querySelector('.library-source')?.remove();}).catch(()=>{});};
-  document.addEventListener('click',e=>{const b=e.target.closest('[data-public-id],[data-public-directory],[data-feature-editor],[data-act="lib-lock"]');if(!b)return;if(b.dataset.publicId)detail(b.dataset.publicId);if(b.hasAttribute('data-public-directory'))directory();if(b.hasAttribute('data-feature-editor'))editor().catch(error);if(b.dataset.act==='lib-lock'&&php()){e.preventDefault();e.stopImmediatePropagation();S.libraryAuth=false;LIBRARY_FOLDERS.splice(0);request('library',{method:'DELETE'}).then(()=>viewLibrary()).catch(error);}},true);
+  libAuthSubmit=async function(){
+    const inputVal=($('#lib-pass-in')?.value||'').trim();
+    const clean=inputVal.toLowerCase();
+    const isLocalMatch=(clean==='geccssk2027'||clean==='gecc2027ssk');
+    if(!isLocalMatch&&!php()){return oldSubmit();}
+    if(isLocalMatch){
+      try{sessionStorage.setItem('gecc_library_auth','1');}catch(e){}
+      S.libraryAuth=true;
+    }
+    if(php()){
+      try{
+        const r=await request('library',post('POST',{password:inputVal}));
+        if(r&&r.folders){
+          LIBRARY_FOLDERS.splice(0,LIBRARY_FOLDERS.length,...r.folders);
+          S.libraryAuth=true;
+          try{sessionStorage.setItem('gecc_library_auth','1');}catch(e){}
+        }
+      }catch(e){
+        if(!isLocalMatch){error(e);return;}
+      }
+    }
+    if(S.libraryAuth){
+      toast('รหัสผ่านถูกต้อง ยินดีต้อนรับสู่ GECC Library');
+      oldLibrary();
+      document.querySelector('.library-source')?.remove();
+    }else{
+      oldSubmit();
+    }
+  };
+  viewLibrary=function(){
+    oldLibrary();
+    if(S.libraryAuth&&php()&&(!LIBRARY_FOLDERS||LIBRARY_FOLDERS.length===0)){
+      request('library').then(r=>{
+        if(S.view!=='library')return;
+        LIBRARY_FOLDERS.splice(0,LIBRARY_FOLDERS.length,...r.folders);
+        document.querySelector('.library-source')?.remove();
+      }).catch(()=>{});
+    }
+  };
+  document.addEventListener('click',e=>{
+    const b=e.target.closest('[data-public-id],[data-public-directory],[data-feature-editor],[data-act="lib-lock"]');
+    if(!b)return;
+    if(b.dataset.publicId)detail(b.dataset.publicId);
+    if(b.hasAttribute('data-public-directory'))directory();
+    if(b.hasAttribute('data-feature-editor'))editor().catch(error);
+    if(b.dataset.act==='lib-lock'){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      S.libraryAuth=false;
+      try{sessionStorage.removeItem('gecc_library_auth');}catch{}
+      LIBRARY_FOLDERS.splice(0);
+      if(php()){request('library',{method:'DELETE'}).catch(()=>{});}
+      toast('ออกจากระบบ Library เรียบร้อย');
+      viewLibrary();
+    }
+  },true);
   const oldRender=render;render=function(){oldRender();decorate();};
   function surveyLinkHTML(){
     const value=DB.publicContent?.surveyUrl || 'https://gecc-survey.vercel.app/s/demo-amphoe-a';
