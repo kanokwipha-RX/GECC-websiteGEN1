@@ -552,12 +552,25 @@ export function createApp({
           ]);
           const f = rows[0];
           const { document } = await readState(pool);
+          let isPublicUnitInfo = false;
+          for (const ass of Object.values(document.assess || {})) {
+            for (const qk of ass?.quick || []) {
+              if (qk.topic === "unitinfo") {
+                if ((qk.files || []).some((qf) => qf.id === id)) {
+                  isPublicUnitInfo = true;
+                  break;
+                }
+              }
+            }
+            if (isPublicUnitInfo) break;
+          }
           if (
             !f ||
-            !allowed(
-              session,
-              document.units.find((u) => u.id === f.unit_id),
-            )
+            (!isPublicUnitInfo &&
+              !allowed(
+                session,
+                document.units.find((u) => u.id === f.unit_id),
+              ))
           )
             fail(404, "ไม่พบไฟล์");
           const bytes = await readFile(resolve(root, id));

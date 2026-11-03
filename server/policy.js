@@ -26,16 +26,30 @@ export function project(state, actor) {
   delete d.demoStat;
   delete d.mentorRosterVersion;
   if (!actor) {
+    const publicAssess = {};
+    for (const [uid, ass] of Object.entries(d.assess || {})) {
+      const qList = (ass?.quick || []).filter((qk) => qk.topic === "unitinfo");
+      if (qList.length) {
+        publicAssess[uid] = { quick: qList };
+      }
+    }
     return {
       v: d.v,
       fy: d.fy,
       isSample: false,
-      teams: d.teams.map(({ id, name, photo }) => ({ id, name, photo })),
+      teams: d.teams.map(({ id, name, photo, members }) => ({ id, name, photo, members })),
       mentorCoordinators: d.mentorCoordinators || [],
       cal: d.cal,
       publicContent: d.publicContent,
-      units: [],
-      assess: {},
+      units: d.units.map((u) => ({
+        id: u.id,
+        name: u.name,
+        code: u.code || "",
+        district: u.district || "",
+        team: u.team || 0,
+        kind: u.kind || "",
+      })),
+      assess: publicAssess,
       defects: [],
     };
   }

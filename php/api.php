@@ -254,7 +254,21 @@ function api(): never {
             }
             if ($method==='GET') {
                 $f=query('SELECT * FROM gecc_files WHERE id=?',[$id])->fetch();[$s]=state();
-                if (!$f||!allowed($session,find($s->units,fn($u)=>$u->id===$f['unit_id']))||!is_file($file)) fail(404,'ไม่พบไฟล์');
+                $isPublicUnitInfo = false;
+                foreach ($s->assess ?? [] as $uid => $ass) {
+                    foreach ($ass->quick ?? [] as $qk) {
+                        if (($qk->topic ?? '') === 'unitinfo') {
+                            foreach ($qk->files ?? [] as $qf) {
+                                if (($qf->id ?? '') === $id) { $isPublicUnitInfo = true; break 3; }
+                            }
+                        }
+                    }
+                }
+                if (!$isPublicUnitInfo) {
+                    if (!$session) fail(401,'กรุณาเข้าสู่ระบบ');
+                    if (!allowed($session,find($s->units,fn($u)=>$u->id===$f['unit_id']))) fail(404,'ไม่พบไฟล์');
+                }
+                if (!$f||!is_file($file)) fail(404,'ไม่พบไฟล์');
                 header('Content-Type: '.$f['mime']);header('X-Content-Type-Options: nosniff');
                 header("Content-Security-Policy: sandbox; default-src 'none'");
                 header("Content-Disposition: inline; filename*=UTF-8''".rawurlencode($f['name']));

@@ -27,10 +27,20 @@ function allowed(?array $a, ?object $u): bool {
 function project(object $s, ?array $a): object {
     $d=copy_value($s); unset($d->pins,$d->demoStat,$d->mentorRosterVersion);
     if (($a['role']??'')!=='coord') { $d->publicContent=public_content($s); }
-    if (!$a) return (object)['v'=>$d->v,'fy'=>$d->fy,'isSample'=>false,
-        'teams'=>array_map(fn($t)=>(object)array_intersect_key(get_object_vars($t),array_flip(['id','name','photo','members'])),$d->teams),
-        'mentorCoordinators'=>$d->mentorCoordinators??[], 'cal'=>$d->cal, 'publicContent'=>$d->publicContent,
-        'units'=>[], 'assess'=>(object)[], 'defects'=>[]];
+    if (!$a) {
+        $publicAssess = (object)[];
+        foreach ($d->assess ?? [] as $uid => $ass) {
+            $qList = array_values(array_filter($ass->quick ?? [], fn($qk) => ($qk->topic ?? '') === 'unitinfo'));
+            if (!empty($qList)) {
+                $publicAssess->$uid = (object)['quick' => $qList];
+            }
+        }
+        return (object)['v'=>$d->v,'fy'=>$d->fy,'isSample'=>false,
+            'teams'=>array_map(fn($t)=>(object)array_intersect_key(get_object_vars($t),array_flip(['id','name','photo','members'])),$d->teams),
+            'mentorCoordinators'=>$d->mentorCoordinators??[], 'cal'=>$d->cal, 'publicContent'=>$d->publicContent,
+            'units'=>array_map(fn($u)=>(object)['id'=>$u->id,'name'=>$u->name,'code'=>$u->code??'','district'=>$u->district??'','team'=>$u->team??0,'kind'=>$u->kind??''],$d->units),
+            'assess'=>$publicAssess, 'defects'=>[]];
+    }
     $d->units=array_values(array_filter($d->units,fn($u)=>allowed($a,$u)));
     $ids=array_map(fn($u)=>$u->id,$d->units);
     foreach ($d->assess as $id=>$v) if (!in_array($id,$ids,true)) unset($d->assess->$id);
