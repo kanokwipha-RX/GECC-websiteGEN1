@@ -3219,12 +3219,25 @@ function libAuthSubmit(){
 }
 function librarySubNav(){
   const tab = S.libTab || 'folders';
+  const isFolders = tab !== 'units';
+  const isUnits = tab === 'units';
+  const activeStyle = `font-size:21px;padding:14px 28px;border-radius:14px;display:inline-flex;align-items:center;gap:12px;font-weight:700;background:linear-gradient(135deg,#F6E4AC 0%,#D4AA52 50%,#B38423 100%);color:#0A1640;border:2px solid #8A6417;box-shadow:0 4px 16px rgba(184,137,40,.35);cursor:pointer;transition:all .15s ease`;
+  const inactiveStyle = `font-size:21px;padding:14px 28px;border-radius:14px;display:inline-flex;align-items:center;gap:12px;font-weight:600;background:#FFFDF7;color:#8A6417;border:2px solid #DFCA8E;box-shadow:0 2px 8px rgba(138,100,23,.08);cursor:pointer;transition:all .15s ease`;
   return `
-    <nav class="library-subnav no-print" role="tablist" aria-label="เมนู Library" style="display:flex;gap:10px;margin:0 0 22px;border-bottom:2px solid #E2E8F0;padding-bottom:12px;align-items:center;flex-wrap:wrap">
-      <button class="btn ${tab!=='units'?'btn-primary':'btn-ghost'}" role="tab" aria-selected="${tab!=='units'?'true':'false'}" data-act="lib-tab" data-tab="folders" style="font-size:14px;padding:9px 20px;border-radius:10px;display:inline-flex;align-items:center;gap:8px;font-weight:600">
+    <style>
+      .library-subnav .btn svg{width:24px;height:24px;flex-shrink:0}
+      .library-subnav .lib-tab-btn:hover{filter:brightness(0.96);transform:translateY(-1px)}
+      @media(max-width:640px){
+        .library-subnav{width:100%}
+        .library-subnav .lib-tab-btn{width:100%;justify-content:center;font-size:16px!important;padding:12px 18px!important}
+        .library-subnav .lib-tab-btn svg{width:20px;height:20px}
+      }
+    </style>
+    <nav class="library-subnav no-print" role="tablist" aria-label="เมนู Library" style="display:flex;gap:16px;margin:0 0 24px;border-bottom:2px solid #EEDDB2;padding-bottom:16px;align-items:center;flex-wrap:wrap">
+      <button class="btn lib-tab-btn" role="tab" aria-selected="${isFolders?'true':'false'}" data-act="lib-tab" data-tab="folders" style="${isFolders?activeStyle:inactiveStyle}">
         ${ic('folder')}<span>คลังเอกสารและคู่มือ GECC</span>
       </button>
-      <button class="btn ${tab==='units'?'btn-primary':'btn-ghost'}" role="tab" aria-selected="${tab==='units'?'true':'false'}" data-act="lib-tab" data-tab="units" style="font-size:14px;padding:9px 20px;border-radius:10px;display:inline-flex;align-items:center;gap:8px;font-weight:600">
+      <button class="btn lib-tab-btn" role="tab" aria-selected="${isUnits?'true':'false'}" data-act="lib-tab" data-tab="units" style="${isUnits?activeStyle:inactiveStyle}">
         ${ic('building')}<span>ข้อมูลหน่วยงานที่สมัคร GECC2570</span>
       </button>
     </nav>
