@@ -490,6 +490,15 @@
       "kind": "",
       "team": 6,
       "prev": ""
+    },
+    {
+      "id": "u33",
+      "name": "สำนักสรรพสามิตจังหวัดศรีสะเกษ",
+      "code": "000033",
+      "district": "ระดับจังหวัด",
+      "kind": "",
+      "team": 6,
+      "prev": ""
     }
   ],
   "assess": {},
@@ -508,7 +517,7 @@
     }
   ],
   "mentorRosterVersion": 2,
-  "nextUnitCode": 33,
+  "nextUnitCode": 34,
   "retiredUnitIds": [],
   "cal": {
     "start": "2026-10-01",
