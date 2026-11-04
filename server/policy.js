@@ -308,10 +308,6 @@ export function mergeState(current, incoming, actor) {
         if (!equal(a[k], baseline[k]))
           fail(403, "หน่วยบริการแก้ไขคะแนนตรวจประเมินไม่ได้");
       a.qc.forEach((q, i) => {
-        if (!equal(q.subs, baseline.qc[i].subs))
-          fail(403, "หน่วยบริการแก้ไขผล Checklist ของผู้ตรวจไม่ได้");
-      });
-      a.qc.forEach((q, i) => {
         if (!equal(q.score, (old || rules.blankAssess()).qc[i].score))
           fail(403, "หน่วยบริการให้คะแนน Checklist ไม่ได้");
       });

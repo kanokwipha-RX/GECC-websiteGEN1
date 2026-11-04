@@ -150,7 +150,7 @@ function merge_state(object $current, mixed $input, array $actor): object {
             $base=$old??blank_assess();
             foreach(['inspectors','inspector','rev','adv','date','round','phys','out'] as $k)
                 if (!same($a->$k??null,$base->$k??null)) fail(403,'หน่วยบริการแก้ไขผลตรวจของ MENTOR ไม่ได้');
-            foreach($a->qc as $i=>$q) if (!same($q,$base->qc[$i])) fail(403,'หน่วยบริการให้คะแนน Checklist ไม่ได้');
+            foreach($a->qc as $i=>$q) if (!same($q->score??null,$base->qc[$i]->score??null)) fail(403,'หน่วยบริการให้คะแนน Checklist ไม่ได้');
             foreach($a->narr as $i=>$n) if (!same($n->score,$base->narr[$i]->score)) fail(403,'หน่วยบริการให้คะแนนคำบรรยายไม่ได้');
             if ((bool)($a->ready->verified??false)!==(bool)($old->ready->verified??false)) fail(403,'ยืนยันความพร้อมได้เฉพาะ MENTOR');
         }
