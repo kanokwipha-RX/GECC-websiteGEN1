@@ -9,9 +9,10 @@
 
 
 /* GECC Example Library (4 Cards Grid) */
-.library-examples-section{margin-top:42px;padding-top:32px;border-top:2px dashed rgba(212,175,55,.45)}
+.library-examples-section{margin-top:24px;margin-bottom:38px}
 .examples-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
 @media(max-width:850px){.examples-grid{grid-template-columns:1fr}}
+.library-gdrive-section{margin-top:42px;padding-top:32px;border-top:2px dashed rgba(212,175,55,.45)}
 .example-card{display:flex;flex-direction:column;justify-content:space-between;border-radius:18px;background:linear-gradient(155deg,#ffffff,#f7f9fd);border:1.5px solid rgba(15,34,99,.12);box-shadow:0 12px 30px -15px rgba(15,34,99,.15);padding:24px;position:relative;isolation:isolate;transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
 .example-card:hover{transform:translateY(-4px);box-shadow:0 20px 38px -15px rgba(15,34,99,.25);border-color:rgba(184,134,43,.45)}
 .ex-card-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:16px}
