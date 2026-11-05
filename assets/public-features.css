@@ -99,3 +99,438 @@
   stroke-width: 2.2;
   flex: none;
 }
+
+
+/* ========================================================
+   FILM DECK & CAROUSEL (อมิเมชั่นแผ่นการ์ดซ้อนเลื่อนไหลเหมือนแผ่นฟิล์ม)
+   ======================================================== */
+.film-album {
+  padding: 24px;
+  margin-bottom: 32px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFE 100%);
+  border: 1px solid rgba(15, 34, 99, 0.12);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px -10px rgba(10, 22, 64, 0.08);
+  overflow: hidden;
+}
+
+.film-album-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.film-album-title-group h2 {
+  margin: 0;
+  font-size: 22px;
+  color: var(--navy);
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.film-album-meta {
+  margin: 6px 0 0;
+  font-size: 13.5px;
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.film-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--navy);
+  color: #F1D58F;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.film-counter-badge {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(15, 34, 99, 0.06);
+  border: 1px solid rgba(15, 34, 99, 0.12);
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 14px;
+}
+.film-counter-badge .film-curr {
+  color: #B8862B;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+/* Film Stage Viewport with 3D Perspective */
+.film-stage-viewport {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  background: #070D1E;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.7), 0 16px 36px rgba(10, 22, 64, 0.18);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ambient glow from the active photo */
+.film-ambient-glow {
+  position: absolute;
+  inset: -30px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(55px) brightness(0.4);
+  opacity: 0.4;
+  transition: background-image 0.6s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Top & Bottom Film Rails (Sprocket Perforations) */
+.film-rail {
+  position: relative;
+  z-index: 5;
+  height: 26px;
+  background: #040814;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  flex: none;
+}
+.film-rail.bottom-rail {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: none;
+}
+.film-sprockets-row {
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 14px,
+    #0E1726 14px,
+    #0E1726 16px,
+    #1E293B 16px,
+    #1E293B 28px,
+    #0E1726 28px,
+    #0E1726 30px,
+    transparent 30px,
+    transparent 44px
+  );
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+/* 3D Film Deck */
+.film-deck {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+  transform-style: preserve-3d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+}
+
+/* Individual Film Card */
+.film-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(560px, 80vw);
+  height: min(370px, 86%);
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.25, 1),
+              opacity 0.45s ease,
+              filter 0.45s ease;
+  will-change: transform, opacity;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.film-card-frame {
+  width: 100%;
+  height: 100%;
+  background: #0B1120;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  padding: 8px 12px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(241, 213, 143, 0.15);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  position: relative;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.film-card.is-center .film-card-frame {
+  border-color: rgba(241, 213, 143, 0.65);
+  box-shadow: 0 24px 50px -8px rgba(0, 0, 0, 0.8), 0 0 30px rgba(241, 213, 143, 0.28);
+}
+
+.film-card:not(.is-center):hover .film-card-frame {
+  border-color: rgba(241, 213, 143, 0.45);
+}
+
+/* Film Card Header & Footer */
+.film-card-header,
+.film-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 18px;
+  flex: none;
+  padding: 0 4px;
+  color: #F1D58F;
+  font-family: monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  opacity: 0.9;
+}
+
+.film-perfs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.film-perf {
+  display: inline-block;
+  width: 11px;
+  height: 7px;
+  background: #030712;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 2px;
+}
+
+/* Film Photo Wrapper */
+.film-card-body {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  background: #020617;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 4px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.film-card-body img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+
+.film-card-glass {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* Floating Navigation Arrows */
+.film-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 50;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(11, 17, 32, 0.78);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+.film-arrow:hover {
+  background: #F1D58F;
+  color: #0A1640;
+  border-color: #F1D58F;
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 10px 28px rgba(241, 213, 143, 0.45);
+}
+.film-arrow-prev { left: 16px; }
+.film-arrow-next { right: 16px; }
+.film-arrow svg { width: 22px; height: 22px; }
+
+/* Filmstrip Thumbnails Strip */
+.film-thumbs-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 12px;
+}
+
+.film-thumbs-nav {
+  width: 36px;
+  height: 52px;
+  border-radius: 8px;
+  border: 1px solid rgba(15, 34, 99, 0.12);
+  background: #fff;
+  color: var(--navy);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex: none;
+  transition: all 0.18s ease;
+}
+.film-thumbs-nav:hover {
+  background: var(--navy);
+  color: #fff;
+}
+.film-thumbs-nav svg { width: 16px; height: 16px; }
+
+.film-thumbs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  padding: 6px 4px;
+  flex: 1;
+}
+
+.film-thumb-btn {
+  flex: 0 0 auto;
+  padding: 3px;
+  background: #0B1120;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.film-thumb-btn img {
+  width: 64px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+}
+.film-thumb-num {
+  font-size: 10px;
+  color: #94A3B8;
+  font-weight: 700;
+  line-height: 1;
+}
+.film-thumb-btn:hover {
+  border-color: rgba(241, 213, 143, 0.6);
+  transform: translateY(-2px);
+}
+.film-thumb-btn.is-active,
+.film-thumb-btn[aria-pressed="true"] {
+  border-color: #B8862B;
+  box-shadow: 0 0 12px rgba(184, 134, 43, 0.45);
+  transform: translateY(-2px);
+}
+.film-thumb-btn.is-active .film-thumb-num {
+  color: #F1D58F;
+}
+
+/* Film Controls Bar */
+.film-controls-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.film-timer-bar {
+  flex: 1;
+  min-width: 80px;
+  height: 6px;
+  background: rgba(15, 34, 99, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 0 8px;
+}
+.film-timer-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #B8862B 0%, #F1D58F 100%);
+  border-radius: 999px;
+}
+
+.film-counter-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--navy);
+  min-width: 60px;
+  text-align: right;
+  margin-left: auto;
+}
+
+.film-zoom-btn {
+  color: var(--navy);
+  background: rgba(15, 34, 99, 0.06);
+  border: 1px solid rgba(15, 34, 99, 0.12);
+}
+.film-zoom-btn:hover {
+  background: var(--navy);
+  color: #fff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .film-stage-viewport {
+    height: 380px;
+  }
+  .film-card {
+    width: min(440px, 86vw);
+    height: min(290px, 80%);
+  }
+  .film-arrow {
+    width: 38px;
+    height: 38px;
+  }
+  .film-arrow-prev { left: 8px; }
+  .film-arrow-next { right: 8px; }
+}
+
+@media (max-width: 480px) {
+  .film-album {
+    padding: 14px;
+  }
+  .film-stage-viewport {
+    height: 310px;
+  }
+  .film-card {
+    width: 90vw;
+    height: 230px;
+  }
+  .film-controls-bar {
+    gap: 8px;
+  }
+  .film-timer-bar {
+    display: none;
+  }
+}

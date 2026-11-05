@@ -34,12 +34,270 @@ window.GECCPublic = (() => {
     $('#content').innerHTML='<p role="status">กำลังโหลด Gallery…</p>';
     try{const c=await load();if(S.view!=='gallery')return;
       const albums=(c.albums||[]).filter(a=>a.status==='published').sort((a,b)=>b.date.localeCompare(a.date));
-      $('#content').innerHTML=`<section class="public-intro"><h2>บันทึกกิจกรรม GECC</h2><p>ภาพกิจกรรมเรียงตามวันที่ล่าสุด</p></section>${albums.length?albums.map((a,i)=>`<article class="card album" data-album="${i}"><h2>${safe(a.title)}</h2><p>${thDate(a.date)}${a.description?` · ${safe(a.description)}`:''}</p>${a.images.length?`<img class="album-stage" decoding="async" src="${safe(a.images[0].src)}" alt="${safe(a.images[0].alt)}"><div class="album-thumbs">${a.images.map((im,j)=>`<button type="button" data-slide="${j}" aria-label="ดูภาพ ${j+1}" aria-pressed="${j===0}"><img src="${safe(im.src)}" alt="" width="56" height="56" loading="lazy" decoding="async"></button>`).join('')}</div><div class="feature-tools"><button class="btn" data-prev>ก่อนหน้า</button><button class="btn" data-next>ถัดไป</button><button class="btn" data-pause aria-pressed="false">หยุดสไลด์</button><span role="status" data-position>1 / ${a.images.length}</span></div>`:'<p>รอภาพกิจกรรม</p>'}</article>`).join(''):'<div class="card album"><h2>ภาพกิจกรรมคณะทำงาน</h2><p>รอเพิ่มอัลบั้มและวันที่กิจกรรมจากผู้ประสานงาน</p></div>'}${[['physical','ด้านกายภาพ / สถานที่'],['highlight','ผลงานเด่น'],['activity','กิจกรรมคณะทำงาน']].map(([cat,label])=>`<h2 class="section-t">${label}</h2><div class="feature-grid">${(c.videos||defaults.videos).filter(v=>v.category===cat&&v.status==='published').map(v=>`<article class="card album"><h3>${safe(galleryVideoName(v.title))}</h3>${embed(v.url)?`<iframe class="feature-video" src="${safe(embed(v.url))}" title="${safe(label+' '+galleryVideoName(v.title))}" loading="lazy" allow="fullscreen; picture-in-picture" allowfullscreen></iframe><p>หากเล่นไม่ได้ ให้เปิดวิดีโอจากต้นทาง</p><a class="btn" href="${safe(v.url)}" target="_blank" rel="noopener noreferrer">เปิดวิดีโอต้นทาง</a>`:'<p>รอข้อมูล</p>'}</article>`).join('')||'<p>รอเพิ่มวิดีโอ</p>'}</div>`).join('')}`;
+      $('#content').innerHTML=`<section class="public-intro"><h2>บันทึกกิจกรรม GECC</h2><p>ภาพกิจกรรมเรียงตามวันที่ล่าสุด แกลเลอรีสไลด์แผ่นฟิล์มเลื่อนไหลแบบ 3 มิติ</p></section>${albums.length?albums.map((a,i)=>`<article class="card album film-album" data-album="${i}">
+        <div class="film-album-head">
+          <div class="film-album-title-group">
+            <h2>${safe(a.title)}</h2>
+            <p class="film-album-meta"><span class="film-pill">ALBUM</span> ${thDate(a.date)}${a.description?` · ${safe(a.description)}`:''}</p>
+          </div>
+          <div class="film-counter-badge" aria-label="ลำดับภาพ">
+            <span class="film-curr" data-curr>1</span> / <span>${a.images.length}</span>
+          </div>
+        </div>
+        ${a.images.length?`
+          <div class="film-stage-viewport" role="region" aria-label="สไลด์โชว์แผ่นฟิล์ม ${safe(a.title)}" tabindex="0">
+            <div class="film-ambient-glow" aria-hidden="true" style="background-image:url('${safe(a.images[0].src)}')"></div>
+            <div class="film-rail top-rail" aria-hidden="true"><div class="film-sprockets-row"></div></div>
+            <div class="film-deck">
+              ${a.images.map((im,j)=>`
+                <div class="film-card" data-card-idx="${j}" role="button" tabindex="${j===0?'0':'-1'}" aria-label="ดูภาพที่ ${j+1}">
+                  <div class="film-card-frame">
+                    <div class="film-card-header">
+                      <div class="film-perfs"><span class="film-perf"></span><span class="film-perf"></span><span class="film-perf"></span></div>
+                      <span class="film-card-tag">GECC-SK · #${String(j+1).padStart(2,'0')}</span>
+                    </div>
+                    <div class="film-card-body">
+                      <img src="${safe(im.src)}" alt="${safe(im.alt||'')}" loading="${j<6?'eager':'lazy'}" decoding="async">
+                      <div class="film-card-glass"></div>
+                    </div>
+                    <div class="film-card-footer">
+                      <div class="film-perfs"><span class="film-perf"></span><span class="film-perf"></span><span class="film-perf"></span></div>
+                      <span class="film-card-count">${j+1} / ${a.images.length}</span>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+              <button type="button" class="film-arrow film-arrow-prev" data-prev aria-label="ภาพก่อนหน้า">${ic('left')}</button>
+              <button type="button" class="film-arrow film-arrow-next" data-next aria-label="ภาพถัดไป">${ic('right')}</button>
+            </div>
+            <div class="film-rail bottom-rail" aria-hidden="true"><div class="film-sprockets-row"></div></div>
+          </div>
+          <div class="film-thumbs-strip">
+            <button type="button" class="film-thumbs-nav" data-thumb-prev aria-label="เลื่อนแถบภาพย่อไปซ้าย">${ic('left')}</button>
+            <div class="album-thumbs film-thumbs" role="tablist">
+              ${a.images.map((im,j)=>`
+                <button type="button" class="film-thumb-btn" data-slide="${j}" aria-label="เลือกภาพที่ ${j+1}" aria-pressed="${j===0}">
+                  <img src="${safe(im.src)}" alt="" width="68" height="46" loading="lazy" decoding="async">
+                  <span class="film-thumb-num">${j+1}</span>
+                </button>
+              `).join('')}
+            </div>
+            <button type="button" class="film-thumbs-nav" data-thumb-next aria-label="เลื่อนแถบภาพย่อไปขวา">${ic('right')}</button>
+          </div>
+          <div class="feature-tools film-controls-bar">
+            <button class="btn btn-outline" type="button" data-prev>${ic('left')} ก่อนหน้า</button>
+            <button class="btn btn-primary film-pause-btn" type="button" data-pause aria-pressed="false">${ic('pause')} หยุดสไลด์</button>
+            <button class="btn btn-outline" type="button" data-next>ถัดไป ${ic('right')}</button>
+            <button class="btn film-zoom-btn" type="button" data-zoom title="ขยายดูภาพขนาดใหญ่">${ic('maximize')} ขยายภาพ</button>
+            <div class="film-timer-bar" title="ตัวนับเวลาสไลด์อัตโนมัติ"><div class="film-timer-fill"></div></div>
+            <span role="status" class="film-counter-text" data-position>1 / ${a.images.length}</span>
+          </div>
+        `:'<p>รอภาพกิจกรรม</p>'}
+      </article>`).join(''):'<div class="card album"><h2>ภาพกิจกรรมคณะทำงาน</h2><p>รอเพิ่มอัลบั้มและวันที่กิจกรรมจากผู้ประสานงาน</p></div>'}${[['physical','ด้านกายภาพ / สถานที่'],['highlight','ผลงานเด่น'],['activity','กิจกรรมคณะทำงาน']].map(([cat,label])=>`<h2 class="section-t">${label}</h2><div class="feature-grid">${(c.videos||defaults.videos).filter(v=>v.category===cat&&v.status==='published').map(v=>`<article class="card album"><h3>${safe(galleryVideoName(v.title))}</h3>${embed(v.url)?`<iframe class="feature-video" src="${safe(embed(v.url))}" title="${safe(label+' '+galleryVideoName(v.title))}" loading="lazy" allow="fullscreen; picture-in-picture" allowfullscreen></iframe><p>หากเล่นไม่ได้ ให้เปิดวิดีโอจากต้นทาง</p><a class="btn" href="${safe(v.url)}" target="_blank" rel="noopener noreferrer">เปิดวิดีโอต้นทาง</a>`:'<p>รอข้อมูล</p>'}</article>`).join('')||'<p>รอเพิ่มวิดีโอ</p>'}</div>`).join('')}`;
+
       const controls=[];
-      document.querySelectorAll('[data-album]').forEach(el=>{const a=albums[+el.dataset.album];if(!a.images.length)return;let idx=0,paused=false,hover=false;const show=n=>{idx=(n+a.images.length)%a.images.length;const im=a.images[idx];el.querySelector('.album-stage').src=im.src;el.querySelector('.album-stage').alt=im.alt||'';el.querySelectorAll('[data-slide]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.slide===idx));const thumb=el.querySelector(`[data-slide="${idx}"]`),strip=el.querySelector('.album-thumbs');if(thumb&&strip){const tr=thumb.getBoundingClientRect(),sr=strip.getBoundingClientRect();if(tr.left<sr.left)strip.scrollLeft+=tr.left-sr.left;else if(tr.right>sr.right)strip.scrollLeft+=tr.right-sr.right;}el.querySelector('[data-position]').textContent=`${idx+1} / ${a.images.length}`;};el.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.hasAttribute('data-slide'))show(+b.dataset.slide);if(b.hasAttribute('data-prev'))show(idx-1);if(b.hasAttribute('data-next'))show(idx+1);if(b.hasAttribute('data-pause')){paused=!paused;b.setAttribute('aria-pressed',paused);b.textContent=paused?'เล่นสไลด์':'หยุดสไลด์';}};el.onpointerenter=()=>hover=true;el.onpointerleave=()=>hover=false;el.onkeydown=e=>{if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();show(idx+(e.key==='ArrowRight'?1:-1));}};let start=0;el.addEventListener('touchstart',e=>start=e.changedTouches[0].clientX,{passive:true});el.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-start;if(Math.abs(dx)>50)show(idx+(dx<0?1:-1));},{passive:true});controls.push(()=>{if(!paused&&!hover&&!el.contains(document.activeElement)&&!document.hidden&&a.images.length>1)show(idx+1);});});
-      if(!matchMedia('(prefers-reduced-motion: reduce)').matches)timer=setInterval(()=>{if(S.view!=='gallery'){clearInterval(timer);return;}controls.forEach(f=>f());},5000);
-    }catch(e){$('#content').innerHTML='<p role="alert">โหลด Gallery ไม่สำเร็จ กรุณาลองใหม่</p><button class="btn" data-act="go" data-view="gallery">ลองโหลด Gallery อีกครั้ง</button>';error(e);}
+      document.querySelectorAll('[data-album]').forEach(el=>{
+        const a=albums[+el.dataset.album];
+        if(!a.images.length) return;
+        let idx=0, paused=false, hover=false;
+        const total = a.images.length;
+        const cards = el.querySelectorAll('.film-card');
+        const thumbs = el.querySelectorAll('.film-thumb-btn');
+        const glow = el.querySelector('.film-ambient-glow');
+        const currNum = el.querySelector('[data-curr]');
+        const posText = el.querySelector('[data-position]');
+        const strip = el.querySelector('.film-thumbs');
+        const timerFill = el.querySelector('.film-timer-fill');
+
+        const updatePositions = () => {
+          const w = el.clientWidth || window.innerWidth;
+          const isSm = w <= 600;
+          const isMd = w <= 960 && !isSm;
+          const stepX = isSm ? 110 : (isMd ? 190 : 270);
+          const stepZ = isSm ? 50 : 90;
+          const stepRot = isSm ? 12 : 20;
+
+          cards.forEach((card, j) => {
+            let diff = ((j - idx) % total + total) % total;
+            if (diff > total / 2) diff -= total;
+
+            const absDiff = Math.abs(diff);
+            if (absDiff <= 3) {
+              card.style.display = 'block';
+              card.style.visibility = 'visible';
+              card.setAttribute('aria-hidden', diff === 0 ? 'false' : 'true');
+              card.tabIndex = diff === 0 ? 0 : -1;
+              card.classList.toggle('is-center', diff === 0);
+
+              const x = diff * stepX;
+              const z = -absDiff * stepZ;
+              const scale = Math.max(0.55, 1 - absDiff * (isSm ? 0.16 : 0.14));
+              const rotY = -Math.sign(diff) * Math.min(38, absDiff * stepRot);
+              const opacity = diff === 0 ? 1 : Math.max(0, 1 - absDiff * (isSm ? 0.32 : 0.24));
+              const brightness = diff === 0 ? 1 : Math.max(0.42, 1 - absDiff * 0.18);
+              const zIndex = 30 - absDiff * 6;
+
+              card.style.transform = `translate3d(calc(-50% + ${x}px), -50%, ${z}px) scale(${scale}) rotateY(${rotY}deg)`;
+              card.style.opacity = opacity;
+              card.style.filter = `brightness(${brightness})`;
+              card.style.zIndex = zIndex;
+            } else {
+              card.style.display = 'none';
+              card.style.visibility = 'hidden';
+              card.style.opacity = '0';
+              card.setAttribute('aria-hidden', 'true');
+              card.tabIndex = -1;
+              card.classList.remove('is-center');
+            }
+          });
+
+          if (glow && a.images[idx]) {
+            glow.style.backgroundImage = `url('${a.images[idx].src}')`;
+          }
+
+          if (currNum) currNum.textContent = idx + 1;
+          if (posText) posText.textContent = `${idx + 1} / ${total}`;
+
+          thumbs.forEach((b, j) => {
+            const isAct = j === idx;
+            b.setAttribute('aria-pressed', isAct ? 'true' : 'false');
+            b.classList.toggle('is-active', isAct);
+          });
+          const actThumb = thumbs[idx];
+          if (actThumb && strip) {
+            actThumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+          }
+
+          if (timerFill) {
+            timerFill.style.transition = 'none';
+            timerFill.style.width = '0%';
+            requestAnimationFrame(() => {
+              if (!paused && !hover) {
+                timerFill.style.transition = 'width 4.9s linear';
+                timerFill.style.width = '100%';
+              }
+            });
+          }
+        };
+
+        const show = (n) => {
+          idx = ((n % total) + total) % total;
+          updatePositions();
+        };
+
+        el.addEventListener('click', (e) => {
+          const card = e.target.closest('.film-card');
+          if (card) {
+            const cardIdx = +card.dataset.cardIdx;
+            if (cardIdx !== idx) {
+              show(cardIdx);
+              return;
+            } else if (e.target.closest('.film-card-body')) {
+              openZoomModal(a.images[idx], idx, total);
+              return;
+            }
+          }
+
+          const btn = e.target.closest('button');
+          if (!btn) return;
+
+          if (btn.hasAttribute('data-slide')) show(+btn.dataset.slide);
+          if (btn.hasAttribute('data-prev')) show(idx - 1);
+          if (btn.hasAttribute('data-next')) show(idx + 1);
+          if (btn.hasAttribute('data-thumb-prev')) {
+            if (strip) strip.scrollBy({ left: -240, behavior: 'smooth' });
+          }
+          if (btn.hasAttribute('data-thumb-next')) {
+            if (strip) strip.scrollBy({ left: 240, behavior: 'smooth' });
+          }
+          if (btn.hasAttribute('data-zoom')) openZoomModal(a.images[idx], idx, total);
+          if (btn.hasAttribute('data-pause')) {
+            paused = !paused;
+            btn.setAttribute('aria-pressed', paused);
+            btn.innerHTML = paused ? `${ic('play')} เล่นสไลด์` : `${ic('pause')} หยุดสไลด์`;
+            if (timerFill) {
+              if (paused) timerFill.style.width = '0%';
+              else {
+                timerFill.style.transition = 'width 4.9s linear';
+                timerFill.style.width = '100%';
+              }
+            }
+          }
+        });
+
+        el.onpointerenter = () => { hover = true; };
+        el.onpointerleave = () => { hover = false; };
+
+        el.onkeydown = (e) => {
+          if (['ArrowLeft', 'ArrowRight'].includes(e.key)) {
+            e.preventDefault();
+            show(idx + (e.key === 'ArrowRight' ? 1 : -1));
+          }
+        };
+
+        let startX = 0, startY = 0;
+        el.addEventListener('touchstart', e => {
+          if (e.touches.length === 1) {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+          }
+        }, { passive: true });
+        el.addEventListener('touchend', e => {
+          if (e.changedTouches.length === 1) {
+            const dx = e.changedTouches[0].clientX - startX;
+            const dy = e.changedTouches[0].clientY - startY;
+            if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+              show(idx + (dx < 0 ? 1 : -1));
+            }
+          }
+        }, { passive: true });
+
+        let rAF = null;
+        const onResize = () => {
+          if (rAF) cancelAnimationFrame(rAF);
+          rAF = requestAnimationFrame(() => { if (S.view === 'gallery') updatePositions(); });
+        };
+        window.addEventListener('resize', onResize);
+
+        updatePositions();
+
+        controls.push(() => {
+          if (!paused && !hover && !el.contains(document.activeElement) && !document.hidden && a.images.length > 1) {
+            show(idx + 1);
+          }
+        });
+      });
+
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        timer = setInterval(() => {
+          if (S.view !== 'gallery') { clearInterval(timer); return; }
+          controls.forEach(f => f());
+        }, 5000);
+      }
+    }catch(e){
+      $('#content').innerHTML='<p role="alert">โหลด Gallery ไม่สำเร็จ กรุณาลองใหม่</p><button class="btn" data-act="go" data-view="gallery">ลองโหลด Gallery อีกครั้ง</button>';
+      error(e);
+    }
   }
+
+  function openZoomModal(im, idx, total) {
+    if (!im) return;
+    openModal(`<div class="modal-h film-zoom-modal-head">
+      <div style="flex:1">
+        <h3>ภาพที่ ${idx + 1} จาก ${total}</h3>
+        <p style="margin:4px 0 0;color:var(--text-3);font-size:13px">${esc(im.alt || 'ภาพกิจกรรม GECC จังหวัดศรีสะเกษ')}</p>
+      </div>
+      <button class="btn btn-ghost btn-icon" data-act="modal-close" aria-label="ปิด">${ic('x')}</button>
+    </div>
+    <div class="modal-b film-zoom-modal-body" style="padding:12px;background:#050B1E;display:flex;justify-content:center;align-items:center;border-radius:12px;overflow:hidden">
+      <img src="${safe(im.src)}" alt="${safe(im.alt || '')}" style="max-width:100%;max-height:78vh;object-fit:contain;border-radius:8px;box-shadow:0 12px 36px rgba(0,0,0,0.6)">
+    </div>
+    <div class="modal-f" style="justify-content:space-between">
+      <a class="btn" href="${safe(im.src)}" target="_blank" rel="noopener noreferrer" download>${ic('download')} บันทึกภาพต้นฉบับ</a>
+      <button class="btn btn-primary" data-act="modal-close">ปิดหน้าต่าง</button>
+    </div>`);
+  }
+
   async function mentors(){try{setCollectionHead('MENTOR','users','ทีมพี่เลี้ยงประจำ 6 กลุ่ม');await load();if(S.view!=='mentors')return;$('#content').innerHTML=DB.teams.map(t=>`<section><h2 class="section-t">${safe(t.name)}</h2><div class="mentor-roster">${Array.from({length:Math.max(4,t.members?.length||0)},(_,i)=>personCard(t.members?.[i]||{title:'รอรายชื่อ MENTOR',role:'กลุ่มที่ '+t.id})).join('')}</div></section>`).join('');}catch(e){$('#content').innerHTML='<p role="alert">โหลดรายชื่อไม่สำเร็จ กรุณาเลือกเมนู MENTOR เพื่อลองใหม่</p>';error(e);}}
   function resetLoginOptions(){
     rosterGeneration++;loginOptions=null;loginUnits=null;loginError=null;rosterLoading=false;
