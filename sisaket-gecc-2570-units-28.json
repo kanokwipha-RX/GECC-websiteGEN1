@@ -1,4 +1,4 @@
-﻿{
+{
   "v": 2,
   "isSample": false,
   "fy": 2570,
@@ -84,7 +84,7 @@
           "name": "นางสาวสุภัสสร เจริญทัศน์",
           "pos": "เจ้าพนักงานที่ดินอาวุโส สำนักงานที่ดินจังหวัดศรีสะเกษ",
           "role": "MENTOR",
-          "photo": "assets/images/mentor-group-3-2.jpg"
+          "photo": "assets/images/mentor-group-3-2.jpg?v=2570b"
         },
         {
           "name": "นายธนพล คนไว",
@@ -117,13 +117,13 @@
           "name": "น.ส.นุชรินทร์ วงศ์ฤทธิ์",
           "pos": "นักบัญชี 7 การประปาส่วนภูมิภาคสาขาศรีสะเกษ",
           "role": "MENTOR",
-          "photo": "assets/images/mentor-group-4-2.jpg"
+          "photo": "assets/images/mentor-group-4-2.jpg?v=2570b"
         },
         {
           "name": "นางจิราภรณ์ นาดูน",
           "pos": "พนักงานการเงินและบัญชี 6 การประปาส่วนภูมิภาคสาขาศรีสะเกษ",
           "role": "MENTOR",
-          "photo": "assets/images/mentor-group-4-3.jpg"
+          "photo": "assets/images/mentor-group-4-3.jpg?v=2570b"
         },
         {
           "name": "นางสาวศรีไพร ศรีอ่อน",
