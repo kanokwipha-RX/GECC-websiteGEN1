@@ -52,3 +52,50 @@
 .ex-card-actions-3 button:hover{background:rgba(15,34,99,.08)!important;border-color:rgba(15,34,99,.3)!important}
 .ex-card-actions-3 a:hover{filter:brightness(1.04);box-shadow:0 4px 12px -3px rgba(184,134,43,.35)}
 .ex-file-size{font-size:12.5px;color:var(--text-3);font-weight:600;white-space:nowrap;margin-right:4px}
+
+
+/* Mentor Phone Pill */
+.committee-card-role {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  margin-bottom: 7px;
+  color: #F1D58F;
+  font-size: 11px;
+  font-weight: 700;
+}
+.mentor-phone-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: rgba(241, 213, 143, 0.16);
+  color: #F1D58F !important;
+  border: 1px solid rgba(241, 213, 143, 0.42);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-decoration: none !important;
+  line-height: 1.45;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  vertical-align: middle;
+}
+.mentor-phone-pill:hover,
+.mentor-phone-pill:focus-visible {
+  background: #F1D58F !important;
+  color: #0A1640 !important;
+  border-color: #F1D58F !important;
+  box-shadow: 0 3px 10px rgba(241, 213, 143, 0.35);
+  transform: translateY(-1px);
+}
+.mentor-phone-pill svg {
+  width: 12px;
+  height: 12px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.2;
+  flex: none;
+}
