@@ -1964,8 +1964,8 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 <div id="modal-root"></div>
 <div class="toasts" id="toasts" aria-live="polite" role="status"></div>
 
-<script src="assets/library-examples-data.js?v=2570c"></script>
-<script src="assets/library-examples-ui.js?v=2570c"></script>
+<script src="assets/library-examples-data.js?v=2570d"></script>
+<script src="assets/library-examples-ui.js?v=2570d"></script>
 <script src="shared/criteria.js"></script>
 <script>
 "use strict";
@@ -5374,7 +5374,7 @@ document.addEventListener('click', async e=>{
       break;
     }
     case 'lib-tab': S.libTab = el.dataset.tab; viewLibrary(); break;
-    case 'open-ex-modal': if(typeof openExampleModal==='function') openExampleModal(el.dataset.exId); break;
+    case 'open-ex-modal': if(typeof openExampleModal==='function') openExampleModal(el.dataset.exId, el.dataset.sub); break;
     case 'ex-subfolder': {
       if (S._currentExModal && typeof renderExampleModalContent==='function') {
         S._currentExModal.filter = el.dataset.sub;

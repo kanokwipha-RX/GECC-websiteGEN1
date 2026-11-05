@@ -1,6 +1,67 @@
 /* GECC Example Library UI & Modal Explorer */
 "use strict";
 
+function getRootSubName(c) {
+  if (c.id === 'ex-damrongtham') return 'ตอบเกณฑ์ 14 ข้อ';
+  if (c.id === 'ex-land') return 'เกณฑ์ด้านกายภาพ';
+  return 'เอกสารหลัก';
+}
+
+function getFileTopSub(c, f) {
+  if (f.subfolder) {
+    return f.subfolder.split(' / ')[0];
+  }
+  return getRootSubName(c);
+}
+
+function renderCardFoot(c) {
+  if (c.singleFile) {
+    return `
+      <a class="btn btn-lux btn-sm w-full" href="${esc(c.url)}" download="${esc(c.fileName)}" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px">
+        ${ic('download')}<span>ดาวน์โหลดไฟล์ (${esc(c.fileName)})</span>
+      </a>
+    `;
+  }
+
+  // Cards with 3 category buttons (ศูนย์ดำรงธรรม & สำนักงานที่ดิน)
+  if (c.id === 'ex-damrongtham' || c.id === 'ex-land') {
+    const isDam = c.id === 'ex-damrongtham';
+    const rootFile = (c.files || []).find(f => !f.subfolder) || (c.files || [])[0] || {};
+    const b1Title = isDam ? 'ตอบเกณฑ์ 14 ข้อ' : 'เกณฑ์ด้านกายภาพ';
+    const qCount = (c.files || []).filter(f => (f.subfolder || '').startsWith('เกณฑ์ด้านคุณภาพ')).length;
+    const oSub = isDam ? 'เกณฑ์ด้านผลลัพธ์' : 'ด้านผลลัพธ์';
+    const oCount = (c.files || []).filter(f => (f.subfolder || '').startsWith(oSub)).length;
+
+    return `
+      <div class="ex-card-actions-3" style="display:flex;flex-direction:column;gap:7px;width:100%">
+        <div style="display:flex;gap:6px">
+          <a class="btn btn-lux btn-sm" href="${esc(rootFile.url || '')}" download="${esc(rootFile.name || '')}" style="flex:1;text-decoration:none;display:inline-flex;align-items:center;justify-content:space-between;padding:0 12px;min-height:36px;font-size:13px" title="ดาวน์โหลดไฟล์ ${esc(rootFile.name || '')}">
+            <span style="display:inline-flex;align-items:center;gap:6px">${ic('file')}<strong>1. ${esc(b1Title)}</strong></span>
+            <span style="font-size:11.5px;opacity:.85;display:inline-flex;align-items:center;gap:4px">${ic('download')} ดาวน์โหลด (${esc(rootFile.size || '.docx')})</span>
+          </a>
+          <button class="btn btn-ghost btn-sm" data-act="open-ex-modal" data-ex-id="${esc(c.id)}" data-sub="${esc(b1Title)}" style="border:1px solid rgba(15,34,99,.16);background:rgba(15,34,99,.04);padding:0 10px;min-height:36px" title="เปิดดูรายการไฟล์ ${esc(b1Title)}">
+            ${ic('eye')}
+          </button>
+        </div>
+        <button class="btn btn-ghost btn-sm w-full" data-act="open-ex-modal" data-ex-id="${esc(c.id)}" data-sub="เกณฑ์ด้านคุณภาพ" style="border:1px solid rgba(15,34,99,.16);background:rgba(15,34,99,.03);color:var(--navy);font-weight:600;display:inline-flex;align-items:center;justify-content:space-between;padding:0 12px;min-height:36px;font-size:13.5px" title="เปิดดูรายการไฟล์ เกณฑ์ด้านคุณภาพ">
+          <span style="display:inline-flex;align-items:center;gap:6px">${ic('folder')}<span>2. เกณฑ์ด้านคุณภาพ</span></span>
+          <span style="font-size:12px;color:var(--text-2);display:inline-flex;align-items:center;gap:4px">${qCount} ไฟล์ ${ic('right')}</span>
+        </button>
+        <button class="btn btn-ghost btn-sm w-full" data-act="open-ex-modal" data-ex-id="${esc(c.id)}" data-sub="${esc(oSub)}" style="border:1px solid rgba(15,34,99,.16);background:rgba(15,34,99,.03);color:var(--navy);font-weight:600;display:inline-flex;align-items:center;justify-content:space-between;padding:0 12px;min-height:36px;font-size:13.5px" title="เปิดดูรายการไฟล์ เกณฑ์ด้านผลลัพธ์">
+          <span style="display:inline-flex;align-items:center;gap:6px">${ic('folder')}<span>3. เกณฑ์ด้านผลลัพธ์</span></span>
+          <span style="font-size:12px;color:var(--text-2);display:inline-flex;align-items:center;gap:4px">${oCount} ไฟล์ ${ic('right')}</span>
+        </button>
+      </div>
+    `;
+  }
+
+  return `
+    <button class="btn btn-lux btn-sm w-full" data-act="open-ex-modal" data-ex-id="${esc(c.id)}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px">
+      ${ic('folder')}<span>เปิดดูรายการไฟล์ (${c.fileCount} ไฟล์) ${ic('right')}</span>
+    </button>
+  `;
+}
+
 function libraryExamplesSectionHTML() {
   const cards = window.LIBRARY_EXAMPLES || [];
   if (!cards.length) return '';
@@ -30,15 +91,7 @@ function libraryExamplesSectionHTML() {
               <p class="ex-card-desc">${esc(c.detail)}</p>
             </div>
             <div class="ex-card-foot">
-              ${c.singleFile ? `
-                <a class="btn btn-lux btn-sm w-full" href="${esc(c.url)}" download="${esc(c.fileName)}" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px">
-                  ${ic('download')}<span>ดาวน์โหลดไฟล์ (${esc(c.fileName)})</span>
-                </a>
-              ` : `
-                <button class="btn btn-lux btn-sm w-full" data-act="open-ex-modal" data-ex-id="${esc(c.id)}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px">
-                  ${ic('folder')}<span>เปิดดูรายการไฟล์ (${c.fileCount} ไฟล์) ${ic('right')}</span>
-                </button>
-              `}
+              ${renderCardFoot(c)}
             </div>
           </div>
         `).join('')}
@@ -62,6 +115,10 @@ function renderExampleModalContent() {
 
   const allFiles = c.files || [];
   const subfolderSet = new Set();
+  const hasRoot = allFiles.some(f => !f.subfolder);
+  if (hasRoot) {
+    subfolderSet.add(getRootSubName(c));
+  }
   allFiles.forEach(f => {
     if (f.subfolder) {
       const topSub = f.subfolder.split(' / ')[0];
@@ -75,12 +132,12 @@ function renderExampleModalContent() {
 
   const filtered = allFiles.filter(f => {
     if (filter !== 'all') {
-      const topSub = (f.subfolder || '').split(' / ')[0];
+      const topSub = getFileTopSub(c, f);
       if (topSub !== filter) return false;
     }
     if (q) {
       const matchName = f.name.toLowerCase().includes(q);
-      const matchSub = (f.subfolder || '').toLowerCase().includes(q);
+      const matchSub = (f.subfolder || getRootSubName(c)).toLowerCase().includes(q);
       if (!matchName && !matchSub) return false;
     }
     return true;
@@ -105,7 +162,7 @@ function renderExampleModalContent() {
         <div class="ex-modal-filter-bar">
           <button class="ex-chip${filter==='all'?' is-active':''}" data-act="ex-subfolder" data-sub="all">ทั้งหมด (${allFiles.length})</button>
           ${subfolders.map(s => {
-            const cnt = allFiles.filter(f => (f.subfolder||'').split(' / ')[0] === s).length;
+            const cnt = allFiles.filter(f => getFileTopSub(c, f) === s).length;
             return `<button class="ex-chip${filter===s?' is-active':''}" data-act="ex-subfolder" data-sub="${esc(s)}">${esc(s)} (${cnt})</button>`;
           }).join('')}
         </div>
@@ -121,13 +178,14 @@ function renderExampleModalContent() {
             const ext = (f.ext || '').toLowerCase();
             const extClass = ['docx','doc','pdf','xlsx','xls','pptx','ppt','rar','zip'].includes(ext) ? 'ext-'+ext : 'ext-other';
             const isPdf = ext === 'pdf';
+            const displaySub = f.subfolder || getRootSubName(c);
             return `
               <div class="ex-file-row">
                 <div class="ex-file-info">
                   <span class="ex-file-ext-icon ${extClass}">${esc(ext)}</span>
                   <div class="ex-file-names">
                     <div class="ex-file-name-txt">${esc(f.name)}</div>
-                    ${f.subfolder ? `<div class="ex-file-subfolder">${ic('folder')} <span>${esc(f.subfolder)}</span></div>` : ''}
+                    ${displaySub ? `<div class="ex-file-subfolder">${ic('folder')} <span>${esc(displaySub)}</span></div>` : ''}
                   </div>
                 </div>
                 <div class="ex-file-actions">
@@ -163,3 +221,13 @@ function renderExampleModalContent() {
     };
   }
 }
+
+// Delegate click listener for [data-act="open-ex-modal"] to handle data-sub reliably
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('[data-act="open-ex-modal"]');
+  if (btn && btn.dataset.exId) {
+    e.preventDefault();
+    e.stopPropagation();
+    openExampleModal(btn.dataset.exId, btn.dataset.sub);
+  }
+}, true);
