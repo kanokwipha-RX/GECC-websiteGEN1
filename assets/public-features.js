@@ -193,7 +193,8 @@ window.GECCPublic = (() => {
           });
           const actThumb = thumbs[idx];
           if (actThumb && strip) {
-            actThumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            const targetLeft = actThumb.offsetLeft - (strip.clientWidth / 2) + (actThumb.offsetWidth / 2);
+            strip.scrollTo({ left: targetLeft, behavior: 'smooth' });
           }
 
           if (timerFill) {
@@ -296,6 +297,7 @@ window.GECCPublic = (() => {
         });
       });
 
+      window.scrollTo({ top: 0, behavior: 'instant' });
       if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
         timer = setInterval(() => {
           if (S.view !== 'gallery') { clearInterval(timer); return; }
