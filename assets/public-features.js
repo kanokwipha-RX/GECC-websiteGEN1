@@ -5,7 +5,12 @@ window.GECCPublic = (() => {
   const request=(route,opts)=>GECCClient.request('/api/'+route,opts);
   const post=(method,value)=>({method,body:JSON.stringify(value)});
   const safe=s=>esc(String(s??''));
-  const defaults={albums:[{
+  const defaults={albums:[
+    {
+      title:'กิจกรรม GECC · 4 พฤศจิกายน 2569',date:'2026-11-04',description:'',status:'published',
+      images:Array.from({length:38},(_,i)=>({src:`assets/gallery/gallery-2026-11-04-${String(i+1).padStart(2,'0')}.jpg`,alt:`ภาพกิจกรรม GECC วันที่ 4 พฤศจิกายน 2569 ภาพที่ ${i+1}`}))
+    },
+    {
     title:'กิจกรรม GECC · 29 ตุลาคม 2569',date:'2026-10-29',description:'',status:'published',
     images:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,41,42,43,48].map((n,i)=>({src:`assets/gallery/gallery-2026-10-29-${String(n).padStart(2,'0')}.jpg`,alt:`ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ ${i+1}`}))
   }],videos:[
@@ -20,6 +25,9 @@ window.GECCPublic = (() => {
   async function load(){
     if(php()){
       content=await request('public/content');
+      const savedAlbums=content.albums||[];
+      const missingAlbums=defaults.albums.filter(a=>!savedAlbums.some(b=>b.date===a.date&&b.title===a.title));
+      content.albums=[...savedAlbums,...missingAlbums];
       const savedVideos=content.videos||[];
       const videos=defaults.videos.map(dv=>{
         const found=savedVideos.find(sv=>sv.title===dv.title&&sv.category===dv.category);
