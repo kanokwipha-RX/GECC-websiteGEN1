@@ -40,10 +40,7 @@ function Remove-FtpFile($remoteRelPath) {
 }
 
 # 1. Upload mentor images
-Upload-FtpFile "public_html/sskgecc/assets/images/mentor-group-3-2.jpg" "$root\assets\images\mentor-group-3-2.jpg"
-Upload-FtpFile "public_html/sskgecc/assets/images/mentor-group-3-3.jpg" "$root\assets\images\mentor-group-3-3.jpg"
-Upload-FtpFile "public_html/sskgecc/assets/images/mentor-group-4-2.jpg" "$root\assets\images\mentor-group-4-2.jpg"
-Upload-FtpFile "public_html/sskgecc/assets/images/mentor-group-4-3.jpg" "$root\assets\images\mentor-group-4-3.jpg"
+Upload-FtpFile "public_html/sskgecc/assets/images/mentor-group-4-4.jpg" "$root\assets\images\mentor-group-4-4.jpg"
 
 # 2. Upload migration script & execute
 Upload-FtpFile "public_html/sskgecc/update_mentor_photos.php" "$root\tools\update_mentor_photos.php"
@@ -60,7 +57,7 @@ Upload-FtpFile "public_html/sskgecc/index.html" "$root\index.html"
 # 4. Verify remote public/login-options
 Write-Host "Verifying remote login-options..."
 $opts = Invoke-RestMethod -Uri "https://www.osscsskfda.org/sskgecc/api/index.php?route=public/login-options"
-$opts.mentors | Where-Object { $_.team -eq 3 -or $_.team -eq 4 } | ForEach-Object {
+$opts.mentors | Where-Object { $_.team -eq 4 } | ForEach-Object {
     [PSCustomObject]@{
         team = $_.team
         name = $_.name
@@ -69,4 +66,4 @@ $opts.mentors | Where-Object { $_.team -eq 3 -or $_.team -eq 4 } | ForEach-Objec
     }
 } | Format-Table -AutoSize
 
-Write-Host "DEPLOYMENT OF MENTOR PHOTOS COMPLETE!"
+Write-Host "DEPLOYMENT OF MENTOR 4-4 COMPLETE!"
