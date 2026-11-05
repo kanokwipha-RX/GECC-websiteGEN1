@@ -54,7 +54,8 @@ function validate_content(?object $c): void {
         if (!$v && $image) return;
         if (!is_string($v)||strlen($v)>8192) fail(400,'ลิงก์ไม่ถูกต้อง');
         if ($image && preg_match('~^api/index\.php\?route=public/media/[a-f0-9]{32}$~D',$v)) return;
-        if ($image && preg_match('~^assets/[A-Za-z0-9_./-]+\.(png|jpe?g|webp)$~D',$v) && !str_contains($v,'..')) return;
+        $path=parse_url($v,PHP_URL_PATH);
+        if ($image && is_string($path) && preg_match('~^assets/[A-Za-z0-9_./-]+\.(?:png|jpe?g|webp|gif|svg|pdf)$~D',$path) && !str_contains($path,'..')) return;
         $u=parse_url($v);
         if (!$u || ($u['scheme']??'')!=='https' || empty($u['host']) || isset($u['user']) || isset($u['pass'])) fail(400,'อนุญาตเฉพาะลิงก์ HTTPS');
     };

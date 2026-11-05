@@ -49,7 +49,7 @@ function validate_feature_content(object $content):void {
         foreach(['albums','videos','mentorAdvisors'] as $k)if(isset($content->$k)&&(!is_array($content->$k)||count($content->$k)>200))fail(400,'จำนวนเนื้อหาไม่ถูกต้อง');
         foreach($content->albums??[] as $a){
             if(!is_string($a->title??null)||(($a->date??'')===''||!date_value($a->date))||!is_array($a->images??null)||count($a->images)>100||!in_array($a->status??null,['draft','published'],true))fail(400,'ข้อมูลอัลบั้มไม่ถูกต้อง');
-            foreach($a->images as $im)if(!is_string($im->src??null)||!preg_match('~^(assets/[A-Za-z0-9_./-]+\.(?:png|jpe?g|webp)|api/index\.php\?route=public/media/[a-f0-9]{32})$~D',$im->src)||str_contains($im->src,'..'))fail(400,'รูปอัลบั้มไม่ถูกต้อง');
+            foreach($a->images as $im){$imPath=parse_url($im->src??'',PHP_URL_PATH);if(!is_string($im->src??null)||(!preg_match('~^assets/[A-Za-z0-9_./-]+\.(?:png|jpe?g|webp)$~D',$imPath??'')&&!preg_match('~^api/index\.php\?route=public/media/[a-f0-9]{32}$~D',$im->src))||str_contains($im->src,'..'))fail(400,'รูปอัลบั้มไม่ถูกต้อง');}
         }
         foreach($content->videos??[] as $vdo){
             if(!is_string($vdo->title??null)||!is_string($vdo->url??null))fail(400,'ชื่อหรือลิงก์วิดีโอไม่ถูกต้อง');
