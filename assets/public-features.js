@@ -10,24 +10,33 @@ window.GECCPublic = (() => {
     images:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,41,42,43,48].map((n,i)=>({src:`assets/gallery/gallery-2026-10-29-${String(n).padStart(2,'0')}.jpg`,alt:`ภาพกิจกรรม GECC วันที่ 29 ตุลาคม 2569 ภาพที่ ${i+1}`}))
   }],videos:[
     {title:'ที่ดิน',category:'physical',url:'https://youtu.be/SdC2g6AkotE',status:'published'},
-    {title:'ไฟฟ้า',category:'physical',url:'https://youtu.be/BdIgMo_laHk',status:'published'},
+    {title:'ไฟฟ้า',category:'physical',url:'assets/videos/gecc-pea-sisaket.mp4',status:'published'},
     {title:'สสจ.',category:'physical',url:'https://drive.google.com/file/d/1iuE46Q_0NX8mANzZDdmUdSfyQYGWP-E9/view',status:'published'},
+    {title:'ศูนย์ดำรงธรรม',category:'physical',url:'assets/videos/gecc-damrongtham-sisaket.mp4',status:'published'},
     {title:'ที่ดิน',category:'highlight',url:'https://youtu.be/UgtOfqhBWU0',status:'published'},
-    {title:'ไฟฟ้า',category:'highlight',url:'',status:'published'},
-    {title:'สสจ.',category:'highlight',url:'https://drive.google.com/file/d/1vicDgdaiNTb9BM9jqIP2sBJEhEYNS8QW/view',status:'published'}]};
+    {title:'ไฟฟ้า',category:'highlight',url:'assets/videos/gecc-pea-sisaket.mp4',status:'published'},
+    {title:'สสจ.',category:'highlight',url:'https://drive.google.com/file/d/1vicDgdaiNTb9BM9jqIP2sBJEhEYNS8QW/view',status:'published'},
+    {title:'ศูนย์ดำรงธรรม',category:'highlight',url:'assets/videos/gecc-damrongtham-sisaket.mp4',status:'published'}]};
   async function load(){
     if(php()){content=await request('public/content');return content;}
     const saved=DB.publicContent||{},albums=saved.albums||[];
     const missing=defaults.albums.filter(a=>!albums.some(b=>b.date===a.date&&b.title===a.title));
-    return content={...defaults,mentorAdvisors:MENTOR_ADVISORS,...saved,albums:[...albums,...missing]};
+    const savedVideos=saved.videos||[];
+    const videos=defaults.videos.map(dv=>{
+      const found=savedVideos.find(sv=>sv.title===dv.title&&sv.category===dv.category);
+      return (found&&found.url)?found:dv;
+    });
+    return content={...defaults,mentorAdvisors:MENTOR_ADVISORS,...saved,videos,albums:[...albums,...missing]};
   }
   function embed(url){try{const u=new URL(url);if(u.protocol!=='https:')return '';if(['youtu.be','youtube.com','www.youtube.com'].includes(u.hostname)){const id=u.hostname==='youtu.be'?u.pathname.slice(1):u.searchParams.get('v');return /^[\w-]{11}$/.test(id||'')?'https://www.youtube-nocookie.com/embed/'+id:'';}if(u.hostname==='drive.google.com'){const id=u.pathname.match(/^\/file\/d\/([\w-]+)\//)?.[1];return id?'https://drive.google.com/file/d/'+id+'/preview':'';}}catch{}return '';}
   function error(e){toast(e.message||'โหลดข้อมูลไม่สำเร็จ',true);}
   const galleryVideoNames={
     'ที่ดิน':'สำนักงานที่ดินจังหวัดศรีสะเกษ',
     'ไฟฟ้า':'การไฟฟ้าส่วนภูมิภาคจังหวัดศรีสะเกษ',
-    'สสจ.':'ศูนย์บริการผลิตภัณฑ์สุขภาพเบ็ดเสร็จ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ'
+    'สสจ.':'ศูนย์บริการผลิตภัณฑ์สุขภาพเบ็ดเสร็จ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ',
+    'ศูนย์ดำรงธรรม':'ศูนย์ดำรงธรรมจังหวัดศรีสะเกษ'
   };
+
   const galleryVideoName=title=>Object.hasOwn(galleryVideoNames,title)?galleryVideoNames[title]:title;
   async function gallery(){
     clearInterval(timer);setCollectionHead('Gallery','image','ภาพกิจกรรมและวิดีโอ GECC จังหวัดศรีสะเกษ');
@@ -93,7 +102,8 @@ window.GECCPublic = (() => {
             <span role="status" class="film-counter-text" data-position>1 / ${a.images.length}</span>
           </div>
         `:'<p>รอภาพกิจกรรม</p>'}
-      </article>`).join(''):'<div class="card album"><h2>ภาพกิจกรรมคณะทำงาน</h2><p>รอเพิ่มอัลบั้มและวันที่กิจกรรมจากผู้ประสานงาน</p></div>'}${[['physical','ด้านกายภาพ / สถานที่'],['highlight','ผลงานเด่น'],['activity','กิจกรรมคณะทำงาน']].map(([cat,label])=>`<h2 class="section-t">${label}</h2><div class="feature-grid">${(c.videos||defaults.videos).filter(v=>v.category===cat&&v.status==='published').map(v=>`<article class="card album"><h3>${safe(galleryVideoName(v.title))}</h3>${embed(v.url)?`<iframe class="feature-video" src="${safe(embed(v.url))}" title="${safe(label+' '+galleryVideoName(v.title))}" loading="lazy" allow="fullscreen; picture-in-picture" allowfullscreen></iframe><p>หากเล่นไม่ได้ ให้เปิดวิดีโอจากต้นทาง</p><a class="btn" href="${safe(v.url)}" target="_blank" rel="noopener noreferrer">เปิดวิดีโอต้นทาง</a>`:'<p>รอข้อมูล</p>'}</article>`).join('')||'<p>รอเพิ่มวิดีโอ</p>'}</div>`).join('')}`;
+      </article>`).join(''):'<div class="card album"><h2>ภาพกิจกรรมคณะทำงาน</h2><p>รอเพิ่มอัลบั้มและวันที่กิจกรรมจากผู้ประสานงาน</p></div>'}${[['physical','ด้านกายภาพ / สถานที่'],['highlight','ผลงานเด่น'],['activity','กิจกรรมคณะทำงาน']].map(([cat,label])=>`<h2 class="section-t">${label}</h2><div class="feature-grid">${(c.videos||defaults.videos).filter(v=>v.category===cat&&v.status==='published').map(v=>{const isDirect=/\.(mp4|webm|mov)(\?.*)?$/i.test(v.url||'');const em=embed(v.url||'');return `<article class="card album"><h3>${safe(galleryVideoName(v.title))}</h3>${isDirect?`<video class="feature-video" controls preload="metadata" playsinline poster="" src="${safe(v.url)}"><p>เบราว์เซอร์ของคุณไม่รองรับการเล่นวิดีโอ</p></video><p>หากเล่นไม่ได้ ให้เปิดวิดีโอจากต้นทาง</p><a class="btn" href="${safe(v.url)}" target="_blank" rel="noopener noreferrer" download>เปิดวิดีโอต้นทาง</a>`:em?`<iframe class="feature-video" src="${safe(em)}" title="${safe(label+' '+galleryVideoName(v.title))}" loading="lazy" allow="fullscreen; picture-in-picture" allowfullscreen></iframe><p>หากเล่นไม่ได้ ให้เปิดวิดีโอจากต้นทาง</p><a class="btn" href="${safe(v.url)}" target="_blank" rel="noopener noreferrer">เปิดวิดีโอต้นทาง</a>`:'<p>รอข้อมูล</p>'}</article>`;}).join('')||'<p>รอเพิ่มวิดีโอ</p>'}</div>`).join('')}`;
+
 
       const controls=[];
       document.querySelectorAll('[data-album]').forEach(el=>{
