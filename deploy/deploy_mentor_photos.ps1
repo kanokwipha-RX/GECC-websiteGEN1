@@ -39,8 +39,9 @@ function Remove-FtpFile($remoteRelPath) {
     }
 }
 
-# 1. Upload updated mentor images
+# 1. Upload mentor images
 Upload-FtpFile "public_html/sskgecc/assets/images/mentor-group-3-2.jpg" "$root\assets\images\mentor-group-3-2.jpg"
+Upload-FtpFile "public_html/sskgecc/assets/images/mentor-group-3-3.jpg" "$root\assets\images\mentor-group-3-3.jpg"
 Upload-FtpFile "public_html/sskgecc/assets/images/mentor-group-4-2.jpg" "$root\assets\images\mentor-group-4-2.jpg"
 Upload-FtpFile "public_html/sskgecc/assets/images/mentor-group-4-3.jpg" "$root\assets\images\mentor-group-4-3.jpg"
 
