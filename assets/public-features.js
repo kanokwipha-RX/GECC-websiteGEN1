@@ -18,7 +18,17 @@ window.GECCPublic = (() => {
     {title:'สสจ.',category:'highlight',url:'https://drive.google.com/file/d/1vicDgdaiNTb9BM9jqIP2sBJEhEYNS8QW/view',status:'published'},
     {title:'ศูนย์ดำรงธรรม',category:'highlight',url:'assets/videos/gecc-damrongtham-sisaket.mp4',status:'published'}]};
   async function load(){
-    if(php()){content=await request('public/content');return content;}
+    if(php()){
+      content=await request('public/content');
+      const savedVideos=content.videos||[];
+      const videos=defaults.videos.map(dv=>{
+        const found=savedVideos.find(sv=>sv.title===dv.title&&sv.category===dv.category);
+        return (found&&found.url)?found:dv;
+      });
+      const extraVideos=savedVideos.filter(sv=>!defaults.videos.some(dv=>dv.title===sv.title&&dv.category===sv.category));
+      content.videos=[...videos,...extraVideos];
+      return content;
+    }
     const saved=DB.publicContent||{},albums=saved.albums||[];
     const missing=defaults.albums.filter(a=>!albums.some(b=>b.date===a.date&&b.title===a.title));
     const savedVideos=saved.videos||[];
