@@ -4812,23 +4812,32 @@ function tabHTML(a,c,ro,info){
           <span class="tiny muted">เลือกการดำเนินการในแต่ละข้อย่อย</span>
           ${copyQcBtn}
         </div>
-        <ul class="subs">${subs.map(({s,k})=>`
-          <li class="qc-sub-row ${s.n?'is-new':''}">
+        <ul class="subs">${subs.map(({s,k})=>{
+          const sv = itSelf.subs[k];
+          const v = it.subs[k];
+          return `<li class="qc-sub-row ${s.n?'is-new':''}">
             <div class="qc-sub-text">
               <span class="sid num">${i+1}.${k+1}</span>
               <span class="stx">${s.n?NEWB+' ':''}${esc(s.t)}</span>
             </div>
-            <div class="qc-sub-actions">
-              <label class="chk-duo chk-self" title="หน่วยงานประเมินตนเอง">
-                <input type="checkbox" data-bind="self.qc.${i}.${k}" ${itSelf.subs[k]?'checked':''} ${edSelf}>
-                <span>ตนเอง</span>
-              </label>
-              <label class="chk-duo chk-mentor" title="MENTOR ตรวจประเมิน">
-                <input type="checkbox" data-bind="qc.${i}.${k}" ${it.subs[k]?'checked':''} ${dis}>
-                <span>MENTOR</span>
-              </label>
+            <div class="eval-duo">
+              <div class="eval-col col-self">
+                <div class="eval-col-hdr">หน่วยงานประเมินตนเอง</div>
+                <div class="yn yn-self" role="radiogroup" aria-label="ประเมินตนเอง ข้อ ${i+1}.${k+1}">
+                  <label><input type="radio" name="sqc_${i}_${k}" value="1" data-bind="self.qc.${i}.${k}" ${sv===true?'checked':''} ${edSelf}><span class="y">${ic('tick')}มี</span></label>
+                  <label><input type="radio" name="sqc_${i}_${k}" value="0" data-bind="self.qc.${i}.${k}" ${sv===false?'checked':''} ${edSelf}><span class="n">${ic('x')}ไม่มี</span></label>
+                </div>
+              </div>
+              <div class="eval-col col-mentor">
+                <div class="eval-col-hdr">MENTOR ประเมิน</div>
+                <div class="yn yn-mentor" role="radiogroup" aria-label="MENTOR ประเมิน ข้อ ${i+1}.${k+1}">
+                  <label><input type="radio" name="qc_${i}_${k}" value="1" data-bind="qc.${i}.${k}" ${v===true?'checked':''} ${dis}><span class="y">${ic('tick')}มี</span></label>
+                  <label><input type="radio" name="qc_${i}_${k}" value="0" data-bind="qc.${i}.${k}" ${v===false?'checked':''} ${dis}><span class="n">${ic('x')}ไม่มี</span></label>
+                </div>
+              </div>
             </div>
-          </li>`).join('')}</ul>
+          </li>`;
+        }).join('')}</ul>
         <div class="override">
           <label for="qo-${i}"><span class="badge-mini mentor">MENTOR</span> คะแนนที่ผู้ตรวจให้</label>
           <input class="inp num" id="qo-${i}" type="number" inputmode="decimal" min="0" max="10" step="0.5" placeholder="${fmt(qcSuggest(a,i),1)}" value="${it.score??''}" data-bind="qco.${i}" ${dis}>
@@ -5074,12 +5083,12 @@ function summaryHTML(info,a,c){
       <tr><th>วันที่ตรวจ / รอบ</th><td>${thDate(a.date,true)} · รอบที่ ${a.round} </td></tr>
       <tr><th>MENTOR ผู้ตรวจประเมิน</th><td>${(a.inspectors||[]).length?a.inspectors.map(n=>{ const m=(DB.teams.find(t=>t.id===u.team)?.members||[]).find(x=>x.name===n); return `${esc(n)}${m?.pos?` (${esc(m.pos)})`:''}`; }).join('<br>'):'–'}<br><span class="muted small">${esc(teamName(u.team))}</span></td></tr>
     </tbody></table>
-    <table><thead><tr><th>หลักเกณฑ์</th><th>เงื่อนไข</th><th style="width:16%">ผลคะแนน</th><th style="width:15%">ความพร้อม</th></tr></thead><tbody>
-      <tr><td>เกณฑ์ที่ 1 ด้านกายภาพ (Self Checklist)</td><td>ครบถ้วน 15 ข้อ</td><td class="num">${c.physYes} / 15 ข้อ</td><td>${ready[0]?yes:no}</td></tr>
-      <tr><td>เกณฑ์ที่ 2 ด้านคุณภาพ: แบบประเมิน Checklist</td><td>10 ข้อ รวม 100 คะแนน</td><td class="num">${fmt(c.qc,1)} / 100</td><td>${ready[1]?yes:no}</td></tr>
-      <tr><td>เกณฑ์ที่ 2 ด้านคุณภาพ: บรรยายความโดดเด่นฯ</td><td>10 ข้อ ข้อละ 10 คะแนน</td><td class="num">${fmt(c.narr,1)} / 100</td><td>${ready[2]?yes:no}</td></tr>
-      <tr><td>เกณฑ์ที่ 3 ด้านผลลัพธ์</td><td>3 ข้อ รวม 100 คะแนน</td><td class="num">${fmt(c.out)} / 100</td><td>${ready[3]?yes:no}</td></tr>
-      <tr><th colspan="2">คะแนนรวม (เกณฑ์ผ่านไม่ต่ำกว่า 240 คะแนน หรือร้อยละ 80)</th><th class="num">${fmt(c.total,1)} / 300</th><th>${LEVEL[c.level].l}</th></tr>
+    <table><thead><tr><th>หลักเกณฑ์</th><th>เงื่อนไข</th><th style="width:15%">ประเมินตนเอง</th><th style="width:15%">MENTOR ให้</th><th style="width:14%">ความพร้อม</th></tr></thead><tbody>
+      <tr><td>เกณฑ์ที่ 1 ด้านกายภาพ (Self Checklist)</td><td>ครบถ้วน 15 ข้อ</td><td class="num">${cSelf.physYes} / 15 ข้อ</td><td class="num">${c.physYes} / 15 ข้อ</td><td>${ready[0]?yes:no}</td></tr>
+      <tr><td>เกณฑ์ที่ 2 ด้านคุณภาพ: แบบประเมิน Checklist</td><td>10 ข้อ รวม 100 คะแนน</td><td class="num">${fmt(cSelf.qc,1)} / 100</td><td class="num">${fmt(c.qc,1)} / 100</td><td>${ready[1]?yes:no}</td></tr>
+      <tr><td>เกณฑ์ที่ 2 ด้านคุณภาพ: บรรยายความโดดเด่นฯ</td><td>10 ข้อ ข้อละ 10 คะแนน</td><td class="num">${fmt(cSelf.narr,1)} / 100</td><td class="num">${fmt(c.narr,1)} / 100</td><td>${ready[2]?yes:no}</td></tr>
+      <tr><td>เกณฑ์ที่ 3 ด้านผลลัพธ์</td><td>3 ข้อ รวม 100 คะแนน</td><td class="num">${fmt(cSelf.out)} / 100</td><td class="num">${fmt(c.out)} / 100</td><td>${ready[3]?yes:no}</td></tr>
+      <tr><th colspan="2">คะแนนรวม (เกณฑ์ผ่านไม่ต่ำกว่า 240 คะแนน หรือร้อยละ 80)</th><th class="num">${fmt(cSelf.total,1)} / 300</th><th class="num">${fmt(c.total,1)} / 300</th><th>${LEVEL[c.level].l}</th></tr>
     </tbody></table>
     <table><thead><tr><th>ข้อเสนอแนะ / ข้อบกพร่องที่ต้องแก้ไข</th><th style="width:22%">กำหนดแก้ไข</th><th style="width:20%">สถานะ</th></tr></thead><tbody>
       ${info.defs.length?info.defs.map(d=>`<tr><td>${esc(d.area)} ${esc(d.ref)}: ${esc(d.detail)}</td><td>${thDate(d.due)}</td><td>${DSTAT[d.status].l}</td></tr>`).join(''):`<tr><td colspan="3">ไม่พบข้อบกพร่อง</td></tr>`}
@@ -5117,7 +5126,7 @@ function bind(el){
   ensureSelf(a);
   let val;
   if(el.type==='checkbox') val=el.checked;
-  else if(el.type==='radio') val = (path[0]==='phys' || (path[0]==='self' && path[1]==='phys')) ? el.value==='1' : +el.value;
+  else if(el.type==='radio') val = (path[0]==='phys' || (path[0]==='self' && path[1]==='phys') || path[0]==='qc' || (path[0]==='self' && path[1]==='qc')) ? el.value==='1' : +el.value;
   else val=el.value;
 
   if(path[0]==='self'){

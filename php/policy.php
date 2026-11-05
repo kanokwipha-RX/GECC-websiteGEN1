@@ -83,7 +83,7 @@ function validate_assessment(mixed $a): void {
     $c=criteria();
     if (!is_array($a->qc??null)||count($a->qc)!==count($c->QC)||!is_array($a->narr??null)||count($a->narr)!==count($c->NARR)) fail(400,'จำนวนข้อประเมินไม่ถูกต้อง');
     $score=fn($n,$m)=>$n===null||$n===''||((is_int($n)||is_float($n))&&is_finite((float)$n)&&$n>=0&&$n<=$m);
-    foreach($a->qc as $i=>$q) if (!is_object($q)||!is_array($q->subs??null)||count($q->subs)!==count($c->QC[$i]->subs)||count(array_filter($q->subs,fn($v)=>!is_bool($v)))||!property_exists($q,'score')||!$score($q->score,10)) fail(400,'คะแนน Checklist ไม่ถูกต้อง');
+    foreach($a->qc as $i=>$q) if (!is_object($q)||!is_array($q->subs??null)||count($q->subs)!==count($c->QC[$i]->subs)||count(array_filter($q->subs,fn($v)=>!in_array($v,[true,false,null],true)))||!property_exists($q,'score')||!$score($q->score,10)) fail(400,'คะแนน Checklist ไม่ถูกต้อง');
     foreach($a->narr as $n) if (!is_object($n)||!property_exists($n,'score')||!$score($n->score,10)||!is_string($n->text??null)||length($n->text)>20000) fail(400,'คะแนนหรือคำบรรยายไม่ถูกต้อง');
     if (!is_object($a->out??null)||!is_array($a->out->c21??null)||count($a->out->c21)!==count($c->OUT->c21->items)
         || !is_array($a->out->t3??null)||count($a->out->t3)!==count($c->OUT->t3->items)||count(array_filter([...$a->out->c21,...$a->out->t3],fn($v)=>!is_bool($v)))) fail(400,'ข้อมูลผลลัพธ์ไม่ถูกต้อง');
@@ -99,7 +99,7 @@ function validate_assessment(mixed $a): void {
         }
         if (isset($a->self->qc)) {
             if (!is_array($a->self->qc)||count($a->self->qc)!==count($c->QC)) fail(400,'จำนวนข้อ Checklist ประเมินตนเองไม่ถูกต้อง');
-            foreach($a->self->qc as $i=>$q) if (!is_object($q)||!is_array($q->subs??null)||count($q->subs)!==count($c->QC[$i]->subs)||count(array_filter($q->subs,fn($v)=>!is_bool($v)))||!property_exists($q,'score')||!$score($q->score,10)) fail(400,'คะแนน Checklist ประเมินตนเองไม่ถูกต้อง');
+            foreach($a->self->qc as $i=>$q) if (!is_object($q)||!is_array($q->subs??null)||count($q->subs)!==count($c->QC[$i]->subs)||count(array_filter($q->subs,fn($v)=>!in_array($v,[true,false,null],true)))||!property_exists($q,'score')||!$score($q->score,10)) fail(400,'คะแนน Checklist ประเมินตนเองไม่ถูกต้อง');
         }
         if (isset($a->self->narr)) {
             if (!is_array($a->self->narr)||count($a->self->narr)!==count($c->NARR)) fail(400,'จำนวนข้อคำบรรยายประเมินตนเองไม่ถูกต้อง');

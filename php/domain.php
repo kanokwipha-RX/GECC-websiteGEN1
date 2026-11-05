@@ -9,13 +9,13 @@ function blank_assess(): object {
     $c = criteria();
     return (object)['started'=>false, 'date'=>today(), 'round'=>1, 'inspector'=>'', 'inspectors'=>[], 'updatedAt'=>null,
         'phys'=>array_fill(0, count($c->PHYS), null),
-        'qc'=>array_map(fn($q)=>(object)['subs'=>array_fill(0,count($q->subs),false),'score'=>null],$c->QC),
+        'qc'=>array_map(fn($q)=>(object)['subs'=>array_fill(0,count($q->subs),null),'score'=>null],$c->QC),
         'narr'=>array_map(fn($n)=>(object)['text'=>'','link'=>'','score'=>null],$c->NARR),
         'out'=>(object)['o11'=>null,'o12'=>null,'N'=>'','n'=>'','o13'=>null,'o14'=>null,
             'c21'=>array_fill(0,count($c->OUT->c21->items),false),'c22'=>null,'t3'=>array_fill(0,count($c->OUT->t3->items),false)],
         'self'=>(object)[
             'phys'=>array_fill(0, count($c->PHYS), null),
-            'qc'=>array_map(fn($q)=>(object)['subs'=>array_fill(0,count($q->subs),false),'score'=>null],$c->QC),
+            'qc'=>array_map(fn($q)=>(object)['subs'=>array_fill(0,count($q->subs),null),'score'=>null],$c->QC),
             'narr'=>array_map(fn($n)=>(object)['score'=>null],$c->NARR),
             'out'=>(object)['o11'=>null,'o12'=>null,'N'=>'','n'=>'','o13'=>null,'o14'=>null,
                 'c21'=>array_fill(0,count($c->OUT->c21->items),false),'c22'=>null,'t3'=>array_fill(0,count($c->OUT->t3->items),false)]

@@ -146,7 +146,7 @@ export function validateAssessment(a) {
       !q ||
       !Array.isArray(q.subs) ||
       q.subs.length !== rules.QC[i].subs.length ||
-      q.subs.some((v) => typeof v !== "boolean") ||
+      q.subs.some((v) => ![true, false, null].includes(v)) ||
       !score(q.score, 10)
     )
       fail(400, "คะแนน Checklist ไม่ถูกต้อง");
@@ -197,7 +197,7 @@ export function validateAssessment(a) {
           !q ||
           !Array.isArray(q.subs) ||
           q.subs.length !== rules.QC[i].subs.length ||
-          q.subs.some((v) => typeof v !== "boolean") ||
+          q.subs.some((v) => ![true, false, null].includes(v)) ||
           !score(q.score, 10)
         )
           fail(400, "คะแนน Checklist ประเมินตนเองไม่ถูกต้อง");

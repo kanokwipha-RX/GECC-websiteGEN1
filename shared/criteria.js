@@ -116,12 +116,12 @@ const DISTRICTS = ['เมืองศรีสะเกษ','กันทรล
 function blankAssess(){
   return { started:false, date:todayISO(), round:1, inspector:'', inspectors:[], updatedAt:null,
     phys: PHYS.map(()=>null),
-    qc: QC.map(q=>({subs:q.subs.map(()=>false), score:null})),
+    qc: QC.map(q=>({subs:q.subs.map(()=>null), score:null})),
     narr: NARR.map(()=>({text:'', link:'', score:null})),
     out:{ o11:null, o12:null, N:'', n:'', o13:null, o14:null, c21:OUT.c21.items.map(()=>false), c22:null, t3:OUT.t3.items.map(()=>false) },
     self:{
       phys: PHYS.map(()=>null),
-      qc: QC.map(q=>({subs:q.subs.map(()=>false), score:null})),
+      qc: QC.map(q=>({subs:q.subs.map(()=>null), score:null})),
       narr: NARR.map(()=>({score:null})),
       out:{ o11:null, o12:null, N:'', n:'', o13:null, o14:null, c21:OUT.c21.items.map(()=>false), c22:null, t3:OUT.t3.items.map(()=>false) }
     }
@@ -136,12 +136,12 @@ function ensureSelf(a){
     s.phys = PHYS.map(() => null);
   }
   if(!Array.isArray(s.qc) || s.qc.length !== QC.length){
-    s.qc = QC.map(q => ({ subs: q.subs.map(() => false), score: null }));
+    s.qc = QC.map(q => ({ subs: q.subs.map(() => null), score: null }));
   } else {
     s.qc.forEach((item, i) => {
-      if(!item || typeof item !== 'object') s.qc[i] = { subs: QC[i].subs.map(() => false), score: null };
+      if(!item || typeof item !== 'object') s.qc[i] = { subs: QC[i].subs.map(() => null), score: null };
       else if(!Array.isArray(item.subs) || item.subs.length !== QC[i].subs.length){
-        item.subs = QC[i].subs.map((_, k) => item.subs?.[k] ?? false);
+        item.subs = QC[i].subs.map((_, k) => item.subs?.[k] ?? null);
       }
     });
   }
