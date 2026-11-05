@@ -12,7 +12,7 @@ function libraryExamplesSectionHTML() {
             <span style="display:inline-flex;padding:7px;background:rgba(212,175,55,0.18);color:#B8862B;border-radius:10px">${ic('folder')}</span>
             <h2 style="margin:0;font-size:clamp(22px,2.2vw,28px);color:var(--navy);font-weight:700">ตัวอย่างเอกสารและแนวทางการประเมิน GECC</h2>
           </div>
-          <p style="margin:6px 0 0 44px;color:var(--text-2);font-size:14.5px">ไฟล์ตัวอย่างจริงจากหน่วยงาน แบบติดตามเช็คลิสต์ แบบฟอร์มแยกตามเกณฑ์ 3 ด้าน และคำสั่งโครงการ (รวม 4 การ์ด 261 ไฟล์)</p>
+          <p style="margin:6px 0 0 44px;color:var(--text-2);font-size:14.5px">ไฟล์ตัวอย่างจริงจากหน่วยงาน แบบติดตามเช็คลิสต์ แบบฟอร์มแยกตามเกณฑ์ 3 ด้าน และคำสั่งโครงการ (รวม 5 การ์ด 889 ไฟล์)</p>
         </div>
       </div>
       <div class="examples-grid">

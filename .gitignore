@@ -20,3 +20,8 @@ gecc-private/
 tools/
 *.docx
 *.pdf
+*.zip
+scratch/
+GECC*/
+ตัวอย่างGECC/
+รูปเพิ่ม/
