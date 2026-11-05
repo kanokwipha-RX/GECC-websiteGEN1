@@ -118,7 +118,52 @@ function blankAssess(){
     phys: PHYS.map(()=>null),
     qc: QC.map(q=>({subs:q.subs.map(()=>false), score:null})),
     narr: NARR.map(()=>({text:'', link:'', score:null})),
-    out:{ o11:null, o12:null, N:'', n:'', o13:null, o14:null, c21:OUT.c21.items.map(()=>false), c22:null, t3:OUT.t3.items.map(()=>false) } };
+    out:{ o11:null, o12:null, N:'', n:'', o13:null, o14:null, c21:OUT.c21.items.map(()=>false), c22:null, t3:OUT.t3.items.map(()=>false) },
+    self:{
+      phys: PHYS.map(()=>null),
+      qc: QC.map(q=>({subs:q.subs.map(()=>false), score:null})),
+      narr: NARR.map(()=>({score:null})),
+      out:{ o11:null, o12:null, N:'', n:'', o13:null, o14:null, c21:OUT.c21.items.map(()=>false), c22:null, t3:OUT.t3.items.map(()=>false) }
+    }
+  };
+}
+
+function ensureSelf(a){
+  if(!a || typeof a !== 'object') return a;
+  if(!a.self || typeof a.self !== 'object') a.self = {};
+  const s = a.self;
+  if(!Array.isArray(s.phys) || s.phys.length !== 15){
+    s.phys = PHYS.map(() => null);
+  }
+  if(!Array.isArray(s.qc) || s.qc.length !== QC.length){
+    s.qc = QC.map(q => ({ subs: q.subs.map(() => false), score: null }));
+  } else {
+    s.qc.forEach((item, i) => {
+      if(!item || typeof item !== 'object') s.qc[i] = { subs: QC[i].subs.map(() => false), score: null };
+      else if(!Array.isArray(item.subs) || item.subs.length !== QC[i].subs.length){
+        item.subs = QC[i].subs.map((_, k) => item.subs?.[k] ?? false);
+      }
+    });
+  }
+  if(!Array.isArray(s.narr) || s.narr.length !== NARR.length){
+    s.narr = NARR.map(() => ({ score: null }));
+  }
+  if(!s.out || typeof s.out !== 'object'){
+    s.out = {
+      o11: null, o12: null, N: '', n: '', o13: null, o14: null,
+      c21: OUT.c21.items.map(() => false),
+      c22: null,
+      t3: OUT.t3.items.map(() => false)
+    };
+  } else {
+    if(!Array.isArray(s.out.c21) || s.out.c21.length !== OUT.c21.items.length){
+      s.out.c21 = OUT.c21.items.map((_, k) => s.out.c21?.[k] ?? false);
+    }
+    if(!Array.isArray(s.out.t3) || s.out.t3.length !== OUT.t3.items.length){
+      s.out.t3 = OUT.t3.items.map((_, k) => s.out.t3?.[k] ?? false);
+    }
+  }
+  return a;
 }
 
 function qcScore(a,i){
@@ -148,11 +193,45 @@ function calc(a){
   return { physYes, physNo, physPending, physComplete, qcList, qc, narrList, narr, sat, conv, tech, out, quality, total, level, newDone };
 }
 
+function calcSelf(a){
+  if(!a) return null;
+  const s = a.self;
+  if(!s) return null;
+  const selfA = {
+    phys: Array.isArray(s.phys) ? s.phys : (a.phys || []),
+    qc: Array.isArray(s.qc) ? s.qc : (a.qc || []),
+    narr: Array.isArray(s.narr) ? s.narr : (a.narr || []),
+    out: s.out ? {
+      o11: s.out.o11 !== undefined ? s.out.o11 : (a.out?.o11 ?? null),
+      o12: s.out.o12 !== undefined ? s.out.o12 : (a.out?.o12 ?? null),
+      N: s.out.N !== undefined ? s.out.N : (a.out?.N ?? ''),
+      n: s.out.n !== undefined ? s.out.n : (a.out?.n ?? ''),
+      o13: s.out.o13 !== undefined ? s.out.o13 : (a.out?.o13 ?? null),
+      o14: s.out.o14 !== undefined ? s.out.o14 : (a.out?.o14 ?? null),
+      c21: Array.isArray(s.out.c21) ? s.out.c21 : (a.out?.c21 || []),
+      c22: s.out.c22 !== undefined ? s.out.c22 : (a.out?.c22 ?? null),
+      t3: Array.isArray(s.out.t3) ? s.out.t3 : (a.out?.t3 || [])
+    } : (a.out || {})
+  };
+  return calc(selfA);
+}
+
 function subOf(a){
   if(!a||!a.started) return {phys:'none',qual:'none',out:'none',qc:'none',narr:'none'};
   const ph=a.phys.filter(v=>v!==null).length;
   const q1=a.qc.filter(x=>x.subs.some(Boolean)||(x.score!==null&&x.score!=='')).length, q2=a.narr.filter(n=>n.score!==null&&n.score!=='').length, q=q1+q2;
   const o=['o11','o12','o13','o14','c22'].filter(k=>a.out[k]!==null&&a.out[k]!=='').length + (a.out.c21.some(Boolean)?1:0) + (a.out.t3.some(Boolean)?1:0);
+  const st=(v,m)=>v>=m?'done':v>0?'prog':'none';
+  return {phys:st(ph,15), qual:st(q,20), out:st(o,7), qc:st(q1,10), narr:st(q2,10)};
+}
+
+function subOfSelf(a){
+  if(!a||!a.started||!a.self) return {phys:'none',qual:'none',out:'none',qc:'none',narr:'none'};
+  const s=a.self;
+  const ph=(s.phys||[]).filter(v=>v!==null).length;
+  const q1=(s.qc||[]).filter(x=>x.subs.some(Boolean)||(x.score!==null&&x.score!=='')).length;
+  const q2=(s.narr||[]).filter(n=>n.score!==null&&n.score!=='').length, q=q1+q2;
+  const o=['o11','o12','o13','o14','c22'].filter(k=>s.out?.[k]!==null&&s.out?.[k]!=='').length + ((s.out?.c21||[]).some(Boolean)?1:0) + ((s.out?.t3||[]).some(Boolean)?1:0);
   const st=(v,m)=>v>=m?'done':v>0?'prog':'none';
   return {phys:st(ph,15), qual:st(q,20), out:st(o,7), qc:st(q1,10), narr:st(q2,10)};
 }

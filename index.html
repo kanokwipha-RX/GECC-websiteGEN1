@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="th">
 <head>
 <meta charset="utf-8">
@@ -355,6 +355,53 @@ select.inp{ appearance:none; background-image:url("data:image/svg+xml,%3Csvg xml
 .yn input:checked + span.n{ background:var(--bad-50); color:var(--bad); font-weight:600; }
 .yn input:focus-visible + span{ outline:3px solid var(--gold-500); outline-offset:-3px; }
 .yn input:disabled + span{ cursor:default; }
+
+/* Dual Evaluation: หน่วยงานประเมินตนเอง vs MENTOR ประเมิน */
+.badge-mini{ display:inline-block; font-size:11px; font-weight:700; padding:2px 6px; border-radius:4px; line-height:1.2; vertical-align:middle; margin-right:4px; letter-spacing:0.2px; }
+.badge-mini.self{ background:#e8f0fe; color:#1a73e8; border:1px solid #c2e7ff; }
+.badge-mini.mentor{ background:#fef7e0; color:#b06000; border:1px solid #f9e1a8; }
+.eval-duo{ display:flex; gap:10px; align-items:flex-start; flex:none; }
+.eval-col{ display:flex; flex-direction:column; align-items:center; gap:6px; min-width:142px; }
+.eval-col-hdr{ font-size:12px; font-weight:700; text-align:center; padding:3px 10px; border-radius:999px; line-height:1.2; width:100%; box-sizing:border-box; white-space:nowrap; }
+.col-self .eval-col-hdr{ background:#e8f0fe; color:#1a73e8; border:1px solid #c2e7ff; }
+.col-mentor .eval-col-hdr{ background:#fef7e0; color:#b06000; border:1px solid #f9e1a8; }
+.eval-duo .yn{ min-height:42px; }
+.eval-duo .yn span{ min-height:40px; padding:0 12px; font-size:14px; }
+.phys-card-toolbar{ display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap; padding:10px 16px; background:var(--sunken); border-bottom:1px solid var(--border); }
+.phys-score-pills{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.score-pill{ display:inline-flex; align-items:center; gap:6px; font-size:13px; padding:4px 12px; border-radius:20px; font-weight:600; font-variant-numeric:tabular-nums; }
+.score-pill.self{ background:#e8f0fe; color:#1a73e8; border:1px solid #c2e7ff; }
+.score-pill.mentor{ background:#fef7e0; color:#b06000; border:1px solid #f9e1a8; }
+.qc-sub-row{ display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:center; padding:12px 0; border-top:1px solid var(--border); min-height:44px; }
+.qc-sub-row:first-child{ border-top:0; }
+.qc-sub-row.is-new{ background:linear-gradient(90deg, var(--gold-50), transparent 70%); margin:0 -22px; padding-left:22px; padding-right:22px; }
+.qc-sub-text{ display:flex; gap:10px; align-items:start; }
+.qc-sub-text .sid{ font-variant-numeric:tabular-nums; color:var(--text-3); font-size:14.5px; padding-top:1px; flex:none; }
+.qc-sub-text .stx{ font-size:15px; line-height:1.6; }
+.qc-sub-actions{ display:flex; gap:8px; align-items:center; flex:none; }
+.chk-duo{ display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:13px; font-weight:500; background:var(--bg); transition:all 0.15s ease; user-select:none; }
+.chk-duo:hover{ border-color:var(--border-strong); }
+.chk-duo input{ width:18px; height:18px; margin:0; cursor:pointer; accent-color:var(--navy); }
+.chk-duo.chk-self:has(input:checked){ background:#e8f0fe; border-color:#1a73e8; color:#1a73e8; font-weight:600; }
+.chk-duo.chk-mentor:has(input:checked){ background:#fef7e0; border-color:#b06000; color:#b06000; font-weight:600; }
+.chk-duo input:disabled{ cursor:default; }
+.chk-duo:has(input:disabled){ cursor:default; opacity:0.85; }
+.qscore-duo{ display:flex; gap:14px; margin-left:auto; text-align:right; flex:none; }
+.qscore-box{ display:flex; flex-direction:column; align-items:flex-end; }
+.qscore-box .qs-lbl{ font-size:12px; font-weight:600; }
+.qscore-box.self .qs-lbl{ color:#1a73e8; }
+.qscore-box.mentor .qs-lbl{ color:#b06000; }
+.qscore-box b{ font-size:20px; font-weight:700; font-variant-numeric:tabular-nums; }
+.qscore-box small{ color:var(--text-3); font-size:12px; }
+.narr-scores-duo{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.out-duo-table{ width:100%; border-collapse:collapse; margin-top:8px; }
+.out-duo-table th{ font-size:13px; font-weight:600; padding:8px 10px; border-bottom:1px solid var(--border); }
+.out-duo-table th.col-self-h{ color:#1a73e8; background:#e8f0fe; border-radius:8px 0 0 0; width:130px; text-align:center; }
+.out-duo-table th.col-mentor-h{ color:#b06000; background:#fef7e0; border-radius:0 8px 0 0; width:130px; text-align:center; }
+.out-duo-table td{ padding:8px 10px; border-bottom:1px solid var(--border); font-size:14px; }
+.out-duo-table td.center{ text-align:center; }
+.out-duo-table tr:hover td{ background:var(--sunken); }
+
 
 .qcard{ margin-bottom:14px; }
 .qcard .card-h{ padding-bottom:4px; }
@@ -942,7 +989,16 @@ body.lux-top::before{ background:#0B1A4C; }
   .ws-split > div{ padding:10px 16px; border-top:1px solid var(--border); }
   .ws-split > div:nth-child(odd){ border-left:0; }
   .pitem{ grid-template-columns:34px minmax(0,1fr); }
-  .pitem .yn{ grid-column:2; justify-self:start; }
+  .pitem{ grid-template-columns:34px minmax(0,1fr); }
+  .pitem .eval-duo{ grid-column:2; width:100%; gap:8px; justify-content:space-between; flex-direction:row; }
+  .eval-col{ min-width:0; flex:1; }
+  .eval-col .yn{ width:100%; display:flex; }
+  .eval-col .yn label{ flex:1; }
+  .eval-col .yn span{ justify-content:center; padding:0 8px; font-size:13px; }
+  .qc-sub-row{ grid-template-columns:1fr; }
+  .qc-sub-actions{ justify-content:flex-start; flex-wrap:wrap; }
+  .qscore-duo{ flex-direction:column; gap:4px; }
+  .narr-scores-duo{ grid-template-columns:1fr; }
   .chk{ grid-template-columns:24px 44px minmax(0,1fr); }
   .chk.is-new{ margin:0 -16px; padding-left:16px; padding-right:16px; }
   .meta-grid{ grid-template-columns:1fr; }
@@ -4296,7 +4352,8 @@ function viewUnit(){
   if(!canAccessUnit(u)){ denyUnit(); go(S.role==='mentee'?'modules':S.role==='mentor'?'mdash':'exec'); return; }
   S.lock = wfOf(DB.assess[u.id])==='reviewed'; const ro = S.role!=='mentor' || S.lock;
   if(!S.draft){ S.draft = clone(DB.assess[u.id] || blankAssess()); S.dirty=false; }
-  const a=S.draft; const c=calc(a); const info=unitInfo(u);
+  ensureSelf(S.draft);
+  const a=S.draft; const c=calc(a); const cSelf=calcSelf(a)||c; const info=unitInfo(u);
   setHead(`<span class="ut-title">${esc(u.name)}</span>`, `${ro?'แบบประเมิน':'แบบตรวจประเมิน'} GECC 2570 · ${esc(teamName(u.team))}`, S.from==='forms'&&!ro?`<button class="btn" data-act="go" data-view="forms" aria-label="เปลี่ยนหน่วยบริการ">${ic('repeat')}<span class="lbl-t">เปลี่ยนหน่วยบริการ</span></button>`:'');
   const RS=readyOf(a).st; const tabs=[['ready','แบบประเมินความพร้อม',RS==='ready'?'พร้อม':RS==='notready'?'ไม่พร้อม':'ยังไม่ส่ง'],['phys','ด้านกายภาพ',`${c.physYes}/15`],['qc','คุณภาพ: Checklist',`${fmt(c.qc,1)}`],['narr','คุณภาพ: บรรยาย',`${fmt(c.narr,1)}`],['out','ด้านผลลัพธ์',`${fmt(c.out)}`],['svy','ความพึงพอใจ/เชื่อมั่น',svDone(a.survey)?'ส่งแล้ว':'ยังไม่ส่ง'],['sum','แบบสรุปผล',''],['def','ข้อบกพร่อง',`${info.open.length}`]];
   $('#content').innerHTML = `
@@ -4668,52 +4725,307 @@ function surveySection(infos){
   </section>`;
 }
 function tabHTML(a,c,ro,info){
-  const dis = ro?'disabled':''; const edAll=(!S.lock&&(S.role==='mentor'||S.role==='mentee'))?'':'disabled';
+  ensureSelf(a);
+  const dis = ro?'disabled':'';
+  const edAll=(!S.lock&&(S.role==='mentor'||S.role==='mentee'))?'':'disabled';
+  const edSelf=(!S.lock&&(S.role==='mentor'||S.role==='mentee'))?'':'disabled';
+  const cSelf=calcSelf(a) || c;
   if(S.tab==='ready') return readyHTML(a,info);
   if(S.tab==='svy') return svyHTML(a);
   if(S.tab==='phys'){
     const rows = PHYS.map((p,i)=>({p,i})).filter(o=>!S.onlyNew||o.p.n);
-    return `${metaHTML(a,ro)}${newToggle()}<div class="card" style="margin-top:14px"><div class="card-h"><div><h3>เกณฑ์ที่ 1 ด้านกายภาพ (Self Checklist)</h3><p>ต้องดำเนินการครบทั้ง 15 ข้อ หากไม่ครบจะไม่ได้รับการตรวจประเมินในลำดับต่อไป</p></div></div>
-      <div class="card-b"><div class="phys-list">${rows.length?rows.map(({p,i})=>{ const v=a.phys[i]; return `<div class="pitem" data-state="${v===true?'yes':v===false?'no':'none'}" id="pi-${i}">
-        <div class="no">${i+1}</div>
-        <div><div class="pt">${esc(p.s)} ${p.n?NEWB:''}</div><div class="pd">${esc(p.t)}</div>${evBar('phys:'+i,a)}${!ro?`<div class="pfix"><button class="btn btn-sm btn-gold" data-act="def-add" data-area="กายภาพ" data-ref="ข้อ ${i+1}" data-detail="ยังไม่ดำเนินการ: ${esc(p.s)}">${ic('plus')}บันทึกเป็นข้อบกพร่อง</button></div>`:''}</div>
-        <div class="yn" role="radiogroup" aria-label="ข้อ ${i+1}"><label><input type="radio" name="ph${i}" value="1" data-bind="phys.${i}" ${v===true?'checked':''} ${dis}><span class="y">${ic('tick')}มี</span></label><label><input type="radio" name="ph${i}" value="0" data-bind="phys.${i}" ${v===false?'checked':''} ${dis}><span class="n">${ic('x')}ไม่มี</span></label></div>
-      </div>`; }).join(''):`<div class="empty">ไม่มีข้อที่ตรงกับตัวกรอง</div>`}</div></div></div>${advBox('phys',a)}`;
+    const copyPhysBtn = !ro ? `<button class="btn btn-sm btn-ghost" data-act="copy-self-phys" title="คัดลอกผลประเมินตนเองมาใส่ในช่อง MENTOR">${ic('copy')} คัดลอกจากประเมินตนเอง</button>` : '';
+    return `${metaHTML(a,ro)}${newToggle()}<div class="card" style="margin-top:14px">
+      <div class="card-h">
+        <div>
+          <h3>เกณฑ์ที่ 1 ด้านกายภาพ (Self Checklist)</h3>
+          <p>ต้องดำเนินการครบทั้ง 15 ข้อ หากไม่ครบจะไม่ได้รับการตรวจประเมินในลำดับต่อไป</p>
+        </div>
+      </div>
+      <div class="phys-card-toolbar">
+        <div class="phys-score-pills">
+          <span class="score-pill self" id="phys-pill-self"><span class="badge-mini self">ตนเอง</span> ผ่าน ${cSelf?.physYes??0} / 15 ข้อ</span>
+          <span class="score-pill mentor" id="phys-pill-mentor"><span class="badge-mini mentor">MENTOR</span> ผ่าน ${c.physYes} / 15 ข้อ</span>
+        </div>
+        ${copyPhysBtn}
+      </div>
+      <div class="card-b"><div class="phys-list">${rows.length?rows.map(({p,i})=>{
+        const v=a.phys[i];
+        const sv=a.self?.phys?.[i];
+        return `<div class="pitem" data-state="${v===true?'yes':v===false?'no':'none'}" data-self-state="${sv===true?'yes':sv===false?'no':'none'}" id="pi-${i}">
+          <div class="no">${i+1}</div>
+          <div>
+            <div class="pt">${esc(p.s)} ${p.n?NEWB:''}</div>
+            <div class="pd">${esc(p.t)}</div>
+            ${evBar('phys:'+i,a)}
+            ${!ro?`<div class="pfix"><button class="btn btn-sm btn-gold" data-act="def-add" data-area="กายภาพ" data-ref="ข้อ ${i+1}" data-detail="ยังไม่ดำเนินการ: ${esc(p.s)}">${ic('plus')}บันทึกเป็นข้อบกพร่อง</button></div>`:''}
+          </div>
+          <div class="eval-duo">
+            <div class="eval-col col-self">
+              <div class="eval-col-hdr">หน่วยงานประเมินตนเอง</div>
+              <div class="yn yn-self" role="radiogroup" aria-label="ประเมินตนเอง ข้อ ${i+1}">
+                <label><input type="radio" name="sph${i}" value="1" data-bind="self.phys.${i}" ${sv===true?'checked':''} ${edSelf}><span class="y">${ic('tick')}มี</span></label>
+                <label><input type="radio" name="sph${i}" value="0" data-bind="self.phys.${i}" ${sv===false?'checked':''} ${edSelf}><span class="n">${ic('x')}ไม่มี</span></label>
+              </div>
+            </div>
+            <div class="eval-col col-mentor">
+              <div class="eval-col-hdr">MENTOR ประเมิน</div>
+              <div class="yn yn-mentor" role="radiogroup" aria-label="MENTOR ประเมิน ข้อ ${i+1}">
+                <label><input type="radio" name="ph${i}" value="1" data-bind="phys.${i}" ${v===true?'checked':''} ${dis}><span class="y">${ic('tick')}มี</span></label>
+                <label><input type="radio" name="ph${i}" value="0" data-bind="phys.${i}" ${v===false?'checked':''} ${dis}><span class="n">${ic('x')}ไม่มี</span></label>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }).join(''):`<div class="empty">ไม่มีข้อที่ตรงกับตัวกรอง</div>`}</div></div></div>${advBox('phys',a)}`;
   }
   if(S.tab==='qc'){
     const items=QC.map((q,i)=>({q,i})).filter(o=>!S.onlyNew||o.q.subs.some(s=>s.n));
-    return `${newToggle()}<p class="small muted" style="margin:12px 0">เกณฑ์ที่ 2.1 แบบประเมินคุณภาพการบริการ 10 ประเด็น รวม 100 คะแนน เลือกได้มากกว่า 1 ข้อตามการดำเนินการจริง ระบบเสนอคะแนนตามสัดส่วนข้อที่ดำเนินการ ผู้ตรวจสามารถกำหนดคะแนนเองได้ตามดุลยพินิจ</p>
-    ${items.map(({q,i})=>{ const nNew=q.subs.filter(s=>s.n).length; const it=a.qc[i]; const subs=q.subs.map((s,k)=>({s,k})).filter(o=>!S.onlyNew||o.s.n);
-      return `<div class="card qcard"><div class="card-h"><span class="qno">${i+1}</span><div style="min-width:0;flex:1"><h3>${esc(q.t)}</h3><p>${q.subs.length} ข้อย่อย${nNew?` <span class="new-soft">มีเกณฑ์ใหม่ ${nNew} ข้อ</span>`:''}</p></div><div class="qscore"><b id="qs-${i}">${fmt(qcScore(a,i),1)}</b> <small>/10</small><div class="q-hint" id="qh-${i}">ดำเนินการ ${it.subs.filter(Boolean).length}/${q.subs.length} ข้อ</div></div></div>
-      <div class="card-b"><ul class="subs">${subs.map(({s,k})=>`<li><label class="chk ${s.n?'is-new':''}"><input type="checkbox" data-bind="qc.${i}.${k}" ${it.subs[k]?'checked':''} ${edAll}><span class="sid num">${i+1}.${k+1}</span><span class="stx">${s.n?NEWB+' ':''}${esc(s.t)}</span></label></li>`).join('')}</ul>
-      <div class="override"><label for="qo-${i}">คะแนนที่ผู้ตรวจให้</label><input class="inp num" id="qo-${i}" type="number" inputmode="decimal" min="0" max="10" step="0.5" placeholder="${fmt(qcSuggest(a,i),1)}" value="${it.score??''}" data-bind="qco.${i}" ${dis}><span id="qsug-${i}">คะแนนแนะนำ ${fmt(qcSuggest(a,i),1)} (เว้นว่างเพื่อใช้คะแนนแนะนำ)</span></div>${evBar('qc:'+i,a)}</div></div>`; }).join('')}${advBox('qual',a)}`;
+    return `${newToggle()}<p class="small muted" style="margin:12px 0">เกณฑ์ที่ 2.1 แบบประเมินคุณภาพการบริการ 10 ประเด็น รวม 100 คะแนน · มีช่องสำหรับหน่วยงานประเมินตนเอง และ MENTOR ตรวจประเมิน</p>
+    ${items.map(({q,i})=>{
+      const nNew=q.subs.filter(s=>s.n).length;
+      const it=a.qc[i];
+      const itSelf=(a.self?.qc?.[i]) || {subs:[], score:null};
+      const subs=q.subs.map((s,k)=>({s,k})).filter(o=>!S.onlyNew||o.s.n);
+      const copyQcBtn = !ro ? `<button class="btn btn-sm btn-ghost" data-act="copy-self-qc" data-qc-idx="${i}" title="คัดลอกเครื่องหมายติ๊กถูกจากตนเอง">${ic('copy')} คัดลอกจากตนเอง</button>` : '';
+      return `<div class="card qcard"><div class="card-h">
+        <span class="qno">${i+1}</span>
+        <div style="min-width:0;flex:1">
+          <h3>${esc(q.t)}</h3>
+          <p>${q.subs.length} ข้อย่อย${nNew?` <span class="new-soft">มีเกณฑ์ใหม่ ${nNew} ข้อ</span>`:''}</p>
+        </div>
+        <div class="qscore-duo">
+          <div class="qscore-box self">
+            <span class="qs-lbl">ประเมินตนเอง</span>
+            <b id="qss-${i}">${fmt(qcScore({qc:a.self?.qc||a.qc}, i), 1)}</b>
+            <small>/10 · ${itSelf.subs.filter(Boolean).length}/${q.subs.length} ข้อ</small>
+          </div>
+          <div class="qscore-box mentor">
+            <span class="qs-lbl">MENTOR</span>
+            <b id="qs-${i}">${fmt(qcScore(a,i),1)}</b>
+            <small>/10 · ${it.subs.filter(Boolean).length}/${q.subs.length} ข้อ</small>
+          </div>
+        </div>
+      </div>
+      <div class="card-b">
+        <div class="row" style="margin-bottom:8px;justify-content:space-between">
+          <span class="tiny muted">เลือกการดำเนินการในแต่ละข้อย่อย</span>
+          ${copyQcBtn}
+        </div>
+        <ul class="subs">${subs.map(({s,k})=>`
+          <li class="qc-sub-row ${s.n?'is-new':''}">
+            <div class="qc-sub-text">
+              <span class="sid num">${i+1}.${k+1}</span>
+              <span class="stx">${s.n?NEWB+' ':''}${esc(s.t)}</span>
+            </div>
+            <div class="qc-sub-actions">
+              <label class="chk-duo chk-self" title="หน่วยงานประเมินตนเอง">
+                <input type="checkbox" data-bind="self.qc.${i}.${k}" ${itSelf.subs[k]?'checked':''} ${edSelf}>
+                <span>ตนเอง</span>
+              </label>
+              <label class="chk-duo chk-mentor" title="MENTOR ตรวจประเมิน">
+                <input type="checkbox" data-bind="qc.${i}.${k}" ${it.subs[k]?'checked':''} ${dis}>
+                <span>MENTOR</span>
+              </label>
+            </div>
+          </li>`).join('')}</ul>
+        <div class="override">
+          <label for="qo-${i}"><span class="badge-mini mentor">MENTOR</span> คะแนนที่ผู้ตรวจให้</label>
+          <input class="inp num" id="qo-${i}" type="number" inputmode="decimal" min="0" max="10" step="0.5" placeholder="${fmt(qcSuggest(a,i),1)}" value="${it.score??''}" data-bind="qco.${i}" ${dis}>
+          <span id="qsug-${i}">คะแนนแนะนำ ${fmt(qcSuggest(a,i),1)} (เว้นว่างเพื่อใช้คะแนนแนะนำ)</span>
+        </div>
+        ${evBar('qc:'+i,a)}
+      </div></div>`;
+    }).join('')}${advBox('qual',a)}`;
   }
   if(S.tab==='narr'){
-    return `<p class="small muted" style="margin:0 0 12px">เกณฑ์ที่ 2.2 การเขียนบรรยายความโดดเด่นและความเป็นต้นแบบ 10 ข้อ ข้อละ 10 คะแนน บรรยายข้อละไม่เกิน 2,000 ตัวอักษร แนบหลักฐานได้ข้อละ 1 ไฟล์ ไม่เกิน 10 MB</p>
-    ${NARR.map((n,i)=>{ const it=a.narr[i]; const len=(it.text||'').length; return `<div class="card qcard ncard"><div class="card-h"><span class="qno">${i+1}</span><div style="flex:1;min-width:0"><h3>${esc(n.t)}</h3></div><div class="qscore"><b id="ns-${i}">${it.score===null||it.score===''?'–':fmt(it.score,1)}</b> <small>/10</small></div></div>
-      <div class="card-b"><details class="guide"><summary>${ic('info','').replace('<svg','<svg style="width:16px;height:16px"')}แนวทางการพิจารณา</summary><p>${esc(n.d)}</p></details>
-      <div class="field"><label for="nt-${i}">สรุปคำบรรยายของหน่วยบริการ / บันทึกของผู้ตรวจ</label><textarea class="inp" id="nt-${i}" maxlength="2000" data-bind="narr.${i}.text" ${edAll} placeholder="${edAll?'':'หน่วยบริการพิมพ์คำบรรยายไม่เกิน 2,000 ตัวอักษร'}">${esc(it.text)}</textarea><div class="ncount ${len>2000?'over':''}" id="nc-${i}">${fmt(len)} / 2,000 ตัวอักษร</div></div>
-      <div class="grid g2" style="margin-top:10px"><div class="field"><label for="nl-${i}">ลิงก์ไฟล์หลักฐาน</label><input class="inp" id="nl-${i}" type="url" inputmode="url" placeholder="https://" value="${esc(it.link)}" data-bind="narr.${i}.link" ${edAll}><span class="help">เช่น ลิงก์ Google Drive ของหน่วยบริการ</span></div>
-      <div class="field"><label for="nsc-${i}">คะแนน (0–10)</label><input class="inp num" id="nsc-${i}" type="number" inputmode="decimal" min="0" max="10" step="0.5" value="${it.score??''}" data-bind="narr.${i}.score" ${dis}><span class="err">กรอกคะแนนระหว่าง 0 ถึง 10</span></div></div>${evBar('narr:'+i,a,true)}</div></div>`; }).join('')}${advBox('qual',a)}`;
+    return `<p class="small muted" style="margin:0 0 12px">เกณฑ์ที่ 2.2 การเขียนบรรยายความโดดเด่นและความเป็นต้นแบบ 10 ข้อ ข้อละ 10 คะแนน · ประเมินตนเอง และ MENTOR ประเมิน</p>
+    ${NARR.map((n,i)=>{
+      const it=a.narr[i];
+      const itSelf=(a.self?.narr?.[i]) || {score:null};
+      const len=(it.text||'').length;
+      return `<div class="card qcard ncard">
+        <div class="card-h">
+          <span class="qno">${i+1}</span>
+          <div style="flex:1;min-width:0"><h3>${esc(n.t)}</h3></div>
+          <div class="qscore-duo">
+            <div class="qscore-box self">
+              <span class="qs-lbl">ประเมินตนเอง</span>
+              <b id="nss-${i}">${itSelf.score===null||itSelf.score===''?'–':fmt(itSelf.score,1)}</b>
+              <small>/10</small>
+            </div>
+            <div class="qscore-box mentor">
+              <span class="qs-lbl">MENTOR</span>
+              <b id="ns-${i}">${it.score===null||it.score===''?'–':fmt(it.score,1)}</b>
+              <small>/10</small>
+            </div>
+          </div>
+        </div>
+        <div class="card-b">
+          <details class="guide"><summary>${ic('info','').replace('<svg','<svg style="width:16px;height:16px"') }แนวทางการพิจารณา</summary><p>${esc(n.d)}</p></details>
+          <div class="field"><label for="nt-${i}">สรุปคำบรรยายของหน่วยบริการ / บันทึกของผู้ตรวจ</label><textarea class="inp" id="nt-${i}" maxlength="2000" data-bind="narr.${i}.text" ${edAll} placeholder="${edAll?'':'หน่วยบริการพิมพ์คำบรรยายไม่เกิน 2,000 ตัวอักษร'}">${esc(it.text)}</textarea><div class="ncount ${len>2000?'over':''}" id="nc-${i}">${fmt(len)} / 2,000 ตัวอักษร</div></div>
+          <div class="grid g2" style="margin-top:10px">
+            <div class="field"><label for="nl-${i}">ลิงก์ไฟล์หลักฐาน</label><input class="inp" id="nl-${i}" type="url" inputmode="url" placeholder="https://" value="${esc(it.link)}" data-bind="narr.${i}.link" ${edAll}><span class="help">เช่น ลิงก์ Google Drive ของหน่วยบริการ</span></div>
+            <div class="narr-scores-duo">
+              <div class="field">
+                <label for="snsc-${i}"><span class="badge-mini self">ตนเอง</span> คะแนน (0–10)</label>
+                <input class="inp num" id="snsc-${i}" type="number" inputmode="decimal" min="0" max="10" step="0.5" value="${itSelf.score??''}" data-bind="self.narr.${i}.score" ${edSelf} placeholder="0-10">
+              </div>
+              <div class="field">
+                <label for="nsc-${i}"><span class="badge-mini mentor">MENTOR</span> คะแนน (0–10)</label>
+                <input class="inp num" id="nsc-${i}" type="number" inputmode="decimal" min="0" max="10" step="0.5" value="${it.score??''}" data-bind="narr.${i}.score" ${dis} placeholder="0-10">
+                <span class="err">กรอกคะแนนระหว่าง 0 ถึง 10</span>
+              </div>
+            </div>
+          </div>
+          ${evBar('narr:'+i,a,true)}
+        </div>
+      </div>`;
+    }).join('')}${advBox('qual',a)}`;
   }
   if(S.tab==='out'){
     const o=a.out;
-    const radios=(key)=>OUT[key].opts.map(([v,l])=>`<label class="opt"><input type="radio" name="${key}" value="${v}" data-bind="out.${key}" ${+o[key]===v?'checked':''} ${dis}><span>${esc(l)}</span><span class="pts">${v} คะแนน</span></label>`).join('');
-    const checks=(key)=>OUT[key].items.map((l,k)=>`<label class="opt"><input type="checkbox" data-bind="out.${key}.${k}" ${o[key][k]?'checked':''} ${dis}><span>${esc(l)}</span><span class="pts">3 คะแนน</span></label>`).join('');
-    return `<p class="small muted" style="margin:0 0 12px">เกณฑ์ที่ 3 ด้านผลลัพธ์ 3 ข้อ รวม 100 คะแนน</p>
-    <div class="card qcard"><div class="card-h"><span class="qno">1</span><div style="flex:1"><h3>ความพึงพอใจของประชาชนในการรับบริการ</h3><p>ผลสำรวจในรอบ 1 ปีที่ผ่านมา หากจัดเก็บหลายช่องทางให้ใช้ค่าเฉลี่ย</p></div><div class="qscore"><b id="os-sat">${c.sat}</b> <small>/40</small></div></div>
-      <div class="card-b"><div class="sub-h"><b>${OUT.o11.t}</b><span>เต็ม 10</span></div>${radios('o11')}
-      <div class="sub-h"><b>${OUT.o12.t}</b><span>เต็ม 10</span></div>
-      <div class="grid g2" style="margin-top:8px"><div class="field"><label for="oN">กลุ่มประชากร (N) คน</label><input class="inp num" id="oN" type="number" inputmode="numeric" min="0" value="${esc(o.N)}" data-bind="out.N" ${dis}></div><div class="field"><label for="on">กลุ่มตัวอย่าง (n) คน</label><input class="inp num" id="on" type="number" inputmode="numeric" min="0" value="${esc(o.n)}" data-bind="out.n" ${dis}></div></div>
-      ${radios('o12')}
-      <div class="sub-h"><b>${OUT.o13.t}</b><span>เต็ม 10</span></div>${radios('o13')}
-      <div class="sub-h"><b>${OUT.o14.t}</b><span>เต็ม 10</span></div>${radios('o14')}${evBar('out:1',a)}</div></div>
-    <div class="card qcard"><div class="card-h"><span class="qno">2</span><div style="flex:1"><h3>ความสะดวกในการติดต่อราชการ</h3><p>ช่องทางต้องให้บริการต่อเนื่องไม่น้อยกว่า 3 เดือน · ข้อมูลผู้ใช้ออนไลน์ย้อนหลังไม่น้อยกว่า 6 เดือน</p></div><div class="qscore"><b id="os-conv">${c.conv}</b> <small>/30</small></div></div>
-      <div class="card-b"><div class="sub-h"><b>${OUT.c21.t}</b><span>เต็ม 15</span></div>${checks('c21')}<div class="sub-h"><b>${OUT.c22.t}</b><span>เต็ม 15</span></div>${radios('c22')}${evBar('out:2',a)}</div></div>
-    <div class="card qcard"><div class="card-h"><span class="qno">3</span><div style="flex:1"><h3>การนำเทคโนโลยีมาช่วยในการให้บริการประชาชน</h3><p>${OUT.t3.t}</p></div><div class="qscore"><b id="os-tech">${c.tech}</b> <small>/30</small></div></div>
-      <div class="card-b">${checks('t3')}${evBar('out:3',a)}</div></div>${advBox('out',a)}`;
+    const so=a.self.out;
+    const copyOutBtn = !ro ? `<button class="btn btn-sm btn-ghost" data-act="copy-self-out" title="คัดลอกคำตอบจากประเมินตนเองมาใส่ในช่อง MENTOR">${ic('copy')} คัดลอกจากประเมินตนเอง</button>` : '';
+
+    const radios=(key)=>`
+      <div class="tbl-wrap" style="margin-top:8px">
+        <table class="out-duo-table">
+          <thead>
+            <tr>
+              <th>ตัวเลือก / เกณฑ์การให้คะแนน</th>
+              <th style="width:70px;text-align:right">คะแนน</th>
+              <th class="col-self-h">หน่วยงานประเมินตนเอง</th>
+              <th class="col-mentor-h">MENTOR ประเมิน</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${OUT[key].opts.map(([v,l])=>`
+              <tr>
+                <td>${esc(l)}</td>
+                <td style="text-align:right;font-weight:600" class="num">${v}</td>
+                <td class="center">
+                  <input type="radio" name="s_${key}" value="${v}" data-bind="self.out.${key}" ${+so[key]===v?'checked':''} ${edSelf} aria-label="ประเมินตนเอง ${esc(l)}">
+                </td>
+                <td class="center">
+                  <input type="radio" name="${key}" value="${v}" data-bind="out.${key}" ${+o[key]===v?'checked':''} ${dis} aria-label="MENTOR ประเมิน ${esc(l)}">
+                </td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+
+    const checks=(key, pts)=>`
+      <div class="tbl-wrap" style="margin-top:8px">
+        <table class="out-duo-table">
+          <thead>
+            <tr>
+              <th>รายการ</th>
+              <th style="width:70px;text-align:right">คะแนน</th>
+              <th class="col-self-h">หน่วยงานประเมินตนเอง</th>
+              <th class="col-mentor-h">MENTOR ประเมิน</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${OUT[key].items.map((l,k)=>`
+              <tr>
+                <td>${esc(l)}</td>
+                <td style="text-align:right;font-weight:600" class="num">${pts}</td>
+                <td class="center">
+                  <input type="checkbox" data-bind="self.out.${key}.${k}" ${so[key][k]?'checked':''} ${edSelf} aria-label="ประเมินตนเอง ${esc(l)}">
+                </td>
+                <td class="center">
+                  <input type="checkbox" data-bind="out.${key}.${k}" ${o[key][k]?'checked':''} ${dis} aria-label="MENTOR ประเมิน ${esc(l)}">
+                </td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+
+    return `<div class="row" style="margin-bottom:12px;justify-content:space-between">
+      <p class="small muted" style="margin:0">เกณฑ์ที่ 3 ด้านผลลัพธ์ 3 ข้อ รวม 100 คะแนน · มีช่องประเมินตนเอง และ MENTOR ประเมิน</p>
+      ${copyOutBtn}
+    </div>
+    <div class="card qcard">
+      <div class="card-h">
+        <span class="qno">1</span>
+        <div style="flex:1">
+          <h3>ความพึงพอใจของประชาชนในการรับบริการ</h3>
+          <p>ผลสำรวจในรอบ 1 ปีที่ผ่านมา หากจัดเก็บหลายช่องทางให้ใช้ค่าเฉลี่ย</p>
+        </div>
+        <div class="qscore-duo">
+          <div class="qscore-box self">
+            <span class="qs-lbl">ประเมินตนเอง</span>
+            <b id="oss-sat">${cSelf.sat}</b> <small>/40</small>
+          </div>
+          <div class="qscore-box mentor">
+            <span class="qs-lbl">MENTOR</span>
+            <b id="os-sat">${c.sat}</b> <small>/40</small>
+          </div>
+        </div>
+      </div>
+      <div class="card-b">
+        <div class="sub-h"><b>${OUT.o11.t}</b><span>เต็ม 10</span></div>${radios('o11')}
+        <div class="sub-h"><b>${OUT.o12.t}</b><span>เต็ม 10</span></div>
+        <div class="grid g2" style="margin-top:8px">
+          <div class="field"><label for="oN">กลุ่มประชากร (N) คน</label><input class="inp num" id="oN" type="number" inputmode="numeric" min="0" value="${esc(o.N)}" data-bind="out.N" ${dis}></div>
+          <div class="field"><label for="on">กลุ่มตัวอย่าง (n) คน</label><input class="inp num" id="on" type="number" inputmode="numeric" min="0" value="${esc(o.n)}" data-bind="out.n" ${dis}></div>
+        </div>
+        ${radios('o12')}
+        <div class="sub-h"><b>${OUT.o13.t}</b><span>เต็ม 10</span></div>${radios('o13')}
+        <div class="sub-h"><b>${OUT.o14.t}</b><span>เต็ม 10</span></div>${radios('o14')}${evBar('out:1',a)}
+      </div>
+    </div>
+    <div class="card qcard">
+      <div class="card-h">
+        <span class="qno">2</span>
+        <div style="flex:1">
+          <h3>ความสะดวกในการติดต่อราชการ</h3>
+          <p>ช่องทางต้องให้บริการต่อเนื่องไม่น้อยกว่า 3 เดือน · ข้อมูลผู้ใช้ออนไลน์ย้อนหลังไม่น้อยกว่า 6 เดือน</p>
+        </div>
+        <div class="qscore-duo">
+          <div class="qscore-box self">
+            <span class="qs-lbl">ประเมินตนเอง</span>
+            <b id="oss-conv">${cSelf.conv}</b> <small>/30</small>
+          </div>
+          <div class="qscore-box mentor">
+            <span class="qs-lbl">MENTOR</span>
+            <b id="os-conv">${c.conv}</b> <small>/30</small>
+          </div>
+        </div>
+      </div>
+      <div class="card-b">
+        <div class="sub-h"><b>${OUT.c21.t}</b><span>เต็ม 15</span></div>${checks('c21', 3)}
+        <div class="sub-h"><b>${OUT.c22.t}</b><span>เต็ม 15</span></div>${radios('c22')}
+        ${evBar('out:2',a)}
+      </div>
+    </div>
+    <div class="card qcard">
+      <div class="card-h">
+        <span class="qno">3</span>
+        <div style="flex:1">
+          <h3>การนำเทคโนโลยีมาช่วยในการให้บริการประชาชน</h3>
+          <p>${OUT.t3.t}</p>
+        </div>
+        <div class="qscore-duo">
+          <div class="qscore-box self">
+            <span class="qs-lbl">ประเมินตนเอง</span>
+            <b id="oss-tech">${cSelf.tech}</b> <small>/30</small>
+          </div>
+          <div class="qscore-box mentor">
+            <span class="qs-lbl">MENTOR</span>
+            <b id="os-tech">${c.tech}</b> <small>/30</small>
+          </div>
+        </div>
+      </div>
+      <div class="card-b">
+        ${checks('t3', 6)}
+        ${evBar('out:3',a)}
+      </div>
+    </div>${advBox('out',a)}`;
   }
   if(S.tab==='sum') return summaryHTML(info, a, c);
+
   if(S.tab==='def'){
     return `<div class="card"><div class="card-h"><div><h3>ข้อบกพร่องและการตรวจซ้ำ</h3><p>ค้างดำเนินการ ${info.open.length} รายการ · ปิดแล้ว ${info.defs.length-info.open.length} รายการ</p></div>${!ro?`<div class="ca"><button class="btn btn-primary" data-act="def-add" data-area="" data-ref="" data-detail="">${ic('plus')}บันทึกข้อบกพร่อง</button></div>`:''}</div>
       <div class="card-b">${defectList(info.defs.slice().sort((a,b)=>(a.status==='closed')-(b.status==='closed')), false, ro?'mentee':'mentor')}</div></div>`;
@@ -4750,6 +5062,7 @@ function revReportHTML(a){
   return `<table class="revt"><thead><tr><th style="width:34%">ข้อเสนอแนะรายข้อจาก MENTOR</th><th>ข้อเสนอแนะ / ข้อแก้ไข</th></tr></thead><tbody>${rows||'<tr><td colspan="2">ยังไม่มีข้อเสนอแนะรายข้อ</td></tr>'}</tbody></table>`;
 }
 function summaryHTML(info,a,c){
+  ensureSelf(a); const cSelf = calcSelf(a) || c;
   const u=info.u; const ready=[c.physComplete, QC.every((_,i)=>a.qc[i].subs.some(Boolean)||a.qc[i].score!==null), a.narr.every(n=>n.score!==null&&n.score!==''), ['o11','o12','o13','o14','c22'].every(k=>a.out[k]!==null)];
   const yes='<b style="color:var(--ok)">✓ พร้อม</b>', no='<b style="color:var(--bad)">✗ ไม่พร้อม</b>';
   return `<div class="row no-print" style="margin-bottom:12px"><span class="muted small">แบบสรุปผลสำหรับเสนอผู้บริหาร และแนบประกอบการนำเรียนผู้ว่าราชการจังหวัด</span><span class="spacer"></span><button class="btn btn-lux" data-act="pdf-report">${ic('download')}ดาวน์โหลด PDF แบบสรุปผล</button><button class="btn" data-act="print">${ic('printer')}พิมพ์แบบสรุปผล</button></div>
@@ -4782,23 +5095,56 @@ function summaryHTML(info,a,c){
 
 /* live update while editing — ไม่ re-render ทั้งหน้าเพื่อคง focus */
 function live(){
-  const a=S.draft, c=calc(a);
+  const a=S.draft; ensureSelf(a); const c=calc(a); const cSelf=calcSelf(a) || c;
   const sb=$('#scorebox'); if(sb) sb.innerHTML=scoreBoxHTML(c);
   const sp=$('#ws-split'); if(sp) sp.innerHTML=splitHTML(c);
   const tc={phys:`${c.physYes}/15`, qc:fmt(c.qc,1), narr:fmt(c.narr,1), out:fmt(c.out)};
   Object.entries(tc).forEach(([k,v])=>{ const el=$(`[data-tc="${k}"]`); if(el) el.textContent=v; });
-  QC.forEach((q,i)=>{ const e=$('#qs-'+i); if(e){ e.textContent=fmt(qcScore(a,i),1); $('#qh-'+i).textContent=`ดำเนินการ ${a.qc[i].subs.filter(Boolean).length}/${q.subs.length} ข้อ`; $('#qsug-'+i).textContent=`คะแนนแนะนำ ${fmt(qcSuggest(a,i),1)} (เว้นว่างเพื่อใช้คะแนนแนะนำ)`; $('#qo-'+i).placeholder=fmt(qcSuggest(a,i),1);} });
+  const pSelf=$('#phys-pill-self'); if(pSelf) pSelf.innerHTML=`<span class="badge-mini self">ตนเอง</span> ผ่าน ${cSelf.physYes} / 15 ข้อ`;
+  const pMen=$('#phys-pill-mentor'); if(pMen) pMen.innerHTML=`<span class="badge-mini mentor">MENTOR</span> ผ่าน ${c.physYes} / 15 ข้อ`;
+  QC.forEach((q,i)=>{
+    const e=$('#qs-'+i); if(e){ e.textContent=fmt(qcScore(a,i),1); $('#qh-'+i).textContent=`ดำเนินการ ${a.qc[i].subs.filter(Boolean).length}/${q.subs.length} ข้อ`; $('#qsug-'+i).textContent=`คะแนนแนะนำ ${fmt(qcSuggest(a,i),1)} (เว้นว่างเพื่อใช้คะแนนแนะนำ)`; $('#qo-'+i).placeholder=fmt(qcSuggest(a,i),1);}
+    const es=$('#qss-'+i); if(es){ es.textContent=fmt(qcScore({qc:a.self?.qc||a.qc}, i), 1); }
+  });
   a.narr.forEach((n,i)=>{ const e=$('#ns-'+i); if(e) e.textContent=(n.score===null||n.score==='')?'–':fmt(n.score,1); });
+  (a.self?.narr||[]).forEach((sn,i)=>{ const es=$('#nss-'+i); if(es) es.textContent=(sn.score===null||sn.score==='')?'–':fmt(sn.score,1); });
   [['sat',c.sat],['conv',c.conv],['tech',c.tech]].forEach(([k,v])=>{ const e=$('#os-'+k); if(e) e.textContent=v; });
+  [['sat',cSelf.sat],['conv',cSelf.conv],['tech',cSelf.tech]].forEach(([k,v])=>{ const e=$('#oss-'+k); if(e) e.textContent=v; });
   const bar=$('#savebar'); if(bar){ bar.outerHTML=saveBarHTML(); }
 }
 function bind(el){
   const path=el.dataset.bind.split('.'); const a=S.draft;
+  ensureSelf(a);
   let val;
   if(el.type==='checkbox') val=el.checked;
-  else if(el.type==='radio') val = path[0]==='phys' ? el.value==='1' : +el.value;
+  else if(el.type==='radio') val = (path[0]==='phys' || (path[0]==='self' && path[1]==='phys')) ? el.value==='1' : +el.value;
   else val=el.value;
-  if(path[0]==='phys'){ a.phys[+path[1]]=val; const row=$('#pi-'+path[1]); if(row) row.dataset.state=val?'yes':'no'; }
+
+  if(path[0]==='self'){
+    const s=a.self;
+    if(path[1]==='phys'){
+      s.phys[+path[2]]=val;
+      const row=$('#pi-'+path[2]); if(row) row.dataset.selfState=val?'yes':'no';
+    }
+    else if(path[1]==='qc'){
+      s.qc[+path[2]].subs[+path[3]]=val;
+    }
+    else if(path[1]==='qco'){
+      if(val===''){ s.qc[+path[2]].score=null; }
+      else { let n=Math.max(0,Math.min(10,+val)); s.qc[+path[2]].score=n; }
+    }
+    else if(path[1]==='narr'){
+      const it=s.narr[+path[2]];
+      const f=el.closest('.field');
+      if(val===''){ it.score=null; f?.classList.remove('invalid'); }
+      else { const n=+val; if(isNaN(n)||n<0||n>10){ f?.classList.add('invalid'); return; } f?.classList.remove('invalid'); it.score=n; }
+    }
+    else if(path[1]==='out'){
+      if(path.length===4) s.out[path[2]][+path[3]]=val;
+      else s.out[path[2]] = (path[2]==='N'||path[2]==='n')?val:+val;
+    }
+  }
+  else if(path[0]==='phys'){ a.phys[+path[1]]=val; const row=$('#pi-'+path[1]); if(row) row.dataset.state=val?'yes':'no'; }
   else if(path[0]==='qc'){ a.qc[+path[1]].subs[+path[2]]=val; }
   else if(path[0]==='qco'){ if(val===''){ a.qc[+path[1]].score=null; } else { let n=Math.max(0,Math.min(10,+val)); a.qc[+path[1]].score=n; } }
   else if(path[0]==='narr'){ const it=a.narr[+path[1]];
@@ -4814,6 +5160,7 @@ function bind(el){
   else if(path[0]==='ready'){ a.ready=a.ready||{c:[]}; const r=a.ready; if(path[1]==='c'){ r.c=r.c||[]; r.c[+path[2]]=el.value; } else if(el.type==='checkbox') r[path[1]]=el.checked; else r[path[1]]=el.value; if(path[1]==='kind'){ const b=$('#ready-renew'); if(b) b.hidden=el.value!=='renew'; } if(path[1]==='date'){ const h=el.parentElement.querySelector('.help'); if(h) h.textContent=thDate(el.value,true); } const st=$('#ready-st'); if(st) st.innerHTML=readyStatusHTML(a); }
   else if(path[0]==='svy'){ a.survey=a.survey||{sat:{},conf:{}}; const v=a.survey; v.sat=v.sat||{}; v.conf=v.conf||{}; if(path[1]==='sat'||path[1]==='conf'){ const f=el.closest('.svr'); if(val===''){ delete v[path[1]][path[2]]; f?.classList.remove('invalid'); } else { const n=+val; if(isNaN(n)||n<1||n>5){ f?.classList.add('invalid'); return; } f?.classList.remove('invalid'); v[path[1]][path[2]]=Math.round(n*100)/100; } const lb=$('#svl-'+path[2]); if(lb) lb.innerHTML=svLevelHTML(v[path[1]][path[2]]); } else v[path[1]]=val; }
   else if(path[0]==='insp'){ const set=new Set(a.inspectors||[]); el.checked?set.add(el.value):set.delete(el.value); a.inspectors=[...set]; a.inspector=a.inspectors.join(', '); const c=$('#insp-c'); if(c) c.textContent=`เลือกแล้ว ${set.size} คน`; $('#insp-box')?.classList.toggle('invalid', false); }
+
   a.started=true;
   S.dirty=true; live();
 }
@@ -4952,7 +5299,31 @@ document.addEventListener('click', async e=>{
       if(S.role!=='mentor'){ go('role',{rolePick:'mentor'}); toast('กรุณาเข้าสู่ระบบ MENTOR ด้วย PIN ก่อน',true); break; }
       if(!S.coord && !S.allGroups && S.team!==S.pickTeam){ toast('หน่วยบริการนี้อยู่นอกกลุ่มของท่าน',true); break; }
       S.draft=null; go('unit',{unitId:S.pickUnit, tab:'phys', from:'forms'}); toast(`เริ่มตรวจ ${unitById(S.pickUnit).name}`); break; }
-    case 'ev-open': case 'rev-open': { const k=el.dataset.k; S.evOpen[(act==='ev-open'?'e:':'r:')+k]=true; viewUnitKeep(); const t=$(`#${act==='ev-open'?'evt':'rvt'}-${k.replace(':','-')}`); t&&t.focus(); break; }
+    case 'copy-self-phys': {
+      const a = S.draft; ensureSelf(a);
+      if(!a.self?.phys){ toast('ยังไม่มีข้อมูลการประเมินตนเอง', true); break; }
+      a.phys = a.self.phys.slice();
+      S.dirty = true; viewUnitKeep(); toast('คัดลอกผลประเมินตนเองมาใส่ในช่อง MENTOR ประเมินแล้ว'); break;
+    }
+    case 'copy-self-qc': {
+      const a = S.draft; ensureSelf(a);
+      const qi = +el.dataset.qcIdx;
+      if(!a.self?.qc?.[qi]?.subs){ toast('ยังไม่มีข้อมูลการประเมินตนเอง', true); break; }
+      a.qc[qi].subs = a.self.qc[qi].subs.slice();
+      S.dirty = true; viewUnitKeep(); toast(`คัดลอกติ๊กถูกจากตนเองในข้อ ${qi+1} แล้ว`); break;
+    }
+    case 'copy-self-out': {
+      const a = S.draft; ensureSelf(a);
+      if(!a.self?.out){ toast('ยังไม่มีข้อมูลการประเมินตนเอง', true); break; }
+      const so = a.self.out;
+      a.out = {
+        o11: so.o11, o12: so.o12, N: so.N, n: so.n, o13: so.o13, o14: so.o14,
+        c21: (so.c21||[]).slice(), c22: so.c22, t3: (so.t3||[]).slice()
+      };
+      S.dirty = true; viewUnitKeep(); toast('คัดลอกผลประเมินผลลัพธ์จากตนเองมาใส่ในช่อง MENTOR แล้ว'); break;
+    }
+    case 'ev-open':
+ case 'rev-open': { const k=el.dataset.k; S.evOpen[(act==='ev-open'?'e:':'r:')+k]=true; viewUnitKeep(); const t=$(`#${act==='ev-open'?'evt':'rvt'}-${k.replace(':','-')}`); t&&t.focus(); break; }
     case 'ev-del': { const k=el.dataset.k, fid=el.dataset.fid; confirmDlg('ลบไฟล์แนบนี้?','ไฟล์จะถูกลบเมื่อกดบันทึก','ลบไฟล์',()=>{ const e=S.draft.ev?.[k]; if(e){ e.files=(e.files||[]).filter(f=>f.id!==fid); } S.dirty=true; viewUnitKeep(); toast('ลบไฟล์แล้ว กดบันทึกเพื่อยืนยัน'); }, true); break; }
     case 'file-view': await viewFile(el.dataset.k, el.dataset.fid); break;
     case 'next-unit': S.draft=null; go('unit',{unitId:id, tab:'ready'}); break;

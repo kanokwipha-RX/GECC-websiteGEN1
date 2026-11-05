@@ -68,7 +68,7 @@ function validate_content(?object $c): void {
     foreach([$c->advisor,...$c->committee,...($c->mentorAdvisors??[])] as $p) $safe($p->photo??null,true);
 }
 function validate_assessment(mixed $a): void {
-    $fields=['started','date','round','inspector','inspectors','updatedAt','phys','qc','narr','out','ready','survey','ev','rev','adv','sender','quick','wf'];
+    $fields=['started','date','round','inspector','inspectors','updatedAt','phys','qc','narr','out','ready','survey','ev','rev','adv','sender','quick','wf','self'];
     if (!is_object($a) || array_diff(array_keys(get_object_vars($a)),$fields)) fail(400,'รูปแบบแบบประเมินไม่ถูกต้อง');
     if (!is_bool($a->started??null)||!date_value($a->date??null)||!is_int($a->round??null)||$a->round<1) fail(400,'วันที่หรือรอบการประเมินไม่ถูกต้อง');
     if (isset($a->ready->date) && !date_value($a->ready->date)) fail(400,'วันที่ลงนามไม่ถูกต้อง');
@@ -91,6 +91,21 @@ function validate_assessment(mixed $a): void {
         if (!property_exists($a->out,$k)) fail(400,'ข้อมูลผลลัพธ์ไม่ครบ');
         $v=$a->out->$k;
         if ($v!==null && $v!=='' && (!is_numeric($v)||!in_array((float)$v,array_map(fn($opt)=>(float)$opt[0],$c->OUT->$k->opts),true))) fail(400,'คะแนนผลลัพธ์ไม่ตรงเกณฑ์');
+    }
+    if (isset($a->self)) {
+        if (!is_object($a->self)) fail(400,'ข้อมูลการประเมินตนเองไม่ถูกต้อง');
+        if (isset($a->self->phys)) {
+            if (!is_array($a->self->phys)||count($a->self->phys)!==15||count(array_filter($a->self->phys,fn($x)=>!in_array($x,[true,false,null],true)))) fail(400,'ข้อมูลเกณฑ์กายภาพประเมินตนเองไม่ถูกต้อง');
+        }
+        if (isset($a->self->qc)) {
+            if (!is_array($a->self->qc)||count($a->self->qc)!==count($c->QC)) fail(400,'จำนวนข้อ Checklist ประเมินตนเองไม่ถูกต้อง');
+            foreach($a->self->qc as $i=>$q) if (!is_object($q)||!is_array($q->subs??null)||count($q->subs)!==count($c->QC[$i]->subs)||count(array_filter($q->subs,fn($v)=>!is_bool($v)))||!property_exists($q,'score')||!$score($q->score,10)) fail(400,'คะแนน Checklist ประเมินตนเองไม่ถูกต้อง');
+        }
+        if (isset($a->self->narr)) {
+            if (!is_array($a->self->narr)||count($a->self->narr)!==count($c->NARR)) fail(400,'จำนวนข้อคำบรรยายประเมินตนเองไม่ถูกต้อง');
+            foreach($a->self->narr as $n) if (!is_object($n)||!property_exists($n,'score')||!$score($n->score,10)) fail(400,'คะแนนคำบรรยายประเมินตนเองไม่ถูกต้อง');
+        }
+        if (isset($a->self->out)&&!is_object($a->self->out)) fail(400,'ข้อมูลผลลัพธ์ประเมินตนเองไม่ถูกต้อง');
     }
     if (isset($a->inspectors)&&!is_array($a->inspectors)) fail(400,'รายชื่อผู้ตรวจไม่ถูกต้อง');
     if (isset($a->ready) && (!is_object($a->ready) || (isset($a->ready->c) && !is_array($a->ready->c)))) fail(400,'ข้อมูลความพร้อมไม่ถูกต้อง');

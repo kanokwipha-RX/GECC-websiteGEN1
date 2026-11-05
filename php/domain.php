@@ -12,7 +12,14 @@ function blank_assess(): object {
         'qc'=>array_map(fn($q)=>(object)['subs'=>array_fill(0,count($q->subs),false),'score'=>null],$c->QC),
         'narr'=>array_map(fn($n)=>(object)['text'=>'','link'=>'','score'=>null],$c->NARR),
         'out'=>(object)['o11'=>null,'o12'=>null,'N'=>'','n'=>'','o13'=>null,'o14'=>null,
-            'c21'=>array_fill(0,count($c->OUT->c21->items),false),'c22'=>null,'t3'=>array_fill(0,count($c->OUT->t3->items),false)]];
+            'c21'=>array_fill(0,count($c->OUT->c21->items),false),'c22'=>null,'t3'=>array_fill(0,count($c->OUT->t3->items),false)],
+        'self'=>(object)[
+            'phys'=>array_fill(0, count($c->PHYS), null),
+            'qc'=>array_map(fn($q)=>(object)['subs'=>array_fill(0,count($q->subs),false),'score'=>null],$c->QC),
+            'narr'=>array_map(fn($n)=>(object)['score'=>null],$c->NARR),
+            'out'=>(object)['o11'=>null,'o12'=>null,'N'=>'','n'=>'','o13'=>null,'o14'=>null,
+                'c21'=>array_fill(0,count($c->OUT->c21->items),false),'c22'=>null,'t3'=>array_fill(0,count($c->OUT->t3->items),false)]
+        ]];
 }
 function numeric(mixed $v): float { return is_numeric($v) ? (float)$v : 0; }
 function truthy(mixed $v): bool { return !($v === null || $v === false || $v === '' || $v === 0 || $v === 0.0); }

@@ -5,7 +5,7 @@ const source = readFileSync(
   "utf8",
 );
 export const rules = vm.runInNewContext(
-  source + ";({PHYS,QC,NARR,OUT,blankAssess,calc,subOf,readyOf})",
+  source + ";({PHYS,QC,NARR,OUT,blankAssess,ensureSelf,calc,calcSelf,subOf,subOfSelf,readyOf})",
   {
     todayISO: () =>
       new Intl.DateTimeFormat("en-CA", {

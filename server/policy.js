@@ -82,6 +82,7 @@ const fields = [
   "sender",
   "quick",
   "wf",
+  "self",
 ];
 export function validateAssessment(a) {
   if (
@@ -177,6 +178,42 @@ export function validateAssessment(a) {
       fail(400, "คะแนนผลลัพธ์ไม่ตรงเกณฑ์");
   if (a.inspectors && !Array.isArray(a.inspectors))
     fail(400, "รายชื่อผู้ตรวจไม่ถูกต้อง");
+  if (a.self) {
+    if (typeof a.self !== "object" || Array.isArray(a.self))
+      fail(400, "ข้อมูลการประเมินตนเองไม่ถูกต้อง");
+    if (a.self.phys) {
+      if (
+        !Array.isArray(a.self.phys) ||
+        a.self.phys.length !== 15 ||
+        a.self.phys.some((x) => ![true, false, null].includes(x))
+      )
+        fail(400, "ข้อมูลเกณฑ์กายภาพประเมินตนเองไม่ถูกต้อง");
+    }
+    if (a.self.qc) {
+      if (!Array.isArray(a.self.qc) || a.self.qc.length !== rules.QC.length)
+        fail(400, "จำนวนข้อ Checklist ประเมินตนเองไม่ถูกต้อง");
+      a.self.qc.forEach((q, i) => {
+        if (
+          !q ||
+          !Array.isArray(q.subs) ||
+          q.subs.length !== rules.QC[i].subs.length ||
+          q.subs.some((v) => typeof v !== "boolean") ||
+          !score(q.score, 10)
+        )
+          fail(400, "คะแนน Checklist ประเมินตนเองไม่ถูกต้อง");
+      });
+    }
+    if (a.self.narr) {
+      if (!Array.isArray(a.self.narr) || a.self.narr.length !== rules.NARR.length)
+        fail(400, "จำนวนข้อคำบรรยายประเมินตนเองไม่ถูกต้อง");
+      a.self.narr.forEach((n) => {
+        if (!n || !score(n.score, 10))
+          fail(400, "คะแนนคำบรรยายประเมินตนเองไม่ถูกต้อง");
+      });
+    }
+    if (a.self.out && (typeof a.self.out !== "object" || Array.isArray(a.self.out)))
+      fail(400, "ข้อมูลผลลัพธ์ประเมินตนเองไม่ถูกต้อง");
+  }
   if (a.survey) {
     if (!Number.isFinite(+a.survey.n) || +a.survey.n < 0)
       fail(400, "จำนวนผู้ตอบไม่ถูกต้อง");
