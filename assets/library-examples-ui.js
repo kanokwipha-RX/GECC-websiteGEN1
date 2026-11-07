@@ -23,6 +23,34 @@ function renderCardFoot(c) {
     `;
   }
 
+  // Card 1: ไฟล์แยกตามหัวข้อ GECC (ตัวอย่างแบบใส่คำตอบ) - 3 Category buttons
+  if (c.id === 'ex-answers') {
+    const qCount = (c.files || []).filter(f => (f.subfolder || '').startsWith('2. เกณฑ์ด้านคุณภาพ')).length;
+    const oCount = (c.files || []).filter(f => (f.subfolder || '').startsWith('3. เกณฑ์ด้านผลลัพธ์')).length;
+
+    return `
+      <div class="ex-card-actions-3" style="display:flex;flex-direction:column;gap:7px;width:100%">
+        <div style="display:flex;gap:6px">
+          <a class="btn btn-lux btn-sm" href="assets/examples/physical-answers-15.zip" download="1.เกณฑ์ด้านกายภาพ_ครบ15ข้อ.zip" style="flex:1;text-decoration:none;display:inline-flex;align-items:center;justify-content:space-between;padding:0 12px;min-height:36px;font-size:13px" title="ดาวน์โหลดไฟล์ 1. เกณฑ์ด้านกายภาพ ครบ 15 ข้อ (.zip)">
+            <span style="display:inline-flex;align-items:center;gap:6px">${ic('file')}<strong>1. เกณฑ์ด้านกายภาพ</strong></span>
+            <span style="font-size:11.5px;opacity:.85;display:inline-flex;align-items:center;gap:4px">${ic('download')} ดาวน์โหลด (37.3 MB)</span>
+          </a>
+          <button class="btn btn-ghost btn-sm" data-act="open-ex-modal" data-ex-id="${esc(c.id)}" data-sub="1. เกณฑ์ด้านกายภาพ" style="border:1px solid rgba(15,34,99,.16);background:rgba(15,34,99,.04);padding:0 10px;min-height:36px" title="เปิดดูรายการไฟล์ 1. เกณฑ์ด้านกายภาพ">
+            ${ic('eye')}
+          </button>
+        </div>
+        <button class="btn btn-ghost btn-sm w-full" data-act="open-ex-modal" data-ex-id="${esc(c.id)}" data-sub="2. เกณฑ์ด้านคุณภาพ" style="border:1px solid rgba(15,34,99,.16);background:rgba(15,34,99,.03);color:var(--navy);font-weight:600;display:inline-flex;align-items:center;justify-content:space-between;padding:0 12px;min-height:36px;font-size:13.5px" title="เปิดดูรายการไฟล์ 2. เกณฑ์ด้านคุณภาพ">
+          <span style="display:inline-flex;align-items:center;gap:6px">${ic('folder')}<span>2. เกณฑ์ด้านคุณภาพ</span></span>
+          <span style="font-size:12px;color:var(--text-2);display:inline-flex;align-items:center;gap:4px">${qCount} ไฟล์ ${ic('right')}</span>
+        </button>
+        <button class="btn btn-ghost btn-sm w-full" data-act="open-ex-modal" data-ex-id="${esc(c.id)}" data-sub="3. เกณฑ์ด้านผลลัพธ์" style="border:1px solid rgba(15,34,99,.16);background:rgba(15,34,99,.03);color:var(--navy);font-weight:600;display:inline-flex;align-items:center;justify-content:space-between;padding:0 12px;min-height:36px;font-size:13.5px" title="เปิดดูรายการไฟล์ 3. เกณฑ์ด้านผลลัพธ์">
+          <span style="display:inline-flex;align-items:center;gap:6px">${ic('folder')}<span>3. เกณฑ์ด้านผลลัพธ์</span></span>
+          <span style="font-size:12px;color:var(--text-2);display:inline-flex;align-items:center;gap:4px">${oCount} ไฟล์ ${ic('right')}</span>
+        </button>
+      </div>
+    `;
+  }
+
   // Cards with 3 category buttons (ศูนย์ดำรงธรรม & สำนักงานที่ดิน)
   if (c.id === 'ex-damrongtham' || c.id === 'ex-land') {
     const isDam = c.id === 'ex-damrongtham';
@@ -65,6 +93,7 @@ function renderCardFoot(c) {
 function libraryExamplesSectionHTML() {
   const cards = window.LIBRARY_EXAMPLES || [];
   if (!cards.length) return '';
+  const totalFiles = cards.reduce((sum, c) => sum + (c.files ? c.files.length : (c.fileCount || 1)), 0);
   return `
     <section class="library-examples-section">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:24px">
@@ -73,7 +102,7 @@ function libraryExamplesSectionHTML() {
             <span style="display:inline-flex;padding:7px;background:rgba(212,175,55,0.18);color:#B8862B;border-radius:10px">${ic('folder')}</span>
             <h2 style="margin:0;font-size:clamp(22px,2.2vw,28px);color:var(--navy);font-weight:700">ตัวอย่างเอกสารและแนวทางการประเมิน GECC</h2>
           </div>
-          <p style="margin:6px 0 0 44px;color:var(--text-2);font-size:14.5px">ไฟล์ตัวอย่างจริงจากหน่วยงาน แบบติดตามเช็คลิสต์ แบบฟอร์มแยกตามเกณฑ์ 3 ด้าน และคำสั่งโครงการ (รวม 5 การ์ด 889 ไฟล์)</p>
+          <p style="margin:6px 0 0 44px;color:var(--text-2);font-size:14.5px">ไฟล์ตัวอย่างจริงจากหน่วยงาน แบบติดตามเช็คลิสต์ แบบฟอร์มแยกตามเกณฑ์ 3 ด้าน และคำสั่งโครงการ (รวม ${cards.length} การ์ด ${totalFiles.toLocaleString('th-TH')} ไฟล์)</p>
         </div>
       </div>
       <div class="examples-grid">
