@@ -499,6 +499,15 @@
       "kind": "",
       "team": 6,
       "prev": ""
+    },
+    {
+      "id": "u34",
+      "name": "สำนักงานยุติธรรมจังหวัดศรีสะเกษ",
+      "code": "000034",
+      "district": "ระดับจังหวัด",
+      "kind": "",
+      "team": 4,
+      "prev": ""
     }
   ],
   "assess": {},
@@ -517,7 +526,7 @@
     }
   ],
   "mentorRosterVersion": 2,
-  "nextUnitCode": 34,
+  "nextUnitCode": 35,
   "retiredUnitIds": [],
   "cal": {
     "start": "2026-10-01",
