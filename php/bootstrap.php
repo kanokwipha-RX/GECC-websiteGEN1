@@ -86,7 +86,7 @@ function password_hash_value(mixed $p): string {
 }
 function account_view(array $a): array {
     return ['id' => $a['id'], 'username' => $a['username'], 'name' => $a['name'], 'role' => $a['role'],
-        'unitId' => $a['unit_id'], 'team' => $a['team'] === null ? null : (int)$a['team'], 'mustChange' => (bool)$a['must_change']];
+        'unitId' => $a['unit_id'], 'team' => $a['team'] === null ? null : (int)$a['team'], 'mustChange' => false];
 }
 require_once __DIR__ . '/domain.php';
 require_once __DIR__ . '/policy.php';

@@ -171,7 +171,6 @@ window.GECCClient = (() => {
           ? "เชื่อมต่อข้อมูลกลาง · " + user.name
           : "ข้อมูลภาพรวมจังหวัด · เข้าสู่ระบบเพื่อดูรายละเอียดหน่วยบริการ",
       );
-      if (user?.mustChange) passwordModal(true);
     } catch (e) {
       DB = blankDB();
       DB.units = [];
@@ -187,7 +186,6 @@ window.GECCClient = (() => {
     if (blocked)
       throw new Error("กรุณาเก็บสำเนาร่างและโหลดข้อมูลล่าสุดก่อนบันทึก");
     if (!user) throw new Error("กรุณาเข้าสู่ระบบก่อนบันทึก");
-    if (user.mustChange) throw new Error("กรุณาตั้งรหัสผ่านใหม่ก่อนเริ่มกรอกข้อมูล");
     if (busy) throw new Error("กำลังบันทึก กรุณารอสักครู่");
     busy = true;
     try {

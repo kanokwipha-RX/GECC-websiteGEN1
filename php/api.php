@@ -98,7 +98,7 @@ function api(): never {
         $session=null;$sid=$_COOKIE[$name]??'';
         if (is_string($sid)&&preg_match('/^[a-f0-9]{64}$/D',$sid)) {
             $session=query('SELECT s.csrf,s.expires_at,a.* FROM gecc_sessions s JOIN gecc_accounts a ON a.id=s.account_id WHERE s.token_hash=? AND a.active=1 AND s.expires_at>UTC_TIMESTAMP(3)',[hash('sha256',$sid)])->fetch()?:null;
-            if ($session) {$session['team']=$session['team']===null?null:(int)$session['team'];$session['must_change']=(bool)$session['must_change'];}
+            if ($session) {$session['team']=$session['team']===null?null:(int)$session['team'];$session['must_change']=false;}
         }
         $GLOBALS['actor']=$session;
         if ($route==='session'&&$method==='POST') {
@@ -134,13 +134,13 @@ function api(): never {
             $newPass='Gecc2027ssk';
             $hash=password_hash_value($newPass);
             tx(function()use($a,$hash){
-                query('UPDATE gecc_accounts SET password_hash=?,must_change=1 WHERE id=?',[$hash,$a['id']]);
+                query('UPDATE gecc_accounts SET password_hash=?,must_change=0 WHERE id=?',[$hash,$a['id']]);
                 query('DELETE FROM gecc_sessions WHERE account_id=?',[$a['id']]);
                 audit($a['id'],'reset-password-default','account');
             });
             reply([
                 'ok'=>true,
-                'message'=>'รีเซ็ตรหัสผ่านเป็น Gecc2027ssk เรียบร้อยแล้ว กรุณาเข้าสู่ระบบด้วยรหัสผ่านนี้และตั้งรหัสผ่านใหม่ทันที',
+                'message'=>'รีเซ็ตรหัสผ่านเป็น Gecc2027ssk เรียบร้อยแล้ว สามารถเข้าสู่ระบบใช้งานได้ทันที',
                 'username'=>$username,
                 'defaultPassword'=>$newPass
             ]);
@@ -161,7 +161,7 @@ function api(): never {
             });
             $cookie('',-1);reply(['ok'=>true]);
         }
-        if ($modifying&&!empty($session['must_change'])) fail(403,'กรุณาเปลี่ยนรหัสผ่านก่อนใช้งาน');
+        // Forced password change disabled
         feature_routes($route,$method,$session);
         if ($route==='state'&&$method==='GET') {[$s,$r]=state();reply(result($s,$r,$session));}
         if ($route==='summary'&&$method==='GET') {[$s]=state();reply(summary($s));}
@@ -298,7 +298,7 @@ function api(): never {
             tx(function()use($v,$id,$hash,$session){
                 if (!query('SELECT id FROM gecc_accounts WHERE id=? FOR UPDATE',[$id])->fetch()) fail(404,'ไม่พบบัญชี');
                 if (isset($v->active)&&is_bool($v->active)) query('UPDATE gecc_accounts SET active=? WHERE id=?',[(int)$v->active,$id]);
-                if ($hash) query('UPDATE gecc_accounts SET password_hash=?,must_change=1 WHERE id=?',[$hash,$id]);
+                if ($hash) query('UPDATE gecc_accounts SET password_hash=?,must_change=0 WHERE id=?',[$hash,$id]);
                 query('DELETE FROM gecc_sessions WHERE account_id=?',[$id]);audit($session['id'],'update-account',$id);
             });reply(['ok'=>true]);
         }
