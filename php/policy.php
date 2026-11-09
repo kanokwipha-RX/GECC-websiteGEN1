@@ -191,7 +191,7 @@ function merge_state(object $current, mixed $input, array $actor): object {
     }
     if ($actor['role']!=='mentee') $next->defects=array_values(array_filter($next->defects,fn($d)=>!allowed($actor,find($next->units,fn($u)=>$u->id===$d->unitId))||in_array($d->id,$incomingIds,true)));
     else foreach($visible->defects as $d) if (!in_array($d->id,$incomingIds,true)) fail(403,'หน่วยบริการลบข้อบกพร่องไม่ได้');
-    validate_content($next->publicContent??null); unset($next->pins);$next->isSample=false;
+    if ($actor['role']==='coord'&&property_exists($input,'publicContent')) validate_content($next->publicContent??null); unset($next->pins);$next->isSample=false;
     return $next;
 }
 function transition(object $s, string $id, string $action, array $actor, string $note='', mixed $sender=null): object {

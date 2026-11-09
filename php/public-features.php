@@ -54,7 +54,15 @@ function validate_feature_content(object $content):void {
         foreach($content->videos??[] as $vdo){
             if(!is_string($vdo->title??null)||!is_string($vdo->url??null))fail(400,'ชื่อหรือลิงก์วิดีโอไม่ถูกต้อง');
             if(!in_array($vdo->status??null,['draft','published'],true)||!in_array($vdo->category??null,['physical','highlight','activity'],true))fail(400,'หมวดวิดีโอไม่ถูกต้อง');
-            if(!empty($vdo->url)){$u=parse_url($vdo->url);if(($u['scheme']??'')!=='https'||!in_array($u['host']??'',['youtu.be','www.youtube.com','youtube.com','drive.google.com'],true)||isset($u['user'])||isset($u['pass']))fail(400,'ใช้วิดีโอ YouTube หรือ Google Drive เท่านั้น');}
+            if(!empty($vdo->url)){
+                $vPath=ltrim(parse_url($vdo->url,PHP_URL_PATH)??'','/');
+                $isAsset=(preg_match('~(?:^|/)assets/videos/[A-Za-z0-9_./-]+\.(?:mp4|webm|mov|m4v)$~D',$vPath)||preg_match('~(?:^|/)assets/videos/[A-Za-z0-9_./-]+\.(?:mp4|webm|mov|m4v)$~D',$vdo->url))&&!str_contains($vdo->url,'..');
+                if(!$isAsset){
+                    $u=parse_url($vdo->url);
+                    $allowedHosts=['youtu.be','www.youtube.com','youtube.com','m.youtube.com','youtube-nocookie.com','drive.google.com','docs.google.com'];
+                    if(($u['scheme']??'')!=='https'||!in_array($u['host']??'',$allowedHosts,true)||isset($u['user'])||isset($u['pass']))fail(400,'ใช้วิดีโอ YouTube หรือ Google Drive เท่านั้น');
+                }
+            }
         }
 
 }
