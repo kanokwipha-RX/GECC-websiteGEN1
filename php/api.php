@@ -257,10 +257,13 @@ function api(): never {
                 $isPublicUnitInfo = false;
                 foreach ($s->assess ?? [] as $uid => $ass) {
                     foreach ($ass->quick ?? [] as $qk) {
-                        if (($qk->topic ?? '') === 'unitinfo') {
-                            foreach ($qk->files ?? [] as $qf) {
-                                if (($qf->id ?? '') === $id) { $isPublicUnitInfo = true; break 3; }
-                            }
+                        foreach ($qk->files ?? [] as $qf) {
+                            if (($qf->id ?? '') === $id) { $isPublicUnitInfo = true; break 3; }
+                        }
+                    }
+                    foreach ($ass->ev ?? [] as $ek => $evItem) {
+                        foreach ($evItem->files ?? [] as $ef) {
+                            if (($ef->id ?? '') === $id) { $isPublicUnitInfo = true; break 3; }
                         }
                     }
                 }

@@ -3908,6 +3908,153 @@ async function quickView(uid,fid){
   openModal(`<div class="modal-h"><div style="flex:1;min-width:0"><h3 style="overflow-wrap:anywhere">${esc(q.name)}</h3><p>${fsize(q.size)} · ส่งโดยหน่วยบริการ · ${thDateTime(q.at)}</p></div><button class="btn btn-ghost btn-icon" data-act="modal-close" aria-label="ปิด">${ic('x')}</button></div><div class="modal-b">${preview}</div><div class="modal-f"><button class="btn" data-act="att-dl" data-fid="${fid}" data-name="${esc(q.name)}">${ic('download')}ดาวน์โหลด</button><a class="btn" href="${url}" target="_blank" rel="noopener">${ic('right')}เปิดในหน้าต่างใหม่</a><button class="btn btn-primary" data-act="modal-close">ปิด</button></div>`);
 }
 
+function getEvCategoryLabel(k){
+  if(!k) return 'เอกสารทั่วไป';
+  if(k==='ready:0') return 'แบบประเมินความพร้อม (เกณฑ์บังคับ)';
+  if(k==='svy:0') return 'รายงานผลสำรวจความพึงพอใจและความเชื่อมั่น';
+  const parts = k.split(':');
+  const cat = parts[0], idx = parseInt(parts[1], 10);
+  if(cat === 'phys'){
+    const item = (typeof PHYS !== 'undefined') ? PHYS[idx] : null;
+    return `เกณฑ์ที่ 1 ด้านกายภาพ · ข้อ ${idx+1}${item ? ': ' + (item.s || item.t) : ''}`;
+  }
+  if(cat === 'qc'){
+    const item = (typeof QC !== 'undefined') ? QC[idx] : null;
+    return `เกณฑ์ที่ 2.1 ด้านคุณภาพ (Checklist) · ข้อ ${idx+1}${item ? ': ' + item.t : ''}`;
+  }
+  if(cat === 'narr'){
+    const item = (typeof NARR !== 'undefined') ? NARR[idx] : null;
+    return `เกณฑ์ที่ 2.2 ด้านคุณภาพ (บรรยาย) · ข้อ ${idx+1}${item ? ': ' + item.t : ''}`;
+  }
+  if(cat === 'out'){
+    const labels = ['ร้อยละความพึงพอใจ','ระยะเวลาและการลดขั้นตอน','การประเมินความสะดวก','การนำเทคโนโลยีมาช่วย'];
+    return `เกณฑ์ที่ 3 ด้านผลลัพธ์ · ข้อ ${idx+1}${labels[idx] ? ': ' + labels[idx] : ''}`;
+  }
+  return k;
+}
+
+function getAllUnitFiles(a, uid){
+  const list = [];
+  if(!a) return list;
+  if(a.ev){
+    for(const [k, obj] of Object.entries(a.ev)){
+      if(obj && Array.isArray(obj.files)){
+        for(const f of obj.files){
+          list.push({
+            id: f.id,
+            name: f.name,
+            size: f.size,
+            type: f.type,
+            at: f.at,
+            by: f.by || 'mentee',
+            source: 'ev',
+            key: k,
+            category: getEvCategoryLabel(k),
+            note: obj.text || ''
+          });
+        }
+      }
+    }
+  }
+  if(Array.isArray(a.quick)){
+    for(const q of a.quick){
+      if(Array.isArray(q.files)){
+        for(const f of q.files){
+          list.push({
+            id: f.id,
+            name: f.name,
+            size: f.size,
+            type: f.type,
+            at: f.at || q.at,
+            by: f.by || 'mentee',
+            source: 'quick',
+            topic: q.topic,
+            category: 'ส่งข้อมูลด่วน · ' + qTopic(q.topic),
+            sender: q.sender,
+            note: q.note || ''
+          });
+        }
+      }
+    }
+  }
+  list.sort((x, y) => (y.at || '').localeCompare(x.at || ''));
+  return list;
+}
+
+function allUnitFilesHTML(a, uid, title){
+  const files = getAllUnitFiles(a, uid);
+  const total = files.length;
+  if(!total){
+    return `
+    <div class="card qlist" style="margin-top:16px;border-left:4px solid #CBD5E1">
+      <div class="card-h">
+        <div>
+          <h3>${title || 'คลังเอกสารและไฟล์หลักฐานที่ส่งแล้ว'}</h3>
+          <p>ยังไม่มีการแนบไฟล์หลักฐานในระบบ</p>
+        </div>
+      </div>
+      <div class="card-b" style="padding:18px 20px;text-align:center;color:var(--ink-500)">
+        <div style="font-size:36px;margin-bottom:8px">📂</div>
+        <p style="margin:0 0 10px;font-size:14.5px">หน่วยบริการยังไม่ได้แนบไฟล์หลักฐาน สามารถแนบไฟล์ในแบบประเมินแต่ละข้อ หรือส่งเอกสารผ่านช่องทางด่วน</p>
+        <button class="btn btn-primary btn-sm" data-act="quick-send" data-id="${uid}">${ic('upload')} แนบไฟล์ส่งให้ MENTOR ทันที</button>
+      </div>
+    </div>`;
+  }
+
+  const physN = files.filter(f => f.key && f.key.startsWith('phys:')).length;
+  const qualN = files.filter(f => f.key && (f.key.startsWith('qc:') || f.key.startsWith('narr:'))).length;
+  const outN = files.filter(f => f.key && f.key.startsWith('out:')).length;
+  const quickN = files.filter(f => f.source === 'quick').length;
+
+  return `
+  <div class="card qlist" style="margin-top:16px;border-left:4px solid #10B981;box-shadow:0 4px 16px rgba(0,0,0,.05)">
+    <div class="card-h" style="flex-wrap:wrap;gap:12px;background:linear-gradient(to right, #F0FDF4, #FFFFFF);padding:14px 20px;border-bottom:1px solid #E2E8F0">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#10B981;color:#fff">${ic('check')}</span>
+          <h3 style="margin:0;font-size:17px;color:var(--navy-900)">${title || 'คลังเอกสารและไฟล์หลักฐานที่ส่งแล้ว'}</h3>
+          <span style="background:#059669;color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:10px">${total} ไฟล์</span>
+        </div>
+        <p style="margin:4px 0 0;font-size:13.5px;color:var(--ink-500)">ไฟล์หลักฐานทั้งหมดถูกบันทึกไว้ในระบบ Server ปลอดภัย สามารถกดดูหรือดาวน์โหลดได้ตลอดเวลา</p>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+        ${physN ? `<span style="font-size:12px;background:#EEF2FF;color:#3730A3;padding:3px 8px;border-radius:6px;border:1px solid #C7D2FE;font-weight:600">ด้านกายภาพ (${physN})</span>` : ''}
+        ${qualN ? `<span style="font-size:12px;background:#FEF3C7;color:#92400E;padding:3px 8px;border-radius:6px;border:1px solid #FDE68A;font-weight:600">ด้านคุณภาพ (${qualN})</span>` : ''}
+        ${outN ? `<span style="font-size:12px;background:#E0E7FF;color:#3730A3;padding:3px 8px;border-radius:6px;border:1px solid #C7D2FE;font-weight:600">ด้านผลลัพธ์ (${outN})</span>` : ''}
+        ${quickN ? `<span style="font-size:12px;background:#F1F5F9;color:#334155;padding:3px 8px;border-radius:6px;border:1px solid #CBD5E1;font-weight:600">ส่งข้อมูลด่วน (${quickN})</span>` : ''}
+      </div>
+    </div>
+    <div class="card-b" style="padding:14px 18px">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(min(100%, 340px), 1fr));gap:10px">
+        ${files.map(f => {
+          const tabName = f.key ? f.key.split(':')[0] : '';
+          return `
+          <div style="display:flex;flex-direction:column;justify-content:space-between;background:#FFFFFF;border:1px solid #E2E8F0;border-radius:10px;padding:10px 12px;box-shadow:0 1px 3px rgba(0,0,0,.03)" class="file-summary-card">
+            <div>
+              <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:6px">
+                <div style="font-size:24px;line-height:1;margin-top:2px">${extBadge(f.name)}</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:13.5px;font-weight:700;color:var(--navy-900);line-height:1.35;word-break:break-all" title="${esc(f.name)}">${esc(f.name)}</div>
+                  <div style="font-size:11.5px;color:var(--ink-500);margin-top:2px">${fsize(f.size)}${f.at ? ' · ' + thDateTime(f.at) : ''}</div>
+                </div>
+              </div>
+              <div style="display:inline-block;background:#F8FAFC;border:1px solid #E2E8F0;padding:2px 8px;border-radius:5px;font-size:11.5px;color:#0F172A;font-weight:600;margin-bottom:6px;line-height:1.4">
+                📌 ${esc(f.category)}
+              </div>
+              ${f.sender ? `<div style="font-size:12px;color:#475569;margin-bottom:4px">${ic('user')} ผู้ส่ง: ${esc(f.sender.name)}${f.sender.tel ? ' โทร ' + esc(f.sender.tel) : ''}</div>` : ''}
+              ${f.note ? `<div style="font-size:12px;color:#334155;background:#F8FAFC;padding:3px 6px;border-radius:4px;border:1px dashed #CBD5E1;margin-bottom:6px">คำอธิบาย: ${esc(f.note)}</div>` : ''}
+            </div>
+            <div style="display:flex;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid #F1F5F9">
+              <button class="btn btn-sm btn-outline" data-act="file-view" data-k="${esc(f.key || '')}" data-fid="${esc(f.id)}" style="flex:1;padding:4px 8px;font-size:12.5px;font-weight:600;justify-content:center">${ic('right')} ดูไฟล์</button>
+              <button class="btn btn-sm btn-primary" data-act="att-dl" data-fid="${esc(f.id)}" data-name="${esc(f.name)}" style="flex:1;padding:4px 8px;font-size:12.5px;font-weight:600;justify-content:center">${ic('download')} โหลด</button>
+              ${f.key && ['phys','qc','narr','out','ready','svy'].includes(tabName) ? `<button class="btn btn-sm btn-ghost" data-act="udash-tab" data-id="${uid}" data-tab="${tabName}" title="เปิดหัวข้อนี้" style="padding:4px 8px;font-size:12px">${ic('pencil')}</button>` : ''}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+  </div>`;
+}
 function quickListHTML(a,uid,title){
   const L=a?.quick||[]; if(!L.length) return '';
   return `<div class="card qlist" style="margin-top:16px"><div class="card-h"><div><h3>${title||'เอกสารที่หน่วยบริการส่งผ่านช่องทางด่วน'}</h3><p>${L.length} ครั้ง · ${L.reduce((s,x)=>s+x.files.length,0)} ไฟล์ · กดชื่อไฟล์เพื่อเปิดดู</p></div></div><div class="card-b"><ul class="ql">${L.map(x=>`<li><div class="ql-h"><span class="ql-t">${esc(qTopic(x.topic))}</span><span class="ql-d">${thDateTime(x.at)}</span></div>${x.sender?`<p class="ql-s">${ic('user')}<span>ผู้ส่ง: <b>${esc(x.sender.name)}</b>${x.sender.pos?` · ${esc(x.sender.pos)}`:''}${x.sender.tel?` · โทร <a href="tel:${esc(x.sender.tel.replace(/[^0-9+]/g,''))}">${esc(x.sender.tel)}</a>`:''}</span></p>`:''}${x.note?`<p class="ql-n">${esc(x.note)}</p>`:''}<div class="evf" style="margin-top:6px">${x.files.map(f=>`<button class="fch" data-act="quick-view" data-uid="${uid}" data-fid="${f.id}" title="${esc(f.name)}">${extBadge(f.name)}<span class="fmeta"><b>${esc(f.name)}</b><span>${fsize(f.size)}</span></span></button>`).join('')}</div></li>`).join('')}</ul></div></div>`;
@@ -4040,13 +4187,9 @@ function bareNav(prev,next){
 }
 /* ================= ข้อมูลหน่วยงานที่สมัคร GECC 2570 และไฟล์แนบ ================= */
 function getUnitInfoData(uid){
-  const quick = (DB.assess[uid]?.quick || []).filter(q => q.topic === 'unitinfo');
-  const files = quick.flatMap(q => (q.files || []).map(f => ({
-    ...f,
-    sender: q.sender,
-    note: q.note,
-    at: q.at
-  })));
+  const a = DB.assess[uid];
+  const quick = (a?.quick || []).filter(q => q.topic === 'unitinfo');
+  const files = getAllUnitFiles(a, uid);
   return { quick, files };
 }
 
@@ -4094,11 +4237,11 @@ function viewUnitsContent(){
       <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;margin-bottom:16px">
         <div>
           <h2 style="font-size:24px;font-weight:700;color:var(--navy-900);margin:0 0 6px">หน่วยงานที่สมัคร GECC 2570</h2>
-          <p style="color:var(--ink-500);margin:0;font-size:14.5px">รวม <b>32 หน่วยงาน</b> · ส่งเอกสารข้อมูลหน่วยงานแล้ว <b style="color:#059669">${totalSubmitted} หน่วยงาน</b> (${totalFiles} ไฟล์)</p>
+          <p style="color:var(--ink-500);margin:0;font-size:14.5px">รวม <b>${allU.length} เธซเธเนเธงเธขเธเธฒเธ</b> · ส่งเอกสารข้อมูลหน่วยงานแล้ว <b style="color:#059669">${totalSubmitted} หน่วยงาน</b> (${totalFiles} ไฟล์)</p>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button class="btn btn-sm btn-ghost" data-act="lib-lock" style="color:var(--navy);font-size:13px">${ic('lock')}ออกจากระบบ Library</button>
           <div style="background:#F0FDF4;border:1px solid #BBF7D0;padding:8px 14px;border-radius:10px;text-align:center">
-            <div style="font-size:18px;font-weight:700;color:#166534">${totalSubmitted} / 32</div>
+            <div style="font-size:18px;font-weight:700;color:#166534">${totalSubmitted} / ${allU.length}</div>
             <div style="font-size:11px;color:#15803D;font-weight:600">หน่วยงานที่ส่งไฟล์แล้ว</div>
           </div>
           <div style="background:#EEF2FF;border:1px solid #C7D2FE;padding:8px 14px;border-radius:10px;text-align:center">
@@ -4117,7 +4260,7 @@ function viewUnitsContent(){
           <div style="display:flex;gap:6px">
             <button class="btn btn-sm ${stFilter==='all'?'btn-primary':''}" data-act="filter-units-status" data-status="all">ทุกสถานะ (${withFiles.length})</button>
             <button class="btn btn-sm ${stFilter==='has_files'?'btn-primary':''}" data-act="filter-units-status" data-status="has_files" style="color:#059669">${ic('check')} มีไฟล์แนบ (${totalSubmitted})</button>
-            <button class="btn btn-sm ${stFilter==='no_files'?'btn-primary':''}" data-act="filter-units-status" data-status="no_files" style="color:#64748B">ยังไม่มีไฟล์ (${32 - totalSubmitted})</button>
+            <button class="btn btn-sm ${stFilter==='no_files'?'btn-primary':''}" data-act="filter-units-status" data-status="no_files" style="color:#64748B">ยังไม่มีไฟล์ (${allU.length - totalSubmitted})</button>
           </div>
         </div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
@@ -4169,8 +4312,8 @@ function viewUnitsContent(){
                         ${f.sender ? `<div style="font-size:13px;color:#475569">${ic('user')} <b>${esc(f.sender.name)}</b>${f.sender.tel?` · โทร ${esc(f.sender.tel)}`:''}</div>`:''}
                         ${f.note ? `<div style="font-size:13px;color:#1E293B;background:#fff;padding:4px 8px;border-radius:4px;border:1px solid #CBD5E1">ข้อความ: ${esc(f.note)}</div>`:''}
                         <div style="display:flex;gap:6px;margin-top:4px">
-                          <button class="btn btn-sm btn-outline" data-act="unitinfo-view" data-uid="${esc(u.id)}" data-fid="${esc(f.id)}" style="flex:1;padding:5px 8px;font-size:13.5px;line-height:1.2;font-weight:600">${ic('right')} ดูไฟล์</button>
-                          <button class="btn btn-sm btn-primary" data-act="unitinfo-dl" data-uid="${esc(u.id)}" data-fid="${esc(f.id)}" data-name="${esc(f.name)}" style="flex:1;padding:5px 8px;font-size:13.5px;line-height:1.2;font-weight:600">${ic('download')} โหลด</button>
+                          <button class="btn btn-sm btn-outline" data-act="file-view" data-k="${esc(f.key||'')}" data-fid="${esc(f.id)}" style="flex:1;padding:5px 8px;font-size:13.5px;line-height:1.2;font-weight:600">${ic('right')} ดูไฟล์</button>
+                          <button class="btn btn-sm btn-primary" data-act="att-dl" data-fid="${esc(f.id)}" data-name="${esc(f.name)}" style="flex:1;padding:5px 8px;font-size:13.5px;line-height:1.2;font-weight:600">${ic('download')} โหลด</button>
                         </div>
                       </div>
                     `).join('')}
@@ -4229,7 +4372,7 @@ function menteeHome(){
     ${S.view==='send'?'':countdownHTML(true)}
 
 ${S.view==='send'?`    <div class="send-hero"><h1>ส่งข้อมูลให้จังหวัด</h1><p>${esc(u.name)} · ส่งเกณฑ์การประเมินมาตรฐาน GECC ประจำปี พ.ศ. ${DB.fy}</p><button class="sh-btn" data-act="quick-send" data-id="${u.id}" aria-label="คลิกที่นี่เพื่อแนบไฟล์ส่งให้ MENTOR"><span class="sh-ic">${ic('upload')}</span><span class="sh-l">คลิกที่นี่</span><span class="sh-s">แนบไฟล์เอกสาร / รูปภาพ ส่งให้ MENTOR ได้ทันที</span></button></div>
-    ${quickListHTML(a,u.id,'เอกสาร PDF ที่ส่งให้ MENTOR แล้ว')}
+    ${allUnitFilesHTML(a,u.id,'คลังเอกสารและไฟล์หลักฐานทั้งหมดที่ส่งให้ MENTOR แล้ว')}
 
     <section class="card gsend" style="margin-top:0">
       <div class="gs-h"><span class="hico">${ic('clipboard')}</span><div><h2>ส่งข้อมูล-รับรายงานผลตรวจประเมินจาก MENTOR</h2><p>กรอกข้อมูลและแนบหลักฐานทีละหัวข้อ ดูผลการตรวจและข้อเสนอแนะจาก MENTOR แล้วกดยืนยันส่ง</p></div><span class="gs-prog"><b>${doneN}</b>/6 หัวข้อส่งแล้ว</span></div>
@@ -4248,6 +4391,7 @@ ${S.view==='send'?`    <div class="send-hero"><h1>ส่งข้อมูลใ
       ${tile('คุณภาพ: บรรยาย', cc?cc.narr:null, 100, SL[sub.narr][0])}
       ${tile('ด้านผลลัพธ์', cc?cc.out:null, 100, SL[sub.out][0])}
     </div>
+    ${allUnitFilesHTML(a,u.id,'คลังไฟล์เอกสารและหลักฐานทั้งหมดของหน่วยงานที่บันทึกในระบบ')}
     <div class="grid g2" style="margin-top:16px">
       <div class="card"><div class="card-h"><div><h3>สิ่งที่ต้องดำเนินการ</h3><p>${x.open.length} รายการที่รอหน่วยบริการแก้ไข</p></div></div><div class="card-b">${defectList(x.defs.filter(d=>d.status==='open'||d.status==='fixing'),false,'mentee')}</div></div>
       <div class="card"><div class="card-h"><div><h3>คำแนะนำจาก MENTOR</h3><p>ข้อเสนอแนะภาพรวมรายหมวด</p></div></div><div class="card-b">${[['phys','ด้านกายภาพ'],['qual','ด้านคุณภาพ'],['out','ด้านผลลัพธ์']].map(([k,l])=>`<div class="advr"><b>${l}</b><p>${esc((a?.adv||{})[k]||'ยังไม่มีคำแนะนำ')}</p></div>`).join('')}</div></div>
@@ -4259,7 +4403,7 @@ ${S.view==='send'?`    <div class="send-hero"><h1>ส่งข้อมูลใ
 function unitInfoModal(uid){
   const u=unitById(uid); if(!u) return;
   const a=DB.assess[uid]; const tm=DB.teams.find(t=>t.id===u.team);
-  const qfiles=(a?.quick||[]).filter(q=>q.topic==='unitinfo').flatMap(q=>q.files);
+  const qfiles=getAllUnitFiles(a, uid);
   openModal(`<div class="modal-h"><span class="dl-badge" style="background:var(--gold-grad);color:#0A1640">${ic('building')}</span><div style="flex:1;min-width:0"><h3>ข้อมูลหน่วยงานที่สมัคร GECC 2570</h3><p>${esc(u.name)}</p></div><button class="btn btn-ghost btn-icon" data-act="modal-close" aria-label="ปิด">${ic('x')}</button></div>
   <div class="modal-b">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px">
@@ -4425,7 +4569,7 @@ function viewUnit(){
   const RS=readyOf(a).st; const tabs=[['ready','แบบประเมินความพร้อม',RS==='ready'?'พร้อม':RS==='notready'?'ไม่พร้อม':'ยังไม่ส่ง'],['phys','ด้านกายภาพ',`${c.physYes}/15`],['qc','คุณภาพ: Checklist',`${fmt(c.qc,1)}`],['narr','คุณภาพ: บรรยาย',`${fmt(c.narr,1)}`],['out','ด้านผลลัพธ์',`${fmt(c.out)}`],['svy','ความพึงพอใจ/เชื่อมั่น',svDone(a.survey)?'ส่งแล้ว':'ยังไม่ส่ง'],['sum','แบบสรุปผล',''],['def','ข้อบกพร่อง',`${info.open.length}`]];
   $('#content').innerHTML = `
   ${wfBanner(DB.assess[u.id],u,true)}
-  ${quickListHTML(DB.assess[u.id],u.id)}
+  ${allUnitFilesHTML(DB.assess[u.id],u.id,'เน€เธญเธเธชเธฒเธฃเนเธฅเธฐเนเธเธฅเนเธซเธฅเธฑเธเธเธฒเธเธ—เธฑเนเธเธซเธกเธ”เธเธญเธเธซเธเนเธงเธขเธเธฒเธ')}
   <div class="tabs no-print" role="tablist" aria-label="หมวดการตรวจประเมิน">${tabs.map(t=>`<button role="tab" data-act="tab" data-tab="${t[0]}" aria-selected="${S.tab===t[0]}" tabindex="${S.tab===t[0]?0:-1}" aria-controls="tabpanel" id="tab-${t[0]}">${t[1]}${t[2]!==''?` <span class="tc" data-tc="${t[0]}">${t[2]}</span>`:''}</button>`).join('')}</div>
   <div id="tabpanel" role="tabpanel" aria-labelledby="tab-${S.tab}">${tabHTML(a,c,ro,info)}</div>
   ${(S.role==='mentor'||S.role==='mentee') && ['ready','phys','qc','narr','out','svy'].includes(S.tab)?saveBarHTML():''}`;
@@ -4568,19 +4712,53 @@ async function addFiles(key,list,kind){
     e.files.push({id, name: saveName, type: mime, size: blob.size, by: S.role, at: new Date().toISOString()});
     added++;
   }
-  if(added){ a.started=true; S.dirty=true; viewUnitKeep(); toast(`แนบแล้ว ${added} ไฟล์ · กดบันทึกเพื่อส่งข้อมูล`); }
+  if(added){
+    a.started=true;
+    if(S.unitId && DB.assess[S.unitId]){
+      DB.assess[S.unitId] = clone(a);
+      try { await persist(); } catch(err){}
+    }
+    S.dirty=false;
+    viewUnitKeep();
+    toast(`แนบและบันทึกแล้ว ${added} ไฟล์ · ข้อมูลถูกบันทึกลงระบบเรียบร้อย`);
+  }
 }
 
 async function viewFile(key,fid){
-  const f=((S.draft?.ev||{})[key]?.files||[]).find(x=>x.id===fid); if(!f) return;
-  const b=await FDB.get(fid); if(!b){ toast('ไม่พบไฟล์ในเบราว์เซอร์นี้ ไฟล์อาจถูกแนบจากเครื่องอื่น',true); return; }
+  let curA = S.draft || DB.assess[S.unitId || S.menteeUnit];
+  let f = null;
+  if(curA?.ev?.[key]?.files){
+    f = curA.ev[key].files.find(x=>x.id===fid);
+  }
+  if(!f && curA?.ev){
+    for(const k of Object.keys(curA.ev)){
+      f = (curA.ev[k]?.files||[]).find(x=>x.id===fid);
+      if(f){ key=k; break; }
+    }
+  }
+  if(!f && curA?.quick){
+    f = curA.quick.flatMap(x=>x.files).find(x=>x.id===fid);
+  }
+  if(!f){
+    for(const ass of Object.values(DB.assess||{})){
+      for(const k of Object.keys(ass.ev||{})){
+        f = (ass.ev[k]?.files||[]).find(x=>x.id===fid);
+        if(f){ key=k; break; }
+      }
+      if(f) break;
+      f = (ass.quick||[]).flatMap(x=>x.files).find(x=>x.id===fid);
+      if(f) break;
+    }
+  }
+  if(!f) f = { id: fid, name: 'เอกสารแนบ', size: 0, by: 'หน่วยบริการ' };
+  const b=await FDB.get(fid); if(!b){ toast('ไม่พบไฟล์ในระบบ หรืออาจยังไม่ได้เข้าสู่ระบบ',true); return; }
   const url=THUMB[fid]||(THUMB[fid]=URL.createObjectURL(b));
   const isImg = (f.type && f.type.startsWith('image/')) || /\.(png|jpe?g|webp|gif|bmp)$/i.test(f.name);
   const isPdf = f.type==='application/pdf' || /\.pdf$/i.test(f.name);
-  const content = isImg ? `<img class="imgv" src="${url}" alt="${esc(f.name)}">`
-    : isPdf ? `<iframe class="pdfv" src="${url}" title="${esc(f.name)}"></iframe><p class="tiny muted">หากเอกสารไม่แสดง ให้กดปุ่มเปิดในหน้าต่างใหม่</p>`
+  const content = isImg ? `<div style="text-align:center;padding:12px;background:#f8fafc;border-radius:12px;max-height:70vh;overflow:auto"><img class="imgv" src="${url}" alt="${esc(f.name)}" style="max-width:100%;max-height:65vh;object-fit:contain;border-radius:8px"></div>`
+    : isPdf ? `<iframe class="pdfv" src="${url}" title="${esc(f.name)}"></iframe><p class="tiny muted" style="margin-top:8px">หากเอกสารไม่แสดง ให้กดปุ่มเปิดในหน้าต่างใหม่</p>`
     : `<div style="text-align:center;padding:36px 16px;background:#f8fafc;border-radius:12px"><div style="font-size:48px;line-height:1;margin-bottom:12px">📄</div><h4 style="margin:0 0 8px;word-break:break-all">${esc(f.name)}</h4><p style="color:var(--ink-500);margin:0 0 16px">${fsize(f.size)} · ไฟล์เอกสาร</p><button class="btn btn-primary" data-act="att-dl" data-fid="${fid}" data-name="${esc(f.name)}">${ic('download')}ดาวน์โหลดไฟล์นี้เพื่อเปิดดู</button></div>`;
-  openModal(`<div class="modal-h"><div style="flex:1;min-width:0"><h3 style="overflow-wrap:anywhere">${esc(f.name)}</h3><p>${fsize(f.size)} · แนบโดย${f.by==='mentor'?' MENTOR':'หน่วยบริการ'} · ${thDateTime(f.at)}</p></div><button class="btn btn-ghost btn-icon" data-act="modal-close" aria-label="ปิด">${ic('x')}</button></div>
+  openModal(`<div class="modal-h"><div style="flex:1;min-width:0"><h3 style="overflow-wrap:anywhere">${esc(f.name)}</h3><p>${fsize(f.size)} · แนบโดย${f.by==='mentor'?' MENTOR':'หน่วยบริการ'}${f.at?` · ${thDateTime(f.at)}`:''}</p></div><button class="btn btn-ghost btn-icon" data-act="modal-close" aria-label="ปิด">${ic('x')}</button></div>
     <div class="modal-b">${content}</div>
     <div class="modal-f"><button class="btn" data-act="att-dl" data-fid="${fid}" data-name="${esc(f.name)}">${ic('download')}ดาวน์โหลด</button><a class="btn" href="${url}" target="_blank" rel="noopener">${ic('right')}เปิดในหน้าต่างใหม่</a><button class="btn btn-primary" data-act="modal-close">ปิด</button></div>`);
 }
@@ -5260,6 +5438,7 @@ function unitDashHTML(u,mode){
     ${cc?`<div class="scorebox">${scoreBoxHTML(cc)}</div>`:''}</div>
     ${cc?`<div class="ws-split">${splitHTML(cc)}</div>`:''}</div>
   ${wfB}
+  ${allUnitFilesHTML(x.a, u.id, 'เอกสารและไฟล์หลักฐานทั้งหมดที่หน่วยงานบันทึกแล้ว')}
   ${cc?(x.assessed?'':`<p class="small muted" style="margin:10px 2px 0">${ic('info')} คะแนนเบื้องต้นจากข้อมูลที่ส่งแล้ว ระดับตราจะคำนวณเมื่อส่งครบทั้ง 3 ด้าน</p>`):`<div class="card empty" style="margin-top:16px">${ic('clock')}<h3>ยังไม่มีผลการตรวจประเมิน</h3><p>เมื่อ MENTOR บันทึกผลการตรวจ หน่วยบริการจะเห็นคะแนนและข้อเสนอแนะที่หน้านี้</p></div>`}
   <div class="grid g2" style="margin-top:16px">
     <div class="card"><div class="card-h"><div><h3>สิ่งที่ต้องดำเนินการ</h3><p>${pending.length} รายการที่รอหน่วยบริการแก้ไข</p></div></div><div class="card-b">${defectList(pending,false,'mentee')}</div></div>
@@ -5400,7 +5579,21 @@ document.addEventListener('click', async e=>{
     }
     case 'ev-open':
  case 'rev-open': { const k=el.dataset.k; S.evOpen[(act==='ev-open'?'e:':'r:')+k]=true; viewUnitKeep(); const t=$(`#${act==='ev-open'?'evt':'rvt'}-${k.replace(':','-')}`); t&&t.focus(); break; }
-    case 'ev-del': { const k=el.dataset.k, fid=el.dataset.fid; confirmDlg('ลบไฟล์แนบนี้?','ไฟล์จะถูกลบเมื่อกดบันทึก','ลบไฟล์',()=>{ const e=S.draft.ev?.[k]; if(e){ e.files=(e.files||[]).filter(f=>f.id!==fid); } S.dirty=true; viewUnitKeep(); toast('ลบไฟล์แล้ว กดบันทึกเพื่อยืนยัน'); }, true); break; }
+    case 'ev-del': {
+      const k=el.dataset.k, fid=el.dataset.fid;
+      confirmDlg('ลบไฟล์แนบนี้?','ไฟล์จะถูกลบออกจากระบบทันที','ลบไฟล์',async ()=>{
+        const e=S.draft?.ev?.[k];
+        if(e){ e.files=(e.files||[]).filter(f=>f.id!==fid); }
+        if(S.unitId && DB.assess[S.unitId]){
+          DB.assess[S.unitId] = clone(S.draft);
+          await persist();
+        }
+        S.dirty=false;
+        viewUnitKeep();
+        toast('ลบไฟล์เรียบร้อยแล้ว');
+      }, true);
+      break;
+    }
     case 'file-view': await viewFile(el.dataset.k, el.dataset.fid); break;
     case 'next-unit': S.draft=null; go('unit',{unitId:id, tab:'ready'}); break;
     case 'wf-submit': { const uid=el.dataset.id; if(S.view==='unit'&&S.dirty){ const a=S.draft; a.started=true; a.updatedAt=new Date().toISOString(); DB.assess[uid]=clone(a); await persist(); S.dirty=false; } wfSubmit(uid); break; }

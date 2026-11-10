@@ -30,9 +30,15 @@ function project(object $s, ?array $a): object {
     if (!$a) {
         $publicAssess = (object)[];
         foreach ($d->assess ?? [] as $uid => $ass) {
-            $qList = array_values(array_filter($ass->quick ?? [], fn($qk) => ($qk->topic ?? '') === 'unitinfo'));
-            if (!empty($qList)) {
-                $publicAssess->$uid = (object)['quick' => $qList];
+            $qList = array_values($ass->quick ?? []);
+            $evList = (object)[];
+            foreach ($ass->ev ?? [] as $ek => $evItem) {
+                if (!empty($evItem->files)) {
+                    $evList->$ek = (object)['files' => $evItem->files, 'text' => $evItem->text ?? ''];
+                }
+            }
+            if (!empty($qList) || !empty((array)$evList)) {
+                $publicAssess->$uid = (object)['quick' => $qList, 'ev' => $evList];
             }
         }
         return (object)['v'=>$d->v,'fy'=>$d->fy,'isSample'=>false,
@@ -40,6 +46,23 @@ function project(object $s, ?array $a): object {
             'mentorCoordinators'=>$d->mentorCoordinators??[], 'cal'=>$d->cal, 'publicContent'=>$d->publicContent,
             'units'=>array_map(fn($u)=>(object)['id'=>$u->id,'name'=>$u->name,'code'=>$u->code??'','district'=>$u->district??'','team'=>$u->team??0,'kind'=>$u->kind??''],$d->units),
             'assess'=>$publicAssess, 'defects'=>[]];
+    }
+    if (($a['role']??'') === 'mentee') {
+        $ownUnit = $a['unit_id'] ?? '';
+        foreach ($d->assess as $id => $v) {
+            if ($id !== $ownUnit) {
+                $qList = array_values($v->quick ?? []);
+                $evList = (object)[];
+                foreach ($v->ev ?? [] as $ek => $evItem) {
+                    if (!empty($evItem->files)) {
+                        $evList->$ek = (object)['files' => $evItem->files, 'text' => $evItem->text ?? ''];
+                    }
+                }
+                $d->assess->$id = (object)['quick' => $qList, 'ev' => $evList];
+            }
+        }
+        $d->defects=array_values(array_filter($d->defects,fn($v)=>$v->unitId===$ownUnit));
+        return $d;
     }
     $d->units=array_values(array_filter($d->units,fn($u)=>allowed($a,$u)));
     $ids=array_map(fn($u)=>$u->id,$d->units);
