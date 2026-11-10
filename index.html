@@ -1953,43 +1953,78 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 .library-gate-card .inp{background:#fff;color:#0F2263;font-weight:600;}
 .library-gate-card .btn-ghost{color:#F1D58F!important;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);border-radius:10px;height:44px;}
 .library-gate-card .btn-ghost:hover{background:rgba(255,255,255,.2);color:#fff!important;}
-/* ================= แดชบอร์ดกำกับติดตามงาน GECC 2570 (โทนทอง-น้ำเงิน) ================= */
-.trk-section{margin-top:36px;font-family:'IBM Plex Sans Thai','Noto Sans Thai',sans-serif;}
-.trk-hdr-bar{background:linear-gradient(135deg,#071536 0%,#0F2263 60%,#17388C 100%);color:#fff;border-radius:14px;padding:20px 24px;border-top:3px solid #C9A24A;box-shadow:0 8px 24px rgba(15,34,99,0.14);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+/* ================= แดชบอร์ดกำกับติดตามงาน GECC 2570 (ตามตัวอย่างจริง) ================= */
+.trk-section{margin-top:32px;font-family:'IBM Plex Sans Thai','Noto Sans Thai',sans-serif;}
+.trk-hdr-bar{background:linear-gradient(135deg,#071536 0%,#0F2263 60%,#17388C 100%);color:#fff;border-radius:14px;padding:18px 24px;border-top:3px solid #C9A24A;box-shadow:0 8px 24px rgba(15,34,99,0.14);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
 .trk-hdr-brand{display:flex;align-items:center;gap:16px;}
 .trk-hdr-brand .trk-seals{display:flex;gap:10px;align-items:center;}
-.trk-hdr-brand .trk-seals img{width:46px;height:46px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.3));}
-.trk-hdr-title h2{margin:0;font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.2px;}
-.trk-hdr-title p{margin:4px 0 0;font-size:14px;color:#D5DCEE;}
-.trk-badge-gold{background:linear-gradient(135deg,#F0DA9A,#C9A24A);color:#081338;padding:6px 14px;border-radius:20px;font-weight:700;font-size:14px;box-shadow:0 2px 8px rgba(201,162,74,0.35);display:inline-flex;align-items:center;gap:6px;}
+.trk-hdr-brand .trk-seals img{width:44px;height:44px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.3));}
+.trk-hdr-title h2{margin:0;font-size:21px;font-weight:700;color:#fff;}
+.trk-hdr-title p{margin:4px 0 0;font-size:13.5px;color:#D5DCEE;}
+.trk-badge-gold{background:linear-gradient(135deg,#F0DA9A,#C9A24A);color:#081338;padding:6px 14px;border-radius:20px;font-weight:700;font-size:13.5px;box-shadow:0 2px 8px rgba(201,162,74,0.35);display:inline-flex;align-items:center;gap:6px;}
 
+/* แถบสถานะ 3 ช่องหลัก (ตรงตามรูปตัวอย่างเป๊ะ) */
+.trk-top-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
+@media(max-width:768px){.trk-top-tabs{grid-template-columns:1fr;}}
+.trk-status-tab{display:flex;align-items:center;gap:12px;padding:12px 18px;border-radius:10px;font-size:16px;font-weight:700;border:2px solid transparent;cursor:pointer;transition:all 0.18s ease;font-family:inherit;box-shadow:0 2px 6px rgba(0,0,0,0.04);width:100%;text-align:left;}
+.trk-status-tab:hover{transform:translateY(-2px);filter:brightness(0.97);box-shadow:0 4px 10px rgba(0,0,0,0.08);}
+.trk-status-tab.active{border-color:#0F2263;box-shadow:0 0 0 2px #C9A24A, 0 4px 12px rgba(15,34,99,0.15);}
+.trk-status-tab.done{background:#D4F4DD;color:#064E3B;}
+.trk-status-tab.prog{background:#DBEAFE;color:#1E3A8A;}
+.trk-status-tab.none{background:#EAECF0;color:#374151;}
+
+.trk-tab-badge{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
+.trk-tab-badge.done{background:#059669;}
+.trk-tab-badge.prog{background:#2563EB;}
+.trk-tab-badge.none{background:#4B5563;}
+
+.trk-flt-controls{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+.trk-flt-hint{font-size:13.5px;color:#5A6B8A;font-weight:500;}
+.trk-all-btn{background:#fff;border:1px solid #DCE3F1;color:#0F2263;padding:5px 14px;border-radius:16px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s ease;}
+.trk-all-btn:hover{background:#F0F4FA;border-color:#0F2263;}
+.trk-all-btn.active{background:#0F2263;color:#fff;border-color:#0F2263;}
+
+/* 6 กลุ่ม MENTOR การ์ด (ตรงตามรูป media_1794324907741_53574cd4.png เป๊ะๆ) */
+.trk-groups-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;}
+@media(max-width:1024px){.trk-groups-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:680px){.trk-groups-grid{grid-template-columns:1fr;}}
+
+.trk-group-box{background:#fff;border:1px solid #D2DBE8;border-radius:10px;overflow:hidden;box-shadow:0 3px 10px rgba(8,44,61,0.06);display:flex;flex-direction:column;}
+.trk-group-header{background:#082C3D;color:#fff;padding:12px 16px;}
+.trk-group-title{font-size:14.5px;font-weight:700;color:#ffffff;line-height:1.35;}
+.trk-group-sent{font-size:13px;font-weight:500;color:#E2E8F0;margin-top:2px;}
+
+.trk-group-body{padding:10px;display:flex;flex-direction:column;gap:7px;flex:1;}
+
+/* แถวหน่วยงานแต่ละแถว (แสดงชื่อหน่วยงานเต็มแถวตามสีสถานะ) */
+.trk-u-item{display:flex;align-items:center;gap:10px;padding:7px 12px;border-radius:8px;font-size:14px;font-weight:700;width:100%;border:none;cursor:pointer;text-align:left;transition:all 0.15s ease;font-family:inherit;box-shadow:0 1px 3px rgba(0,0,0,0.03);}
+.trk-u-item:hover{transform:translateY(-1px);filter:brightness(0.96);box-shadow:0 3px 8px rgba(0,0,0,0.08);}
+.trk-u-item.done{background:#D4F4DD;color:#064E3B;}
+.trk-u-item.prog{background:#DBEAFE;color:#1E3A8A;}
+.trk-u-item.none{background:#EAECF0;color:#374151;}
+
+.trk-u-icon{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.trk-u-icon.done{background:#059669;}
+.trk-u-icon.prog{background:#2563EB;}
+.trk-u-icon.none{background:#4B5563;}
+
+.trk-u-text{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-0.1px;}
+.trk-u-text b{margin-right:4px;font-weight:800;}
+
+/* การ์ดภาพรวมคำแนะนำและผู้ประสานงาน */
 .trk-card{background:#fff;border-radius:14px;border:1px solid #DCE3F1;box-shadow:0 6px 20px rgba(15,34,99,0.06);padding:24px;margin-bottom:24px;}
 .trk-summary-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;}
-.trk-big-stat{font-size:38px;font-weight:800;color:#0F2263;line-height:1;}
-.trk-big-stat small{font-size:20px;font-weight:600;color:#5A6B8A;margin-left:4px;}
-.trk-pct-pill{background:#FBF6E9;border:1px solid #C9A24A;color:#9A7124;padding:6px 16px;border-radius:20px;font-size:16px;font-weight:700;}
+.trk-big-stat{font-size:36px;font-weight:800;color:#0F2263;line-height:1;}
+.trk-big-stat small{font-size:19px;font-weight:600;color:#5A6B8A;margin-left:4px;}
+.trk-pct-pill{background:#FBF6E9;border:1px solid #C9A24A;color:#9A7124;padding:6px 16px;border-radius:20px;font-size:15.5px;font-weight:700;}
 
-.trk-stack-bar{height:26px;border-radius:13px;overflow:hidden;display:flex;background:#E5E7EB;box-shadow:inset 0 2px 4px rgba(0,0,0,0.12);margin-bottom:20px;}
+.trk-stack-bar{height:24px;border-radius:12px;overflow:hidden;display:flex;background:#E5E7EB;box-shadow:inset 0 2px 4px rgba(0,0,0,0.12);margin-bottom:20px;}
 .trk-seg{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;transition:width 0.5s ease;text-shadow:0 1px 2px rgba(0,0,0,0.25);}
 .trk-seg.done{background:linear-gradient(90deg,#0D6838,#1F8A55);}
 .trk-seg.prog{background:linear-gradient(90deg,#1545B2,#2563EB);}
 .trk-seg.none{background:linear-gradient(90deg,#374151,#4B5563);}
 
-.trk-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;}
-.trk-stat-box{border-radius:12px;padding:18px 20px;color:#fff;display:flex;flex-direction:column;box-shadow:0 4px 12px rgba(0,0,0,0.08);position:relative;overflow:hidden;}
-.trk-stat-box.done{background:linear-gradient(145deg,#0D6838 0%,#168249 100%);}
-.trk-stat-box.prog{background:linear-gradient(145deg,#13429E 0%,#1A56DB 100%);}
-.trk-stat-box.none{background:linear-gradient(145deg,#232B3E 0%,#374151 100%);}
-.trk-stat-top{display:flex;align-items:center;gap:14px;margin-bottom:12px;}
-.trk-stat-num{font-size:44px;font-weight:800;line-height:1;}
-.trk-stat-lbl{font-size:16px;font-weight:700;line-height:1.25;}
-.trk-stat-lbl span{font-size:13px;font-weight:400;opacity:0.85;display:block;margin-top:2px;}
-.trk-stat-divider{border-top:1px solid rgba(255,255,255,0.2);margin:8px 0 12px;}
-.trk-pills{display:flex;flex-wrap:wrap;gap:6px;max-height:110px;overflow-y:auto;}
-.trk-num-pill{background:rgba(255,255,255,0.22);color:#fff;padding:2px 7px;border-radius:6px;font-size:14px;font-weight:700;display:inline-block;letter-spacing:0.5px;cursor:pointer;transition:background 0.15s ease;}
-.trk-num-pill:hover{background:rgba(255,255,255,0.4);transform:scale(1.05);}
-
-.trk-actions-box{background:#F8FAFC;border:1px solid #DCE3F1;border-radius:12px;padding:18px 22px;margin-top:20px;}
+.trk-actions-box{background:#F8FAFC;border:1px solid #DCE3F1;border-radius:12px;padding:18px 22px;margin-top:16px;}
 .trk-actions-title{font-size:16px;font-weight:700;color:#0F2263;margin:0 0 12px;display:flex;align-items:center;gap:8px;}
 .trk-action-item{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;font-size:14.5px;color:#2D3748;line-height:1.5;}
 .trk-action-item:last-child{margin-bottom:0;}
@@ -2001,43 +2036,6 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 .trk-contact-bar{background:linear-gradient(90deg,#071536 0%,#0F2263 100%);color:#F1D58F;border-radius:10px;padding:12px 18px;margin-top:16px;display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;font-size:14px;}
 .trk-contact-bar a{color:#F1D58F;text-decoration:none;font-weight:600;}
 .trk-contact-bar a:hover{text-decoration:underline;color:#fff;}
-
-.trk-flt-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0 16px;}
-.trk-flt-btn{background:#fff;border:1px solid #DCE3F1;color:#4A5568;padding:6px 14px;border-radius:20px;font-size:13.5px;font-weight:600;cursor:pointer;transition:all 0.15s ease;display:inline-flex;align-items:center;gap:6px;}
-.trk-flt-btn:hover{background:#F7FAFC;border-color:#CBD5E0;}
-.trk-flt-btn.active{background:#0F2263;color:#fff;border-color:#0F2263;box-shadow:0 2px 6px rgba(15,34,99,0.25);}
-.trk-flt-btn.active.flt-done{background:#1F8A55;border-color:#1F8A55;}
-.trk-flt-btn.active.flt-prog{background:#1A56DB;border-color:#1A56DB;}
-.trk-flt-btn.active.flt-none{background:#4B5563;border-color:#4B5563;}
-
-.trk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:16px;}
-.trk-grp-card{border:1px solid #DCE3F1;border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 3px 10px rgba(15,34,99,0.05);display:flex;flex-direction:column;}
-.trk-grp-hdr{background:#0B1B48;color:#fff;padding:12px 16px;border-bottom:2px solid #C9A24A;display:flex;align-items:center;justify-content:space-between;}
-.trk-grp-hdr b{font-size:15px;color:#fff;font-weight:700;}
-.trk-grp-sub{font-size:12.5px;color:#C9A24A;font-weight:600;}
-.trk-grp-pill{background:rgba(201,162,74,0.18);border:1px solid #C9A24A;color:#F0DA9A;padding:2px 10px;border-radius:12px;font-size:12.5px;font-weight:700;}
-
-.trk-grp-list{padding:6px 0;flex:1;}
-.trk-unit-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid #EDF2F7;cursor:pointer;transition:background 0.12s ease,transform 0.12s ease;font-size:14px;text-align:left;width:100%;background:none;border-left:none;border-right:none;border-top:none;}
-.trk-unit-row:last-child{border-bottom:none;}
-.trk-unit-row:hover{background:#F7FAFC;transform:translateX(3px);}
-.trk-unit-row.done{background:#F6FBF7;}
-.trk-unit-row.prog{background:#F4F8FF;}
-.trk-unit-row.none{background:#FAFAFA;}
-.trk-unit-row.done:hover{background:#EAF6EC;}
-.trk-unit-row.prog:hover{background:#EAF1FD;}
-.trk-unit-row.none:hover{background:#F0F0F0;}
-
-.trk-u-ico{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;font-weight:700;color:#fff;}
-.trk-u-ico.done{background:#1F8A55;}
-.trk-u-ico.prog{background:#1A56DB;}
-.trk-u-ico.none{background:#4B5563;}
-.trk-u-num{font-weight:700;color:#0F2263;min-width:24px;font-size:14px;}
-.trk-u-name{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;color:#1A202C;}
-.trk-u-tag{font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:10px;flex-shrink:0;}
-.trk-u-tag.done{background:#E8F6ED;color:#0E6838;}
-.trk-u-tag.prog{background:#EFF6FF;color:#1A56DB;}
-.trk-u-tag.none{background:#F3F4F6;color:#4B5563;}
 
 </style>
 <link rel="stylesheet" href="assets/premium.css">
@@ -3849,70 +3847,68 @@ function trackingDashboardHTML(customInfos) {
         </div>
         <div class="trk-hdr-title">
           <h2>ความก้าวหน้าการส่งข้อมูลและยืนยันแบบสอบถาม GECC ปี 2570</h2>
-          <p>แดชบอร์ดกำกับติดตามงาน · จังหวัดศรีสะเกษ · ข้อมูล ณ ${lastUpd ? thDateTime(lastUpd) : thDate(todayISO(), true)}</p>
+          <p>แดชบอร์ดกำกับติดตามงานรายหน่วยบริการ · จังหวัดศรีสะเกษ · ข้อมูล ณ ${lastUpd ? thDateTime(lastUpd) : thDate(todayISO(), true)}</p>
         </div>
       </div>
       <div class="trk-badge-gold">${ic('shield')} GECC SISAKET 2570</div>
     </div>
 
-    <!-- ส่วนที่ 1: ภาพรวมความก้าวหน้าและการยืนยัน -->
+    <!-- ส่วนที่ 1: แถบสถานะ 3 ช่องหลักตามตัวอย่าง (คลิกเพื่อกรองสถานะ) -->
+    <div class="trk-flt-controls">
+      <div class="trk-flt-hint">คลิกแถบสถานะเพื่อกรองรายชื่อ หรือคลิกที่ชื่อหน่วยงานเพื่อดูข้อมูลผลการประเมิน</div>
+      <button type="button" class="trk-all-btn active" data-act="trk-filter" data-f="all">แสดงทั้งหมด (${N} แห่ง)</button>
+    </div>
+
+    <div class="trk-top-tabs">
+      <button type="button" class="trk-status-tab done" data-act="trk-filter" data-f="done" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ยืนยันแล้ว">
+        <span class="trk-tab-badge done">✔</span>
+        <span>ยืนยันแล้ว ${doneList.length}</span>
+      </button>
+      <button type="button" class="trk-status-tab prog" data-act="trk-filter" data-f="prog" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่รอหน่วยงานยืนยัน">
+        <span class="trk-tab-badge prog">➔</span>
+        <span>รอหน่วยงานยืนยัน ${progList.length}</span>
+      </button>
+      <button type="button" class="trk-status-tab none" data-act="trk-filter" data-f="none" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ยังไม่ส่งข้อมูล">
+        <span class="trk-tab-badge none">➖</span>
+        <span>ยังไม่ส่งข้อมูล ${noneList.length}</span>
+      </button>
+    </div>
+
+    <!-- ส่วนที่ 2: ตาราง 6 กลุ่ม MENTOR แสดงชื่อทุกหน่วยงานตามสีสถานะ (ตรงตามรูปตัวอย่าง) -->
+    <div class="trk-groups-grid">
+      ${teams.map(t => {
+        const tStatuses = statuses.filter(x => x.u.team === t.id);
+        const tSent = tStatuses.filter(x => x.st !== 'none').length;
+        return `
+        <div class="trk-group-box">
+          <div class="trk-group-header">
+            <div class="trk-group-title">กลุ่ม ${t.id} ${esc(t.name)}</div>
+            <div class="trk-group-sent">ส่งแล้ว ${tSent}/${tStatuses.length}</div>
+          </div>
+          <div class="trk-group-body">
+            ${tStatuses.map(x => `
+              <button type="button" class="trk-u-item ${x.st}" data-act="trk-unit" data-id="${x.u.id}" data-st="${x.st}" title="${esc(x.u.name)}">
+                <span class="trk-u-icon ${x.st}">${x.st === 'done' ? '✔' : x.st === 'prog' ? '➔' : '➖'}</span>
+                <span class="trk-u-text"><b>${x.num}</b> ${esc(x.sName)}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+        `;
+      }).join('')}
+    </div>
+
+    <!-- ส่วนที่ 3: ภาพรวมความก้าวหน้า คำแนะนำ และผู้ประสานงาน -->
     <div class="trk-card">
       <div class="trk-summary-head">
         <div class="trk-big-stat">${sentCount} <small>/ ${N} แห่ง</small></div>
         <div class="trk-pct-pill">ส่งข้อมูลแล้ว ร้อยละ ${sentPct}</div>
       </div>
 
-      <div class="trk-stack-bar" title="ส่งครบ: ${doneList.length} แห่ง (${Math.round(donePct)}%), ระหว่างดำเนินการ: ${progList.length} แห่ง (${Math.round(progPct)}%), ยังไม่ส่ง: ${noneList.length} แห่ง (${Math.round(nonePct)}%)">
+      <div class="trk-stack-bar" title="ยืนยันแล้ว: ${doneList.length} แห่ง, รอหน่วยงานยืนยัน: ${progList.length} แห่ง, ยังไม่ส่ง: ${noneList.length} แห่ง">
         ${doneList.length ? `<div class="trk-seg done" style="width:${donePct}%">${doneList.length}</div>` : ''}
         ${progList.length ? `<div class="trk-seg prog" style="width:${progPct}%">${progList.length}</div>` : ''}
         ${noneList.length ? `<div class="trk-seg none" style="width:${nonePct}%">${noneList.length}</div>` : ''}
-      </div>
-
-      <div class="trk-stat-grid">
-        <!-- 1. ยืนยันแล้ว -->
-        <div class="trk-stat-box done">
-          <div class="trk-stat-top">
-            <div class="trk-stat-num">${doneList.length}</div>
-            <div class="trk-stat-lbl">
-              ยืนยันแล้ว
-              <span>พร้อมเก็บข้อมูล / ตรวจประเมิน</span>
-            </div>
-          </div>
-          <div class="trk-stat-divider"></div>
-          <div class="trk-pills">
-            ${doneList.length ? doneList.map(x => `<span class="trk-num-pill" data-act="trk-pill" data-id="${x.u.id}" title="${esc(x.u.name)}">${x.num}</span>`).join('') : '<span style="opacity:0.8;font-size:13px">ยังไม่มีหน่วยงานที่ยืนยันแล้ว</span>'}
-          </div>
-        </div>
-
-        <!-- 2. รอหน่วยงานยืนยัน -->
-        <div class="trk-stat-box prog">
-          <div class="trk-stat-top">
-            <div class="trk-stat-num">${progList.length}</div>
-            <div class="trk-stat-lbl">
-              รอหน่วยงานยืนยัน
-              <span>อยู่ระหว่างดำเนินการ / บันทึกร่างแล้ว</span>
-            </div>
-          </div>
-          <div class="trk-stat-divider"></div>
-          <div class="trk-pills">
-            ${progList.length ? progList.map(x => `<span class="trk-num-pill" data-act="trk-pill" data-id="${x.u.id}" title="${esc(x.u.name)}">${x.num}</span>`).join('') : '<span style="opacity:0.8;font-size:13px">ไม่มีหน่วยงานค้างยืนยัน</span>'}
-          </div>
-        </div>
-
-        <!-- 3. ยังไม่ส่งข้อมูล -->
-        <div class="trk-stat-box none">
-          <div class="trk-stat-top">
-            <div class="trk-stat-num">${noneList.length}</div>
-            <div class="trk-stat-lbl">
-              ยังไม่ส่งข้อมูล
-              <span>ขยายเวลาส่งข้อมูล / ต้องติดตาม</span>
-            </div>
-          </div>
-          <div class="trk-stat-divider"></div>
-          <div class="trk-pills">
-            ${noneList.length ? noneList.map(x => `<span class="trk-num-pill" data-act="trk-pill" data-id="${x.u.id}" title="${esc(x.u.name)}">${x.num}</span>`).join('') : '<span style="opacity:0.8;font-size:13px">ส่งข้อมูลครบทุกหน่วยงาน</span>'}
-          </div>
-        </div>
       </div>
 
       <!-- สิ่งที่หน่วยงานต้องทำต่อ -->
@@ -3923,11 +3919,11 @@ function trackingDashboardHTML(customInfos) {
           <div><b>รอหน่วยงานยืนยัน:</b> ตรวจสอบแบบประเมินความพร้อมและเกณฑ์ในระบบ แนบหลักฐานให้ครบถ้วน ลงนามและกดส่งให้ MENTOR</div>
         </div>
         <div class="trk-action-item">
-          <span class="trk-act-ico none">−</span>
+          <span class="trk-act-ico none">➖</span>
           <div><b>ยังไม่ส่งข้อมูล:</b> เข้าสู่ระบบเพื่อเริ่มกรอกข้อมูลตามเกณฑ์ 3 ด้าน (ด้านกายภาพ 15 ข้อ, ด้านคุณภาพ, ด้านผลลัพธ์)</div>
         </div>
         <div class="trk-action-item">
-          <span class="trk-act-ico done">✓</span>
+          <span class="trk-act-ico done">✔</span>
           <div><b>ยืนยันแล้ว:</b> ส่งลิงก์หรือ QR code ให้ประชาชนผู้รับบริการประเมินความพึงพอใจ เจ้าหน้าที่ห้ามทดลองกดส่งเอง และรอ MENTOR เข้าตรวจประเมิน</div>
         </div>
       </div>
@@ -3937,55 +3933,6 @@ function trackingDashboardHTML(customInfos) {
         <span><b>คณะทำงานและผู้ประสานงาน:</b></span>
         <span>ผศ.ดร.อนุพันธ์ สุวรรณพันธ์ <a href="tel:0817185572">081-718-5572</a> (<a href="mailto:phanssk@gmail.com">phanssk@gmail.com</a>)</span>
         <span>ผศ.ดร.จุฑามาศ แก้วจันดี <a href="tel:0611655397">061-165-5397</a> (<a href="mailto:chuthamat.k@sskru.ac.th">chuthamat.k@sskru.ac.th</a>)</span>
-      </div>
-    </div>
-
-    <!-- ส่วนที่ 2: รายกลุ่ม MENTOR และรายหน่วยบริการ (34 แห่ง) -->
-    <div class="trk-card" style="padding-top:20px">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-        <div>
-          <h3 style="margin:0;font-size:18px;font-weight:700;color:#0F2263;display:flex;align-items:center;gap:8px">
-            ${ic('users')} ความก้าวหน้ารายกลุ่ม MENTOR และรายหน่วยบริการ (34 แห่ง)
-          </h3>
-          <p style="margin:4px 0 0;font-size:13.5px;color:#718096">คลิกที่แถวหน่วยบริการเพื่อดูรายละเอียดผลการประเมินและข้อมูลหน่วยงาน</p>
-        </div>
-        <!-- Filter bar -->
-        <div class="trk-flt-bar">
-          <button class="trk-flt-btn active" data-act="trk-filter" data-f="all">ทั้งหมด (${N})</button>
-          <button class="trk-flt-btn flt-done" data-act="trk-filter" data-f="done">✓ ยืนยันแล้ว (${doneList.length})</button>
-          <button class="trk-flt-btn flt-prog" data-act="trk-filter" data-f="prog">➔ รอหน่วยงานยืนยัน (${progList.length})</button>
-          <button class="trk-flt-btn flt-none" data-act="trk-filter" data-f="none">− ยังไม่ส่ง (${noneList.length})</button>
-        </div>
-      </div>
-
-      <!-- Grid 6 ทีม -->
-      <div class="trk-grid" style="margin-top:16px">
-        ${teams.map(t => {
-          const tStatuses = statuses.filter(x => x.u.team === t.id);
-          const tSent = tStatuses.filter(x => x.st !== 'none').length;
-          const tDone = tStatuses.filter(x => x.st === 'done').length;
-          return `
-          <div class="trk-grp-card">
-            <div class="trk-grp-hdr">
-              <div>
-                <b>กลุ่ม ${t.id} ${esc(t.name)}</b>
-                <div class="trk-grp-sub">ส่งแล้ว ${tSent}/${tStatuses.length} แห่ง</div>
-              </div>
-              <span class="trk-grp-pill">${Math.round(tSent / (tStatuses.length || 1) * 100)}%</span>
-            </div>
-            <div class="trk-grp-list">
-              ${tStatuses.map(x => `
-                <button type="button" class="trk-unit-row ${x.st}" data-act="trk-unit" data-id="${x.u.id}" data-st="${x.st}" title="${esc(x.u.name)}">
-                  <span class="trk-u-ico ${x.st}">${x.st === 'done' ? '✓' : x.st === 'prog' ? '➔' : '−'}</span>
-                  <span class="trk-u-num">${x.num}</span>
-                  <span class="trk-u-name">${esc(x.sName)}</span>
-                  <span class="trk-u-tag ${x.st}">${x.st === 'done' ? 'ยืนยันแล้ว' : x.st === 'prog' ? 'รอหน่วยงานยืนยัน' : 'ยังไม่ส่ง'}</span>
-                </button>
-              `).join('')}
-            </div>
-          </div>
-          `;
-        }).join('')}
       </div>
     </div>
   </section>
@@ -5955,9 +5902,11 @@ document.addEventListener('click', async e=>{
     case 'open-review': { const u=unitById(id); closeModal(); if(!canAccessUnit(u)){ if(!S.role){ go('role',{rolePick:'mentor'}); } else denyUnit(); break; } S.draft=null; go('unit',{unitId:id, tab:'ready', from:'mdash'}); break; }
     case 'crit-list': critList(el.dataset.k, el.dataset.s); break;
     case 'trk-filter': {
-      S.trkFilter = el.dataset.f;
-      $$('.trk-flt-btn').forEach(b => b.classList.toggle('active', b.dataset.f === S.trkFilter));
-      $$('.trk-unit-row').forEach(row => {
+      const f = el.dataset.f;
+      const target = (S.trkFilter === f && f !== 'all') ? 'all' : f;
+      S.trkFilter = target;
+      $$('[data-act="trk-filter"]').forEach(b => b.classList.toggle('active', b.dataset.f === S.trkFilter));
+      $$('.trk-u-item, .trk-unit-row').forEach(row => {
         const st = row.dataset.st;
         const visible = S.trkFilter === 'all' || st === S.trkFilter;
         row.style.display = visible ? 'flex' : 'none';
