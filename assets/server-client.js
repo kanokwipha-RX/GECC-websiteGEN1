@@ -173,6 +173,7 @@ window.GECCClient = (() => {
       csrf = session.csrf;
       const result = await request("/api/state");
       accept(result);
+      try { const pu = await request("/api/public/units"); if (pu && pu.units) window.GECC_PUBLIC_UNITS = pu.units; } catch (err) {}
       blocked = false;
       context();
       render();
@@ -603,7 +604,8 @@ window.GECCClient = (() => {
       <h2 class="section-t">ผลการตรวจประเมินจาก MENTOR</h2>
       ${publicMentorEvaluation(N, r)}
       ${publicSurveySection(r?.survey)}
-      ${typeof trackingDashboardHTML === 'function' ? trackingDashboardHTML() : ''}`;
+      ${typeof trackingDashboardHTML === 'function' ? trackingDashboardHTML() : ''}
+      ${typeof evaluationDashboardHTML === 'function' ? evaluationDashboardHTML() : ''}`;
   }
   async function putFile(id, blob, name) {
     const uid = S.unitId || S.menteeUnit;
