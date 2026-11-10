@@ -2037,6 +2037,7 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 .trk-contact-bar a{color:#F1D58F;text-decoration:none;font-weight:600;}
 .trk-contact-bar a:hover{text-decoration:underline;color:#fff;}
 
+
 /* ================= แดชบอร์ดที่ 2: สถานะผลการประเมินและความพร้อมรายหน่วยบริการ ================= */
 .eval-board-section{margin-top:36px;font-family:'IBM Plex Sans Thai','Noto Sans Thai',sans-serif;}
 .eval-hdr-bar{background:linear-gradient(135deg,#071536 0%,#0F2263 60%,#17388C 100%);color:#fff;border-radius:14px;padding:18px 24px;border-top:3px solid #C9A24A;box-shadow:0 8px 24px rgba(15,34,99,0.14);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
@@ -4082,109 +4083,109 @@ function evaluationDashboardHTML(customInfos) {
   let tabsHTML = '';
   if (mode === 'mentor') {
     tabsHTML = `
-      <button type="button" class="eval-stat-tab st-pass ${filter === 'pass' ? 'active' : ''}" data-act="eval-filter" data-f="pass" title="เธเธฅเธดเธเน€เธเธทเนเธญเธเธฃเธญเธเน€เธเธเธฒเธฐเธซเธเนเธงเธขเธเธฒเธเธ—เธตเนเธเนเธฒเธเน€เธเธ“เธ‘เน">
-        <span class="eval-u-badge st-pass">โ”</span>
-        <span>เธเนเธฒเธเน€เธเธ“เธ‘เน ${passCount} เนเธซเนเธ</span>
+      <button type="button" class="eval-stat-tab st-pass ${filter === 'pass' ? 'active' : ''}" data-act="eval-filter" data-f="pass" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ผ่านเกณฑ์">
+        <span class="eval-u-badge st-pass">✔</span>
+        <span>ผ่านเกณฑ์ ${passCount} แห่ง</span>
       </button>
-      <button type="button" class="eval-stat-tab st-fix ${filter === 'fix' ? 'active' : ''}" data-act="eval-filter" data-f="fix" title="เธเธฅเธดเธเน€เธเธทเนเธญเธเธฃเธญเธเน€เธเธเธฒเธฐเธซเธเนเธงเธขเธเธฒเธเธ—เธตเนเธ•เนเธญเธเนเธเนเนเธ">
-        <span class="eval-u-badge st-fix">โ ๏ธ</span>
-        <span>เธ•เนเธญเธเนเธเนเนเธ ${fixCount} เนเธซเนเธ</span>
+      <button type="button" class="eval-stat-tab st-fix ${filter === 'fix' ? 'active' : ''}" data-act="eval-filter" data-f="fix" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ต้องแก้ไข">
+        <span class="eval-u-badge st-fix">⚠️</span>
+        <span>ต้องแก้ไข ${fixCount} แห่ง</span>
       </button>
-      <button type="button" class="eval-stat-tab st-risk ${filter === 'risk' ? 'active' : ''}" data-act="eval-filter" data-f="risk" title="เธเธฅเธดเธเน€เธเธทเนเธญเธเธฃเธญเธเน€เธเธเธฒเธฐเธซเธเนเธงเธขเธเธฒเธเธ—เธตเนเน€เธชเธตเนเธขเธเนเธกเนเธเนเธฒเธ">
-        <span class="eval-u-badge st-risk">โ</span>
-        <span>เน€เธชเธตเนเธขเธเนเธกเนเธเนเธฒเธ ${riskCount} เนเธซเนเธ</span>
+      <button type="button" class="eval-stat-tab st-risk ${filter === 'risk' ? 'active' : ''}" data-act="eval-filter" data-f="risk" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่เสี่ยงไม่ผ่าน">
+        <span class="eval-u-badge st-risk">❌</span>
+        <span>เสี่ยงไม่ผ่าน ${riskCount} แห่ง</span>
       </button>
-      <button type="button" class="eval-stat-tab st-none ${filter === 'none' ? 'active' : ''}" data-act="eval-filter" data-f="none" title="เธเธฅเธดเธเน€เธเธทเนเธญเธเธฃเธญเธเน€เธเธเธฒเธฐเธซเธเนเธงเธขเธเธฒเธเธ—เธตเนเธขเธฑเธเธชเนเธเนเธกเนเธเธฃเธ">
-        <span class="eval-u-badge st-none">โฑ๏ธ</span>
-        <span>เธขเธฑเธเธชเนเธเนเธกเนเธเธฃเธ ${pendingCount} เนเธซเนเธ</span>
+      <button type="button" class="eval-stat-tab st-none ${filter === 'none' ? 'active' : ''}" data-act="eval-filter" data-f="none" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ยังส่งไม่ครบ">
+        <span class="eval-u-badge st-none">⏱️</span>
+        <span>ยังส่งไม่ครบ ${pendingCount} แห่ง</span>
       </button>
     `;
   } else if (mode === 'sub') {
     tabsHTML = `
-      <button type="button" class="eval-stat-tab st-subdone ${filter === 'subdone' ? 'active' : ''}" data-act="eval-filter" data-f="subdone" title="เธเธฅเธดเธเน€เธเธทเนเธญเธเธฃเธญเธเน€เธเธเธฒเธฐเธซเธเนเธงเธขเธเธฒเธเธ—เธตเนเธชเนเธเธเธฃเธ 3 เธ”เนเธฒเธ">
-        <span class="eval-u-badge st-subdone">โ”</span>
-        <span>เธชเนเธเธเธฃเธ 3 เธ”เนเธฒเธ ${subDoneCount} เนเธซเนเธ</span>
+      <button type="button" class="eval-stat-tab st-subdone ${filter === 'subdone' ? 'active' : ''}" data-act="eval-filter" data-f="subdone" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ส่งครบ 3 ด้าน">
+        <span class="eval-u-badge st-subdone">✔</span>
+        <span>ส่งครบ 3 ด้าน ${subDoneCount} แห่ง</span>
       </button>
-      <button type="button" class="eval-stat-tab st-subprog ${filter === 'subprog' ? 'active' : ''}" data-act="eval-filter" data-f="subprog" title="เธเธฅเธดเธเน€เธเธทเนเธญเธเธฃเธญเธเน€เธเธเธฒเธฐเธซเธเนเธงเธขเธเธฒเธเธ—เธตเนเธญเธขเธนเนเธฃเธฐเธซเธงเนเธฒเธเธ”เธณเน€เธเธดเธเธเธฒเธฃ">
-        <span class="eval-u-badge st-subprog">โ”</span>
-        <span>เธฃเธฐเธซเธงเนเธฒเธเธ”เธณเน€เธเธดเธเธเธฒเธฃ ${subProgCount} เนเธซเนเธ</span>
+      <button type="button" class="eval-stat-tab st-subprog ${filter === 'subprog' ? 'active' : ''}" data-act="eval-filter" data-f="subprog" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่อยู่ระหว่างดำเนินการ">
+        <span class="eval-u-badge st-subprog">➔</span>
+        <span>ระหว่างดำเนินการ ${subProgCount} แห่ง</span>
       </button>
-      <button type="button" class="eval-stat-tab st-subnone ${filter === 'subnone' ? 'active' : ''}" data-act="eval-filter" data-f="subnone" title="เธเธฅเธดเธเน€เธเธทเนเธญเธเธฃเธญเธเน€เธเธเธฒเธฐเธซเธเนเธงเธขเธเธฒเธเธ—เธตเนเธขเธฑเธเนเธกเนเธชเนเธ">
-        <span class="eval-u-badge st-subnone">โ–</span>
-        <span>เนเธกเนเธชเนเธ เธ•เนเธญเธเธ•เธดเธ”เธ•เธฒเธก ${subNoneCount} เนเธซเนเธ</span>
+      <button type="button" class="eval-stat-tab st-subnone ${filter === 'subnone' ? 'active' : ''}" data-act="eval-filter" data-f="subnone" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ยังไม่ส่ง">
+        <span class="eval-u-badge st-subnone">➖</span>
+        <span>ไม่ส่ง ต้องติดตาม ${subNoneCount} แห่ง</span>
       </button>
     `;
   } else if (mode === 'phys') {
     tabsHTML = `
-      <button type="button" class="eval-stat-tab st-physfull ${filter === 'physfull' ? 'active' : ''}" data-act="eval-filter" data-f="physfull" title="เธเธฅเธดเธเน€เธเธทเนเธญเธเธฃเธญเธเน€เธเธเธฒเธฐเธซเธเนเธงเธขเธเธฒเธเธ—เธตเนเธเธฃเธ 15 เธเนเธญ">
-        <span class="eval-u-badge st-physfull">โ”</span>
-        <span>เธเธฃเธ 15 เธเนเธญ ${physFullCount} เนเธซเนเธ</span>
+      <button type="button" class="eval-stat-tab st-physfull ${filter === 'physfull' ? 'active' : ''}" data-act="eval-filter" data-f="physfull" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ครบ 15 ข้อ">
+        <span class="eval-u-badge st-physfull">✔</span>
+        <span>ครบ 15 ข้อ ${physFullCount} แห่ง</span>
       </button>
-      <button type="button" class="eval-stat-tab st-physpart ${filter === 'physpart' ? 'active' : ''}" data-act="eval-filter" data-f="physpart" title="เธเธฅเธดเธเน€เธเธทเนเธญเธเธฃเธญเธเน€เธเธเธฒเธฐเธซเธเนเธงเธขเธเธฒเธเธ—เธตเนเธขเธฑเธเนเธกเนเธเธฃเธ 15 เธเนเธญ">
-        <span class="eval-u-badge st-physpart">โ”</span>
-        <span>เธขเธฑเธเนเธกเนเธเธฃเธ 1-14 เธเนเธญ ${physPartCount} เนเธซเนเธ</span>
+      <button type="button" class="eval-stat-tab st-physpart ${filter === 'physpart' ? 'active' : ''}" data-act="eval-filter" data-f="physpart" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ยังไม่ครบ 15 ข้อ">
+        <span class="eval-u-badge st-physpart">➔</span>
+        <span>ยังไม่ครบ 1-14 ข้อ ${physPartCount} แห่ง</span>
       </button>
-      <button type="button" class="eval-stat-tab st-physnone ${filter === 'physnone' ? 'active' : ''}" data-act="eval-filter" data-f="physnone" title="เธเธฅเธดเธเน€เธเธทเนเธญเธเธฃเธญเธเน€เธเธเธฒเธฐเธซเธเนเธงเธขเธเธฒเธเธ—เธตเนเธขเธฑเธเนเธกเนเธชเนเธเน€เธเธ“เธ‘เนเธเธฒเธขเธ เธฒเธ">
-        <span class="eval-u-badge st-physnone">โ–</span>
-        <span>เธขเธฑเธเนเธกเนเธชเนเธ ${physNoneCount} เนเธซเนเธ</span>
+      <button type="button" class="eval-stat-tab st-physnone ${filter === 'physnone' ? 'active' : ''}" data-act="eval-filter" data-f="physnone" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ยังไม่ส่งเกณฑ์กายภาพ">
+        <span class="eval-u-badge st-physnone">➖</span>
+        <span>ยังไม่ส่ง ${physNoneCount} แห่ง</span>
       </button>
     `;
   } else {
     tabsHTML = `
-      <button type="button" class="eval-stat-tab st-ready ${filter === 'ready' ? 'active' : ''}" data-act="eval-filter" data-f="ready" title="เธเธฅเธดเธเน€เธเธทเนเธญเธเธฃเธญเธเน€เธเธเธฒเธฐเธซเธเนเธงเธขเธเธฒเธเธ—เธตเนเธเธฃเนเธญเธกเน€เธเนเธฒเธชเธนเนเธกเธฒเธ•เธฃเธเธฒเธ">
-        <span class="eval-u-badge st-ready">โ”</span>
-        <span>เธเธฃเนเธญเธกเน€เธเนเธฒเธชเธนเนเธกเธฒเธ•เธฃเธเธฒเธ (เธชเนเธเนเธฅเนเธง) ${rdyDoneCount} เนเธซเนเธ</span>
+      <button type="button" class="eval-stat-tab st-ready ${filter === 'ready' ? 'active' : ''}" data-act="eval-filter" data-f="ready" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่พร้อมเข้าสู่มาตรฐาน">
+        <span class="eval-u-badge st-ready">✔</span>
+        <span>พร้อมเข้าสู่มาตรฐาน (ส่งแล้ว) ${rdyDoneCount} แห่ง</span>
       </button>
-      <button type="button" class="eval-stat-tab st-notready ${filter === 'notready' ? 'active' : ''}" data-act="eval-filter" data-f="notready" title="เธเธฅเธดเธเน€เธเธทเนเธญเธเธฃเธญเธเน€เธเธเธฒเธฐเธซเธเนเธงเธขเธเธฒเธเธ—เธตเนเธขเธฑเธเนเธกเนเธชเนเธเธซเธฃเธทเธญเธขเธฑเธเนเธกเนเธเธฃเนเธญเธก">
-        <span class="eval-u-badge st-notready">โ–</span>
-        <span>เธขเธฑเธเนเธกเนเธชเนเธ / เนเธกเนเธเธฃเนเธญเธก ${rdyNoneCount} เนเธซเนเธ</span>
+      <button type="button" class="eval-stat-tab st-notready ${filter === 'notready' ? 'active' : ''}" data-act="eval-filter" data-f="notready" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ยังไม่ส่งหรือยังไม่พร้อม">
+        <span class="eval-u-badge st-notready">➖</span>
+        <span>ยังไม่ส่ง / ไม่พร้อม ${rdyNoneCount} แห่ง</span>
       </button>
     `;
   }
 
   return `
-  <section class="eval-board-section" id="evaluation-dashboard" aria-label="เนเธ”เธเธเธญเธฃเนเธ”เธเธฅเธเธฒเธฃเธเธฃเธฐเน€เธกเธดเธเนเธฅเธฐเธเธงเธฒเธกเธเธฃเนเธญเธกเธฃเธฒเธขเธซเธเนเธงเธขเธเธฃเธดเธเธฒเธฃ">
+  <section class="eval-board-section" id="evaluation-dashboard" aria-label="แดชบอร์ดผลการประเมินและความพร้อมรายหน่วยบริการ">
     <div class="eval-hdr-bar">
       <div class="trk-hdr-brand">
         <div class="trk-seals">
-          <img src="${IMG.prov}" alt="เธ•เธฃเธฒเธเธฃเธฐเธเธณเธเธฑเธเธซเธงเธฑเธ”เธจเธฃเธตเธชเธฐเน€เธเธฉ">
-          <img src="${IMG.gecc}" alt="เธ•เธฃเธฒเธจเธนเธเธขเนเธฃเธฒเธเธเธฒเธฃเธชเธฐเธ”เธงเธ">
+          <img src="${IMG.prov}" alt="ตราประจำจังหวัดศรีสะเกษ">
+          <img src="${IMG.gecc}" alt="ตราศูนย์ราชการสะดวก">
         </div>
         <div class="trk-hdr-title">
-          <h2>เธชเธ–เธฒเธเธฐเธเธฅเธเธฒเธฃเธเธฃเธฐเน€เธกเธดเธเนเธฅเธฐเธเธงเธฒเธกเธเธฃเนเธญเธกเธฃเธฒเธขเธซเธเนเธงเธขเธเธฃเธดเธเธฒเธฃ (34 เนเธซเนเธ)</h2>
-          <p>เนเธ”เธเธเธญเธฃเนเธ”เนเธชเธ”เธเธฃเธฒเธขเธเธทเนเธญเธชเธ–เธฒเธเธฐเธ•เธฒเธกเนเธ”เธเธเธญเธฃเนเธ”เธซเธฅเธฑเธ ยท เธเนเธญเธกเธนเธฅ เธ“ ${lastUpd ? thDateTime(lastUpd) : thDate(todayISO(), true)}</p>
+          <h2>สถานะผลการประเมินและความพร้อมรายหน่วยบริการ (34 แห่ง)</h2>
+          <p>แดชบอร์ดแสดงรายชื่อสถานะตามแดชบอร์ดหลัก · ข้อมูล ณ ${lastUpd ? thDateTime(lastUpd) : thDate(todayISO(), true)}</p>
         </div>
       </div>
-      <div class="trk-badge-gold">${ic('shield')} เธชเธ–เธฒเธเธฐเธ•เธฒเธกเนเธ”เธเธเธญเธฃเนเธ”เธซเธฅเธฑเธ</div>
+      <div class="trk-badge-gold">${ic('shield')} สถานะตามแดชบอร์ดหลัก</div>
     </div>
 
-    <!-- เน€เธกเธเธนเน€เธฅเธทเธญเธเนเธซเธกเธ”เธ•เธฒเธกเนเธ”เธเธเธญเธฃเนเธ”เธซเธฅเธฑเธ 4 เธซเธฑเธงเธเนเธญ -->
-    <div class="eval-mode-nav" role="tablist" aria-label="เน€เธฅเธทเธญเธเธซเธฑเธงเธเนเธญเนเธ”เธเธเธญเธฃเนเธ”เธ—เธตเนเธ•เนเธญเธเธเธฒเธฃเธ”เธนเธฃเธฒเธขเธเธทเนเธญ">
+    <!-- เมนูเลือกโหมดตามแดชบอร์ดหลัก 4 หัวข้อ -->
+    <div class="eval-mode-nav" role="tablist" aria-label="เลือกหัวข้อแดชบอร์ดที่ต้องการดูรายชื่อ">
       <button type="button" class="eval-mode-btn ${mode === 'mentor' ? 'active' : ''}" data-act="eval-mode" data-m="mentor">
-        ${ic('award')} 1. เธเธฅเธ•เธฃเธงเธ MENTOR (4 เธชเธ–เธฒเธเธฐ)
+        ${ic('award')} 1. ผลตรวจ MENTOR (4 สถานะ)
       </button>
       <button type="button" class="eval-mode-btn ${mode === 'sub' ? 'active' : ''}" data-act="eval-mode" data-m="sub">
-        ${ic('clipboard')} 2. เธเธงเธฒเธกเธเธฃเนเธญเธกเน€เธเธ“เธ‘เน 3 เธ”เนเธฒเธ
+        ${ic('clipboard')} 2. ความพร้อมเกณฑ์ 3 ด้าน
       </button>
       <button type="button" class="eval-mode-btn ${mode === 'phys' ? 'active' : ''}" data-act="eval-mode" data-m="phys">
-        ${ic('check')} 3. เธ”เนเธฒเธเธเธฒเธขเธ เธฒเธ 15 เธเนเธญ
+        ${ic('check')} 3. ด้านกายภาพ 15 ข้อ
       </button>
       <button type="button" class="eval-mode-btn ${mode === 'ready' ? 'active' : ''}" data-act="eval-mode" data-m="ready">
-        ${ic('shield')} 4. เนเธเธเธเธฃเธฐเน€เธกเธดเธเธเธงเธฒเธกเธเธฃเนเธญเธก
+        ${ic('shield')} 4. แบบประเมินความพร้อม
       </button>
     </div>
 
-    <!-- เนเธ–เธเนเธชเธ”เธเธเธณเธเธงเธเนเธฅเธฐเธ•เธฑเธงเธเธฃเธญเธเธชเธ–เธฒเธเธฐ -->
+    <!-- แถบแสดงจำนวนและตัวกรองสถานะ -->
     <div class="trk-flt-controls">
-      <div class="trk-flt-hint">เธเธฅเธดเธเนเธ–เธเธชเธ–เธฒเธเธฐเธ”เนเธฒเธเธเธเน€เธเธทเนเธญเธเธฃเธญเธเธฃเธฒเธขเธเธทเนเธญ เธซเธฃเธทเธญเธเธฅเธดเธเธ—เธตเนเธเธทเนเธญเธซเธเนเธงเธขเธเธฒเธเน€เธเธทเนเธญเธ”เธนเธฃเธฒเธขเธฅเธฐเน€เธญเธตเธขเธ”เธเธฅเธเธฒเธฃเธ•เธฃเธงเธ</div>
-      <button type="button" class="trk-all-btn ${filter === 'all' ? 'active' : ''}" data-act="eval-filter" data-f="all">เนเธชเธ”เธเธ—เธฑเนเธเธซเธกเธ” (${N} เนเธซเนเธ)</button>
+      <div class="trk-flt-hint">คลิกแถบสถานะด้านบนเพื่อกรองรายชื่อ หรือคลิกที่ชื่อหน่วยงานเพื่อดูรายละเอียดผลการตรวจ</div>
+      <button type="button" class="trk-all-btn ${filter === 'all' ? 'active' : ''}" data-act="eval-filter" data-f="all">แสดงทั้งหมด (${N} แห่ง)</button>
     </div>
 
     <div class="eval-status-grid">
       ${tabsHTML}
     </div>
 
-    <!-- เธ•เธฒเธฃเธฒเธ 6 เธเธฅเธธเนเธก เนเธชเธ”เธเธเธทเนเธญเธ—เธธเธเธซเธเนเธงเธขเธเธฒเธเธ•เธฒเธกเธชเธตเธชเธ–เธฒเธเธฐเธเธญเธเนเธซเธกเธ”เธ—เธตเนเน€เธฅเธทเธญเธ -->
+    <!-- ตาราง 6 กลุ่ม แสดงชื่อทุกหน่วยงานตามสีสถานะของโหมดที่เลือก -->
     <div class="trk-groups-grid">
       ${teams.map(t => {
         const tUnits = unitList.filter(x => x.team === t.id);
@@ -4195,29 +4196,29 @@ function evaluationDashboardHTML(customInfos) {
           return x.rdySt === 'ready';
         }).length;
         const subLabel = mode === 'mentor'
-          ? `เธเนเธฒเธเน€เธเธ“เธ‘เน ${tGood}/${tUnits.length}`
+          ? `ผ่านเกณฑ์ ${tGood}/${tUnits.length}`
           : (mode === 'sub'
-            ? `เธชเนเธเธเธฃเธ 3 เธ”เนเธฒเธ ${tGood}/${tUnits.length}`
+            ? `ส่งครบ 3 ด้าน ${tGood}/${tUnits.length}`
             : (mode === 'phys'
-              ? `เธเธฃเธ 15 เธเนเธญ ${tGood}/${tUnits.length}`
-              : `เธเธฃเนเธญเธก ${tGood}/${tUnits.length}`));
+              ? `ครบ 15 ข้อ ${tGood}/${tUnits.length}`
+              : `พร้อม ${tGood}/${tUnits.length}`));
         return `
         <div class="trk-group-box">
           <div class="trk-group-header">
-            <div class="trk-group-title">เธเธฅเธธเนเธก ${t.id} ${esc(t.name)}</div>
+            <div class="trk-group-title">กลุ่ม ${t.id} ${esc(t.name)}</div>
             <div class="trk-group-sent">${subLabel}</div>
           </div>
           <div class="trk-group-body">
             ${tUnits.map(x => {
-              let ico = 'โฑ๏ธ';
+              let ico = '⏱️';
               if (mode === 'mentor') {
-                ico = x.mentorSt === 'pass' ? 'โ”' : (x.mentorSt === 'fix' ? 'โ ๏ธ' : (x.mentorSt === 'risk' ? 'โ' : 'โฑ๏ธ'));
+                ico = x.mentorSt === 'pass' ? '✔' : (x.mentorSt === 'fix' ? '⚠️' : (x.mentorSt === 'risk' ? '❌' : '⏱️'));
               } else if (mode === 'sub') {
-                ico = x.subSt === 'subdone' ? 'โ”' : (x.subSt === 'subprog' ? 'โ”' : 'โ–');
+                ico = x.subSt === 'subdone' ? '✔' : (x.subSt === 'subprog' ? '➔' : '➖');
               } else if (mode === 'phys') {
-                ico = x.physSt === 'physfull' ? 'โ”' : (x.physSt === 'physpart' ? 'โ”' : 'โ–');
+                ico = x.physSt === 'physfull' ? '✔' : (x.physSt === 'physpart' ? '➔' : '➖');
               } else {
-                ico = x.rdySt === 'ready' ? 'โ”' : 'โ–';
+                ico = x.rdySt === 'ready' ? '✔' : '➖';
               }
               const isVisible = filter === 'all' || x.curSt === filter;
               const physNote = (mode === 'phys' && x.physCount > 0) ? ` <small style="font-weight:600;opacity:0.85">(${x.physCount}/15)</small>` : '';
@@ -4236,6 +4237,7 @@ function evaluationDashboardHTML(customInfos) {
   </section>
   `;
 }
+
 
 function viewExec(){
   if(window.GECC_SERVER && !S.role) return GECCClient.publicDashboard();
@@ -6230,7 +6232,7 @@ document.addEventListener('click', async e=>{
       }
       break;
     }
-    case 'eval-mode': {
+        case 'eval-mode': {
       S.evalMode = el.dataset.m;
       S.evalFilter = 'all';
       render();
