@@ -602,7 +602,8 @@ window.GECCClient = (() => {
       ${publicCritBoxes(N, r?.crit)}
       <h2 class="section-t">ผลการตรวจประเมินจาก MENTOR</h2>
       ${publicMentorEvaluation(N, r)}
-      ${publicSurveySection(r?.survey)}`;
+      ${publicSurveySection(r?.survey)}
+      ${typeof trackingDashboardHTML === 'function' ? trackingDashboardHTML() : ''}`;
   }
   async function putFile(id, blob, name) {
     const uid = S.unitId || S.menteeUnit;
