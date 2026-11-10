@@ -179,7 +179,8 @@ function merge_state(object $current, mixed $input, array $actor): object {
         $next->defects=array_values(array_filter($next->defects,fn($d)=>in_array($d->unitId,$ids,true)));
     }
     foreach($input->assess as $id=>$value) {
-        if (!allowed($actor,find($next->units,fn($u)=>$u->id===$id))) fail(403,'ไม่มีสิทธิ์เข้าถึงหน่วยบริการนี้');
+        $targetUnit = find($next->units,fn($u)=>$u->id===$id);
+        if (!$targetUnit || !allowed($actor,$targetUnit)) continue;
         $old=$current->assess->$id??null;
         if (same($value,$visible->assess->$id??null)) continue;
         validate_assessment($value); $a=copy_value($value);

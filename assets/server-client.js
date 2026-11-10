@@ -18,6 +18,16 @@ window.GECCClient = (() => {
     delete d.pins;
     delete d.demoStat;
     delete d.mentorRosterVersion;
+    if (user && user.role === 'mentor' && user.team && !S.coord && !S.allGroups) {
+      const allowedUnitIds = new Set((d.units || []).filter(u => u.team === user.team).map(u => u.id));
+      if (d.assess) {
+        const filteredAssess = {};
+        for (const [id, a] of Object.entries(d.assess)) {
+          if (allowedUnitIds.has(id)) filteredAssess[id] = a;
+        }
+        d.assess = filteredAssess;
+      }
+    }
     return d;
   };
   async function request(path, options = {}) {

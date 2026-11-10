@@ -4562,14 +4562,21 @@ function viewUnit(){
   const u=unitById(S.unitId); if(!u){ go('forms'); return; }
   if(!canAccessUnit(u)){ denyUnit(); go(S.role==='mentee'?'modules':S.role==='mentor'?'mdash':'exec'); return; }
   S.lock = wfOf(DB.assess[u.id])==='reviewed'; const ro = S.role!=='mentor' || S.lock;
-  if(!S.draft){ S.draft = clone(DB.assess[u.id] || blankAssess()); S.dirty=false; }
+  if(!S.draft){
+    S.draft = clone(DB.assess[u.id] || blankAssess());
+    S.dirty=false;
+    if(S.role==='mentor' && !(S.draft.inspectors||[]).length && S.accountName){
+      S.draft.inspectors = [S.accountName];
+      S.draft.inspector = S.accountName;
+    }
+  }
   ensureSelf(S.draft);
   const a=S.draft; const c=calc(a); const cSelf=calcSelf(a)||c; const info=unitInfo(u);
   setHead(`<span class="ut-title">${esc(u.name)}</span>`, `${ro?'แบบประเมิน':'แบบตรวจประเมิน'} GECC 2570 · ${esc(teamName(u.team))}`, S.from==='forms'&&!ro?`<button class="btn" data-act="go" data-view="forms" aria-label="เปลี่ยนหน่วยบริการ">${ic('repeat')}<span class="lbl-t">เปลี่ยนหน่วยบริการ</span></button>`:'');
   const RS=readyOf(a).st; const tabs=[['ready','แบบประเมินความพร้อม',RS==='ready'?'พร้อม':RS==='notready'?'ไม่พร้อม':'ยังไม่ส่ง'],['phys','ด้านกายภาพ',`${c.physYes}/15`],['qc','คุณภาพ: Checklist',`${fmt(c.qc,1)}`],['narr','คุณภาพ: บรรยาย',`${fmt(c.narr,1)}`],['out','ด้านผลลัพธ์',`${fmt(c.out)}`],['svy','ความพึงพอใจ/เชื่อมั่น',svDone(a.survey)?'ส่งแล้ว':'ยังไม่ส่ง'],['sum','แบบสรุปผล',''],['def','ข้อบกพร่อง',`${info.open.length}`]];
   $('#content').innerHTML = `
   ${wfBanner(DB.assess[u.id],u,true)}
-  ${allUnitFilesHTML(DB.assess[u.id],u.id,'เน€เธญเธเธชเธฒเธฃเนเธฅเธฐเนเธเธฅเนเธซเธฅเธฑเธเธเธฒเธเธ—เธฑเนเธเธซเธกเธ”เธเธญเธเธซเธเนเธงเธขเธเธฒเธ')}
+  ${allUnitFilesHTML(DB.assess[u.id],u.id,'เอกสารและไฟล์หลักฐานทั้งหมดของหน่วยงาน')}
   <div class="tabs no-print" role="tablist" aria-label="หมวดการตรวจประเมิน">${tabs.map(t=>`<button role="tab" data-act="tab" data-tab="${t[0]}" aria-selected="${S.tab===t[0]}" tabindex="${S.tab===t[0]?0:-1}" aria-controls="tabpanel" id="tab-${t[0]}">${t[1]}${t[2]!==''?` <span class="tc" data-tc="${t[0]}">${t[2]}</span>`:''}</button>`).join('')}</div>
   <div id="tabpanel" role="tabpanel" aria-labelledby="tab-${S.tab}">${tabHTML(a,c,ro,info)}</div>
   ${(S.role==='mentor'||S.role==='mentee') && ['ready','phys','qc','narr','out','svy'].includes(S.tab)?saveBarHTML():''}`;
@@ -5409,7 +5416,7 @@ function bind(el){
   else if(path[0]==='round'){ a.round=+val; }
   else if(path[0]==='inspector'){ a.inspector=val; }
   else if(path[0]==='evt'){ a.ev=a.ev||{}; const k=path[1]; (a.ev[k]=a.ev[k]||{text:'',files:[]}).text=val; }
-  else if(path[0]==='revt'){ a.rev=a.rev||{}; a.rev[path[1]]={text:val, at:new Date().toISOString(), by:(a.inspectors||[]).join(', ')}; }
+  else if(path[0]==='revt'){ a.rev=a.rev||{}; a.rev[path[1]]={text:val, at:new Date().toISOString(), by:(a.inspectors||[]).join(', ')||S.accountName||'MENTOR'}; }
   else if(path[0]==='adv'){ a.adv=a.adv||{}; a.adv[path[1]]=val; }
   else if(path[0]==='ready'){ a.ready=a.ready||{c:[]}; const r=a.ready; if(path[1]==='c'){ r.c=r.c||[]; r.c[+path[2]]=el.value; } else if(el.type==='checkbox') r[path[1]]=el.checked; else r[path[1]]=el.value; if(path[1]==='kind'){ const b=$('#ready-renew'); if(b) b.hidden=el.value!=='renew'; } if(path[1]==='date'){ const h=el.parentElement.querySelector('.help'); if(h) h.textContent=thDate(el.value,true); } const st=$('#ready-st'); if(st) st.innerHTML=readyStatusHTML(a); }
   else if(path[0]==='svy'){ a.survey=a.survey||{sat:{},conf:{}}; const v=a.survey; v.sat=v.sat||{}; v.conf=v.conf||{}; if(path[1]==='sat'||path[1]==='conf'){ const f=el.closest('.svr'); if(val===''){ delete v[path[1]][path[2]]; f?.classList.remove('invalid'); } else { const n=+val; if(isNaN(n)||n<1||n>5){ f?.classList.add('invalid'); return; } f?.classList.remove('invalid'); v[path[1]][path[2]]=Math.round(n*100)/100; } const lb=$('#svl-'+path[2]); if(lb) lb.innerHTML=svLevelHTML(v[path[1]][path[2]]); } else v[path[1]]=val; }
@@ -5420,6 +5427,15 @@ function bind(el){
 }
 async function saveAssess(btn){
   const a=S.draft; const bad=$$('.field.invalid'); if(bad.length){ toast('กรุณาแก้ไขช่องที่กรอกไม่ถูกต้องก่อนบันทึก',true); bad[0].querySelector('input')?.focus(); return; }
+  if(S.role==='mentor' && !(a.inspectors||[]).length){
+    if(S.accountName){
+      a.inspectors=[S.accountName]; a.inspector=S.accountName;
+    } else {
+      const u=unitById(S.unitId); const t=u&&DB.teams.find(x=>x.id===u.team);
+      const defName=t?.members?.[0]?.name;
+      if(defName){ a.inspectors=[defName]; a.inspector=defName; }
+    }
+  }
   if(S.role==='mentor' && !(a.inspectors||[]).length && Object.values(subOf({...a,started:true})).some(v=>v!=='none')){ if(S.tab!=='phys'){ S.tab='phys'; viewUnitKeep(); } const bx=$('#insp-box'); if(bx){ bx.classList.add('invalid'); bx.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'center'}); } toast('กรุณาเลือก MENTOR ผู้ตรวจอย่างน้อย 1 คนก่อนบันทึก',true); return; }
   if(btn) btn.classList.add('loading');
   a.started=true; a.updatedAt=new Date().toISOString();
