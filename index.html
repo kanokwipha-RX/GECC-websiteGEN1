@@ -3874,129 +3874,7 @@ function getUnitTrackingStatus(u, a) {
 }
 
 function trackingDashboardHTML(customInfos) {
-  const units = DB.units || [];
-  const N = units.length || 34;
-  const lastUpd = (DB.units || []).map(u => DB.assess?.[u.id]?.updatedAt).filter(Boolean).sort().pop();
-
-  const statuses = units.map(u => ({
-    u,
-    st: getUnitTrackingStatus(u, DB.assess?.[u.id]),
-    num: TRACKING_NUMS[u.id] || u.code?.slice(-2) || '00',
-    sName: TRACKING_SHORT_NAMES[u.id] || u.name
-  }));
-
-  const doneList = statuses.filter(x => x.st === 'done');
-  const progList = statuses.filter(x => x.st === 'prog');
-  const noneList = statuses.filter(x => x.st === 'none');
-
-  const sentCount = doneList.length + progList.length;
-  const sentPct = Math.round((sentCount / N) * 100) || 0;
-  const donePct = (doneList.length / N) * 100;
-  const progPct = (progList.length / N) * 100;
-  const nonePct = 100 - donePct - progPct;
-
-  const teams = DB.teams || defaultTeams();
-
-  return `
-  <section class="trk-section" id="tracking-dashboard" aria-label="แดชบอร์ดกำกับติดตามงาน GECC 2570">
-    <div class="trk-hdr-bar">
-      <div class="trk-hdr-brand">
-        <div class="trk-seals">
-          <img src="${IMG.prov}" alt="ตราประจำจังหวัดศรีสะเกษ">
-          <img src="${IMG.gecc}" alt="ตราศูนย์ราชการสะดวก">
-        </div>
-        <div class="trk-hdr-title">
-          <h2>ความก้าวหน้าการส่งข้อมูลและยืนยันแบบสอบถาม GECC ปี 2570</h2>
-          <p>แดชบอร์ดกำกับติดตามงานรายหน่วยบริการ · จังหวัดศรีสะเกษ · ข้อมูล ณ ${lastUpd ? thDateTime(lastUpd) : thDate(todayISO(), true)}</p>
-        </div>
-      </div>
-      <div class="trk-badge-gold">${ic('shield')} GECC SISAKET 2570</div>
-    </div>
-
-    <!-- ส่วนที่ 1: แถบสถานะ 3 ช่องหลักตามตัวอย่าง (คลิกเพื่อกรองสถานะ) -->
-    <div class="trk-flt-controls">
-      <div class="trk-flt-hint">คลิกแถบสถานะเพื่อกรองรายชื่อ หรือคลิกที่ชื่อหน่วยงานเพื่อดูข้อมูลผลการประเมิน</div>
-      <button type="button" class="trk-all-btn active" data-act="trk-filter" data-f="all">แสดงทั้งหมด (${N} แห่ง)</button>
-    </div>
-
-    <div class="trk-top-tabs">
-      <button type="button" class="trk-status-tab done" data-act="trk-filter" data-f="done" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ยืนยันแล้ว">
-        <span class="trk-tab-badge done">✔</span>
-        <span>ยืนยันแล้ว ${doneList.length}</span>
-      </button>
-      <button type="button" class="trk-status-tab prog" data-act="trk-filter" data-f="prog" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่รอหน่วยงานยืนยัน">
-        <span class="trk-tab-badge prog">➔</span>
-        <span>รอหน่วยงานยืนยัน ${progList.length}</span>
-      </button>
-      <button type="button" class="trk-status-tab none" data-act="trk-filter" data-f="none" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ยังไม่ส่งข้อมูล">
-        <span class="trk-tab-badge none">➖</span>
-        <span>ยังไม่ส่งข้อมูล ${noneList.length}</span>
-      </button>
-    </div>
-
-    <!-- ส่วนที่ 2: ตาราง 6 กลุ่ม MENTOR แสดงชื่อทุกหน่วยงานตามสีสถานะ (ตรงตามรูปตัวอย่าง) -->
-    <div class="trk-groups-grid">
-      ${teams.map(t => {
-        const tStatuses = statuses.filter(x => x.u.team === t.id);
-        const tSent = tStatuses.filter(x => x.st !== 'none').length;
-        return `
-        <div class="trk-group-box">
-          <div class="trk-group-header">
-            <div class="trk-group-title">กลุ่ม ${t.id} ${esc(t.name)}</div>
-            <div class="trk-group-sent">ส่งแล้ว ${tSent}/${tStatuses.length}</div>
-          </div>
-          <div class="trk-group-body">
-            ${tStatuses.map(x => `
-              <button type="button" class="trk-u-item ${x.st}" data-act="trk-unit" data-id="${x.u.id}" data-st="${x.st}" title="${esc(x.u.name)}">
-                <span class="trk-u-icon ${x.st}">${x.st === 'done' ? '✔' : x.st === 'prog' ? '➔' : '➖'}</span>
-                <span class="trk-u-text"><b>${x.num}</b> ${esc(x.sName)}</span>
-              </button>
-            `).join('')}
-          </div>
-        </div>
-        `;
-      }).join('')}
-    </div>
-
-    <!-- ส่วนที่ 3: ภาพรวมความก้าวหน้า คำแนะนำ และผู้ประสานงาน -->
-    <div class="trk-card">
-      <div class="trk-summary-head">
-        <div class="trk-big-stat">${sentCount} <small>/ ${N} แห่ง</small></div>
-        <div class="trk-pct-pill">ส่งข้อมูลแล้ว ร้อยละ ${sentPct}</div>
-      </div>
-
-      <div class="trk-stack-bar" title="ยืนยันแล้ว: ${doneList.length} แห่ง, รอหน่วยงานยืนยัน: ${progList.length} แห่ง, ยังไม่ส่ง: ${noneList.length} แห่ง">
-        ${doneList.length ? `<div class="trk-seg done" style="width:${donePct}%">${doneList.length}</div>` : ''}
-        ${progList.length ? `<div class="trk-seg prog" style="width:${progPct}%">${progList.length}</div>` : ''}
-        ${noneList.length ? `<div class="trk-seg none" style="width:${nonePct}%">${noneList.length}</div>` : ''}
-      </div>
-
-      <!-- สิ่งที่หน่วยงานต้องทำต่อ -->
-      <div class="trk-actions-box">
-        <div class="trk-actions-title">${ic('clipboard')} สิ่งที่หน่วยงานต้องทำต่อ</div>
-        <div class="trk-action-item">
-          <span class="trk-act-ico prog">➔</span>
-          <div><b>รอหน่วยงานยืนยัน:</b> ตรวจสอบแบบประเมินความพร้อมและเกณฑ์ในระบบ แนบหลักฐานให้ครบถ้วน ลงนามและกดส่งให้ MENTOR</div>
-        </div>
-        <div class="trk-action-item">
-          <span class="trk-act-ico none">➖</span>
-          <div><b>ยังไม่ส่งข้อมูล:</b> เข้าสู่ระบบเพื่อเริ่มกรอกข้อมูลตามเกณฑ์ 3 ด้าน (ด้านกายภาพ 15 ข้อ, ด้านคุณภาพ, ด้านผลลัพธ์)</div>
-        </div>
-        <div class="trk-action-item">
-          <span class="trk-act-ico done">✔</span>
-          <div><b>ยืนยันแล้ว:</b> ส่งลิงก์หรือ QR code ให้ประชาชนผู้รับบริการประเมินความพึงพอใจ เจ้าหน้าที่ห้ามทดลองกดส่งเอง และรอ MENTOR เข้าตรวจประเมิน</div>
-        </div>
-      </div>
-
-      <!-- ผู้ประสานงาน -->
-      <div class="trk-contact-bar">
-        <span><b>คณะทำงานและผู้ประสานงาน:</b></span>
-        <span>ผศ.ดร.อนุพันธ์ สุวรรณพันธ์ <a href="tel:0817185572">081-718-5572</a> (<a href="mailto:phanssk@gmail.com">phanssk@gmail.com</a>)</span>
-        <span>ผศ.ดร.จุฑามาศ แก้วจันดี <a href="tel:0611655397">061-165-5397</a> (<a href="mailto:chuthamat.k@sskru.ac.th">chuthamat.k@sskru.ac.th</a>)</span>
-      </div>
-    </div>
-  </section>
-  `;
+  return '';
 }
 
 function evaluationDashboardHTML(customInfos) {
@@ -4299,7 +4177,6 @@ function viewExec(){
 
   </div>
   ${surveySection(infos)}
-  ${trackingDashboardHTML(infos)}
   ${evaluationDashboardHTML(infos)}`;
   drawStrip();
 }

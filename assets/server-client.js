@@ -604,7 +604,6 @@ window.GECCClient = (() => {
       <h2 class="section-t">ผลการตรวจประเมินจาก MENTOR</h2>
       ${publicMentorEvaluation(N, r)}
       ${publicSurveySection(r?.survey)}
-      ${typeof trackingDashboardHTML === 'function' ? trackingDashboardHTML() : ''}
       ${typeof evaluationDashboardHTML === 'function' ? evaluationDashboardHTML() : ''}`;
   }
   async function putFile(id, blob, name) {
