@@ -2100,7 +2100,7 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 </style>
 <link rel="stylesheet" href="assets/premium.css">
 <script src="assets/motion.js" defer></script>
-<link rel="stylesheet" href="assets/public-features.css?v=2570j">
+<link rel="stylesheet" href="assets/public-features.css?v=2570k">
 </head>
 <body>
 <a class="skip-link" href="#content">ข้ามไปยังเนื้อหาหลัก</a>
@@ -3693,7 +3693,8 @@ function viewPortfolio(){
     $('#content').innerHTML=`<section class="portfolio-entry login-wizard"><h2 class="entry-q" tabindex="-1" data-entry-heading>เลือกช่องทางเข้าสู่ระบบ</h2><p class="entry-help">เลือกประเภทผู้ใช้งานของท่าน</p><div class="ecards entry-channels">${[
       ['advisor','user','ที่ปรึกษา MENTOR','เลือกชื่อที่ปรึกษาเพื่อเข้าสู่ระบบ'],
       ['mentor','users','MENTOR','เลือกกลุ่มและชื่อของท่าน'],
-      ['mentee','building','หน่วยบริการที่สมัคร','เลือกกลุ่มและหน่วยบริการของท่าน']
+      ['mentee','building','หน่วยบริการที่สมัคร','เลือกกลุ่มและหน่วยบริการของท่าน'],
+      ['coord','shield','ผู้ประสานงานจังหวัด','เลือกชื่อผู้ประสานงาน สสจ. เพื่อเข้าสู่ระบบ']
     ].map(([key,icon,title,description])=>`<button type="button" class="ecard" data-visual-card data-act="entry-path" data-path="${key}"><span class="ei">${ic(icon)}</span><b>${title}</b><span class="d">${description}</span><span class="eg">เลือกช่องทางนี้ ${ic('right')}</span></button>`).join('')}</div></section>`;
     entryFocus();return;
   }
