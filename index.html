@@ -4343,8 +4343,42 @@ async function downloadAttachment(fid, name){ const b=await FDB.get(fid); if(!b)
 /* MENTOR: เตือนให้ยืนยันผลหลังบันทึก */
 function wfNextModal(uid){
   openModal(`<div class="modal-h"><span class="dl-badge" style="background:var(--gold-grad);color:#0A1640">${ic('check')}</span><div style="flex:1;min-width:0"><h3>บันทึกผลการตรวจแล้ว · ขั้นตอนต่อไป</h3><p>${esc(unitById(uid).name)}</p></div><button class="btn btn-ghost btn-icon" data-act="modal-close" aria-label="ปิด">${ic('x')}</button></div>
-  <div class="modal-b"><div class="gsub-note" style="background:var(--warn-50);color:var(--warn);margin:0">${ic('alert')}<span>งานนี้ยังมีสถานะ <b>“ส่งแล้ว · รอ MENTOR ตรวจ”</b> หน่วยบริการจะยังไม่รู้ผลจนกว่าท่านจะยืนยันตรวจแล้ว หรือส่งกลับให้แก้ไข</span></div></div>
-  <div class="modal-f"><button class="btn" data-act="modal-close">ไว้ทีหลัง</button><button class="btn btn-danger" data-act="wf-return" data-id="${uid}">${ic('repeat')}ส่งกลับให้แก้ไข</button><button class="btn btn-lux" data-act="wf-review" data-id="${uid}">${ic('shield')}ยืนยันตรวจแล้ว</button></div>`);
+  <div class="modal-b">
+    <div class="gsub-note" style="background:#F0FDF4;color:#166534;border:1px solid #BBF7D0;margin:0 0 14px 0;border-radius:10px;padding:12px 14px;">
+      <div style="display:flex;align-items:center;gap:8px;font-weight:700;">
+        ${ic('check')} บันทึกคะแนนและข้อมูลที่ตรวจไปแล้วเรียบร้อยแล้ว
+      </div>
+      <div style="font-size:12.5px;color:#15803D;margin-top:3px;">
+        สถานะงานปัจจุบัน: <b>“ส่งแล้ว · รอ MENTOR ตรวจ”</b>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="background:#F8FAFC;border:1.5px solid #CBD5E1;border-radius:10px;padding:12px 14px;">
+        <div style="display:flex;align-items:center;gap:6px;font-weight:700;color:#0F2263;font-size:13.5px;">
+          ${ic('clock')} 1. กรณีตรวจยังไม่เสร็จ (ต้องการมาตรวจต่อทีหลัง)
+        </div>
+        <div style="font-size:12.5px;color:#475569;margin-top:4px;line-height:1.45;">
+          กดปุ่ม <b>“บันทึกไว้ก่อน (ตรวจต่อทีหลัง)”</b> ด้านล่าง ข้อมูลที่ตรวจไปแล้วทั้งหมดจะถูกเซฟเก็บไว้อย่างปลอดภัย และสถานะจะยังคงอยู่ในคิว <b>“รอ MENTOR ตรวจ”</b> เพื่อให้ท่านกลับมาตรวจให้คะแนนต่อจนครบ
+        </div>
+      </div>
+
+      <div style="background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:10px;padding:12px 14px;">
+        <div style="display:flex;align-items:center;gap:6px;font-weight:700;color:#92400E;font-size:13.5px;">
+          ${ic('shield')} 2. กรณีตรวจเสร็จสิ้นแล้วครบถ้วน
+        </div>
+        <div style="font-size:12.5px;color:#78350F;margin-top:4px;line-height:1.45;">
+          • หากตรวจครบและผ่านเกณฑ์ → กด <b>“ยืนยันตรวจแล้ว”</b> เพื่อสรุปผลคะแนนอย่างเป็นทางการ<br>
+          • หากตรวจพบจุดที่ต้องแก้ไข → กด <b>“ส่งกลับให้แก้ไข”</b> เพื่อให้หน่วยงานแก้ไขเอกสาร
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-f" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;">
+    <button class="btn btn-primary" data-act="wf-save-later" style="font-weight:700;">${ic('clock')}บันทึกไว้ก่อน (ตรวจต่อทีหลัง)</button>
+    <button class="btn btn-danger" data-act="wf-return" data-id="${uid}">${ic('repeat')}ส่งกลับให้แก้ไข</button>
+    <button class="btn btn-lux" data-act="wf-review" data-id="${uid}">${ic('shield')}ยืนยันตรวจแล้ว</button>
+  </div>`);
 }
 function wfAlertHTML(team){
   const us=DB.units.filter(u=>!team||u.team===team); const L=us.map(u=>({u,a:DB.assess[u.id]})).filter(o=>wfOf(o.a)==='submitted');
@@ -4836,7 +4870,16 @@ function splitHTML(c){
   <div><div class="k">ผลลัพธ์</div><div class="v">${fmt(c.out)}<small> / 100</small></div></div>
   <div><div class="k">เกณฑ์ใหม่ปี 2570</div><div class="v">${c.newDone}<small> / ${NEW_TOTAL} ข้อ</small></div></div>`;
 }
-function saveBarHTML(){ if(S.lock) return ''; return `<div class="savebar no-print ${S.dirty?'dirty':''}" id="savebar"><span class="sv-t">${S.dirty?ic('alert')+'มีการแก้ไขที่ยังไม่บันทึก':ic('check')+(DB.assess[S.unitId]?.updatedAt?'บันทึกล่าสุด '+thDateTime(DB.assess[S.unitId].updatedAt):'ยังไม่มีการบันทึกผล')}</span><div class="acts"><button class="btn" data-act="discard" ${S.dirty?'':'disabled'}>ยกเลิกการแก้ไข</button><button class="btn btn-primary" data-act="save" ${S.dirty?'':'disabled'}>${ic('save')}${S.role==='mentee'?'บันทึกและส่งให้ MENTOR':'บันทึกผลการตรวจ'}</button></div></div>`; }
+function saveBarHTML(){
+  if(S.lock) return '';
+  const a = S.draft || DB.assess[S.unitId];
+  const isMt = S.role === 'mentor';
+  const isSubmitted = a && a.wf && a.wf.status === 'submitted';
+  if (isMt && isSubmitted) {
+    return `<div class="savebar no-print ${S.dirty?'dirty':''}" id="savebar"><span class="sv-t">${S.dirty?ic('alert')+'มีการแก้ไขที่ยังไม่บันทึก':ic('check')+(DB.assess[S.unitId]?.updatedAt?'บันทึกล่าสุด '+thDateTime(DB.assess[S.unitId].updatedAt):'ยังไม่มีการบันทึกผล')}</span><div class="acts"><button class="btn" data-act="discard" ${S.dirty?'':'disabled'}>ยกเลิกการแก้ไข</button><button class="btn btn-primary" data-act="save-draft" ${S.dirty?'':'disabled'} title="บันทึกคะแนนและข้อคิดเห็นไว้ก่อน สามารถกลับมาตรวจต่อทีหลังได้">${ic('save')}บันทึกไว้ก่อน (ตรวจต่อทีหลัง)</button><button class="btn btn-lux" data-act="save-review" title="ตรวจครบทุกเกณฑ์แล้ว และพร้อมยืนยันผลการตรวจ">${ic('shield')}ตรวจเสร็จสิ้น / ยืนยันผล</button></div></div>`;
+  }
+  return `<div class="savebar no-print ${S.dirty?'dirty':''}" id="savebar"><span class="sv-t">${S.dirty?ic('alert')+'มีการแก้ไขที่ยังไม่บันทึก':ic('check')+(DB.assess[S.unitId]?.updatedAt?'บันทึกล่าสุด '+thDateTime(DB.assess[S.unitId].updatedAt):'ยังไม่มีการบันทึกผล')}</span><div class="acts"><button class="btn" data-act="discard" ${S.dirty?'':'disabled'}>ยกเลิกการแก้ไข</button><button class="btn btn-primary" data-act="save" ${S.dirty?'':'disabled'}>${ic('save')}${S.role==='mentee'?'บันทึกและส่งให้ MENTOR':'บันทึกผลการตรวจ'}</button></div></div>`;
+}
 function newToggle(){ return `<div class="new-legend no-print">${NEWB}<span><b>NEW</b> คือเกณฑ์ที่ปรับเพิ่มใหม่ในปี 2570 ตามอินโฟกราฟิก “มีอะไรใหม่ใน GECC 2570” ของสำนักงาน ก.พ.ร.</span><span class="spacer"></span><label class="row" style="gap:8px;cursor:pointer;min-height:36px"><input type="checkbox" data-act-change="only-new" ${S.onlyNew?'checked':''} style="width:20px;height:20px;accent-color:var(--navy)"> แสดงเฉพาะเกณฑ์ใหม่</label></div>`; }
 /* ================= ความพึงพอใจและความเชื่อมั่น (ข้อคำถามเดียวกับ SISAKET SMART FDA) ================= */
 const SAT=[["s3","ความพึงพอใจ ณ จุดให้บริการ","On-site Satisfaction"],["s4","ความพึงพอใจต่อการให้บริการผ่านช่องทางออนไลน์","Online Satisfaction"],["s5","ความพึงพอใจภาพรวม","Overall Satisfaction"]];
@@ -5056,13 +5099,13 @@ function wfWaitCount(team){ return DB.units.filter(u=>!team||u.team===team).filt
 function wfBanner(a,u,inUnit){
   const k=wfOf(a), L=WF[k], w=a?.wf||{}; const isMe=S.role==='mentee', isMt=S.role==='mentor';
   let meta='';
-  if(k==='submitted') meta=`ส่งเมื่อ ${thDateTime(w.submittedAt)} · รอตรวจ ${daysSince(w.submittedAt)} วัน${w.round>1?` · ส่งครั้งที่ ${w.round}`:''}${w.mentorSavedAt&&w.mentorSavedAt>w.submittedAt?` · <b style="color:var(--bad)">MENTOR บันทึกผลแล้ว ยังไม่ยืนยัน</b>`:''}`;
+  if(k==='submitted') meta=`ส่งเมื่อ ${thDateTime(w.submittedAt)} · รอตรวจ ${daysSince(w.submittedAt)} วัน${w.round>1?` · ส่งครั้งที่ ${w.round}`:''}${w.mentorSavedAt&&w.mentorSavedAt>w.submittedAt?` · <b style="color:#2563EB">📝 บันทึกร่างไว้แล้ว (ตรวจต่อได้)</b>`:''}`;
   else if(k==='reviewed') meta=`ตรวจโดย ${esc((w.reviewedBy||[]).join(', ')||'MENTOR')} · ${thDateTime(w.reviewedAt)}`;
   else if(k==='returned') meta=`ส่งกลับเมื่อ ${thDateTime(w.returnedAt)} · ${esc(w.returnNote||'')}`;
   else meta = isMe ? 'กรอกข้อมูลและแนบหลักฐานให้ครบ แล้วกดยืนยันส่งให้ MENTOR ตรวจ' : 'หน่วยบริการยังไม่ได้ยืนยันส่งข้อมูล MENTOR ตรวจในพื้นที่และยืนยันผลได้';
   let acts='';
   if(isMe){ if(k==='none'||k==='draft'||k==='returned') acts=`<button class="btn btn-lux" data-act="wf-submit" data-id="${u.id}">${ic('upload')}${k==='returned'?'ส่งข้อมูลที่แก้ไขแล้ว':'ยืนยันส่งให้ MENTOR ตรวจ'}</button>`; else if(k==='submitted') acts=`<button class="btn" data-act="wf-submit" data-id="${u.id}">${ic('upload')}ส่งข้อมูลเพิ่มเติม</button>`; if(!inUnit) acts+=`<button class="btn" data-act="mentee-tab" data-tab="ready">${ic('clipboard')}เปิดแบบตรวจ</button>`; }
-  if(isMt && inUnit){ if(k==='reviewed') acts=`<button class="btn" data-act="reopen" data-id="${u.id}">${ic('pencil')}เปิดแก้ไขใหม่</button>`; else { acts=`<button class="btn btn-lux" data-act="wf-review" data-id="${u.id}">${ic('shield')}ยืนยันตรวจแล้ว</button>`; if(k==='submitted') acts+=`<button class="btn btn-danger" data-act="wf-return" data-id="${u.id}">${ic('repeat')}ส่งกลับให้แก้ไข</button>`; } }
+  if(isMt && inUnit){ if(k==='reviewed') acts=`<button class="btn" data-act="reopen" data-id="${u.id}">${ic('pencil')}เปิดแก้ไขใหม่</button>`; else { acts=`<button class="btn btn-lux" data-act="wf-review" data-id="${u.id}">${ic('shield')}ยืนยันตรวจแล้ว</button>`; if(k==='submitted') acts+=`<button class="btn btn-danger" data-act="wf-return" data-id="${u.id}">${ic('repeat')}ส่งกลับให้แก้ไข</button>`; if(k==='submitted') acts+=`<button class="btn btn-primary" data-act="save-draft" title="บันทึกผลการตรวจไว้ก่อน เพื่อกลับมาตรวจต่อทีหลัง">${ic('clock')}บันทึกไว้ตรวจต่อทีหลัง</button>`; } }
   return `<div class="wfb ${L[2]}" role="status"><span class="wfb-i">${ic(L[1])}</span><div class="wfb-t"><span class="wfb-k">สถานะการส่งข้อมูล</span><b>${L[0]}</b><span>${meta}</span>${senderLine(a)}${k==='reviewed'&&inUnit?`<span class="lockbar">${ic('shield')}<span><b>ผลการตรวจถูกล็อกแล้ว</b> · แก้ไขไม่ได้จนกว่า MENTOR จะกด “เปิดแก้ไขใหม่” พร้อมบันทึกเหตุผล</span></span>`:''}${wfLogHTML(w)}</div>${acts?`<div class="wfb-a">${acts}</div>`:''}</div>`;
 }
 async function wfCommit(uid, mut, msg){
@@ -5703,7 +5746,7 @@ function bind(el){
   a.started=true;
   S.dirty=true; live();
 }
-async function saveAssess(btn){
+async function saveAssess(btn, autoNext = false){
   const a=S.draft; const bad=$$('.field.invalid'); if(bad.length){ toast('กรุณาแก้ไขช่องที่กรอกไม่ถูกต้องก่อนบันทึก',true); bad[0].querySelector('input')?.focus(); return; }
   if(S.role==='mentor' && !(a.inspectors||[]).length){
     if(S.accountName){
@@ -5719,8 +5762,12 @@ async function saveAssess(btn){
   a.started=true; a.updatedAt=new Date().toISOString();
   if(S.role==='mentor' && a.wf && a.wf.status==='submitted') a.wf.mentorSavedAt=new Date().toISOString();
   DB.assess[S.unitId]=clone(a); await persist(); if(window.GECC_SERVER) S.draft=clone(DB.assess[S.unitId]);
-  S.dirty=!storageOK; const askNext = S.role==='mentor' && a.wf && a.wf.status==='submitted'; const nu=S.unitId;
-  setTimeout(()=>{ render(); if(askNext) setTimeout(()=>wfNextModal(nu),250); toast(storageOK?(S.role==='mentee'?'บันทึกข้อมูลหน่วยบริการแล้ว':'บันทึกผลการตรวจแล้ว'):'ยังบันทึกถาวรไม่ได้ ข้อมูลอยู่ชั่วคราว กรุณาส่งออกสำรองก่อนปิดหน้า', !storageOK); },150);
+  S.dirty=!storageOK; const askNext = autoNext && S.role==='mentor' && a.wf && a.wf.status==='submitted'; const nu=S.unitId;
+  setTimeout(()=>{
+    render();
+    if(askNext) setTimeout(()=>wfNextModal(nu),250);
+    else toast(storageOK ? (S.role==='mentee' ? 'บันทึกข้อมูลหน่วยบริการแล้ว' : '💾 บันทึกผลการตรวจเรียบร้อยแล้ว · สถานะยังคงเป็น "รอ MENTOR ตรวจ" สามารถกลับมาตรวจต่อได้ตลอดเวลา') : 'ยังบันทึกถาวรไม่ได้ ข้อมูลอยู่ชั่วคราว กรุณาส่งออกสำรองก่อนปิดหน้า', !storageOK);
+  },150);
 }
 
 /* ================= View: Mentee ================= */
@@ -6033,7 +6080,10 @@ document.addEventListener('click', async e=>{
     case 'back': go(S.from==='forms'?'forms':S.from==='mdash'?'mdash':S.from==='udash'?'udash':(S.role==='mentee'?'mentee':'mentor')); break;
     case 'tab': S.tab=el.dataset.tab; viewUnitKeep(); break;
     case 'mentee-tab': S.draft=null; go('unit',{unitId:S.menteeUnit, tab:el.dataset.tab, from:'mentee'}); break;
-    case 'save': await saveAssess(el); break;
+    case 'save': await saveAssess(el, false); break;
+    case 'save-draft': await saveAssess(el, false); break;
+    case 'save-review': await saveAssess(el, true); break;
+    case 'wf-save-later': closeModal(); toast('💾 บันทึกผลการตรวจไว้แล้ว · สถานะยังคงเป็น "รอ MENTOR ตรวจ" ท่านสามารถกลับมาตรวจต่อได้ตลอดเวลา'); break;
     case 'discard': confirmDlg('ยกเลิกการแก้ไข?','ข้อมูลจะกลับไปเป็นผลที่บันทึกไว้ล่าสุด','ยกเลิกการแก้ไข',()=>{ S.draft=null; S.dirty=false; viewUnitKeep(); toast('ยกเลิกการแก้ไขแล้ว'); }, true); break;
     case 'def-add': defectModal(null,{area:el.dataset.area, ref:el.dataset.ref, detail:el.dataset.detail}); break;
     case 'def-edit': defectModal(DB.defects.find(d=>d.id===id)); break;
