@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="th">
 <head>
 <meta charset="utf-8">
@@ -2100,7 +2100,8 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 </style>
 <link rel="stylesheet" href="assets/premium.css">
 <script src="assets/motion.js" defer></script>
-<link rel="stylesheet" href="assets/public-features.css?v=2570k">
+<link rel="stylesheet" href="assets/public-features.css?v=2570m">
+<script src="assets/evaluation-dashboard.js?v=2570m"></script>
 </head>
 <body>
 <a class="skip-link" href="#content">ข้ามไปยังเนื้อหาหลัก</a>
@@ -3886,245 +3887,7 @@ function trackingDashboardHTML(customInfos) {
   return '';
 }
 
-function evaluationDashboardHTML(customInfos) {
-  const units = DB.units || [];
-  const N = units.length || 34;
-  const teams = DB.teams || defaultTeams();
-  const lastUpd = (DB.units || []).map(u => DB.assess?.[u.id]?.updatedAt).filter(Boolean).sort().pop();
-  const mode = S.evalMode || 'mentor';
-  const filter = S.evalFilter || 'all';
-
-  const unitList = units.map(u => {
-    const a = DB.assess?.[u.id];
-    const sub = typeof subOf === 'function' && a ? subOf(a) : { phys: 'none', qual: 'none', out: 'none' };
-    const complete = sub.phys === 'done' && sub.qual === 'done' && sub.out === 'done';
-    const c = complete && typeof calc === 'function' ? calc(a) : null;
-    const defs = (DB.defects || []).filter(d => d.unitId === u.id && d.status !== 'closed');
-    const readySt = typeof readyOf === 'function' && a ? readyOf(a).st : 'none';
-
-    let mentorSt = 'none';
-    if (complete && c) {
-      if (!c.physComplete || c.total < 240) mentorSt = 'risk';
-      else if (defs.length > 0) mentorSt = 'fix';
-      else mentorSt = 'pass';
-    }
-
-    let subSt = complete ? 'subdone' : (Object.values(sub).some(v => v !== 'none') ? 'subprog' : 'subnone');
-    let rdySt = readySt === 'ready' ? 'ready' : 'notready';
-
-    let physCount = 0;
-    if (a && a.phys && Array.isArray(a.phys)) {
-      physCount = a.phys.filter(v => v === true).length;
-    }
-    let physSt = physCount === 15 ? 'physfull' : (physCount > 0 ? 'physpart' : 'physnone');
-
-    if (window.GECC_PUBLIC_UNITS) {
-      const pu = window.GECC_PUBLIC_UNITS.find(x => x.id === u.id);
-      if (pu) {
-        if (pu.status) mentorSt = pu.status;
-        if (pu.submission) subSt = pu.submission === 'done' ? 'subdone' : (pu.submission === 'prog' ? 'subprog' : 'subnone');
-        if (pu.readiness) rdySt = pu.readiness === 'ready' ? 'ready' : 'notready';
-        if (pu.physical && Array.isArray(pu.physical)) {
-          physCount = pu.physical.filter(v => v === true).length;
-          physSt = physCount === 15 ? 'physfull' : (physCount > 0 ? 'physpart' : 'physnone');
-        }
-      }
-    }
-
-    let curSt = mentorSt;
-    if (mode === 'sub') curSt = subSt;
-    else if (mode === 'phys') curSt = physSt;
-    else if (mode === 'ready') curSt = rdySt;
-
-    return {
-      u,
-      id: u.id,
-      team: u.team,
-      num: TRACKING_NUMS[u.id] || u.code?.slice(-2) || '00',
-      sName: TRACKING_SHORT_NAMES[u.id] || u.name,
-      mentorSt,
-      subSt,
-      physSt,
-      physCount,
-      rdySt,
-      curSt
-    };
-  });
-
-  const passCount = unitList.filter(x => x.mentorSt === 'pass').length;
-  const fixCount = unitList.filter(x => x.mentorSt === 'fix').length;
-  const riskCount = unitList.filter(x => x.mentorSt === 'risk').length;
-  const pendingCount = unitList.filter(x => x.mentorSt === 'none').length;
-
-  const subDoneCount = unitList.filter(x => x.subSt === 'subdone').length;
-  const subProgCount = unitList.filter(x => x.subSt === 'subprog').length;
-  const subNoneCount = unitList.filter(x => x.subSt === 'subnone').length;
-
-  const physFullCount = unitList.filter(x => x.physSt === 'physfull').length;
-  const physPartCount = unitList.filter(x => x.physSt === 'physpart').length;
-  const physNoneCount = unitList.filter(x => x.physSt === 'physnone').length;
-
-  const rdyDoneCount = unitList.filter(x => x.rdySt === 'ready').length;
-  const rdyNoneCount = unitList.filter(x => x.rdySt === 'notready').length;
-
-  let tabsHTML = '';
-  if (mode === 'mentor') {
-    tabsHTML = `
-      <button type="button" class="eval-stat-tab st-pass ${filter === 'pass' ? 'active' : ''}" data-act="eval-filter" data-f="pass" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ผ่านเกณฑ์">
-        <span class="eval-u-badge st-pass">✔</span>
-        <span>ผ่านเกณฑ์ ${passCount} แห่ง</span>
-      </button>
-      <button type="button" class="eval-stat-tab st-fix ${filter === 'fix' ? 'active' : ''}" data-act="eval-filter" data-f="fix" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ต้องแก้ไข">
-        <span class="eval-u-badge st-fix">⚠️</span>
-        <span>ต้องแก้ไข ${fixCount} แห่ง</span>
-      </button>
-      <button type="button" class="eval-stat-tab st-risk ${filter === 'risk' ? 'active' : ''}" data-act="eval-filter" data-f="risk" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่เสี่ยงไม่ผ่าน">
-        <span class="eval-u-badge st-risk">❌</span>
-        <span>เสี่ยงไม่ผ่าน ${riskCount} แห่ง</span>
-      </button>
-      <button type="button" class="eval-stat-tab st-none ${filter === 'none' ? 'active' : ''}" data-act="eval-filter" data-f="none" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ยังส่งไม่ครบ">
-        <span class="eval-u-badge st-none">⏱️</span>
-        <span>ยังส่งไม่ครบ ${pendingCount} แห่ง</span>
-      </button>
-    `;
-  } else if (mode === 'sub') {
-    tabsHTML = `
-      <button type="button" class="eval-stat-tab st-subdone ${filter === 'subdone' ? 'active' : ''}" data-act="eval-filter" data-f="subdone" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ส่งครบ 3 ด้าน">
-        <span class="eval-u-badge st-subdone">✔</span>
-        <span>ส่งครบ 3 ด้าน ${subDoneCount} แห่ง</span>
-      </button>
-      <button type="button" class="eval-stat-tab st-subprog ${filter === 'subprog' ? 'active' : ''}" data-act="eval-filter" data-f="subprog" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่อยู่ระหว่างดำเนินการ">
-        <span class="eval-u-badge st-subprog">➔</span>
-        <span>ระหว่างดำเนินการ ${subProgCount} แห่ง</span>
-      </button>
-      <button type="button" class="eval-stat-tab st-subnone ${filter === 'subnone' ? 'active' : ''}" data-act="eval-filter" data-f="subnone" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ยังไม่ส่ง">
-        <span class="eval-u-badge st-subnone">➖</span>
-        <span>ไม่ส่ง ต้องติดตาม ${subNoneCount} แห่ง</span>
-      </button>
-    `;
-  } else if (mode === 'phys') {
-    tabsHTML = `
-      <button type="button" class="eval-stat-tab st-physfull ${filter === 'physfull' ? 'active' : ''}" data-act="eval-filter" data-f="physfull" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ครบ 15 ข้อ">
-        <span class="eval-u-badge st-physfull">✔</span>
-        <span>ครบ 15 ข้อ ${physFullCount} แห่ง</span>
-      </button>
-      <button type="button" class="eval-stat-tab st-physpart ${filter === 'physpart' ? 'active' : ''}" data-act="eval-filter" data-f="physpart" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ยังไม่ครบ 15 ข้อ">
-        <span class="eval-u-badge st-physpart">➔</span>
-        <span>ยังไม่ครบ 1-14 ข้อ ${physPartCount} แห่ง</span>
-      </button>
-      <button type="button" class="eval-stat-tab st-physnone ${filter === 'physnone' ? 'active' : ''}" data-act="eval-filter" data-f="physnone" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ยังไม่ส่งเกณฑ์กายภาพ">
-        <span class="eval-u-badge st-physnone">➖</span>
-        <span>ยังไม่ส่ง ${physNoneCount} แห่ง</span>
-      </button>
-    `;
-  } else {
-    tabsHTML = `
-      <button type="button" class="eval-stat-tab st-ready ${filter === 'ready' ? 'active' : ''}" data-act="eval-filter" data-f="ready" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่พร้อมเข้าสู่มาตรฐาน">
-        <span class="eval-u-badge st-ready">✔</span>
-        <span>พร้อมเข้าสู่มาตรฐาน (ส่งแล้ว) ${rdyDoneCount} แห่ง</span>
-      </button>
-      <button type="button" class="eval-stat-tab st-notready ${filter === 'notready' ? 'active' : ''}" data-act="eval-filter" data-f="notready" title="คลิกเพื่อกรองเฉพาะหน่วยงานที่ยังไม่ส่งหรือยังไม่พร้อม">
-        <span class="eval-u-badge st-notready">➖</span>
-        <span>ยังไม่ส่ง / ไม่พร้อม ${rdyNoneCount} แห่ง</span>
-      </button>
-    `;
-  }
-
-  return `
-  <section class="eval-board-section" id="evaluation-dashboard" aria-label="แดชบอร์ดผลการประเมินและความพร้อมรายหน่วยบริการ">
-    <div class="eval-hdr-bar">
-      <div class="trk-hdr-brand">
-        <div class="trk-seals">
-          <img src="${IMG.prov}" alt="ตราประจำจังหวัดศรีสะเกษ">
-          <img src="${IMG.gecc}" alt="ตราศูนย์ราชการสะดวก">
-        </div>
-        <div class="trk-hdr-title">
-          <h2>สถานะผลการประเมินและความพร้อมรายหน่วยบริการ (34 แห่ง)</h2>
-          <p>แดชบอร์ดแสดงรายชื่อสถานะตามแดชบอร์ดหลัก · ข้อมูล ณ ${lastUpd ? thDateTime(lastUpd) : thDate(todayISO(), true)}</p>
-        </div>
-      </div>
-      <div class="trk-badge-gold">${ic('shield')} สถานะตามแดชบอร์ดหลัก</div>
-    </div>
-
-    <!-- เมนูเลือกโหมดตามแดชบอร์ดหลัก 4 หัวข้อ -->
-    <div class="eval-mode-nav" role="tablist" aria-label="เลือกหัวข้อแดชบอร์ดที่ต้องการดูรายชื่อ">
-      <button type="button" class="eval-mode-btn ${mode === 'mentor' ? 'active' : ''}" data-act="eval-mode" data-m="mentor">
-        ${ic('award')} 1. ผลตรวจ MENTOR (4 สถานะ)
-      </button>
-      <button type="button" class="eval-mode-btn ${mode === 'sub' ? 'active' : ''}" data-act="eval-mode" data-m="sub">
-        ${ic('clipboard')} 2. ความพร้อมเกณฑ์ 3 ด้าน
-      </button>
-      <button type="button" class="eval-mode-btn ${mode === 'phys' ? 'active' : ''}" data-act="eval-mode" data-m="phys">
-        ${ic('check')} 3. ด้านกายภาพ 15 ข้อ
-      </button>
-      <button type="button" class="eval-mode-btn ${mode === 'ready' ? 'active' : ''}" data-act="eval-mode" data-m="ready">
-        ${ic('shield')} 4. แบบประเมินความพร้อม
-      </button>
-    </div>
-
-    <!-- แถบแสดงจำนวนและตัวกรองสถานะ -->
-    <div class="trk-flt-controls">
-      <div class="trk-flt-hint">คลิกแถบสถานะด้านบนเพื่อกรองรายชื่อ หรือคลิกที่ชื่อหน่วยงานเพื่อดูรายละเอียดผลการตรวจ</div>
-      <button type="button" class="trk-all-btn ${filter === 'all' ? 'active' : ''}" data-act="eval-filter" data-f="all">แสดงทั้งหมด (${N} แห่ง)</button>
-    </div>
-
-    <div class="eval-status-grid">
-      ${tabsHTML}
-    </div>
-
-    <!-- ตาราง 6 กลุ่ม แสดงชื่อทุกหน่วยงานตามสีสถานะของโหมดที่เลือก -->
-    <div class="trk-groups-grid">
-      ${teams.map(t => {
-        const tUnits = unitList.filter(x => x.team === t.id).sort((a, b) => (parseInt(a.num, 10) || 0) - (parseInt(b.num, 10) || 0));
-        const tGood = tUnits.filter(x => {
-          if (mode === 'mentor') return x.mentorSt === 'pass';
-          if (mode === 'sub') return x.subSt === 'subdone';
-          if (mode === 'phys') return x.physSt === 'physfull';
-          return x.rdySt === 'ready';
-        }).length;
-        const subLabel = mode === 'mentor'
-          ? `ผ่านเกณฑ์ ${tGood}/${tUnits.length}`
-          : (mode === 'sub'
-            ? `ส่งครบ 3 ด้าน ${tGood}/${tUnits.length}`
-            : (mode === 'phys'
-              ? `ครบ 15 ข้อ ${tGood}/${tUnits.length}`
-              : `พร้อม ${tGood}/${tUnits.length}`));
-        return `
-        <div class="trk-group-box">
-          <div class="trk-group-header">
-            <div class="trk-group-title">กลุ่ม ${t.id} ${esc(t.name)}</div>
-            <div class="trk-group-sent">${subLabel}</div>
-          </div>
-          <div class="trk-group-body">
-            ${tUnits.map(x => {
-              let ico = '⏱️';
-              if (mode === 'mentor') {
-                ico = x.mentorSt === 'pass' ? '✔' : (x.mentorSt === 'fix' ? '⚠️' : (x.mentorSt === 'risk' ? '❌' : '⏱️'));
-              } else if (mode === 'sub') {
-                ico = x.subSt === 'subdone' ? '✔' : (x.subSt === 'subprog' ? '➔' : '➖');
-              } else if (mode === 'phys') {
-                ico = x.physSt === 'physfull' ? '✔' : (x.physSt === 'physpart' ? '➔' : '➖');
-              } else {
-                ico = x.rdySt === 'ready' ? '✔' : '➖';
-              }
-              const isVisible = filter === 'all' || x.curSt === filter;
-              const physNote = (mode === 'phys' && x.physCount > 0) ? ` <small style="font-weight:600;opacity:0.85">(${x.physCount}/15)</small>` : '';
-              return `
-              <button type="button" class="eval-u-item st-${x.curSt}" data-act="eval-unit" data-id="${x.id}" data-st="${x.curSt}" style="${isVisible ? '' : 'display:none'}" title="${esc(x.u.name)}">
-                <span class="eval-u-badge st-${x.curSt}">${ico}</span>
-                <span class="eval-u-text"><b>${x.num}</b> ${esc(x.sName)}${physNote}</span>
-              </button>
-              `;
-            }).join('')}
-          </div>
-        </div>
-        `;
-      }).join('')}
-    </div>
-  </section>
-  `;
-}
-
+// evaluationDashboardHTML is defined in assets/evaluation-dashboard.js
 
 function viewExec(){
   if(window.GECC_SERVER && !S.role) return GECCClient.publicDashboard();
@@ -6118,7 +5881,12 @@ document.addEventListener('click', async e=>{
       }
       break;
     }
-        case 'eval-mode': {
+    case 'eval-view': {
+      S.evalView = el.dataset.v || 'excel';
+      render();
+      break;
+    }
+    case 'eval-mode': {
       S.evalMode = el.dataset.m;
       S.evalFilter = 'all';
       render();
