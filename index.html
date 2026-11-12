@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="th">
 <head>
 <meta charset="utf-8">
@@ -1157,6 +1157,21 @@ button.mr:focus-visible{ outline:3px solid var(--gold-500); outline-offset:2px; 
 .wk span svg{ width:16px; height:16px; }
 .wk b{ font-size:30px; line-height:1.1; font-variant-numeric:tabular-nums; }
 .wk.wait{ background:#FEF5E6; border-color:#F6DBAA; color:#B86A04; } .wk.ret{ background:#FDEFED; border-color:#F4C9C3; color:#B42318; } .wk.ok{ background:#EEF8F2; border-color:#C9E8D5; color:#17734A; } .wk.idle{ background:var(--navy-50); border-color:var(--navy-100); color:var(--navy); }
+.wk-teams{ display:flex; align-items:flex-start; gap:6px; margin-top:8px; padding-top:8px; border-top:1px dashed rgba(0,0,0,0.1); font-size:12px; }
+.wk-teams-lbl{ font-size:11.5px; font-weight:700; opacity:0.8; white-space:nowrap; padding-top:2px; }
+.wk-teams-chips{ display:flex; flex-wrap:wrap; gap:4px; align-items:center; }
+.wk-t-pill{ border:1px solid; border-radius:6px; padding:2px 7px; font-size:11.5px; font-weight:700; line-height:1.3; cursor:pointer; background:transparent; transition:all 0.15s ease; font-family:inherit; }
+.wk-t-pill:hover{ transform:translateY(-1px); filter:brightness(0.95); box-shadow:0 1px 3px rgba(0,0,0,0.08); }
+.wk.wait .wk-t-pill{ background:rgba(184,106,4,0.12); color:#9A5503; border-color:rgba(184,106,4,0.25); }
+.wk.wait .wk-t-pill:hover{ background:rgba(184,106,4,0.2); }
+.wk.ret .wk-t-pill{ background:rgba(180,35,24,0.1); color:#991B1B; border-color:rgba(180,35,24,0.22); }
+.wk.ret .wk-t-pill:hover{ background:rgba(180,35,24,0.18); }
+.wk.ok .wk-t-pill{ background:rgba(23,115,74,0.12); color:#0E5E37; border-color:rgba(23,115,74,0.25); }
+.wk.ok .wk-t-pill:hover{ background:rgba(23,115,74,0.2); }
+.wk.idle .wk-t-pill{ background:rgba(15,34,99,0.08); color:#0F2263; border-color:rgba(15,34,99,0.18); }
+.wk.idle .wk-t-pill:hover{ background:rgba(15,34,99,0.15); }
+.wk-t-pill small{ font-size:10.5px; font-weight:600; opacity:0.85; margin-left:1px; }
+.wk-t-none{ font-size:12px; opacity:0.6; padding-top:2px; }
 .wq{ list-style:none; margin:0; padding:0; }
 .wq-i{ display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto; gap:10px 14px; align-items:center; padding:12px 0; border-top:1px solid var(--border); }
 .wq-i:first-child{ border-top:0; padding-top:2px; }
@@ -5099,13 +5114,46 @@ function wfQueueHTML(infos){
   const c=k=>rows.filter(o=>o.k===k).length;
   const wait=rows.filter(o=>o.k==='submitted').sort((a,b)=>(a.w.submittedAt||'').localeCompare(b.w.submittedAt||''));
   const ret=rows.filter(o=>o.k==='returned');
-  const done=rows.filter(o=>o.k==='reviewed').sort((a,b)=>(b.w.reviewedAt||'').localeCompare(a.w.reviewedAt||'')).slice(0,6);
+  const allDone=rows.filter(o=>o.k==='reviewed');
+  const done=allDone.sort((a,b)=>(b.w.reviewedAt||'').localeCompare(a.w.reviewedAt||'')).slice(0,6);
+  const idle=rows.filter(o=>o.k==='draft'||o.k==='none');
+
+  const teamsOf = (list) => {
+    const map = {};
+    list.forEach(o => {
+      const t = o.x.u.team;
+      if (t) map[t] = (map[t] || 0) + 1;
+    });
+    const sorted = Object.keys(map).map(Number).sort((a, b) => a - b);
+    if (!sorted.length) return `<span class="wk-t-none">—</span>`;
+    return sorted.map(t => {
+      const cnt = map[t];
+      return `<button type="button" class="wk-t-pill" data-act="md-team" data-team="${t}" title="กลุ่ม ${t}: ${esc(teamName(t))} (${cnt} แห่ง) · คลิกเพื่อกรองดูเฉพาะกลุ่มนี้">กลุ่ม ${t}${cnt > 1 ? ` <small>(${cnt})</small>` : ''}</button>`;
+    }).join('');
+  };
+
   const item=(o,act)=>`<li class="wq-i"><div class="wq-t"><b>${esc(o.x.u.name)}</b><span>${esc(teamName(o.x.u.team))}</span></div><div class="wq-m">${o.k==='submitted'?`ส่งเมื่อ ${thDateTime(o.w.submittedAt)}<br><b class="${daysSince(o.w.submittedAt)>7?'overdue':''}">รอตรวจ ${daysSince(o.w.submittedAt)} วัน</b>`:o.k==='returned'?`ส่งกลับ ${thDate(o.w.returnedAt)}<br><span class="muted">${esc((o.w.returnNote||'').slice(0,60))}</span>`:`ตรวจโดย ${esc((o.w.reviewedBy||[]).join(', '))}<br><span class="muted">${thDateTime(o.w.reviewedAt)}</span>`}</div>${act?`<button class="btn btn-sm ${o.k==='submitted'?'btn-primary':''}" data-act="open-review" data-id="${o.x.u.id}">${ic('clipboard')}${o.k==='submitted'?'เปิดตรวจ':'เปิดดู'}</button>`:''}</li>`;
   return `${alertH}<div class="wq-k">
-      <div class="wk wait"><span>${ic('upload')}รอ MENTOR ตรวจ</span><b>${c('submitted')}</b></div>
-      <div class="wk ret"><span>${ic('repeat')}ส่งกลับแก้ไข</span><b>${c('returned')}</b></div>
-      <div class="wk ok"><span>${ic('shield')}ตรวจแล้ว</span><b>${c('reviewed')}</b></div>
-      <div class="wk idle"><span>${ic('clock')}ยังไม่ยืนยันส่ง</span><b>${c('draft')+c('none')}</b></div></div>
+      <div class="wk wait">
+        <span>${ic('upload')}รอ MENTOR ตรวจ</span>
+        <b>${c('submitted')}</b>
+        <div class="wk-teams"><span class="wk-teams-lbl">กลุ่ม:</span><div class="wk-teams-chips">${teamsOf(wait)}</div></div>
+      </div>
+      <div class="wk ret">
+        <span>${ic('repeat')}ส่งกลับแก้ไข</span>
+        <b>${c('returned')}</b>
+        <div class="wk-teams"><span class="wk-teams-lbl">กลุ่ม:</span><div class="wk-teams-chips">${teamsOf(ret)}</div></div>
+      </div>
+      <div class="wk ok">
+        <span>${ic('shield')}ตรวจแล้ว</span>
+        <b>${c('reviewed')}</b>
+        <div class="wk-teams"><span class="wk-teams-lbl">กลุ่ม:</span><div class="wk-teams-chips">${teamsOf(allDone)}</div></div>
+      </div>
+      <div class="wk idle">
+        <span>${ic('clock')}ยังไม่ยืนยันส่ง</span>
+        <b>${c('draft')+c('none')}</b>
+        <div class="wk-teams"><span class="wk-teams-lbl">กลุ่ม:</span><div class="wk-teams-chips">${teamsOf(idle)}</div></div>
+      </div></div>
     <div class="grid g2" style="margin-top:14px">
       <div class="card"><div class="card-h"><div><h3>รายการรอตรวจ</h3><p>เรียงจากส่งมานานที่สุด · ${wait.length} หน่วยบริการ</p></div></div><div class="card-b">${wait.length?`<ul class="wq">${wait.map(o=>item(o,true)).join('')}</ul>`:`<div class="empty" style="padding:18px">${ic('check')}<h3>ไม่มีงานรอตรวจ</h3><p>เมื่อหน่วยบริการกดยืนยันส่ง รายการจะขึ้นที่นี่</p></div>`}</div></div>
       <div class="card"><div class="card-h"><div><h3>ส่งกลับแก้ไข และตรวจแล้วล่าสุด</h3><p>ติดตามงานที่ส่งกลับ ${ret.length} แห่ง · ตรวจแล้ว ${c('reviewed')} แห่ง</p></div></div><div class="card-b">${ret.length||done.length?`<ul class="wq">${ret.map(o=>item(o,true)).join('')}${done.map(o=>item(o,true)).join('')}</ul>`:`<div class="empty" style="padding:18px">${ic('clock')}<h3>ยังไม่มีรายการ</h3></div>`}</div></div>
