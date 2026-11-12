@@ -3689,7 +3689,7 @@ function entryFocus(){ $('#content [data-entry-heading]')?.focus({preventScroll:
 function viewPortfolio(){
   setCollectionHead('เข้าสู่ระบบ','shield','เลือกช่องทางเข้าสู่ระบบ แล้วทำตามขั้นตอน');
   const path=S.entryPath;
-  if(!['advisor','mentor','mentee'].includes(path)){
+  if(!['advisor','mentor','mentee','coord'].includes(path)){
     $('#content').innerHTML=`<section class="portfolio-entry login-wizard"><h2 class="entry-q" tabindex="-1" data-entry-heading>เลือกช่องทางเข้าสู่ระบบ</h2><p class="entry-help">เลือกประเภทผู้ใช้งานของท่าน</p><div class="ecards entry-channels">${[
       ['advisor','user','ที่ปรึกษา MENTOR','เลือกชื่อที่ปรึกษาเพื่อเข้าสู่ระบบ'],
       ['mentor','users','MENTOR','เลือกกลุ่มและชื่อของท่าน'],
@@ -3701,6 +3701,14 @@ function viewPortfolio(){
   if(!choices){
     const failed=window.GECCPublic?.loginError;
     $('#content').innerHTML=`<section class="portfolio-entry login-wizard"><h2 class="entry-q" tabindex="-1" data-entry-heading>${failed?'โหลดรายชื่อไม่สำเร็จ':'กำลังโหลดรายชื่อ…'}</h2><p class="entry-help" role="${failed?'alert':'status'}">${failed?'ตรวจสอบการเชื่อมต่อ แล้วลองโหลดรายชื่ออีกครั้ง':'รอสักครู่ ระบบกำลังตรวจรายชื่อจากเซิร์ฟเวอร์'}</p>${failed?'<button class="btn btn-primary" data-act="entry-retry">ลองโหลดรายชื่ออีกครั้ง</button>':''}<button class="entry-back" data-act="entry-back" data-step="path">${ic('left')}กลับไปเลือกช่องทาง</button></section>`;
+    entryFocus();return;
+  }
+  if(path==='coord'){
+    const coordinators = [
+      { name: 'ภญ.มัลลิกา สุพล', pos: 'เภสัชกรชำนาญการพิเศษ', role: 'ที่ปรึกษา MENTOR และเลขานุการทีม Mentor', username: 'coord-01', photo: 'assets/images/advisor-2.jpg' },
+      { name: 'ภญ.กนกวิภา ประกอบศรี', pos: 'เภสัชกรชำนาญการพิเศษ', role: 'Mentor และผู้ช่วยเลขานุการทีม MENTOR', username: 'coord-02', photo: 'assets/images/advisor-6.jpg' }
+    ];
+    $('#content').innerHTML=`<section class="portfolio-entry login-wizard"><p class="entry-progress">ขั้นตอน 2 จาก 3</p><h2 class="entry-q" tabindex="-1" data-entry-heading>เลือกผู้ประสานงานจังหวัด (สสจ.)</h2><p class="entry-help">แตะที่ชื่อหรือรูปของท่านเพื่อเข้าสู่ระบบ</p><div class="committee-grid entry-people">${coordinators.map((m,index)=>`<div role="button" tabindex="0" class="committee-card showcase-card has-photo entry-person" data-visual-card data-act="entry-coord-person" data-username="${m.username}" data-name="${esc(m.name)}" aria-label="เลือก ${esc(m.name)} เพื่อเข้าสู่ระบบ" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}"><div class="committee-card-media"><img src="${esc(m.photo)}" alt="รูป ${esc(m.name)}" loading="lazy" width="500" height="500"></div><div class="committee-card-copy"><span class="committee-card-role">${esc(m.role)}</span><h3>${esc(m.name)}</h3><p>${esc(m.pos)}</p><span class="entry-person-action">เข้าสู่ระบบ (${esc(m.username)}) ${ic('right')}</span></div></div>`).join('')}</div><button class="entry-back" data-act="entry-back" data-step="path">${ic('left')}กลับไปเลือกช่องทาง</button></section>`;
     entryFocus();return;
   }
   if(path==='advisor'){
@@ -6163,6 +6171,13 @@ document.addEventListener('click', async e=>{
     case 'role-go': { const r=el.dataset.r; if(S.role===r){ go(r==='mentor'?'mentor':'mentee'); } else go('role',{rolePick:null}); break; }
     case 'entry-path': go('portfolio',{entryPath:el.dataset.path,entryTeam:null,rolePick:null}); break;
     case 'entry-team': go('portfolio',{entryTeam:+el.dataset.team,rolePick:null}); break;
+    case 'entry-coord-person': {
+      const username = el.dataset.username || 'coord-02';
+      const name = el.dataset.name || 'ผู้ประสานงานจังหวัด';
+      if(window.GECC_SERVER) GECCClient.loginModal('coord', 0, name, username);
+      else pinModal('coord', 0, name);
+      break;
+    }
     case 'entry-person': {
       const options=loginChoices();if(!options) break;
       const list=S.entryPath==='advisor'?options.advisors:options.mentors.filter(m=>m.team===S.entryTeam);
