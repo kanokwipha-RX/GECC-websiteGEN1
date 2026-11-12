@@ -78,6 +78,16 @@ function file_checks(object $old, object $next, array $actor): void {
     }
 }
 require_once __DIR__.'/public-features.php';
+function resolve_account_username(string $u): string {
+    return match(strtolower(trim($u))) {
+        'advisor-02' => 'coord-01',
+        'advisor-03' => 'mentor-06-01',
+        'advisor-04' => 'mentor-02-01',
+        'advisor-05' => 'mentor-01-03',
+        'advisor-06' => 'mentor-05-01',
+        default => trim($u)
+    };
+}
 function api(): never {
     header('Referrer-Policy: strict-origin-when-cross-origin');header('X-Frame-Options: DENY');
     try {
@@ -105,7 +115,7 @@ function api(): never {
             $v=body(4096);$username=is_string($v->username??null)?trim($v->username):'';
             if (length($username)>80) fail(401,'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
             reserve_login($username);
-            $a=query('SELECT * FROM gecc_accounts WHERE username=?',[$username])->fetch();
+            $a=query('SELECT * FROM gecc_accounts WHERE username=?',[resolve_account_username($username)])->fetch();
             // Constant-cost dummy verification avoids revealing whether a username exists.
             $hash=$a['password_hash']??'$argon2id$v=19$m=65536,t=4,p=1$MDEyMzQ1Njc4OWFiY2RlZg$Yz/ntmKQs05w9gV2AH9TMr4Z9eL5OMh4Qj6i3p0Xr5c';
             $valid=is_string($v->password??null)&&length($v->password)<=128&&password_verify($v->password,$hash);
@@ -126,7 +136,7 @@ function api(): never {
             $resetPin=is_string($v->resetPin??null)?trim($v->resetPin):'';
             if (!$username||length($username)>80) fail(400,'กรุณาระบุชื่อผู้ใช้หรือรหัสหน่วยงาน');
             reserve_login($username);
-            $a=query('SELECT * FROM gecc_accounts WHERE username=?',[$username])->fetch();
+            $a=query('SELECT * FROM gecc_accounts WHERE username=?',[resolve_account_username($username)])->fetch();
             if (!$a||!$a['active']) fail(404,'ไม่พบบัญชีผู้ใช้งานนี้ในระบบ');
             if ($resetPin!=='' && $resetPin!=='2570' && $resetPin!=='Gecc2027ssk') {
                 fail(400,'รหัสยืนยันการรีเซ็ตไม่ถูกต้อง (กรุณากรอก 2570 หรือติดต่อผู้ประสานงาน สสจ.)');

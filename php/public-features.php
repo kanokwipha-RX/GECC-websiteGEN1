@@ -38,10 +38,21 @@ function public_login_options(object $s,array $accounts):array {
         $mentors[]=['name'=>$name,'pos'=>$person->pos??'','photo'=>$person->photo??'','team'=>$team->id,
             'username'=>$username(fn($a)=>is_string($name)&&trim($name)!==''&&$a['name']===$name&&$a['role']==='mentor'&&(int)$a['team']===$team->id)];
     }
-    $advisors=array_map(function($person)use($username){
+    $advisors=array_map(function($person)use($username,$accounts){
         $name=$person->name??'';
+        $loginUsername=$person->loginUsername??'';
+        $mapped = match(strtolower($loginUsername)) {
+            'advisor-02' => 'coord-01',
+            'advisor-03' => 'mentor-06-01',
+            'advisor-04' => 'mentor-02-01',
+            'advisor-05' => 'mentor-01-03',
+            'advisor-06' => 'mentor-05-01',
+            default => $loginUsername
+        };
+        $acc = find($accounts, fn($a) => $a['username'] === $mapped || $a['username'] === $loginUsername)
+            ?: find($accounts, fn($a) => is_string($name) && trim($name) !== '' && $a['name'] === $name && in_array($a['role'], ['mentor', 'coord'], true));
         return ['name'=>$name,'title'=>$person->title??'','role'=>$person->role??'','photo'=>$person->photo??'',
-            'username'=>$username(fn($a)=>is_string($name)&&trim($name)!==''&&$a['name']===$name&&in_array($a['role'],['mentor','coord'],true)&&(!property_exists($person,'loginUsername')||$a['username']===$person->loginUsername))];
+            'username'=>$acc ? ($loginUsername ?: $acc['username']) : ''];
     },$s->publicContent->mentorAdvisors??[]);
     return ['units'=>$units,'mentors'=>$mentors,'advisors'=>$advisors];
 }
