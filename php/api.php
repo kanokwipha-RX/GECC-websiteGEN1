@@ -79,14 +79,7 @@ function file_checks(object $old, object $next, array $actor): void {
 }
 require_once __DIR__.'/public-features.php';
 function resolve_account_username(string $u): string {
-    return match(strtolower(trim($u))) {
-        'advisor-02' => 'coord-01',
-        'advisor-03' => 'mentor-06-01',
-        'advisor-04' => 'mentor-02-01',
-        'advisor-05' => 'mentor-01-03',
-        'advisor-06' => 'mentor-05-01',
-        default => trim($u)
-    };
+    return strtolower(trim($u));
 }
 function api(): never {
     header('Referrer-Policy: strict-origin-when-cross-origin');header('X-Frame-Options: DENY');
