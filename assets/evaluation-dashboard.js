@@ -11,48 +11,117 @@ function evaluationDashboardHTML(customInfos) {
 
   const unitList = units.map(u => {
     const a = window.DB?.assess?.[u.id];
+    const pu = window.GECC_PUBLIC_UNITS ? window.GECC_PUBLIC_UNITS.find(x => x.id === u.id) : null;
     const sub = typeof subOf === 'function' && a ? subOf(a) : { phys: 'none', qual: 'none', out: 'none' };
     const complete = sub.phys === 'done' && sub.qual === 'done' && sub.out === 'done';
     const c = complete && typeof calc === 'function' ? calc(a) : null;
     const defs = (window.DB?.defects || []).filter(d => d.unitId === u.id && d.status !== 'closed');
     const readySt = typeof readyOf === 'function' && a ? readyOf(a).st : 'none';
 
+    // 1. ตรวจสอบข้อมูลด้านกายภาพ (ทั้งจากการตรวจของ MENTOR และการแนบหลักฐานของหน่วยบริการ)
+    let physEvKeys = [];
+    if (a && a.ev) {
+      physEvKeys = Object.keys(a.ev).filter(k => k.startsWith('phys:') && (a.ev[k]?.files?.length > 0 || a.ev[k]?.text));
+    }
+    let physEvCount = physEvKeys.length;
+
+    let quickPhysFiles = 0;
+    let quickPhysHas14 = false;
+    if (a && Array.isArray(a.quick)) {
+      a.quick.filter(q => q.topic === 'phys').forEach(q => {
+        const files = q.files || [];
+        quickPhysFiles += files.length || 1;
+        files.forEach(f => {
+          const fn = f.name || '';
+          if (fn.includes('14 ข้อ') || fn.includes('14ข้อ')) quickPhysHas14 = true;
+        });
+      });
+    }
+
+    let mentorPhysCount = (a && a.phys && Array.isArray(a.phys)) ? a.phys.filter(v => v === true).length : 0;
+    if (pu && pu.physical && Array.isArray(pu.physical)) {
+      mentorPhysCount = Math.max(mentorPhysCount, pu.physical.filter(v => v === true).length);
+    }
+
+    let physCount = Math.max(mentorPhysCount, physEvCount);
+    if (quickPhysHas14) {
+      physCount = Math.max(physCount, 14);
+    } else if (quickPhysFiles > 0 && physCount === 0) {
+      physCount = Math.min(15, quickPhysFiles);
+    }
+    if (pu && typeof pu.physCount === 'number') {
+      physCount = Math.max(physCount, pu.physCount);
+    }
+
+    const wfStatus = a?.wf?.status || pu?.workflow || pu?.criteria?.wfStatus || 'draft';
+    if ((wfStatus === 'submitted' || wfStatus === 'reviewed') && physCount === 0 && (physEvCount > 0 || quickPhysFiles > 0)) {
+      physCount = 14;
+    }
+
+    let physSt = (physCount >= 15 || sub.phys === 'done' || pu?.criteria?.phys === 'done') ? 'physfull' : (physCount > 0 || pu?.criteria?.phys === 'prog' ? 'physpart' : 'physnone');
+
+    // 2. ด้านคุณภาพ
+    let qualEvCount = a?.ev ? Object.keys(a.ev).filter(k => (k.startsWith('qc:') || k.startsWith('narr:')) && (a.ev[k]?.files?.length > 0 || a.ev[k]?.text)).length : 0;
+    let quickQualFiles = 0;
+    if (a && Array.isArray(a.quick)) {
+      a.quick.filter(q => q.topic === 'qc' || q.topic === 'qual').forEach(q => {
+        quickQualFiles += (q.files?.length || 1);
+      });
+    }
+    let qualSt = sub.qual || 'none';
+    if (pu?.criteria?.qual === 'done' || qualEvCount >= 20 || quickQualFiles >= 10) {
+      qualSt = 'done';
+    } else if (pu?.criteria?.qual === 'prog' || qualEvCount > 0 || quickQualFiles > 0) {
+      if (qualSt === 'none') qualSt = 'prog';
+    }
+
+    // 3. ด้านผลลัพธ์
+    let outEvCount = a?.ev ? Object.keys(a.ev).filter(k => k.startsWith('out:') && (a.ev[k]?.files?.length > 0 || a.ev[k]?.text)).length : 0;
+    let quickOutFiles = 0;
+    if (a && Array.isArray(a.quick)) {
+      a.quick.filter(q => q.topic === 'out').forEach(q => {
+        quickOutFiles += (q.files?.length || 1);
+      });
+    }
+    let outSt = sub.out || 'none';
+    if (pu?.criteria?.out === 'done' || outEvCount >= 3 || quickOutFiles >= 3) {
+      outSt = 'done';
+    } else if (pu?.criteria?.out === 'prog' || outEvCount > 0 || quickOutFiles > 0) {
+      if (outSt === 'none') outSt = 'prog';
+    }
+
+    // 4. แบบประเมินความพร้อม
+    let rdySt = readySt === 'ready' ? 'ready' : (readySt === 'draft' ? 'draft' : 'notready');
+    if (pu && pu.readiness) {
+      rdySt = pu.readiness === 'ready' ? 'ready' : (pu.readiness === 'draft' ? 'draft' : 'notready');
+    }
+    if (rdySt !== 'ready' && (a?.ev?.['ready:0']?.files?.length || (a?.quick || []).some(q => q.topic === 'ready'))) {
+      rdySt = 'ready';
+    }
+
+    // 5. สถานะผลตรวจ MENTOR
     let mentorSt = 'none';
-    if (complete && c) {
+    if (wfStatus === 'submitted') {
+      mentorSt = 'submitted';
+    } else if (wfStatus === 'returned') {
+      mentorSt = 'returned';
+    } else if (wfStatus === 'reviewed') {
+      if (complete && c) {
+        if (!c.physComplete || c.total < 240) mentorSt = 'risk';
+        else if (defs.length > 0) mentorSt = 'fix';
+        else mentorSt = 'pass';
+      } else {
+        mentorSt = 'reviewed';
+      }
+    } else if (complete && c) {
       if (!c.physComplete || c.total < 240) mentorSt = 'risk';
       else if (defs.length > 0) mentorSt = 'fix';
       else mentorSt = 'pass';
+    } else if (physCount > 0 || qualSt !== 'none' || outSt !== 'none' || rdySt === 'ready') {
+      mentorSt = 'draft';
     }
 
-    let subSt = complete ? 'subdone' : (Object.values(sub).some(v => v !== 'none') ? 'subprog' : 'subnone');
-    let rdySt = readySt === 'ready' ? 'ready' : (readySt === 'draft' ? 'draft' : 'notready');
-
-    let physCount = 0;
-    if (a && a.phys && Array.isArray(a.phys)) {
-      physCount = a.phys.filter(v => v === true).length;
-    }
-    let physSt = (physCount === 15 || sub.phys === 'done') ? 'physfull' : (physCount > 0 ? 'physpart' : 'physnone');
-
-    let qualSt = sub.qual || 'none';
-    let outSt = sub.out || 'none';
-
-    if (window.GECC_PUBLIC_UNITS) {
-      const pu = window.GECC_PUBLIC_UNITS.find(x => x.id === u.id);
-      if (pu) {
-        if (pu.status) mentorSt = pu.status;
-        if (pu.submission) subSt = pu.submission === 'done' ? 'subdone' : (pu.submission === 'prog' ? 'subprog' : 'subnone');
-        if (pu.readiness) rdySt = pu.readiness === 'ready' ? 'ready' : (pu.readiness === 'draft' ? 'draft' : 'notready');
-        if (pu.physical && Array.isArray(pu.physical)) {
-          physCount = pu.physical.filter(v => v === true).length;
-          physSt = (physCount === 15 || pu.criteria?.phys === 'done') ? 'physfull' : (physCount > 0 ? 'physpart' : 'physnone');
-        }
-        if (pu.criteria) {
-          if (pu.criteria.phys) sub.phys = pu.criteria.phys;
-          if (pu.criteria.qual) qualSt = pu.criteria.qual;
-          if (pu.criteria.out) outSt = pu.criteria.out;
-        }
-      }
-    }
+    let subSt = (physSt === 'physfull' && qualSt === 'done' && outSt === 'done') ? 'subdone' : (physCount > 0 || qualSt !== 'none' || outSt !== 'none' || wfStatus === 'submitted' ? 'subprog' : 'subnone');
 
     let curSt = mentorSt;
     if (mode === 'sub') curSt = subSt;
@@ -72,22 +141,24 @@ function evaluationDashboardHTML(customInfos) {
       qualSt,
       outSt,
       rdySt,
-      curSt
+      curSt,
+      wfStatus
     };
   });
 
-  const passCount = unitList.filter(x => x.mentorSt === 'pass').length;
-  const fixCount = unitList.filter(x => x.mentorSt === 'fix').length;
+  const passCount = unitList.filter(x => x.mentorSt === 'pass' || x.mentorSt === 'reviewed').length;
+  const submittedCount = unitList.filter(x => x.mentorSt === 'submitted').length;
+  const fixCount = unitList.filter(x => x.mentorSt === 'fix' || x.mentorSt === 'returned').length;
   const riskCount = unitList.filter(x => x.mentorSt === 'risk').length;
-  const pendingCount = unitList.filter(x => x.mentorSt === 'none').length;
+  const pendingCount = unitList.filter(x => x.mentorSt === 'none' || x.mentorSt === 'draft').length;
 
   const subDoneCount = unitList.filter(x => x.subSt === 'subdone').length;
   const subProgCount = unitList.filter(x => x.subSt === 'subprog').length;
   const subNoneCount = unitList.filter(x => x.subSt === 'subnone').length;
 
   const physFullCount = unitList.filter(x => x.physSt === 'physfull' || x.physCount === 15).length;
-  const physPartCount = unitList.filter(x => x.physSt === 'physpart').length;
-  const physNoneCount = unitList.filter(x => x.physSt === 'physnone').length;
+  const physPartCount = unitList.filter(x => x.physSt === 'physpart' && x.physCount < 15).length;
+  const physNoneCount = unitList.filter(x => x.physSt === 'physnone' && x.physCount === 0).length;
 
   const rdyDoneCount = unitList.filter(x => x.rdySt === 'ready').length;
   const rdyNoneCount = unitList.filter(x => x.rdySt === 'notready' || x.rdySt === 'none').length;
@@ -110,7 +181,7 @@ function evaluationDashboardHTML(customInfos) {
       return `<div class="eval-chk-box"><span class="eval-chk-icon done" title="ด้านคุณภาพส่งครบแล้ว">✔</span><span class="eval-chk-txt done">ส่งครบ</span></div>`;
     }
     if (x.qualSt === 'prog') {
-      return `<div class="eval-chk-box"><span class="eval-chk-icon prog" title="อยู่ระหว่างดำเนินการ">➔</span><span class="eval-chk-txt prog">กำลังทำ</span></div>`;
+      return `<div class="eval-chk-box"><span class="eval-chk-icon prog" title="ส่งหลักฐานแล้วบางส่วน">➔</span><span class="eval-chk-txt prog">ส่งบางส่วน</span></div>`;
     }
     return `<div class="eval-chk-box"><span class="eval-chk-icon none" title="ยังไม่ส่ง">—</span><span class="eval-chk-txt none">ยังไม่ส่ง</span></div>`;
   };
@@ -120,7 +191,7 @@ function evaluationDashboardHTML(customInfos) {
       return `<div class="eval-chk-box"><span class="eval-chk-icon done" title="ด้านผลลัพธ์ส่งครบแล้ว">✔</span><span class="eval-chk-txt done">ส่งครบ</span></div>`;
     }
     if (x.outSt === 'prog') {
-      return `<div class="eval-chk-box"><span class="eval-chk-icon prog" title="อยู่ระหว่างดำเนินการ">➔</span><span class="eval-chk-txt prog">กำลังทำ</span></div>`;
+      return `<div class="eval-chk-box"><span class="eval-chk-icon prog" title="ส่งหลักฐานแล้วบางส่วน">➔</span><span class="eval-chk-txt prog">ส่งบางส่วน</span></div>`;
     }
     return `<div class="eval-chk-box"><span class="eval-chk-icon none" title="ยังไม่ส่ง">—</span><span class="eval-chk-txt none">ยังไม่ส่ง</span></div>`;
   };
@@ -139,13 +210,25 @@ function evaluationDashboardHTML(customInfos) {
     if (st === 'pass') {
       return `<span class="eval-pill st-pass"><span class="eval-chk-icon done-xs">✔</span> ผ่านเกณฑ์</span>`;
     }
+    if (st === 'reviewed') {
+      return `<span class="eval-pill st-pass"><span class="eval-chk-icon done-xs">✔</span> MENTOR ตรวจแล้ว</span>`;
+    }
+    if (st === 'submitted') {
+      return `<span class="eval-pill st-wait" title="หน่วยบริการยืนยันส่งข้อมูลแล้ว อยู่ในคิวรอ MENTOR ตรวจ"><span class="eval-chk-icon prog-xs" style="background:#2563EB">📩</span> รอ MENTOR ตรวจ</span>`;
+    }
+    if (st === 'returned') {
+      return `<span class="eval-pill st-fix"><span class="eval-chk-icon prog-xs" style="background:#D97706">⚠️</span> ส่งกลับแก้ไข</span>`;
+    }
     if (st === 'fix') {
       return `<span class="eval-pill st-fix"><span class="eval-chk-icon prog-xs" style="background:#D97706">⚠️</span> ต้องแก้ไข</span>`;
     }
     if (st === 'risk') {
       return `<span class="eval-pill st-risk"><span class="eval-chk-icon prog-xs" style="background:#DC2626">❌</span> เสี่ยงไม่ผ่าน</span>`;
     }
-    return `<span class="eval-pill st-none"><span class="eval-chk-icon none-xs">⏱️</span> ยังส่งไม่ครบ</span>`;
+    if (st === 'draft') {
+      return `<span class="eval-pill st-none"><span class="eval-chk-icon none-xs">⏱️</span> ยังส่งไม่ครบ</span>`;
+    }
+    return `<span class="eval-pill st-none"><span class="eval-chk-icon none-xs">—</span> ยังไม่ส่ง</span>`;
   };
 
   // ================= มุมมองแบบตาราง Excel (Excel Grid Matrix) =================
@@ -170,6 +253,7 @@ function evaluationDashboardHTML(customInfos) {
         <div class="eval-excel-legend">
           <span class="eval-legend-item"><span class="eval-chk-icon done-xs">✔</span> ส่งครบ / เสร็จขั้นตอน</span>
           <span class="eval-legend-item"><span class="eval-chk-icon prog-xs">14</span> ส่งบางส่วน (ระบุข้อ)</span>
+          <span class="eval-legend-item"><span class="eval-chk-icon prog-xs" style="background:#2563EB">📩</span> รอ MENTOR ตรวจ</span>
           <span class="eval-legend-item"><span class="eval-chk-icon none-xs">—</span> ยังไม่ส่ง</span>
         </div>
       </div>
@@ -269,6 +353,7 @@ function evaluationDashboardHTML(customInfos) {
               </td>
               <td>
                 <b>ผ่าน ${passCount} แห่ง</b>
+                ${submittedCount > 0 ? `<small style="display:block;font-size:10.5px;color:#2563EB;font-weight:600;">(รอตรวจ ${submittedCount} แห่ง)</small>` : ''}
               </td>
             </tr>
           </tfoot>
@@ -443,6 +528,7 @@ function evaluationDashboardHTML(customInfos) {
         <div class="eval-ribbon-body">
           <div class="eval-ribbon-title">1. ด้านกายภาพ</div>
           <div class="eval-ribbon-val">${physFullCount} <span class="eval-ribbon-sub">/ ${N} แห่ง</span></div>
+          ${physPartCount > 0 ? `<div style="font-size:11.5px;color:#D97706;font-weight:600;margin-top:2px;">ส่ง 1-14 ข้อ ${physPartCount} แห่ง</div>` : ''}
         </div>
       </div>
       <div class="eval-ribbon-card">
@@ -471,6 +557,7 @@ function evaluationDashboardHTML(customInfos) {
         <div class="eval-ribbon-body">
           <div class="eval-ribbon-title">5. ผ่านเกณฑ์ MENTOR</div>
           <div class="eval-ribbon-val">${passCount} <span class="eval-ribbon-sub">/ ${N} แห่ง</span></div>
+          ${submittedCount > 0 ? `<div style="font-size:11.5px;color:#2563EB;font-weight:600;margin-top:2px;">รอตรวจ ${submittedCount} แห่ง</div>` : ''}
         </div>
       </div>
     </div>

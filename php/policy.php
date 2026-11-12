@@ -37,8 +37,19 @@ function project(object $s, ?array $a): object {
                     $evList->$ek = (object)['files' => $evItem->files, 'text' => $evItem->text ?? ''];
                 }
             }
-            if (!empty($qList) || !empty((array)$evList)) {
-                $publicAssess->$uid = (object)['quick' => $qList, 'ev' => $evList];
+            if (!empty($qList) || !empty((array)$evList) || !empty($ass->wf) || !empty($ass->ready) || !empty($ass->phys)) {
+                $publicAssess->$uid = (object)[
+                    'quick' => $qList,
+                    'ev' => $evList,
+                    'wf' => isset($ass->wf) ? (object)[
+                        'status' => $ass->wf->status ?? 'draft',
+                        'submittedAt' => $ass->wf->submittedAt ?? null,
+                        'reviewedAt' => $ass->wf->reviewedAt ?? null
+                    ] : null,
+                    'ready' => $ass->ready ?? null,
+                    'phys' => $ass->phys ?? null,
+                    'started' => (bool)($ass->started ?? false)
+                ];
             }
         }
         return (object)['v'=>$d->v,'fy'=>$d->fy,'isSample'=>false,
@@ -58,7 +69,18 @@ function project(object $s, ?array $a): object {
                         $evList->$ek = (object)['files' => $evItem->files, 'text' => $evItem->text ?? ''];
                     }
                 }
-                $d->assess->$id = (object)['quick' => $qList, 'ev' => $evList];
+                $d->assess->$id = (object)[
+                    'quick' => $qList,
+                    'ev' => $evList,
+                    'wf' => isset($v->wf) ? (object)[
+                        'status' => $v->wf->status ?? 'draft',
+                        'submittedAt' => $v->wf->submittedAt ?? null,
+                        'reviewedAt' => $v->wf->reviewedAt ?? null
+                    ] : null,
+                    'ready' => $v->ready ?? null,
+                    'phys' => $v->phys ?? null,
+                    'started' => (bool)($v->started ?? false)
+                ];
             }
         }
         $d->defects=array_values(array_filter($d->defects,fn($v)=>$v->unitId===$ownUnit));

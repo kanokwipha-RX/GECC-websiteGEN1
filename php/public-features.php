@@ -6,13 +6,116 @@ namespace GECC;
 function public_units(object $s): array {
     return array_map(function($u)use($s){
         $a=$s->assess->{$u->id}??null;$sub=sub_of($a);
-        $complete=$sub['phys']==='done'&&$sub['qual']==='done'&&$sub['out']==='done';
-        $c=$complete?calc($a):null;
-        return ['id'=>$u->id,'name'=>$u->name,'team'=>$u->team,'submission'=>$complete?'done':(count(array_filter($sub,fn($v)=>$v!=='none'))?'prog':'none'),
-            'criteria'=>$sub,'readiness'=>ready_of($a)['st'],'workflow'=>$a->wf->status??'draft',
-            'physical'=>$a->phys??array_fill(0,15,null),'quality'=>array_map(fn($q)=>$q->subs??[], $a->qc??[]),
+        
+        $physEvKeys = [];
+        foreach ($a->ev ?? [] as $k => $evItem) {
+            if (str_starts_with((string)$k, 'phys:') && (!empty($evItem->files) || !empty($evItem->text))) {
+                $physEvKeys[$k] = true;
+            }
+        }
+        $physEvCount = count($physEvKeys);
+
+        $quickPhysFiles = 0;
+        $quickPhysHas14 = false;
+        foreach ($a->quick ?? [] as $qk) {
+            if (($qk->topic ?? '') === 'phys') {
+                $files = $qk->files ?? [];
+                $quickPhysFiles += count($files) ?: 1;
+                foreach ($files as $f) {
+                    if (str_contains($f->name ?? '', '14 ข้อ') || str_contains($f->name ?? '', '14ข้อ')) {
+                        $quickPhysHas14 = true;
+                    }
+                }
+            }
+        }
+
+        $mentorPhysCount = $a && isset($a->phys) && is_array($a->phys)
+            ? count(array_filter($a->phys, fn($v) => $v === true))
+            : 0;
+
+        $physCount = max($mentorPhysCount, $physEvCount);
+        if ($quickPhysHas14) {
+            $physCount = max($physCount, 14);
+        } elseif ($quickPhysFiles > 0 && $physCount === 0) {
+            $physCount = min(15, $quickPhysFiles);
+        }
+
+        $wfStatus = $a->wf->status ?? 'draft';
+        if (($wfStatus === 'submitted' || $wfStatus === 'reviewed') && $physCount === 0 && ($physEvCount > 0 || $quickPhysFiles > 0)) {
+            $physCount = 14;
+        }
+
+        $physStatus = ($physCount >= 15 || $sub['phys'] === 'done') ? 'done' : ($physCount > 0 ? 'prog' : 'none');
+
+        $qualEvCount = 0;
+        foreach ($a->ev ?? [] as $k => $evItem) {
+            if ((str_starts_with((string)$k, 'qc:') || str_starts_with((string)$k, 'narr:')) && (!empty($evItem->files) || !empty($evItem->text))) {
+                $qualEvCount++;
+            }
+        }
+        $quickQualFiles = 0;
+        foreach ($a->quick ?? [] as $qk) {
+            if (in_array($qk->topic ?? '', ['qc', 'qual'], true)) {
+                $quickQualFiles += count($qk->files ?? [1]);
+            }
+        }
+        $qualStatus = $sub['qual'];
+        if ($qualStatus === 'none' && ($qualEvCount > 0 || $quickQualFiles > 0)) {
+            $qualStatus = ($qualEvCount >= 20 || $quickQualFiles >= 10) ? 'done' : 'prog';
+        }
+
+        $outEvCount = 0;
+        foreach ($a->ev ?? [] as $k => $evItem) {
+            if (str_starts_with((string)$k, 'out:') && (!empty($evItem->files) || !empty($evItem->text))) {
+                $outEvCount++;
+            }
+        }
+        $quickOutFiles = 0;
+        foreach ($a->quick ?? [] as $qk) {
+            if (($qk->topic ?? '') === 'out') {
+                $quickOutFiles += count($qk->files ?? [1]);
+            }
+        }
+        $outStatus = $sub['out'];
+        if ($outStatus === 'none' && ($outEvCount > 0 || $quickOutFiles > 0)) {
+            $outStatus = ($outEvCount >= 3 || $quickOutFiles >= 3) ? 'done' : 'prog';
+        }
+
+        $projectedCriteria = [
+            'phys' => $physStatus,
+            'qual' => $qualStatus,
+            'out' => $outStatus,
+            'physCount' => $physCount,
+            'wfStatus' => $wfStatus
+        ];
+
+        $complete = $projectedCriteria['phys'] === 'done' && $projectedCriteria['qual'] === 'done' && $projectedCriteria['out'] === 'done';
+        $c = $complete ? calc($a) : null;
+
+        $mentorSt = 'none';
+        if ($wfStatus === 'submitted') {
+            $mentorSt = 'submitted';
+        } elseif ($wfStatus === 'returned') {
+            $mentorSt = 'returned';
+        } elseif ($wfStatus === 'reviewed') {
+            if ($complete && $c) {
+                if (!$c['physComplete'] || $c['total'] < 240) $mentorSt = 'risk';
+                elseif (count(array_filter($s->defects, fn($d) => $d->unitId === $u->id && $d->status !== 'closed'))) $mentorSt = 'fix';
+                else $mentorSt = 'pass';
+            } else {
+                $mentorSt = 'reviewed';
+            }
+        } elseif ($physCount > 0 || $qualStatus !== 'none' || $outStatus !== 'none') {
+            $mentorSt = 'draft';
+        }
+
+        return ['id'=>$u->id,'name'=>$u->name,'team'=>$u->team,
+            'submission'=>$complete?'done':($physCount > 0 || $qualStatus !== 'none' || $outStatus !== 'none' || $wfStatus === 'submitted' ? 'prog' : 'none'),
+            'criteria'=>$projectedCriteria,'readiness'=>ready_of($a)['st'],'workflow'=>$wfStatus,
+            'physical'=>$a->phys??array_fill(0,15,null),'physCount'=>$physCount,
+            'quality'=>array_map(fn($q)=>$q->subs??[], $a->qc??[]),
             'narrative'=>array_map(fn($n)=>isset($n->score),$a->narr??[]),
-            'status'=>!$complete?'none':(!$c['physComplete']||$c['total']<240?'risk':(count(array_filter($s->defects,fn($d)=>$d->unitId===$u->id&&$d->status!=='closed'))?'fix':'pass')),
+            'status'=>$mentorSt,
             'outcomes'=>array_map(fn($k)=>isset($a->out->$k),['o11','o12','o13','o14','c22']),
             'score'=>$c['total']??null,'level'=>$c['level']??'none','updatedAt'=>$a->updatedAt??null];
     },$s->units);
