@@ -47,18 +47,35 @@ function public_units(object $s): array {
 
         $physStatus = ($physCount >= 15 || $sub['phys'] === 'done') ? 'done' : ($physCount > 0 ? 'prog' : 'none');
 
-        $qualEvCount = 0;
+        $qcEvCount = 0;
+        $narrEvCount = 0;
         foreach ($a->ev ?? [] as $k => $evItem) {
-            if ((str_starts_with((string)$k, 'qc:') || str_starts_with((string)$k, 'narr:')) && (!empty($evItem->files) || !empty($evItem->text))) {
-                $qualEvCount++;
+            if (str_starts_with((string)$k, 'qc:') && (!empty($evItem->files) || !empty($evItem->text))) {
+                $qcEvCount++;
+            } elseif (str_starts_with((string)$k, 'narr:') && (!empty($evItem->files) || !empty($evItem->text))) {
+                $narrEvCount++;
             }
         }
-        $quickQualFiles = 0;
+        $quickQcFiles = 0;
+        $quickNarrFiles = 0;
         foreach ($a->quick ?? [] as $qk) {
             if (in_array($qk->topic ?? '', ['qc', 'qual'], true)) {
-                $quickQualFiles += count($qk->files ?? [1]);
+                $quickQcFiles += count($qk->files ?? [1]);
+            } elseif (($qk->topic ?? '') === 'narr') {
+                $quickNarrFiles += count($qk->files ?? [1]);
             }
         }
+        $qcStatus = $sub['qc'];
+        if ($qcStatus === 'none' && ($qcEvCount > 0 || $quickQcFiles > 0)) {
+            $qcStatus = ($qcEvCount >= 10 || $quickQcFiles >= 5) ? 'done' : 'prog';
+        }
+        $narrStatus = $sub['narr'];
+        if ($narrStatus === 'none' && ($narrEvCount > 0 || $quickNarrFiles > 0)) {
+            $narrStatus = ($narrEvCount >= 10 || $quickNarrFiles >= 5) ? 'done' : 'prog';
+        }
+
+        $qualEvCount = $qcEvCount + $narrEvCount;
+        $quickQualFiles = $quickQcFiles + $quickNarrFiles;
         $qualStatus = $sub['qual'];
         if ($qualStatus === 'none' && ($qualEvCount > 0 || $quickQualFiles > 0)) {
             $qualStatus = ($qualEvCount >= 20 || $quickQualFiles >= 10) ? 'done' : 'prog';
@@ -84,6 +101,8 @@ function public_units(object $s): array {
         $projectedCriteria = [
             'phys' => $physStatus,
             'qual' => $qualStatus,
+            'qc' => $qcStatus,
+            'narr' => $narrStatus,
             'out' => $outStatus,
             'physCount' => $physCount,
             'wfStatus' => $wfStatus

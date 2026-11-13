@@ -628,6 +628,7 @@ video.feature-video {
 }
 .eval-ribbon-icon.phys { background: #E0F2FE; color: #0284C7; }
 .eval-ribbon-icon.qual { background: #FEF3C7; color: #D97706; }
+.eval-ribbon-icon.narr { background: #FCE7F3; color: #BE185D; }
 .eval-ribbon-icon.out  { background: #EDE9FE; color: #7C3AED; }
 .eval-ribbon-icon.rdy  { background: #D1FAE5; color: #059669; }
 .eval-ribbon-icon.mnt  { background: #FEE2E2; color: #DC2626; }

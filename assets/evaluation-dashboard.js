@@ -60,19 +60,42 @@ function evaluationDashboardHTML(customInfos) {
 
     let physSt = (physCount >= 15 || sub.phys === 'done' || pu?.criteria?.phys === 'done') ? 'physfull' : (physCount > 0 || pu?.criteria?.phys === 'prog' ? 'physpart' : 'physnone');
 
-    // 2. ด้านคุณภาพ
-    let qualEvCount = a?.ev ? Object.keys(a.ev).filter(k => (k.startsWith('qc:') || k.startsWith('narr:')) && (a.ev[k]?.files?.length > 0 || a.ev[k]?.text)).length : 0;
-    let quickQualFiles = 0;
+    // 2.1 ด้านคุณภาพ: Checklist 20 ข้อ
+    let qcEvCount = a?.ev ? Object.keys(a.ev).filter(k => k.startsWith('qc:') && (a.ev[k]?.files?.length > 0 || a.ev[k]?.text)).length : 0;
+    let quickQcFiles = 0;
     if (a && Array.isArray(a.quick)) {
       a.quick.filter(q => q.topic === 'qc' || q.topic === 'qual').forEach(q => {
-        quickQualFiles += (q.files?.length || 1);
+        quickQcFiles += (q.files?.length || 1);
       });
     }
-    let qualSt = sub.qual || 'none';
-    if (pu?.criteria?.qual === 'done' || qualEvCount >= 20 || quickQualFiles >= 10) {
+    let mentorQcDone = (a && a.qc && Array.isArray(a.qc)) ? a.qc.filter(x => (x.subs && x.subs.some(Boolean)) || (x.score !== null && x.score !== '')).length : 0;
+    let qcSt = sub.qc || 'none';
+    if (pu?.criteria?.qc === 'done' || mentorQcDone >= 10 || qcEvCount >= 10 || quickQcFiles >= 5) {
+      qcSt = 'done';
+    } else if (pu?.criteria?.qc === 'prog' || mentorQcDone > 0 || qcEvCount > 0 || quickQcFiles > 0) {
+      if (qcSt === 'none') qcSt = 'prog';
+    }
+
+    // 2.2 ด้านคุณภาพ: บรรยาย 10 ข้อ
+    let narrEvCount = a?.ev ? Object.keys(a.ev).filter(k => k.startsWith('narr:') && (a.ev[k]?.files?.length > 0 || a.ev[k]?.text)).length : 0;
+    let quickNarrFiles = 0;
+    if (a && Array.isArray(a.quick)) {
+      a.quick.filter(q => q.topic === 'narr').forEach(q => {
+        quickNarrFiles += (q.files?.length || 1);
+      });
+    }
+    let mentorNarrDone = (a && a.narr && Array.isArray(a.narr)) ? a.narr.filter(n => n.score !== null && n.score !== '').length : 0;
+    let narrSt = sub.narr || 'none';
+    if (pu?.criteria?.narr === 'done' || mentorNarrDone >= 10 || narrEvCount >= 10 || quickNarrFiles >= 5) {
+      narrSt = 'done';
+    } else if (pu?.criteria?.narr === 'prog' || mentorNarrDone > 0 || narrEvCount > 0 || quickNarrFiles > 0) {
+      if (narrSt === 'none') narrSt = 'prog';
+    }
+
+    // รวมด้านคุณภาพเดิม
+    let qualSt = (qcSt === 'done' && narrSt === 'done') ? 'done' : (qcSt !== 'none' || narrSt !== 'none' ? 'prog' : 'none');
+    if (pu?.criteria?.qual === 'done' || (qcEvCount + narrEvCount) >= 20 || (quickQcFiles + quickNarrFiles) >= 10) {
       qualSt = 'done';
-    } else if (pu?.criteria?.qual === 'prog' || qualEvCount > 0 || quickQualFiles > 0) {
-      if (qualSt === 'none') qualSt = 'prog';
     }
 
     // 3. ด้านผลลัพธ์
@@ -138,6 +161,8 @@ function evaluationDashboardHTML(customInfos) {
       subSt,
       physSt,
       physCount,
+      qcSt,
+      narrSt,
       qualSt,
       outSt,
       rdySt,
@@ -164,6 +189,8 @@ function evaluationDashboardHTML(customInfos) {
   const rdyNoneCount = unitList.filter(x => x.rdySt === 'notready' || x.rdySt === 'none').length;
 
   const qualDoneTotal = unitList.filter(x => x.qualSt === 'done').length;
+  const qcDoneTotal = unitList.filter(x => x.qcSt === 'done').length;
+  const narrDoneTotal = unitList.filter(x => x.narrSt === 'done').length;
   const outDoneTotal = unitList.filter(x => x.outSt === 'done').length;
 
   const renderPhysCell = (x) => {
@@ -172,6 +199,26 @@ function evaluationDashboardHTML(customInfos) {
     }
     if (x.physCount > 0 || x.physSt === 'physpart') {
       return `<div class="eval-chk-box"><span class="eval-chk-icon prog" title="ส่งแล้ว ${x.physCount}/15 ข้อ">${x.physCount}/15</span><span class="eval-chk-txt prog">${x.physCount}/15 ข้อ</span></div>`;
+    }
+    return `<div class="eval-chk-box"><span class="eval-chk-icon none" title="ยังไม่ส่ง">—</span><span class="eval-chk-txt none">ยังไม่ส่ง</span></div>`;
+  };
+
+  const renderQcCell = (x) => {
+    if (x.qcSt === 'done') {
+      return `<div class="eval-chk-box"><span class="eval-chk-icon done" title="ด้านคุณภาพ (Checklist 20 ข้อ) ส่งครบแล้ว">✔</span><span class="eval-chk-txt done">ส่งครบ</span></div>`;
+    }
+    if (x.qcSt === 'prog') {
+      return `<div class="eval-chk-box"><span class="eval-chk-icon prog" title="ส่งหลักฐาน Checklist แล้วบางส่วน">➔</span><span class="eval-chk-txt prog">ส่งบางส่วน</span></div>`;
+    }
+    return `<div class="eval-chk-box"><span class="eval-chk-icon none" title="ยังไม่ส่ง">—</span><span class="eval-chk-txt none">ยังไม่ส่ง</span></div>`;
+  };
+
+  const renderNarrCell = (x) => {
+    if (x.narrSt === 'done') {
+      return `<div class="eval-chk-box"><span class="eval-chk-icon done" title="ด้านคุณภาพ (บรรยาย 10 ข้อ) ส่งครบแล้ว">✔</span><span class="eval-chk-txt done">ส่งครบ</span></div>`;
+    }
+    if (x.narrSt === 'prog') {
+      return `<div class="eval-chk-box"><span class="eval-chk-icon prog" title="ส่งเนื้อหาบรรยายแล้วบางส่วน">➔</span><span class="eval-chk-txt prog">ส่งบางส่วน</span></div>`;
     }
     return `<div class="eval-chk-box"><span class="eval-chk-icon none" title="ยังไม่ส่ง">—</span><span class="eval-chk-txt none">ยังไม่ส่ง</span></div>`;
   };
@@ -264,21 +311,24 @@ function evaluationDashboardHTML(customInfos) {
           <thead>
             <tr>
               <th style="width: 55px;">รหัส</th>
-              <th class="th-unit" style="min-width: 250px;">ชื่อหน่วยบริการ</th>
-              <th style="width: 110px;">กลุ่ม MENTOR</th>
-              <th class="th-crit" style="width: 140px;">
+              <th class="th-unit" style="min-width: 240px;">ชื่อหน่วยบริการ</th>
+              <th class="th-crit" style="width: 135px;">
                 <div>🏢 1. ด้านกายภาพ</div>
                 <small>Checklist 15 ข้อ</small>
               </th>
-              <th class="th-crit" style="width: 135px;">
-                <div>📋 2. ด้านคุณภาพ</div>
+              <th class="th-crit" style="width: 130px;">
+                <div>📋 2.1 ด้านคุณภาพ</div>
                 <small>Checklist 20 ข้อ</small>
               </th>
-              <th class="th-crit" style="width: 135px;">
+              <th class="th-crit" style="width: 130px;">
+                <div>✍️ 2.2 ด้านคุณภาพ</div>
+                <small>บรรยาย 10 ข้อ</small>
+              </th>
+              <th class="th-crit" style="width: 130px;">
                 <div>📈 3. ด้านผลลัพธ์</div>
                 <small>3 ด้าน (100 คะแนน)</small>
               </th>
-              <th class="th-crit" style="width: 140px;">
+              <th class="th-crit" style="width: 135px;">
                 <div>🛡️ 4. แบบประเมิน</div>
                 <small>ความพร้อม GECC</small>
               </th>
@@ -301,7 +351,7 @@ function evaluationDashboardHTML(customInfos) {
               let rows = tUnits.map(x => `
                 <tr class="eval-excel-row" data-team="${x.team}" data-name="${esc(x.u.name)} ${esc(x.sName)}" data-num="${x.num}">
                   <td class="eval-td-num">
-                    <span class="eval-num-pill ${x.physCount > 0 || x.qualSt !== 'none' || x.outSt !== 'none' || x.rdySt === 'ready' ? 'active' : ''}">${x.num}</span>
+                    <span class="eval-num-pill ${x.physCount > 0 || x.qcSt !== 'none' || x.narrSt !== 'none' || x.outSt !== 'none' || x.rdySt === 'ready' ? 'active' : ''}">${x.num}</span>
                   </td>
                   <td class="eval-td-unit">
                     <button type="button" class="eval-unit-btn" data-act="eval-unit" data-id="${x.id}" title="คลิกเพื่อดูรายละเอียด / ข้อมูลประเมิน">
@@ -309,14 +359,14 @@ function evaluationDashboardHTML(customInfos) {
                       <span class="eval-unit-sub">${esc(x.u.name)}</span>
                     </button>
                   </td>
-                  <td class="eval-td-team">
-                    <span class="eval-team-pill">กลุ่ม ${x.team}</span>
-                  </td>
                   <td class="eval-td-chk">
                     ${renderPhysCell(x)}
                   </td>
                   <td class="eval-td-chk">
-                    ${renderQualCell(x)}
+                    ${renderQcCell(x)}
+                  </td>
+                  <td class="eval-td-chk">
+                    ${renderNarrCell(x)}
                   </td>
                   <td class="eval-td-chk">
                     ${renderOutCell(x)}
@@ -334,14 +384,18 @@ function evaluationDashboardHTML(customInfos) {
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="3" class="total-label">รวมหน่วยบริการที่ส่งข้อมูลครบแล้ว:</td>
+              <td colspan="2" class="total-label">รวมหน่วยบริการที่ส่งข้อมูลครบแล้ว:</td>
               <td>
                 <b>${physFullCount} / ${N} แห่ง</b>
                 <small style="display:block;font-size:10.5px;color:#047857;font-weight:600;">(ร้อยละ ${Math.round(physFullCount/N*100)})</small>
               </td>
               <td>
-                <b>${qualDoneTotal} / ${N} แห่ง</b>
-                <small style="display:block;font-size:10.5px;color:#047857;font-weight:600;">(ร้อยละ ${Math.round(qualDoneTotal/N*100)})</small>
+                <b>${qcDoneTotal} / ${N} แห่ง</b>
+                <small style="display:block;font-size:10.5px;color:#047857;font-weight:600;">(ร้อยละ ${Math.round(qcDoneTotal/N*100)})</small>
+              </td>
+              <td>
+                <b>${narrDoneTotal} / ${N} แห่ง</b>
+                <small style="display:block;font-size:10.5px;color:#047857;font-weight:600;">(ร้อยละ ${Math.round(narrDoneTotal/N*100)})</small>
               </td>
               <td>
                 <b>${outDoneTotal} / ${N} แห่ง</b>
@@ -521,7 +575,7 @@ function evaluationDashboardHTML(customInfos) {
       <div class="trk-badge-gold">${ic('clipboard')} ตารางเช็คลิสต์สไตล์ Excel</div>
     </div>
 
-    <!-- แถบสรุปภาพรวม 5 ด้าน (Summary KPI Ribbon) -->
+    <!-- แถบสรุปภาพรวมแยกเกณฑ์ (Summary KPI Ribbon) -->
     <div class="eval-summary-ribbon">
       <div class="eval-ribbon-card">
         <div class="eval-ribbon-icon phys">🏢</div>
@@ -534,8 +588,15 @@ function evaluationDashboardHTML(customInfos) {
       <div class="eval-ribbon-card">
         <div class="eval-ribbon-icon qual">📋</div>
         <div class="eval-ribbon-body">
-          <div class="eval-ribbon-title">2. ด้านคุณภาพ</div>
-          <div class="eval-ribbon-val">${qualDoneTotal} <span class="eval-ribbon-sub">/ ${N} แห่ง</span></div>
+          <div class="eval-ribbon-title">2.1 คุณภาพ Checklist</div>
+          <div class="eval-ribbon-val">${qcDoneTotal} <span class="eval-ribbon-sub">/ ${N} แห่ง</span></div>
+        </div>
+      </div>
+      <div class="eval-ribbon-card">
+        <div class="eval-ribbon-icon narr">✍️</div>
+        <div class="eval-ribbon-body">
+          <div class="eval-ribbon-title">2.2 คุณภาพ บรรยาย</div>
+          <div class="eval-ribbon-val">${narrDoneTotal} <span class="eval-ribbon-sub">/ ${N} แห่ง</span></div>
         </div>
       </div>
       <div class="eval-ribbon-card">
