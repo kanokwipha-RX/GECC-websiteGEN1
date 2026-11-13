@@ -207,7 +207,15 @@ function merge_state(object $current, mixed $input, array $actor): object {
         if (same($value,$visible->assess->$id??null)) continue;
         validate_assessment($value); $a=copy_value($value);
         if (($old->wf->status??'draft')==='reviewed') fail(409,'ผลตรวจถูกล็อก ต้องเปิดแก้ไขพร้อมเหตุผลก่อน');
-        if (!same($a->wf??null,$old->wf??null)) fail(400,'ต้องเปลี่ยนสถานะผ่านคำสั่ง workflow');
+        $wfA = copy_value($a->wf ?? null);
+        $wfOld = copy_value($old->wf ?? null);
+        if ($wfA) unset($wfA->mentorSavedAt);
+        if ($wfOld) unset($wfOld->mentorSavedAt);
+        if ($wfOld === null) {
+            if (($wfA->status ?? 'draft') !== 'draft') fail(400,'ต้องเปลี่ยนสถานะผ่านคำสั่ง workflow');
+        } else {
+            if (!same($wfA, $wfOld)) fail(400,'ต้องเปลี่ยนสถานะผ่านคำสั่ง workflow');
+        }
         if ($actor['role']==='mentee') {
             $base=$old??blank_assess();
             foreach(['inspectors','inspector','rev','adv','date','round','phys','out'] as $k)
