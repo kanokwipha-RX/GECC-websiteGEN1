@@ -7,6 +7,10 @@ window.GECCPublic = (() => {
   const safe=s=>esc(String(s??''));
   const defaults={albums:[
     {
+      title:'เธ เธฒเธเธเธดเธเธเธฃเธฃเธก 13 เธเธคเธจเธเธดเธเธฒเธขเธ 2569',date:'2026-11-13',description:'',status:'published',
+      images:Array.from({length:39},(_,i)=>({src:'assets/gallery/gallery-2026-11-13-'+String(i+1).padStart(2,'0')+'.jpg',alt:'เธ เธฒเธเธเธดเธเธเธฃเธฃเธก 13 เธเธคเธจเธเธดเธเธฒเธขเธ 2569 เธ เธฒเธเธ—เธตเน '+(i+1)}))
+    },
+    {
       title:'กิจกรรม GECC · 4 พฤศจิกายน 2569',date:'2026-11-04',description:'',status:'published',
       images:Array.from({length:38},(_,i)=>({src:`assets/gallery/gallery-2026-11-04-${String(i+1).padStart(2,'0')}.jpg`,alt:`ภาพกิจกรรม GECC วันที่ 4 พฤศจิกายน 2569 ภาพที่ ${i+1}`}))
     },
