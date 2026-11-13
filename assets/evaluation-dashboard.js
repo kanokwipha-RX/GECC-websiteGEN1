@@ -2,7 +2,7 @@
 
 function evaluationDashboardHTML(customInfos) {
   const units = (window.DB && window.DB.units && window.DB.units.length) ? window.DB.units : (typeof OFFICIAL_UNITS !== 'undefined' ? OFFICIAL_UNITS : []);
-  const N = units.length || 34;
+  const N = units.length || 35;
   const teams = (window.DB && window.DB.teams && window.DB.teams.length) ? window.DB.teams : (typeof defaultTeams === 'function' ? defaultTeams() : []);
   const lastUpd = (units || []).map(u => window.DB?.assess?.[u.id]?.updatedAt).filter(Boolean).sort().pop();
   const mode = S.evalMode || 'mentor';
@@ -568,7 +568,7 @@ function evaluationDashboardHTML(customInfos) {
           <img src="${IMG.gecc}" alt="ตราศูนย์ราชการสะดวก">
         </div>
         <div class="trk-hdr-title">
-          <h2>สถานะผลการประเมินและความพร้อมรายหน่วยบริการ (34 แห่ง)</h2>
+          <h2>สถานะผลการประเมินและความพร้อมรายหน่วยบริการ (${N} แห่ง)</h2>
           <p>ตารางเช็คลิสต์กำกับติดตาม (Excel Grid Matrix) แยกเกณฑ์ 3 ด้าน และผลการตรวจประเมิน · ข้อมูล ณ ${lastUpd ? thDateTime(lastUpd) : thDate(todayISO(), true)}</p>
         </div>
       </div>
@@ -660,7 +660,7 @@ window.filterEvalExcel = function() {
     g.style.display = (team === 'all' && !q) ? '' : 'none';
   });
   const cntEl = document.getElementById('eval-excel-count');
-  if (cntEl) cntEl.textContent = 'แสดง ' + visibleCount + ' จาก 34 แห่ง';
+  if (cntEl) cntEl.textContent = 'แสดง ' + visibleCount + ' จาก ' + (window.DB?.units?.length || rows.length || N) + ' แห่ง';
 };
 
 window.evaluationDashboardHTML = evaluationDashboardHTML;
