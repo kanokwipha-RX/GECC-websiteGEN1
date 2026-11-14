@@ -800,11 +800,12 @@ window.GECCClient = (() => {
         await boot();
         toast("เปลี่ยนรหัสผ่านแล้ว กรุณาเข้าสู่ระบบใหม่");
       }
+      if (e.target.id === "server-reset-password") return await submitResetPassword(e.target);
       if (e.target.id === "account-form") await submitAccount(e.target);
       if (e.target.id === "content-form") await submitContent(e.target);
     } catch (error) {
       const target =
-        $("#password-error") || $("#account-error") || $("#content-error");
+        $("#password-error") || $("#account-error") || $("#content-error") || $("#reset-error");
       if (target) target.textContent = error.message;
       else report(error);
     } finally {
