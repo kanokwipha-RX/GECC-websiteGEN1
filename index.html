@@ -2115,7 +2115,7 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 </style>
 <link rel="stylesheet" href="assets/premium.css">
 <script src="assets/motion.js" defer></script>
-<link rel="stylesheet" href="assets/public-features.css?v=2570w">
+<link rel="stylesheet" href="assets/public-features.css?v=2570x">
 <script src="assets/evaluation-dashboard.js?v=2570u"></script>
 </head>
 <body>
@@ -3416,7 +3416,7 @@ const MENTOR_ADVISORS = [
 
 /* ================= Shell ================= */
 function navItems(){
-  const it=S.role==='mentee'?[{v:'exec', i:'chart', l:'Executive Dashboard'},{v:'hospitals', i:'folder', l:'ส่งไฟล์ รพ. (กลุ่ม 7 สาธารณสุข)'}]:[{v:'modules', i:'dashboard', l:'เลือกระบบงาน'},{v:'exec', i:'chart', l:'Executive Dashboard'},{v:'hospitals', i:'folder', l:'ส่งไฟล์ รพ. (กลุ่ม 7 สาธารณสุข)'}];
+  const it=S.role==='mentee'?[{v:'exec', i:'chart', l:'Executive Dashboard'}]:[{v:'modules', i:'dashboard', l:'เลือกระบบงาน'},{v:'exec', i:'chart', l:'Executive Dashboard'}];
   if(S.role==='mentor') it.push({v:'mdash', i:'users', l:'MENTOR DASHBOARD', cnt:wfWaitCount(S.team)},{v:'forms', i:'clipboard', l:'แบบตรวจประเมิน GECC'});
   if(S.role==='mentor'){
     const n=allInfo(S.team).reduce((s,x)=>s+x.open.length,0);
@@ -3447,7 +3447,6 @@ function shell(){
          <button data-act="go" data-view="exec" ${S.view==='exec'?'aria-current="page"':''}>หน้าหลัก</button>
          <button data-act="go" data-view="committee" ${S.view==='committee'?'aria-current="page"':''}>คณะทำงาน GECC</button>
          <button data-act="go" data-view="mentors" ${S.view==='mentors'?'aria-current="page"':''}>MENTOR</button>
-         <button data-act="go" data-view="hospitals" ${S.view==='hospitals'?'aria-current="page"':''}>ส่งไฟล์ รพ. (กลุ่ม 7 สาธารณสุข)</button>
          <button data-act="go" data-view="library" ${S.view==='library'?'aria-current="page"':''}>Library</button>
          <button data-act="go" data-view="gallery" ${S.view==='gallery'?'aria-current="page"':''}>Gallery</button>
          <button data-act="go" data-view="portfolio" ${S.view==='portfolio'?'aria-current="page"':''}>เข้าสู่ระบบ</button>
@@ -3775,9 +3774,8 @@ function viewPortfolio(){
       ['advisor','user','ที่ปรึกษา MENTOR','เลือกชื่อที่ปรึกษาเพื่อเข้าสู่ระบบ'],
       ['mentor','users','MENTOR','เลือกกลุ่มและชื่อของท่าน'],
       ['mentee','building','หน่วยบริการที่สมัคร','เลือกกลุ่มและหน่วยบริการของท่าน'],
-      ['hospitals','folder','กลุ่มที่ 7: งานสาธารณสุข (โรงพยาบาล 22 แห่ง)','ระบบส่งเอกสารและไฟล์แยกโฟลเดอร์รายโรงพยาบาล'],
       ['coord','shield','ผู้ประสานงานจังหวัด','เลือกชื่อผู้ประสานงาน สสจ. เพื่อเข้าสู่ระบบ']
-    ].map(([key,icon,title,description])=>`<button type="button" class="ecard${key==='hospitals'?' ecard-hospitals':''}" data-visual-card ${key==='hospitals'?'data-act="go" data-view="hospitals"':'data-act="entry-path" data-path="'+key+'"'}><span class="ei">${ic(icon)}</span><b>${title}</b><span class="d">${description}</span><span class="eg">เลือกช่องทางนี้ ${ic('right')}</span></button>`).join('')}</div></section>`;
+    ].map(([key,icon,title,description])=>`<button type="button" class="ecard" data-visual-card data-act="entry-path" data-path="${key}"><span class="ei">${ic(icon)}</span><b>${title}</b><span class="d">${description}</span><span class="eg">เลือกช่องทางนี้ ${ic('right')}</span></button>`).join('')}</div></section>`;
     entryFocus();return;
   }
   const choices=loginChoices();
@@ -3800,7 +3798,9 @@ function viewPortfolio(){
   }
   const team=DB.teams.find(t=>t.id===S.entryTeam);
   if(team){viewPortfolioEntry(team);return;}
-  $('#content').innerHTML=`<section class="portfolio-entry login-wizard"><p class="entry-progress">ขั้นตอน 2 จาก 4</p><h2 class="entry-q" tabindex="-1" data-entry-heading>เลือกกลุ่มของท่าน</h2><p class="entry-help">เลือกกลุ่มเพื่อดูรายชื่อ${path==='mentor'?' MENTOR':'หน่วยบริการ'}ทั้งหมดในกลุ่ม</p><div class="group-choice-grid">${((typeof defaultTeams === 'function' ? defaultTeams() : []).map(dt => { const existing = (DB.teams || []).find(t => t.id === dt.id); return existing ? { ...dt, ...existing, photo: existing.photo || dt.photo } : dt; })).slice().sort((a,b)=>a.id-b.id).map(groupChoice).join('')}</div><button class="entry-back" data-act="entry-back" data-step="path">${ic('left')}กลับไปเลือกช่องทาง</button></section>`;
+  const allTeams = (typeof defaultTeams === 'function' ? defaultTeams() : []).map(dt => { const existing = (DB.teams || []).find(t => t.id === dt.id); return existing ? { ...dt, ...existing, photo: existing.photo || dt.photo } : dt; });
+  const displayTeams = (path === 'mentor') ? allTeams.filter(t => t.id !== 7) : allTeams;
+  $('#content').innerHTML=`<section class="portfolio-entry login-wizard"><p class="entry-progress">ขั้นตอน 2 จาก 4</p><h2 class="entry-q" tabindex="-1" data-entry-heading>เลือกกลุ่มของท่าน</h2><p class="entry-help">เลือกกลุ่มเพื่อดูรายชื่อ${path==='mentor'?' MENTOR':'หน่วยบริการ'}ทั้งหมดในกลุ่ม</p><div class="group-choice-grid">${displayTeams.slice().sort((a,b)=>a.id-b.id).map(groupChoice).join('')}</div><button class="entry-back" data-act="entry-back" data-step="path">${ic('left')}กลับไปเลือกช่องทาง</button></section>`;
   entryFocus();
 }
 
@@ -6264,7 +6264,7 @@ function demoHash(){ if(window.GECC_SERVER) return; const h=(location.hash||'').
 demoHash(); window.addEventListener('hashchange',demoHash);
 </script>
 <script src="assets/backup.js"></script>
-<script src="assets/server-client.js?v=2570w"></script>
-<script src="assets/public-features.js?v=2570w"></script>
+<script src="assets/server-client.js?v=2570x"></script>
+<script src="assets/public-features.js?v=2570x"></script>
 </body>
 </html>
