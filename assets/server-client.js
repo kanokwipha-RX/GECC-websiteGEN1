@@ -64,6 +64,18 @@ window.GECCClient = (() => {
     revision = result.revision;
     confirmed = clone(result.state);
     DB = { ...clone(result.state), pins: { unit: {}, team: {}, coord: "" } };
+    if (typeof migrate === "function") {
+      try { migrate(DB); } catch (e) { console.warn("migrate failed:", e); }
+    }
+    if (!Array.isArray(DB.teams) || !DB.teams.some(t => t.id === 7)) {
+      if (typeof defaultTeams === "function") {
+        const t7 = defaultTeams().find(t => t.id === 7);
+        if (t7) {
+          DB.teams = Array.isArray(DB.teams) ? DB.teams : [];
+          DB.teams.push(clone(t7));
+        }
+      }
+    }
     aggregate = result.summary;
     applyContent();
   }
