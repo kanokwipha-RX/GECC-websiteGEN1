@@ -532,7 +532,7 @@ window.GECCPublic = (() => {
     return `<div class="hosp-portal">
       <header class="hosp-hero">
         <div>
-          <span class="hosp-hero-badge">${ic('shield')} กลุ่มที่ 7 : งานบริการโรงพยาบาล</span>
+          <span class="hosp-hero-badge">${ic('shield')} กลุ่มที่ 7 : งานสาธารณสุข (โรงพยาบาล 22 แห่ง)</span>
           <h1>ระบบส่งเอกสารและไฟล์ GECC 2570 (22 โรงพยาบาล)</h1>
           <p>ระบบจัดเก็บและอัพโหลดไฟล์แยกโฟลเดอร์ตามรายชื่อโรงพยาบาล สำหรับเตรียมความพร้อมและตรวจประเมินศูนย์ราชการสะดวก</p>
         </div>
@@ -581,7 +581,7 @@ window.GECCPublic = (() => {
                 <span class="badge-mini" style="background:#0D9488;color:#fff">${safe(h.district)}</span>
               </div>
               <h2 style="margin:0;color:var(--navy);font-size:24px;font-weight:800">${safe(h.name)}</h2>
-              <small style="color:var(--text-3)">${safe(h.detail)} · กลุ่มที่ 7 งานบริการโรงพยาบาล</small>
+              <small style="color:var(--text-3)">${safe(h.detail)} · กลุ่มที่ 7 งานสาธารณสุข</small>
             </div>
           </div>
           <div>
@@ -658,7 +658,7 @@ window.GECCPublic = (() => {
   }
 
   window.viewHospitalsPortal = async function(){
-    setCollectionHead('กลุ่มที่ 7: งานบริการโรงพยาบาล','building','ระบบส่งเอกสารและไฟล์ GECC 2570 แยก 22 โรงพยาบาล');
+    setCollectionHead('กลุ่มที่ 7: งานสาธารณสุข (โรงพยาบาล 22 แห่ง)','building','ระบบส่งเอกสารและไฟล์ GECC 2570 แยก 22 โรงพยาบาล');
     $('#content').innerHTML = '<p role="status" style="text-align:center;padding:40px 0">กำลังโหลดข้อมูลกลุ่มที่ 7…</p>';
     await loadHospitalsData();
     if(S.view !== 'hospitals') return;
@@ -696,7 +696,7 @@ window.GECCPublic = (() => {
   function openHospAuthModal(hid){
     openModal(`
       <div class="modal-h">
-        <h3>${ic('lock')} เข้าสู่ระบบกลุ่มที่ 7 : งานบริการโรงพยาบาล</h3>
+        <h3>${ic('lock')} เข้าสู่ระบบกลุ่มที่ 7 : งานสาธารณสุข</h3>
         <button class="btn" data-act="modal-close">${ic('x')}</button>
       </div>
       <div class="modal-b auth-fields">

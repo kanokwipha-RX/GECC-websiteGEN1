@@ -2115,7 +2115,7 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 </style>
 <link rel="stylesheet" href="assets/premium.css">
 <script src="assets/motion.js" defer></script>
-<link rel="stylesheet" href="assets/public-features.css?v=2570v">
+<link rel="stylesheet" href="assets/public-features.css?v=2570w">
 <script src="assets/evaluation-dashboard.js?v=2570u"></script>
 </head>
 <body>
@@ -2756,7 +2756,7 @@ const OFFICIAL_GROUPS = [
     ]
   },
   {
-    "name": "กลุ่มที่ 7: งานบริการโรงพยาบาล",
+    "name": "กลุ่มที่ 7: งานสาธารณสุข (โรงพยาบาล 22 แห่ง)",
     "isHospitalGroup": true,
     "units": [
       ["โรงพยาบาลศรีสะเกษ (โรงพยาบาลศูนย์ - อำเภอเมืองศรีสะเกษ)", "เมืองศรีสะเกษ", "h01", "000101"],
@@ -3416,7 +3416,7 @@ const MENTOR_ADVISORS = [
 
 /* ================= Shell ================= */
 function navItems(){
-  const it=S.role==='mentee'?[{v:'exec', i:'chart', l:'Executive Dashboard'},{v:'hospitals', i:'folder', l:'ส่งไฟล์ รพ. (กลุ่ม 7)'}]:[{v:'modules', i:'dashboard', l:'เลือกระบบงาน'},{v:'exec', i:'chart', l:'Executive Dashboard'},{v:'hospitals', i:'folder', l:'ส่งไฟล์ รพ. (กลุ่ม 7)'}];
+  const it=S.role==='mentee'?[{v:'exec', i:'chart', l:'Executive Dashboard'},{v:'hospitals', i:'folder', l:'ส่งไฟล์ รพ. (กลุ่ม 7 สาธารณสุข)'}]:[{v:'modules', i:'dashboard', l:'เลือกระบบงาน'},{v:'exec', i:'chart', l:'Executive Dashboard'},{v:'hospitals', i:'folder', l:'ส่งไฟล์ รพ. (กลุ่ม 7 สาธารณสุข)'}];
   if(S.role==='mentor') it.push({v:'mdash', i:'users', l:'MENTOR DASHBOARD', cnt:wfWaitCount(S.team)},{v:'forms', i:'clipboard', l:'แบบตรวจประเมิน GECC'});
   if(S.role==='mentor'){
     const n=allInfo(S.team).reduce((s,x)=>s+x.open.length,0);
@@ -3447,7 +3447,7 @@ function shell(){
          <button data-act="go" data-view="exec" ${S.view==='exec'?'aria-current="page"':''}>หน้าหลัก</button>
          <button data-act="go" data-view="committee" ${S.view==='committee'?'aria-current="page"':''}>คณะทำงาน GECC</button>
          <button data-act="go" data-view="mentors" ${S.view==='mentors'?'aria-current="page"':''}>MENTOR</button>
-         <button data-act="go" data-view="hospitals" ${S.view==='hospitals'?'aria-current="page"':''}>ส่งไฟล์ รพ. (กลุ่ม 7)</button>
+         <button data-act="go" data-view="hospitals" ${S.view==='hospitals'?'aria-current="page"':''}>ส่งไฟล์ รพ. (กลุ่ม 7 สาธารณสุข)</button>
          <button data-act="go" data-view="library" ${S.view==='library'?'aria-current="page"':''}>Library</button>
          <button data-act="go" data-view="gallery" ${S.view==='gallery'?'aria-current="page"':''}>Gallery</button>
          <button data-act="go" data-view="portfolio" ${S.view==='portfolio'?'aria-current="page"':''}>เข้าสู่ระบบ</button>
@@ -3669,7 +3669,7 @@ function groupChoice(t){
   let photo=t.photo||GROUP_PHOTOS[t.id];
   if(t.id===4) photo='assets/images/group-4-v2.jpg?v=2570b';
   if(t.id===5) photo='assets/images/group-5-v2.jpg?v=2570b';
-  if(t.id===7) photo='assets/images/group-7.jpg?v=2570b';
+  if(t.id===7) photo='assets/images/group-7.jpg?v=2570c';
   const actionLabel = t.id===7 ? 'เปิดระบบส่งไฟล์โรงพยาบาล' : 'เลือกกลุ่มเพื่อเข้าสู่ระบบ';
   const badgeHtml = t.id===7 ? '<span class="badge-mini" style="background:#0D9488;color:#fff;margin-left:6px;vertical-align:middle;font-size:11px;padding:2px 7px;border-radius:10px">แยกส่งไฟล์</span>' : '';
   return `<button class="group-choice showcase-card${photo?' has-photo':''}" data-visual-card data-act="entry-team" data-team="${t.id}" aria-label="เลือก${esc(t.name)} ${actionLabel}"><span class="group-choice-media">${photo?`<img src="${esc(photo)}" alt="ภาพประกอบ${esc(t.name)}" loading="lazy" width="500" height="500">`:ic(['building','shield','pin','file','user','chart','building'][t.id-1]||'building')}<span class="group-choice-number">${String(t.id).padStart(2,'0')}</span></span><span class="group-choice-overlay"></span><span class="group-choice-copy"><strong>กลุ่มที่ ${t.id}${badgeHtml}</strong><small>${esc(title)}</small><span class="group-choice-action">${actionLabel} ${ic('right')}</span></span></button>`;
@@ -3775,7 +3775,7 @@ function viewPortfolio(){
       ['advisor','user','ที่ปรึกษา MENTOR','เลือกชื่อที่ปรึกษาเพื่อเข้าสู่ระบบ'],
       ['mentor','users','MENTOR','เลือกกลุ่มและชื่อของท่าน'],
       ['mentee','building','หน่วยบริการที่สมัคร','เลือกกลุ่มและหน่วยบริการของท่าน'],
-      ['hospitals','folder','กลุ่มที่ 7: โรงพยาบาล (22 แห่ง)','ระบบส่งเอกสารและไฟล์แยกโฟลเดอร์รายโรงพยาบาล'],
+      ['hospitals','folder','กลุ่มที่ 7: งานสาธารณสุข (โรงพยาบาล 22 แห่ง)','ระบบส่งเอกสารและไฟล์แยกโฟลเดอร์รายโรงพยาบาล'],
       ['coord','shield','ผู้ประสานงานจังหวัด','เลือกชื่อผู้ประสานงาน สสจ. เพื่อเข้าสู่ระบบ']
     ].map(([key,icon,title,description])=>`<button type="button" class="ecard${key==='hospitals'?' ecard-hospitals':''}" data-visual-card ${key==='hospitals'?'data-act="go" data-view="hospitals"':'data-act="entry-path" data-path="'+key+'"'}><span class="ei">${ic(icon)}</span><b>${title}</b><span class="d">${description}</span><span class="eg">เลือกช่องทางนี้ ${ic('right')}</span></button>`).join('')}</div></section>`;
     entryFocus();return;
@@ -6264,7 +6264,7 @@ function demoHash(){ if(window.GECC_SERVER) return; const h=(location.hash||'').
 demoHash(); window.addEventListener('hashchange',demoHash);
 </script>
 <script src="assets/backup.js"></script>
-<script src="assets/server-client.js?v=2570v"></script>
-<script src="assets/public-features.js?v=2570v"></script>
+<script src="assets/server-client.js?v=2570w"></script>
+<script src="assets/public-features.js?v=2570w"></script>
 </body>
 </html>
