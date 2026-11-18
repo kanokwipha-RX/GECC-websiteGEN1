@@ -2115,8 +2115,8 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 </style>
 <link rel="stylesheet" href="assets/premium.css">
 <script src="assets/motion.js" defer></script>
-<link rel="stylesheet" href="assets/public-features.css?v=2570p">
-<script src="assets/evaluation-dashboard.js?v=2570p"></script>
+<link rel="stylesheet" href="assets/public-features.css?v=2570t">
+<script src="assets/evaluation-dashboard.js?v=2570t"></script>
 </head>
 <body>
 <a class="skip-link" href="#content">ข้ามไปยังเนื้อหาหลัก</a>
@@ -5387,12 +5387,12 @@ function tabHTML(a,c,ro,info){
           <div class="qscore-box self">
             <span class="qs-lbl">ประเมินตนเอง</span>
             <b id="qss-${i}">${fmt(qcScore({qc:a.self?.qc||a.qc}, i), 1)}</b>
-            <small>/10 · ${itSelf.subs.filter(Boolean).length}/${q.subs.length} ข้อ</small>
+            <small id="qsh-${i}">/10 · ${itSelf.subs.filter(Boolean).length}/${q.subs.length} ข้อ</small>
           </div>
           <div class="qscore-box mentor">
             <span class="qs-lbl">MENTOR</span>
             <b id="qs-${i}">${fmt(qcScore(a,i),1)}</b>
-            <small>/10 · ${it.subs.filter(Boolean).length}/${q.subs.length} ข้อ</small>
+            <small id="qh-${i}">/10 · ${it.subs.filter(Boolean).length}/${q.subs.length} ข้อ</small>
           </div>
         </div>
       </div>
@@ -5701,8 +5701,12 @@ function live(){
   const pSelf=$('#phys-pill-self'); if(pSelf) pSelf.innerHTML=`<span class="badge-mini self">ตนเอง</span> ผ่าน ${cSelf.physYes} / 15 ข้อ`;
   const pMen=$('#phys-pill-mentor'); if(pMen) pMen.innerHTML=`<span class="badge-mini mentor">MENTOR</span> ผ่าน ${c.physYes} / 15 ข้อ`;
   QC.forEach((q,i)=>{
-    const e=$('#qs-'+i); if(e){ e.textContent=fmt(qcScore(a,i),1); $('#qh-'+i).textContent=`ดำเนินการ ${a.qc[i].subs.filter(Boolean).length}/${q.subs.length} ข้อ`; $('#qsug-'+i).textContent=`คะแนนแนะนำ ${fmt(qcSuggest(a,i),1)} (เว้นว่างเพื่อใช้คะแนนแนะนำ)`; $('#qo-'+i).placeholder=fmt(qcSuggest(a,i),1);}
-    const es=$('#qss-'+i); if(es){ es.textContent=fmt(qcScore({qc:a.self?.qc||a.qc}, i), 1); }
+    const e=$('#qs-'+i); if(e) e.textContent=fmt(qcScore(a,i),1);
+    const qh=$('#qh-'+i); if(qh) qh.textContent=`/10 · ${a.qc[i].subs.filter(Boolean).length}/${q.subs.length} ข้อ`;
+    const qsug=$('#qsug-'+i); if(qsug) qsug.textContent=`คะแนนแนะนำ ${fmt(qcSuggest(a,i),1)} (เว้นว่างเพื่อใช้คะแนนแนะนำ)`;
+    const qo=$('#qo-'+i); if(qo) qo.placeholder=fmt(qcSuggest(a,i),1);
+    const es=$('#qss-'+i); if(es) es.textContent=fmt(qcScore({qc:a.self?.qc||a.qc}, i), 1);
+    const qsh=$('#qsh-'+i); if(qsh) qsh.textContent=`/10 · ${(a.self?.qc?.[i]?.subs||a.qc[i].subs).filter(Boolean).length}/${q.subs.length} ข้อ`;
   });
   a.narr.forEach((n,i)=>{ const e=$('#ns-'+i); if(e) e.textContent=(n.score===null||n.score==='')?'–':fmt(n.score,1); });
   (a.self?.narr||[]).forEach((sn,i)=>{ const es=$('#nss-'+i); if(es) es.textContent=(sn.score===null||sn.score==='')?'–':fmt(sn.score,1); });
@@ -5747,7 +5751,7 @@ function bind(el){
   else if(path[0]==='qco'){ if(val===''){ a.qc[+path[1]].score=null; } else { let n=Math.max(0,Math.min(10,+val)); a.qc[+path[1]].score=n; } }
   else if(path[0]==='narr'){ const it=a.narr[+path[1]];
     if(path[2]==='score'){ const f=el.closest('.field'); if(val===''){ it.score=null; f.classList.remove('invalid'); } else { const n=+val; if(isNaN(n)||n<0||n>10){ f.classList.add('invalid'); return; } f.classList.remove('invalid'); it.score=n; } }
-    else { it[path[2]]=val; if(path[2]==='text'){ const cn=$('#nc-'+path[1]); cn.textContent=`${fmt(val.length)} / 2,000 ตัวอักษร`; cn.classList.toggle('over', val.length>2000);} } }
+    else { it[path[2]]=val; if(path[2]==='text'){ const cn=$('#nc-'+path[1]); if(cn){ cn.textContent=`${fmt(val.length)} / 2,000 ตัวอักษร`; cn.classList.toggle('over', val.length>2000); } } } }
   else if(path[0]==='out'){ if(path.length===3) a.out[path[1]][+path[2]]=val; else a.out[path[1]] = (path[1]==='N'||path[1]==='n')?val:+val; }
   else if(path[0]==='date'){ a.date=val; const h=$('#m-date-th'); if(h) h.textContent=thDate(val,true); }
   else if(path[0]==='round'){ a.round=+val; }
@@ -6138,7 +6142,7 @@ document.addEventListener('change', async e=>{
   if(el.dataset.actChange==='quick-files'){ quickPick(el.files); el.value=''; return; }
   if(el.dataset.actChange==='ev-img'||el.dataset.actChange==='ev-pdf'||el.dataset.actChange==='ev-file'){ await addFiles(el.dataset.k,[...el.files], el.dataset.actChange==='ev-img'?'img':'file'); el.value=''; return; }
   if(el.dataset.actChange==='import'){ importJSON(el.files[0]); el.value=''; return; }
-  if(el.id==='d-due'){ $('#d-due-th').textContent=thDate(el.value,true); }
+  if(el.id==='d-due'){ const dt=$('#d-due-th'); if(dt) dt.textContent=thDate(el.value,true); }
   if(el.id==='mentee-unit'){ $('#f-unit').classList.remove('invalid'); }
  } catch(error){ GECCClient.report(error); }
 });
@@ -6205,7 +6209,7 @@ function demoHash(){ if(window.GECC_SERVER) return; const h=(location.hash||'').
 demoHash(); window.addEventListener('hashchange',demoHash);
 </script>
 <script src="assets/backup.js"></script>
-<script src="assets/server-client.js?v=2570s"></script>
-<script src="assets/public-features.js?v=2570s"></script>
+<script src="assets/server-client.js?v=2570t"></script>
+<script src="assets/public-features.js?v=2570t"></script>
 </body>
 </html>
