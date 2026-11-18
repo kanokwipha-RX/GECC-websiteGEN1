@@ -437,5 +437,466 @@ window.GECCPublic = (() => {
   }
   function decorate(){if(!$('#content'))return;if(S.view==='portfolio'&&window.GECC_SERVER&&!loginOptions&&!rosterLoading&&!loginError)loadLoginOptions();const height=$('.site-nav')?.offsetHeight;if(height)document.documentElement.style.setProperty('--site-nav-height',height+'px');if(S.view==='exec'&&!$('#public-directory-button'))$('#content').insertAdjacentHTML('afterbegin',`<div class="feature-tools"><button class="btn btn-primary" id="public-directory-button" data-public-directory>ดูรายละเอียดรายหน่วยบริการ</button>${surveyLinkHTML()}</div>`);if(S.view==='exec'){document.querySelectorAll('.pbc-k .pk').forEach((el,i)=>{el.dataset.publicFilter='phys:'+['full','part','zero'][i%3];el.setAttribute('role','button');el.tabIndex=0;});document.querySelectorAll('.lvl-tile').forEach((el,i)=>{if(el.dataset.publicFilter)return;el.dataset.publicFilter=['gold','silver','blue'][i%3];el.setAttribute('role','button');el.tabIndex=0;});}if(S.view==='settings'&&S.coord&&!$('#feature-editor-button'))$('#content').insertAdjacentHTML('afterbegin','<button class="btn btn-primary" id="feature-editor-button" data-feature-editor>จัดการ Gallery และเนื้อหาเผยแพร่</button>');}
   const observer=new MutationObserver(()=>{decorate();});observer.observe($('#app'),{childList:true,subtree:true});
-  decorate();return {gallery,mentors,directory,editor,embed,loadLoginOptions,resetLoginOptions,get loginUnits(){return loginUnits;},get loginOptions(){return loginOptions;},get loginError(){return loginError;}};
+  // ================= กลุ่มที่ 7: งานบริการโรงพยาบาล (22 แห่ง) =================
+  const HOSPITALS_DEF = [
+    {id:'h01', num:1, name:'โรงพยาบาลศรีสะเกษ', type:'โรงพยาบาลศูนย์', district:'อำเภอเมืองศรีสะเกษ', detail:'โรงพยาบาลศูนย์ - อำเภอเมืองศรีสะเกษ'},
+    {id:'h02', num:2, name:'โรงพยาบาลยางชุมน้อย', type:'โรงพยาบาลชุมชน', district:'อำเภอยางชุมน้อย', detail:'อำเภอยางชุมน้อย'},
+    {id:'h03', num:3, name:'โรงพยาบาลกันทรารมย์', type:'โรงพยาบาลชุมชน', district:'อำเภอกันทรารมย์', detail:'อำเภอกันทรารมย์'},
+    {id:'h04', num:4, name:'โรงพยาบาลกันทรลักษ์', type:'โรงพยาบาลทั่วไป', district:'อำเภอกันทรลักษ์', detail:'อำเภอกันทรลักษ์'},
+    {id:'h05', num:5, name:'โรงพยาบาลขุขันธ์', type:'โรงพยาบาลชุมชน', district:'อำเภอขุขันธ์', detail:'อำเภอขุขันธ์'},
+    {id:'h06', num:6, name:'โรงพยาบาลไพรบึง', type:'โรงพยาบาลชุมชน', district:'อำเภอไพรบึง', detail:'อำเภอไพรบึง'},
+    {id:'h07', num:7, name:'โรงพยาบาลปรางค์กู่', type:'โรงพยาบาลชุมชน', district:'อำเภอปรางค์กู่', detail:'อำเภอปรางค์กู่'},
+    {id:'h08', num:8, name:'โรงพยาบาลขุนหาญ', type:'โรงพยาบาลชุมชน', district:'อำเภอขุนหาญ', detail:'อำเภอขุนหาญ'},
+    {id:'h09', num:9, name:'โรงพยาบาลราษีไศล', type:'โรงพยาบาลชุมชน', district:'อำเภอราษีไศล', detail:'อำเภอราษีไศล'},
+    {id:'h10', num:10, name:'โรงพยาบาลอุทุมพรพิสัย', type:'โรงพยาบาลชุมชน', district:'อำเภออุทุมพรพิสัย', detail:'อำเภออุทุมพรพิสัย'},
+    {id:'h11', num:11, name:'โรงพยาบาลบึงบูรพ์', type:'โรงพยาบาลชุมชน', district:'อำเภอบึงบูรพ์', detail:'อำเภอบึงบูรพ์'},
+    {id:'h12', num:12, name:'โรงพยาบาลห้วยทับทัน', type:'โรงพยาบาลชุมชน', district:'อำเภอห้วยทับทัน', detail:'อำเภอห้วยทับทัน'},
+    {id:'h13', num:13, name:'โรงพยาบาลโนนคูณ', type:'โรงพยาบาลชุมชน', district:'อำเภอโนนคูณ', detail:'อำเภอโนนคูณ'},
+    {id:'h14', num:14, name:'โรงพยาบาลศรีรัตนะ', type:'โรงพยาบาลชุมชน', district:'อำเภอศรีรัตนะ', detail:'อำเภอศรีรัตนะ'},
+    {id:'h15', num:15, name:'โรงพยาบาลน้ำเกลี้ยง', type:'โรงพยาบาลชุมชน', district:'อำเภอน้ำเกลี้ยง', detail:'อำเภอน้ำเกลี้ยง'},
+    {id:'h16', num:16, name:'โรงพยาบาลวังหิน', type:'โรงพยาบาลชุมชน', district:'อำเภอวังหิน', detail:'อำเภอวังหิน'},
+    {id:'h17', num:17, name:'โรงพยาบาลภูสิงห์', type:'โรงพยาบาลชุมชน', district:'อำเภอภูสิงห์', detail:'อำเภอภูสิงห์'},
+    {id:'h18', num:18, name:'โรงพยาบาลเมืองจันทร์', type:'โรงพยาบาลชุมชน', district:'อำเภอเมืองจันทร์', detail:'อำเภอเมืองจันทร์'},
+    {id:'h19', num:19, name:'โรงพยาบาลเบญจลักษ์เฉลิมพระเกียรติ ๘๐ พรรษา', type:'โรงพยาบาลชุมชน', district:'อำเภอเบญจลักษ์', detail:'อำเภอเบญจลักษ์'},
+    {id:'h20', num:20, name:'โรงพยาบาลพยุห์', type:'โรงพยาบาลชุมชน', district:'อำเภอพยุห์', detail:'อำเภอพยุห์'},
+    {id:'h21', num:21, name:'โรงพยาบาลโพธิ์ศรีสุวรรณ', type:'โรงพยาบาลชุมชน', district:'อำเภอโพธิ์ศรีสุวรรณ', detail:'อำเภอโพธิ์ศรีสุวรรณ'},
+    {id:'h22', num:22, name:'โรงพยาบาลศิลาลาด', type:'โรงพยาบาลชุมชน', district:'อำเภอศิลาลาด', detail:'อำเภอศิลาลาด'}
+  ];
+  let hospList = HOSPITALS_DEF.map(x=>({...x, files:[]}));
+  let hospActiveId = null;
+  let hospAuthedState = false;
+  let hospFilterQ = '';
+  let hospFilterType = 'all';
+
+  function hospAuthCheck(){
+    if(S.role==='coord'||S.role==='mentor'||sessionStorage.getItem('gecc_hosp_auth')==='1'||hospAuthedState) return true;
+    return false;
+  }
+
+  async function loadHospitalsData(){
+    if(php()){
+      try{
+        const res = await request('hospitals');
+        if(res && res.hospitals){
+          hospList = res.hospitals;
+          hospAuthedState = !!res.authed;
+          if(hospAuthedState) sessionStorage.setItem('gecc_hosp_auth','1');
+          return;
+        }
+      }catch(_){}
+    }
+    try{
+      const local = JSON.parse(localStorage.getItem('gecc_hosp_local_files')||'{}');
+      hospList = HOSPITALS_DEF.map(h=>{
+        const fl = local[h.id]||[];
+        return {...h, filesCount: fl.length, files: fl};
+      });
+    }catch(_){}
+  }
+
+  function hospitalCardHTML(h){
+    const isCenter = h.type === 'โรงพยาบาลศูนย์';
+    const fCount = (h.files||[]).length || (h.filesCount||0);
+    return `<article class="hosp-card" data-hid="${safe(h.id)}">
+      <div>
+        <div class="hosp-card-head">
+          <div class="hosp-icon-badge">${ic('building')}</div>
+          <div class="hosp-title-group">
+            <h3>${safe(h.name)}</h3>
+            <div class="hosp-meta">
+              <span class="hosp-type-pill ${isCenter?'center':''}">${safe(h.type)}</span>
+              <small style="color:var(--text-3);font-size:12.5px">${safe(h.district)}</small>
+            </div>
+          </div>
+        </div>
+        <p style="margin:0 0 12px;font-size:13.5px;color:var(--text-2);line-height:1.4">${safe(h.detail)}</p>
+      </div>
+      <div class="hosp-card-footer">
+        <span class="hosp-file-count ${fCount?'':'empty'}">${ic(fCount?'clipboard':'folder')}<span>${fCount ? fCount+' ไฟล์เอกสาร' : 'ยังไม่มีไฟล์'}</span></span>
+        <button class="btn btn-sm ${fCount?'btn-primary':'btn-lux'}" data-act="hosp-open" data-hid="${safe(h.id)}">${ic('folder')}เปิดโฟลเดอร์ ${ic('right')}</button>
+      </div>
+    </article>`;
+  }
+
+  function renderHospitalsHub(){
+    const authed = hospAuthCheck();
+    const q = (hospFilterQ||'').toLowerCase().trim();
+    const filtered = hospList.filter(h=>{
+      const matchQ = !q || h.name.toLowerCase().includes(q) || h.district.toLowerCase().includes(q) || h.detail.toLowerCase().includes(q);
+      const matchType = hospFilterType==='all' || (hospFilterType==='center' && h.type==='โรงพยาบาลศูนย์') || (hospFilterType==='community' && h.type!=='โรงพยาบาลศูนย์') || (hospFilterType==='has' && ((h.files||[]).length||h.filesCount)>0);
+      return matchQ && matchType;
+    });
+    const totalFiles = hospList.reduce((sum, h)=> sum + ((h.files||[]).length||h.filesCount||0), 0);
+    const withFiles = hospList.filter(h => ((h.files||[]).length||h.filesCount)>0).length;
+
+    return `<div class="hosp-portal">
+      <header class="hosp-hero">
+        <div>
+          <span class="hosp-hero-badge">${ic('shield')} กลุ่มที่ 7 : งานบริการโรงพยาบาล</span>
+          <h1>ระบบส่งเอกสารและไฟล์ GECC 2570 (22 โรงพยาบาล)</h1>
+          <p>ระบบจัดเก็บและอัพโหลดไฟล์แยกโฟลเดอร์ตามรายชื่อโรงพยาบาล สำหรับเตรียมความพร้อมและตรวจประเมินศูนย์ราชการสะดวก</p>
+        </div>
+        <div class="hosp-hero-actions">
+          <div class="hosp-stat-badge">${ic('building')} ${hospList.length} แห่ง (ส่งแล้ว ${withFiles} แห่ง) · รวม ${totalFiles} ไฟล์</div>
+          ${authed ? `<button class="btn btn-sm btn-ghost" data-act="hosp-logout" style="color:#fff;border:1px solid rgba(255,255,255,0.4)">${ic('unlock')}ออกจากระบบ</button>` : `<button class="btn btn-sm btn-lux" data-act="hosp-login">${ic('lock')}เข้าสู่ระบบกลุ่ม 7</button>`}
+        </div>
+      </header>
+
+      <div class="hosp-filter-bar">
+        <div class="hosp-search-box">
+          ${ic('search')}
+          <input type="search" id="hosp-search" placeholder="ค้นหาชื่อโรงพยาบาล หรือ อำเภอ (เช่น ศรีสะเกษ, กันทรลักษ์, ขุขันธ์...)" value="${safe(hospFilterQ)}">
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+          <button class="btn btn-sm ${hospFilterType==='all'?'btn-primary':'btn-ghost'}" data-act="hosp-type" data-type="all">ทั้งหมด (22)</button>
+          <button class="btn btn-sm ${hospFilterType==='center'?'btn-primary':'btn-ghost'}" data-act="hosp-type" data-type="center">รพ.ศูนย์ (1)</button>
+          <button class="btn btn-sm ${hospFilterType==='community'?'btn-primary':'btn-ghost'}" data-act="hosp-type" data-type="community">รพ.ชุมชน/ทั่วไป (21)</button>
+          <button class="btn btn-sm ${hospFilterType==='has'?'btn-primary':'btn-ghost'}" data-act="hosp-type" data-type="has">ส่งไฟล์แล้ว (${withFiles})</button>
+        </div>
+      </div>
+
+      <div class="hosp-grid">
+        ${filtered.length ? filtered.map(hospitalCardHTML).join('') : '<p class="muted" style="grid-column:1/-1;text-align:center;padding:40px 0">ไม่พบโรงพยาบาลที่ค้นหา</p>'}
+      </div>
+    </div>`;
+  }
+
+  function renderHospitalFolder(h){
+    const authed = hospAuthCheck();
+    const files = h.files || [];
+    const isCenter = h.type === 'โรงพยาบาลศูนย์';
+
+    return `<div class="hosp-portal">
+      <div style="margin-bottom:18px">
+        <button class="btn btn-sm btn-ghost" data-act="hosp-back" style="color:var(--navy);font-weight:700">${ic('left')} กลับไปหน้ารวม 22 โรงพยาบาล</button>
+      </div>
+
+      <div class="hosp-folder-view">
+        <header class="hosp-folder-head">
+          <div style="display:flex;align-items:center;gap:14px">
+            <div class="hosp-icon-badge" style="width:54px;height:54px">${ic('building')}</div>
+            <div>
+              <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px">
+                <span class="hosp-type-pill ${isCenter?'center':''}">${safe(h.type)}</span>
+                <span class="badge-mini" style="background:#0D9488;color:#fff">${safe(h.district)}</span>
+              </div>
+              <h2 style="margin:0;color:var(--navy);font-size:24px;font-weight:800">${safe(h.name)}</h2>
+              <small style="color:var(--text-3)">${safe(h.detail)} · กลุ่มที่ 7 งานบริการโรงพยาบาล</small>
+            </div>
+          </div>
+          <div>
+            ${authed ? `<label class="btn btn-primary" style="cursor:pointer">${ic('upload')} เลือกไฟล์อัปโหลด<input type="file" multiple class="sr" data-act-change="hosp-upload" data-hid="${safe(h.id)}"></label>` : `<button class="btn btn-primary" data-act="hosp-login" data-hid="${safe(h.id)}">${ic('lock')} เข้าสู่ระบบเพื่ออัปโหลดไฟล์</button>`}
+          </div>
+        </header>
+
+        ${authed ? `
+          <div class="hosp-dropzone" id="hosp-dropzone" data-hid="${safe(h.id)}">
+            <div style="color:#0D9488;margin-bottom:8px">${ic('upload')}</div>
+            <h3 style="margin:0 0 4px;font-size:16px;color:var(--navy)">ลากและวางไฟล์เอกสารที่นี่</h3>
+            <p style="margin:0;font-size:13.5px;color:var(--text-3)">รองรับไฟล์ PDF, Word, Excel, PowerPoint, รูปภาพ, Zip (ขนาดสูงสุด 25 MB ต่อไฟล์)</p>
+          </div>
+        ` : `
+          <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:12px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+            <div style="display:flex;align-items:center;gap:10px;color:#92400E">
+              ${ic('info')}
+              <span>ระบบมีการป้องกันด้วยรหัสผ่านกลางกลุ่มที่ 7 เพื่อความปลอดภัยของข้อมูลเอกสาร</span>
+            </div>
+            <button class="btn btn-sm btn-primary" data-act="hosp-login" data-hid="${safe(h.id)}">${ic('lock')}ใส่รหัสผ่านเพื่อจัดการไฟล์</button>
+          </div>
+        `}
+
+        <h3 style="margin:0 0 14px;color:var(--navy);font-size:17px;font-weight:700">${ic('clipboard')} ไฟล์เอกสารที่อัปโหลดแล้ว (${files.length} ไฟล์)</h3>
+
+        ${files.length ? `
+          <div style="overflow-x:auto">
+            <table class="hosp-files-table">
+              <thead>
+                <tr>
+                  <th style="width:40px">#</th>
+                  <th>ชื่อไฟล์เอกสาร</th>
+                  <th style="width:120px">ขนาดไฟล์</th>
+                  <th style="width:170px">วันที่อัปโหลด</th>
+                  <th style="width:180px;text-align:right">จัดการ</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${files.map((f,idx)=>`
+                  <tr>
+                    <td style="color:var(--text-3);font-size:13px">${idx+1}</td>
+                    <td>
+                      <div style="display:flex;align-items:center;gap:10px">
+                        ${extBadge(f.name)}
+                        <div>
+                          <strong>${safe(f.name)}</strong>
+                          ${f.uploader ? `<div style="font-size:11.5px;color:var(--text-3)">โดย: ${safe(f.uploader)}</div>` : ''}
+                        </div>
+                      </div>
+                    </td>
+                    <td style="color:var(--text-2);font-size:13px">${fsize(f.size||0)}</td>
+                    <td style="color:var(--text-3);font-size:12.5px">${thDateTime(f.uploadedAt)}</td>
+                    <td style="text-align:right">
+                      <div class="hosp-btn-group">
+                        <button class="btn btn-sm btn-ghost" data-act="hosp-file-view" data-hid="${safe(h.id)}" data-fid="${safe(f.id)}" data-name="${safe(f.name)}" title="เปิดดูไฟล์">${ic('eye')}ดูไฟล์</button>
+                        <button class="btn btn-sm btn-ghost" data-act="hosp-file-dl" data-hid="${safe(h.id)}" data-fid="${safe(f.id)}" data-name="${safe(f.name)}" title="ดาวน์โหลดไฟล์">${ic('download')}โหลด</button>
+                        ${authed ? `<button class="btn btn-sm btn-ghost" data-act="hosp-file-del" data-hid="${safe(h.id)}" data-fid="${safe(f.id)}" data-name="${safe(f.name)}" style="color:#DC2626" title="ลบไฟล์">${ic('trash')}</button>` : ''}
+                      </div>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        ` : `
+          <div style="text-align:center;padding:48px 20px;background:#F8FAFC;border-radius:12px;border:1px dashed #CBD5E1">
+            <div style="color:#94A3B8;margin-bottom:8px">${ic('folder')}</div>
+            <strong style="color:var(--navy);font-size:15px;display:block">ยังไม่มีไฟล์เอกสารในโฟลเดอร์นี้</strong>
+            <span style="color:var(--text-3);font-size:13.5px">ท่านสามารถเลือกไฟล์เอกสารเพื่ออัปโหลดจัดเก็บแยกตามโรงพยาบาลได้ทันที</span>
+          </div>
+        `}
+      </div>
+    </div>`;
+  }
+
+  window.viewHospitalsPortal = async function(){
+    setCollectionHead('กลุ่มที่ 7: งานบริการโรงพยาบาล','building','ระบบส่งเอกสารและไฟล์ GECC 2570 แยก 22 โรงพยาบาล');
+    $('#content').innerHTML = '<p role="status" style="text-align:center;padding:40px 0">กำลังโหลดข้อมูลกลุ่มที่ 7…</p>';
+    await loadHospitalsData();
+    if(S.view !== 'hospitals') return;
+
+    if(hospActiveId){
+      const h = hospList.find(x => x.id === hospActiveId);
+      if(h){
+        $('#content').innerHTML = renderHospitalFolder(h);
+        setupDropzone();
+        return;
+      }
+    }
+    $('#content').innerHTML = renderHospitalsHub();
+  };
+
+  function setupDropzone(){
+    const dz = document.getElementById('hosp-dropzone');
+    if(!dz) return;
+    const hid = dz.dataset.hid;
+    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+    dz.addEventListener('dragleave', () => { dz.classList.remove('dragover'); });
+    dz.addEventListener('drop', async e => {
+      e.preventDefault();
+      dz.classList.remove('dragover');
+      if(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length){
+        await uploadFilesForHospital(hid, e.dataTransfer.files);
+      }
+    });
+    dz.addEventListener('click', () => {
+      const inp = document.querySelector(`input[data-act-change="hosp-upload"][data-hid="${hid}"]`);
+      if(inp) inp.click();
+    });
+  }
+
+  function openHospAuthModal(hid){
+    openModal(`
+      <div class="modal-h">
+        <h3>${ic('lock')} เข้าสู่ระบบกลุ่มที่ 7 : งานบริการโรงพยาบาล</h3>
+        <button class="btn" data-act="modal-close">${ic('x')}</button>
+      </div>
+      <div class="modal-b auth-fields">
+        <p style="margin:0 0 16px;color:var(--text-2);font-size:14px">กรุณากรอกรหัสผ่านกลางสำหรับกลุ่มที่ 7 เพื่ออัปโหลดและจัดการเอกสารโรงพยาบาล</p>
+        <div class="field" id="f-hosp-pass">
+          <label for="hosp-pass-in">รหัสผ่าน</label>
+          <input class="inp" type="password" id="hosp-pass-in" placeholder="กรอกรหัสผ่าน" autocomplete="current-password" autofocus>
+          <span class="help">รหัสผ่านเริ่มต้น: <b>Gecc2027ssk</b></span>
+        </div>
+        <button class="btn btn-primary" id="btn-hosp-auth-submit" style="width:100%;margin-top:10px">${ic('unlock')} ยืนยันรหัสผ่าน</button>
+      </div>
+    `);
+    const submitBtn = document.getElementById('btn-hosp-auth-submit');
+    const input = document.getElementById('hosp-pass-in');
+    const doSubmit = async () => {
+      const pass = (input.value||'').trim();
+      const clean = pass.toLowerCase();
+      if(clean === 'gecc2027ssk' || clean === 'geccssk2027' || pass === '2570'){
+        if(php()){
+          try {
+            await request('hospitals/auth', { method: 'POST', body: JSON.stringify({ password: pass }) });
+          } catch(_){}
+        }
+        sessionStorage.setItem('gecc_hosp_auth', '1');
+        hospAuthedState = true;
+        toast('เข้าสู่ระบบกลุ่มที่ 7 เรียบร้อย');
+        closeModal();
+        if(hid) hospActiveId = hid;
+        viewHospitalsPortal();
+      } else {
+        const f = document.getElementById('f-hosp-pass');
+        f?.classList.add('invalid');
+        f?.classList.remove('shake');
+        void f?.offsetWidth;
+        f?.classList.add('shake');
+        toast('รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง', true);
+      }
+    };
+    submitBtn?.addEventListener('click', doSubmit);
+    input?.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); doSubmit(); } });
+  }
+
+  async function uploadFilesForHospital(hid, fileList){
+    if(!fileList || !fileList.length) return;
+    if(!hospAuthCheck()){
+      openHospAuthModal(hid);
+      return;
+    }
+    toast('กำลังอัปโหลดไฟล์…');
+    let successCount = 0;
+    for(const file of fileList){
+      if(file.size > 25 * 1048576){
+        toast(`${file.name} มีขนาดเกิน 25 MB`, true);
+        continue;
+      }
+      if(php()){
+        try {
+          const res = await fetch(GECCClient.apiUrl('/api/hospitals/upload'), {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+              'X-Hospital-Id': hid,
+              'X-File-Name': encodeURIComponent(file.name),
+              'Content-Type': file.type || 'application/octet-stream'
+            },
+            body: file
+          });
+          if(res.ok){
+            successCount++;
+          } else {
+            const err = await res.json().catch(()=>({}));
+            toast(err.error || `อัปโหลด ${file.name} ไม่สำเร็จ`, true);
+          }
+        } catch(e){
+          toast(`อัปโหลด ${file.name} ไม่สำเร็จ`, true);
+        }
+      } else {
+        try {
+          const fid = 'hf_' + Math.random().toString(36).slice(2, 10);
+          const local = JSON.parse(localStorage.getItem('gecc_hosp_local_files')||'{}');
+          local[hid] = local[hid] || [];
+          local[hid].unshift({
+            id: fid,
+            name: file.name,
+            size: file.size,
+            mime: file.type || 'application/octet-stream',
+            uploadedAt: new Date().toISOString(),
+            uploader: 'โรงพยาบาล'
+          });
+          localStorage.setItem('gecc_hosp_local_files', JSON.stringify(local));
+          await FDB.put(fid, file, file.name);
+          successCount++;
+        } catch(e){}
+      }
+    }
+    if(successCount){
+      toast(`อัปโหลดสำเร็จแล้ว ${successCount} ไฟล์`);
+      await loadHospitalsData();
+      viewHospitalsPortal();
+    }
+  }
+
+  async function deleteHospitalFile(hid, fid, name){
+    confirmDlg('ยืนยันลบไฟล์?', `ต้องการลบไฟล์ "${name}" ใช่หรือไม่?`, 'ลบไฟล์', async () => {
+      if(php()){
+        try {
+          const res = await request(`hospitals/file?id=${encodeURIComponent(fid)}&hospId=${encodeURIComponent(hid)}`, { method: 'DELETE' });
+          if(res && res.ok){
+            toast('ลบไฟล์เรียบร้อย');
+            await loadHospitalsData();
+            viewHospitalsPortal();
+            return;
+          }
+        } catch(e){
+          toast('ลบไฟล์ไม่สำเร็จ', true);
+          return;
+        }
+      }
+      try {
+        const local = JSON.parse(localStorage.getItem('gecc_hosp_local_files')||'{}');
+        if(local[hid]){
+          local[hid] = local[hid].filter(x => x.id !== fid);
+          localStorage.setItem('gecc_hosp_local_files', JSON.stringify(local));
+        }
+        await FDB.del(fid);
+        toast('ลบไฟล์เรียบร้อย');
+        await loadHospitalsData();
+        viewHospitalsPortal();
+      } catch(e){}
+    }, true);
+  }
+
+  function downloadHospitalFile(hid, fid, name){
+    if(php()){
+      const url = GECCClient.apiUrl(`/api/hospitals/file?id=${encodeURIComponent(fid)}&hospId=${encodeURIComponent(hid)}`);
+      window.open(url, '_blank');
+      return;
+    }
+    FDB.get(fid).then(blob => {
+      if(blob){
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 500);
+      } else {
+        toast('ไม่พบไฟล์ในเครื่อง', true);
+      }
+    });
+  }
+
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('[data-act]');
+    if(!btn) return;
+    const act = btn.dataset.act;
+
+    if(act === 'hosp-open'){
+      hospActiveId = btn.dataset.hid;
+      viewHospitalsPortal();
+    } else if(act === 'hosp-back'){
+      hospActiveId = null;
+      viewHospitalsPortal();
+    } else if(act === 'hosp-login'){
+      openHospAuthModal(btn.dataset.hid);
+    } else if(act === 'hosp-logout'){
+      sessionStorage.removeItem('gecc_hosp_auth');
+      hospAuthedState = false;
+      if(php()){ request('hospitals/auth', { method: 'DELETE' }).catch(()=>{}); }
+      toast('ออกจากระบบกลุ่มที่ 7 เรียบร้อย');
+      viewHospitalsPortal();
+    } else if(act === 'hosp-type'){
+      hospFilterType = btn.dataset.type || 'all';
+      viewHospitalsPortal();
+    } else if(act === 'hosp-file-view' || act === 'hosp-file-dl'){
+      downloadHospitalFile(btn.dataset.hid, btn.dataset.fid, btn.dataset.name);
+    } else if(act === 'hosp-file-del'){
+      deleteHospitalFile(btn.dataset.hid, btn.dataset.fid, btn.dataset.name);
+    }
+  });
+
+  document.addEventListener('input', e => {
+    if(e.target.id === 'hosp-search'){
+      hospFilterQ = e.target.value;
+      const q = hospFilterQ.toLowerCase().trim();
+      document.querySelectorAll('.hosp-card').forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = (!q || text.includes(q)) ? '' : 'none';
+      });
+    }
+  });
+
+  document.addEventListener('change', async e => {
+    if(e.target.dataset.actChange === 'hosp-upload'){
+      const hid = e.target.dataset.hid;
+      await uploadFilesForHospital(hid, e.target.files);
+      e.target.value = '';
+    }
+  });
+
+  decorate();return {gallery,mentors,directory,editor,embed,loadLoginOptions,resetLoginOptions,viewHospitalsPortal,get loginUnits(){return loginUnits;},get loginOptions(){return loginOptions;},get loginError(){return loginError;}};
 })();

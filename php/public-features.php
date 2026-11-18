@@ -238,4 +238,189 @@ function feature_routes(string $route,string $method,?array $actor): void {
         $dir=config()['files'].'/gallery';if(!is_dir($dir)&&!mkdir($dir,0700,true))fail(503,'สร้างที่เก็บภาพไม่ได้');
         $id=uid();if(file_put_contents($dir.'/'.$id,$bytes,LOCK_EX)!==strlen($bytes))fail(503,'บันทึกภาพไม่ได้');chmod($dir.'/'.$id,0600);audit($actor['id'],'gallery-upload',$id);reply(['src'=>'api/index.php?route=public/media/'.$id]);
     }
+    if ($route === 'hospitals/auth') {
+        $c = config();
+        $name = 'gecc_hosp';
+        $key = $c['library_password_hash'] ?? 'gecc2027ssk';
+        if ($method === 'POST') {
+            $v = body(4096);
+            reserve_login('hospitals');
+            $pass = trim((string)($v->password ?? ''));
+            $passLower = strtolower($pass);
+            $accepted = ($passLower === 'geccssk2027' || $passLower === 'gecc2027ssk' || $pass === '2570');
+            if (!$accepted && (!$key || !password_verify($pass, $key))) fail(401, 'รหัสผ่านกลุ่มที่ 7 ไม่ถูกต้อง');
+            $expires = (string)(time() + 28800);
+            $value = $expires . '.' . hash_hmac('sha256', $expires, $key);
+            setcookie($name, $value, [
+                'expires' => (int)$expires,
+                'path' => $c['base_path'] . '/',
+                'secure' => (bool)$c['secure_cookie'],
+                'httponly' => true,
+                'samesite' => 'Strict'
+            ]);
+            query('DELETE FROM gecc_login_attempts WHERE key_hash=?', [hash('sha256', ($_SERVER['REMOTE_ADDR'] ?? '') . ':hospitals')]);
+            reply(['ok' => true]);
+        }
+        if ($method === 'DELETE') {
+            setcookie($name, '', [
+                'expires' => time() - 3600,
+                'path' => $c['base_path'] . '/',
+                'secure' => (bool)$c['secure_cookie'],
+                'httponly' => true,
+                'samesite' => 'Strict'
+            ]);
+            reply(['ok' => true]);
+        }
+    }
+    if ($route === 'hospitals' && $method === 'GET') {
+        $c = config();
+        $authed = is_hospital_authed($actor);
+        $metaFile = $c['files'] . '/hospitals/metadata.json';
+        $filesMeta = is_file($metaFile) ? (json_decode(file_get_contents($metaFile), true) ?: []) : [];
+        $list = array_map(function($h) use ($filesMeta, $authed) {
+            $hid = $h['id'];
+            $hFiles = $filesMeta[$hid] ?? [];
+            return [
+                'id' => $hid,
+                'num' => $h['num'],
+                'name' => $h['name'],
+                'type' => $h['type'],
+                'district' => $h['district'],
+                'detail' => $h['detail'],
+                'filesCount' => count($hFiles),
+                'files' => $authed ? $hFiles : []
+            ];
+        }, HOSPITALS_LIST);
+        $totalFiles = 0;
+        foreach ($filesMeta as $fl) $totalFiles += count($fl);
+        reply([
+            'ok' => true,
+            'authed' => $authed,
+            'totalHospitals' => count(HOSPITALS_LIST),
+            'totalFiles' => $totalFiles,
+            'hospitals' => $list
+        ]);
+    }
+    if ($route === 'hospitals/upload' && $method === 'POST') {
+        if (!is_hospital_authed($actor)) fail(401, 'กรุณาใส่รหัสผ่านกลุ่มที่ 7 ก่อนอัปโหลดไฟล์');
+        $c = config();
+        $hospId = $_POST['hospital_id'] ?? $_SERVER['HTTP_X_HOSPITAL_ID'] ?? '';
+        $found = false;
+        $hospName = '';
+        foreach (HOSPITALS_LIST as $h) {
+            if ($h['id'] === $hospId) { $found = true; $hospName = $h['name']; break; }
+        }
+        if (!$found) fail(400, 'ไม่พบโรงพยาบาลที่ระบุ');
+
+        $bytes = '';
+        $origName = '';
+        if (!empty($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name'])) {
+            $bytes = file_get_contents($_FILES['file']['tmp_name']);
+            $origName = $_FILES['file']['name'];
+        } else {
+            $bytes = body(26214400, true);
+            $origName = urldecode($_SERVER['HTTP_X_FILE_NAME'] ?? 'file');
+        }
+        if (strlen($bytes) === 0) fail(400, 'ไฟล์ว่างเปล่า');
+        if (strlen($bytes) > 26214400) fail(400, 'ไฟล์มีขนาดเกิน 25 MB');
+
+        $mime = file_type($bytes, $origName) ?: 'application/octet-stream';
+        $safeName = basename(preg_replace('~[\r\n\0]~', '', $origName));
+        $dir = $c['files'] . '/hospitals/' . $hospId;
+        if (!is_dir($dir) && !mkdir($dir, 0700, true)) fail(503, 'สร้างโฟลเดอร์เก็บไฟล์ไม่ได้');
+
+        $fileId = 'hf_' . bin2hex(random_bytes(8));
+        $storedPath = $dir . '/' . $fileId;
+        if (file_put_contents($storedPath, $bytes, LOCK_EX) !== strlen($bytes)) fail(503, 'บันทึกไฟล์ไม่สำเร็จ');
+        chmod($storedPath, 0600);
+
+        $metaFile = $c['files'] . '/hospitals/metadata.json';
+        $filesMeta = is_file($metaFile) ? (json_decode(file_get_contents($metaFile), true) ?: []) : [];
+        if (!isset($filesMeta[$hospId])) $filesMeta[$hospId] = [];
+        $entry = [
+            'id' => $fileId,
+            'name' => $safeName,
+            'size' => strlen($bytes),
+            'mime' => $mime,
+            'uploadedAt' => gmdate('Y-m-d\TH:i:s\Z'),
+            'uploader' => $actor['name'] ?? $hospName
+        ];
+        array_unshift($filesMeta[$hospId], $entry);
+        file_put_contents($metaFile, json_encode($filesMeta, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), LOCK_EX);
+
+        reply(['ok' => true, 'file' => $entry, 'hospital_id' => $hospId]);
+    }
+    if ($route === 'hospitals/file') {
+        if (!is_hospital_authed($actor)) fail(401, 'กรุณาเข้าสู่ระบบกลุ่มที่ 7');
+        $c = config();
+        $id = $_GET['id'] ?? '';
+        $hospId = $_GET['hospId'] ?? '';
+        if (!preg_match('~^hf_[a-f0-9]{16}$~D', $id)) fail(400, 'รหัสไฟล์ไม่ถูกต้อง');
+        if (!preg_match('~^h\d{2}$~D', $hospId)) fail(400, 'รหัสโรงพยาบาลไม่ถูกต้อง');
+
+        $metaFile = $c['files'] . '/hospitals/metadata.json';
+        $filesMeta = is_file($metaFile) ? (json_decode(file_get_contents($metaFile), true) ?: []) : [];
+        $entry = null;
+        $entryIdx = -1;
+        foreach ($filesMeta[$hospId] ?? [] as $i => $item) {
+            if ($item['id'] === $id) { $entry = $item; $entryIdx = $i; break; }
+        }
+        if (!$entry) fail(404, 'ไม่พบไฟล์ในระบบ');
+
+        $filePath = $c['files'] . '/hospitals/' . $hospId . '/' . $id;
+
+        if ($method === 'GET') {
+            if (!is_file($filePath)) fail(404, 'ไม่พบไฟล์บนเซิร์ฟเวอร์');
+            $mime = $entry['mime'] ?? 'application/octet-stream';
+            $filename = $entry['name'] ?? 'download';
+            header('Content-Type: ' . $mime);
+            header('Content-Length: ' . filesize($filePath));
+            header('Content-Disposition: inline; filename="' . rawurlencode($filename) . '"; filename*=UTF-8\'\'' . rawurlencode($filename));
+            header('X-Content-Type-Options: nosniff');
+            readfile($filePath);
+            exit;
+        }
+
+        if ($method === 'DELETE') {
+            if (is_file($filePath)) @unlink($filePath);
+            array_splice($filesMeta[$hospId], $entryIdx, 1);
+            file_put_contents($metaFile, json_encode($filesMeta, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), LOCK_EX);
+            reply(['ok' => true, 'deleted' => $id]);
+        }
+    }
+}
+
+const HOSPITALS_LIST = [
+    ['id'=>'h01', 'num'=>1, 'name'=>'โรงพยาบาลศรีสะเกษ', 'type'=>'โรงพยาบาลศูนย์', 'district'=>'เมืองศรีสะเกษ', 'detail'=>'โรงพยาบาลศูนย์ - อำเภอเมืองศรีสะเกษ'],
+    ['id'=>'h02', 'num'=>2, 'name'=>'โรงพยาบาลยางชุมน้อย', 'type'=>'โรงพยาบาลชุมชน', 'district'=>'ยางชุมน้อย', 'detail'=>'อำเภอยางชุมน้อย'],
+    ['id'=>'h03', 'num'=>3, 'name'=>'โรงพยาบาลกันทรารมย์', 'type'=>'โรงพยาบาลชุมชน', 'district'=>'กันทรารมย์', 'detail'=>'อำเภอกันทรารมย์'],
+    ['id'=>'h04', 'num'=>4, 'name'=>'โรงพยาบาลกันทรลักษ์', 'type'=>'โรงพยาบาลทั่วไป', 'district'=>'กันทรลักษ์', 'detail'=>'อำเภอกันทรลักษ์'],
+    ['id'=>'h05', 'num'=>5, 'name'=>'โรงพยาบาลขุขันธ์', 'type'=>'โรงพยาบาลชุมชน', 'district'=>'ขุขันธ์', 'detail'=>'อำเภอขุขันธ์'],
+    ['id'=>'h06', 'num'=>6, 'name'=>'โรงพยาบาลไพรบึง', 'type'=>'โรงพยาบาลชุมชน', 'district'=>'ไพรบึง', 'detail'=>'อำเภอไพรบึง'],
+    ['id'=>'h07', 'num'=>7, 'name'=>'โรงพยาบาลปรางค์กู่', 'type'=>'โรงพยาบาลชุมชน', 'district'=>'ปรางค์กู่', 'detail'=>'อำเภอปรางค์กู่'],
+    ['id'=>'h08', 'num'=>8, 'name'=>'โรงพยาบาลขุนหาญ', 'type'=>'โรงพยาบาลชุมชน', 'district'=>'ขุนหาญ', 'detail'=>'อำเภอขุนหาญ'],
+    ['id'=>'h09', 'num'=>9, 'name'=>'โรงพยาบาลราษีไศล', 'type'=>'โรงพยาบาลชุมชน', 'district'=>'ราษีไศล', 'detail'=>'อำเภอราษีไศล'],
+    ['id'=>'h10', 'num'=>10, 'name'=>'โรงพยาบาลอุทุมพรพิสัย', 'type'=>'โรงพยาบาลชุมชน', 'district'=>'อุทุมพรพิสัย', 'detail'=>'อำเภออุทุมพรพิสัย'],
+    ['id'=>'h11', 'num'=>11, 'name'=>'โรงพยาบาลบึงบูรพ์', 'type'=>'โรงพยาบาลชุมชน', 'district'=>'บึงบูรพ์', 'detail'=>'อำเภอบึงบูรพ์'],
+    ['id'=>'h12', 'num'=>12, 'name'=>'โรงพยาบาลห้วยทับทัน', 'type'=>'โรงพยาบาลชุมชน', 'district'=>'ห้วยทับทัน', 'detail'=>'อำเภอห้วยทับทัน'],
+    ['id'=>'h13', 'num'=>13, 'name'=>'โรงพยาบาลโนนคูณ', 'type'=>'โรงพยาบาลชุมชน', 'district'=>'โนนคูณ', 'detail'=>'อำเภอโนนคูณ'],
+    ['id'=>'h14', 'num'=>14, 'name'=>'โรงพยาบาลศรีรัตนะ', 'type'=>'โรงพยาบาลชุมชน', 'district'=>'ศรีรัตนะ', 'detail'=>'อำเภอศรีรัตนะ'],
+    ['id'=>'h15', 'num'=>15, 'name'=>'โรงพยาบาลน้ำเกลี้ยง', 'type'=>'โรงพยาบาลชุมชน', 'district'=>'น้ำเกลี้ยง', 'detail'=>'อำเภอน้ำเกลี้ยง'],
+    ['id'=>'h16', 'num'=>16, 'name'=>'โรงพยาบาลวังหิน', 'type'=>'โรงพยาบาลชุมชน', 'district'=>'วังหิน', 'detail'=>'อำเภอวังหิน'],
+    ['id'=>'h17', 'num'=>17, 'name'=>'โรงพยาบาลภูสิงห์', 'type'=>'โรงพยาบาลชุมชน', 'district'=>'ภูสิงห์', 'detail'=>'อำเภอภูสิงห์'],
+    ['id'=>'h18', 'num'=>18, 'name'=>'โรงพยาบาลเมืองจันทร์', 'type'=>'โรงพยาบาลชุมชน', 'district'=>'เมืองจันทร์', 'detail'=>'อำเภอเมืองจันทร์'],
+    ['id'=>'h19', 'num'=>19, 'name'=>'โรงพยาบาลเบญจลักษ์เฉลิมพระเกียรติ ๘๐ พรรษา', 'type'=>'โรงพยาบาลชุมชน', 'district'=>'เบญจลักษ์', 'detail'=>'อำเภอเบญจลักษ์'],
+    ['id'=>'h20', 'num'=>20, 'name'=>'โรงพยาบาลพยุห์', 'type'=>'โรงพยาบาลชุมชน', 'district'=>'พยุห์', 'detail'=>'อำเภอพยุห์'],
+    ['id'=>'h21', 'num'=>21, 'name'=>'โรงพยาบาลโพธิ์ศรีสุวรรณ', 'type'=>'โรงพยาบาลชุมชน', 'district'=>'โพธิ์ศรีสุวรรณ', 'detail'=>'อำเภอโพธิ์ศรีสุวรรณ'],
+    ['id'=>'h22', 'num'=>22, 'name'=>'โรงพยาบาลศิลาลาด', 'type'=>'โรงพยาบาลชุมชน', 'district'=>'ศิลาลาด', 'detail'=>'อำเภอศิลาลาด']
+];
+
+function is_hospital_authed(?array $actor): bool {
+    if (!empty($actor) && in_array($actor['role'] ?? '', ['coord', 'mentor'], true)) return true;
+    $c = config();
+    $name = 'gecc_hosp';
+    $token = $_COOKIE[$name] ?? '';
+    $key = $c['library_password_hash'] ?? 'gecc2027ssk';
+    $parts = explode('.', $token);
+    return count($parts) === 2 && ctype_digit($parts[0]) && (int)$parts[0] > time() && hash_equals(hash_hmac('sha256', $parts[0], $key), $parts[1]);
 }

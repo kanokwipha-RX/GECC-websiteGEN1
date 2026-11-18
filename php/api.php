@@ -148,7 +148,7 @@ function api(): never {
                 'defaultPassword'=>$newPass
             ]);
         }
-        if (str_starts_with($route,'public/')||$route==='library') feature_routes($route,$method,$session);
+        if (str_starts_with($route,'public/')||$route==='library'||str_starts_with($route,'hospitals')) feature_routes($route,$method,$session);
         if ($modifying&&(!$session||!hash_equals($session['csrf'],$_SERVER['HTTP_X_CSRF_TOKEN']??''))) fail($session?403:401,$session?'คำขอยืนยันตัวตนไม่ถูกต้อง':'กรุณาเข้าสู่ระบบอีกครั้ง');
         if ($route==='session'&&$method==='DELETE') {
             query('DELETE FROM gecc_sessions WHERE token_hash=?',[hash('sha256',$sid)]);$cookie('',-1);reply(['ok'=>true]);
