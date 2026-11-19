@@ -326,13 +326,15 @@ function feature_routes(string $route,string $method,?array $actor): void {
 
         $mime = file_type($bytes, $origName) ?: 'application/octet-stream';
         $safeName = basename(preg_replace('~[\r\n\0]~', '', $origName));
-        $dir = $c['files'] . '/hospitals/' . $hospId;
-        if (!is_dir($dir) && !mkdir($dir, 0700, true)) fail(503, 'สร้างโฟลเดอร์เก็บไฟล์ไม่ได้');
+        $hospBaseDir = $c['files'] . '/hospitals';
+        if (!is_dir($hospBaseDir) && !@mkdir($hospBaseDir, 0777, true) && !is_dir($hospBaseDir)) fail(503, 'สร้างโฟลเดอร์ส่วนกลางไม่ได้');
+        $dir = $hospBaseDir . '/' . $hospId;
+        if (!is_dir($dir) && !@mkdir($dir, 0777, true) && !is_dir($dir)) fail(503, 'สร้างโฟลเดอร์เก็บไฟล์ไม่ได้');
 
         $fileId = 'hf_' . bin2hex(random_bytes(8));
         $storedPath = $dir . '/' . $fileId;
         if (file_put_contents($storedPath, $bytes, LOCK_EX) !== strlen($bytes)) fail(503, 'บันทึกไฟล์ไม่สำเร็จ');
-        chmod($storedPath, 0600);
+        @chmod($storedPath, 0644);
 
         $metaFile = $c['files'] . '/hospitals/metadata.json';
         $filesMeta = is_file($metaFile) ? (json_decode(file_get_contents($metaFile), true) ?: []) : [];
@@ -416,7 +418,7 @@ const HOSPITALS_LIST = [
 ];
 
 function is_hospital_authed(?array $actor): bool {
-    if (!empty($actor) && in_array($actor['role'] ?? '', ['coord', 'mentor'], true)) return true;
+    if (!empty($actor) && in_array($actor['role'] ?? '', ['coord', 'mentor', 'mentee'], true)) return true;
     $c = config();
     $name = 'gecc_hosp';
     $token = $_COOKIE[$name] ?? '';

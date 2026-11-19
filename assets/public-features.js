@@ -468,8 +468,19 @@ window.GECCPublic = (() => {
   let hospFilterQ = '';
   let hospFilterType = 'all';
 
+  function getApiUrl(path){
+    if(window.GECCClient && typeof window.GECCClient.apiUrl === 'function'){
+      return window.GECCClient.apiUrl(path);
+    }
+    const base = window.GECC_BASE_PATH || '';
+    if(window.GECC_API_STYLE === 'php'){
+      return base + 'api/index.php?route=' + encodeURIComponent(path.replace(/^\/api\//, ''));
+    }
+    return base + path.replace(/^\//, '');
+  }
+
   function hospAuthCheck(){
-    if(S.role==='coord'||S.role==='mentor'||sessionStorage.getItem('gecc_hosp_auth')==='1'||hospAuthedState) return true;
+    if(S.role==='coord'||S.role==='mentor'||S.role==='mentee'||sessionStorage.getItem('gecc_hosp_auth')==='1'||hospAuthedState) return true;
     return false;
   }
 
@@ -754,14 +765,17 @@ window.GECCPublic = (() => {
       }
       if(php()){
         try {
-          const res = await fetch(GECCClient.apiUrl('/api/hospitals/upload'), {
+          const csrfToken = window.GECCClient?.csrf || '';
+          const upHeaders = {
+            'X-Hospital-Id': hid,
+            'X-File-Name': encodeURIComponent(file.name),
+            'Content-Type': file.type || 'application/octet-stream'
+          };
+          if(csrfToken) upHeaders['X-CSRF-Token'] = csrfToken;
+          const res = await fetch(getApiUrl('/api/hospitals/upload'), {
             method: 'POST',
             credentials: 'same-origin',
-            headers: {
-              'X-Hospital-Id': hid,
-              'X-File-Name': encodeURIComponent(file.name),
-              'Content-Type': file.type || 'application/octet-stream'
-            },
+            headers: upHeaders,
             body: file
           });
           if(res.ok){
@@ -831,7 +845,7 @@ window.GECCPublic = (() => {
 
   function downloadHospitalFile(hid, fid, name){
     if(php()){
-      const url = GECCClient.apiUrl(`/api/hospitals/file?id=${encodeURIComponent(fid)}&hospId=${encodeURIComponent(hid)}`);
+      const url = getApiUrl(`/api/hospitals/file?id=${encodeURIComponent(fid)}&hospId=${encodeURIComponent(hid)}`);
       window.open(url, '_blank');
       return;
     }

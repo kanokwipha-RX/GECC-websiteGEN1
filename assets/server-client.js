@@ -1211,6 +1211,10 @@ window.GECCClient = (() => {
     get revision() {
       return revision;
     },
+    get csrf() {
+      return csrf;
+    },
+    apiUrl,
     request,
     save,
     workflow,
