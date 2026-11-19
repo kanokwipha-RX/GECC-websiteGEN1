@@ -1642,6 +1642,18 @@ textarea[data-bind^="evt."], textarea[data-bind$=".text"][data-bind^="narr."]{ b
 .evq.m b, .evt label[for^="rvt-"]{ color:#1A4FD6!important; }
 textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!important; border-color:#F0BDB5!important; }
 .ditem .dr{ color:#0F2263!important; font-weight:500!important; background:#EAF2FE!important; border-left-color:#5B8DEF!important; }
+/* Category 2 per-item mentor comment box */
+.q-comment-box{ margin:14px 0 10px; padding:12px 14px; background:#FFF8F7; border:1px solid #F0BDB5; border-left:4px solid #D6453D; border-radius:10px; }
+.q-comment-box label{ display:flex; align-items:center; gap:8px; font-weight:700; color:#B3261E; margin-bottom:8px; font-size:14px; }
+.q-comment-box label svg{ width:16px; height:16px; color:#D6453D; }
+.q-comment-box textarea{ width:100%!important; min-height:75px; font-size:15px!important; color:#1A4FD6!important; font-weight:600!important; background:#FFFFFF!important; border:1px solid #E58B80!important; border-radius:8px; padding:10px 12px; box-sizing:border-box; }
+.q-comment-box textarea:focus{ outline:none; border-color:#D6453D!important; box-shadow:0 0 0 3px rgba(214,69,61,.2); }
+.q-comment-view{ margin:14px 0 10px; padding:12px 14px; background:#FFF8F7; border:1px solid #F0BDB5; border-left:4px solid #D6453D; border-radius:10px; }
+.q-comment-view .qcv-hdr{ display:flex; align-items:center; gap:8px; font-weight:700; color:#B3261E; margin-bottom:8px; font-size:14px; }
+.q-comment-view .qcv-hdr svg{ width:16px; height:16px; color:#D6453D; }
+.q-comment-view .qcv-body{ font-size:15px; color:#1A4FD6; font-weight:600; white-space:pre-wrap; line-height:1.55; padding:10px 12px; background:#fff; border-radius:8px; border:1px dashed #EDB4AE; }
+.q-comment-empty{ margin:10px 0 6px; padding:8px 12px; background:#F8F9FA; border:1px dashed #D3D8E2; border-radius:8px; display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-3,#6B7280); }
+.q-comment-empty svg{ width:15px; height:15px; flex:none; color:var(--text-3,#6B7280); }
 /* pdf + alerts */
 .pdf-mode .stars5 .st-fg{ overflow:hidden; }
 .dlbar{ display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; margin:0 0 12px; }
@@ -2115,7 +2127,7 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 </style>
 <link rel="stylesheet" href="assets/premium.css">
 <script src="assets/motion.js" defer></script>
-<link rel="stylesheet" href="assets/public-features.css?v=2570x">
+<link rel="stylesheet" href="assets/public-features.css?v=2570y">
 <script src="assets/evaluation-dashboard.js?v=2570u"></script>
 </head>
 <body>
@@ -5037,15 +5049,53 @@ function fileChip(key,f){
   return `<span class="fwrap"><button class="fch ${isImg?'img':'doc'}" data-act="file-view" data-k="${key}" data-fid="${f.id}" title="${esc(f.name)}">${visual}<span class="fmeta"><b>${esc(f.name)}</b><span>${fsize(f.size)} · ${who}</span></span></button>${mine?`<button class="fdel" data-act="ev-del" data-k="${key}" data-fid="${f.id}" aria-label="ลบไฟล์ ${esc(f.name)}">${ic('x')}</button>`:''}</span>`;
 }
 
-function evBar(key,a,narr=false){
+function itemCommentBox(key,a,ro){
+  const rv=(a.rev||{})[key]||{};
+  const isMt=S.role==='mentor'&&!S.lock&&!ro;
+  const isMe=S.role==='mentee';
+  const hasText=!!(rv.text&&rv.text.trim());
+  const id=key.replace(':','-');
+  if(isMt){
+    return `<div class="field q-comment-box">
+      <label for="rvt-${id}">
+        <span class="qcb-icon">${ic('pencil')}</span>
+        <span>ข้อเสนอแนะ / ข้อคิดเห็นจาก MENTOR (รายข้อ)</span>
+        <span class="badge-mini mentor" style="margin-left:auto">MENTOR ข้อเสนอแนะ</span>
+      </label>
+      <textarea class="inp" id="rvt-${id}" maxlength="2000" data-bind="revt.${key}" placeholder="พิมพ์ข้อเสนอแนะ ข้อคิดเห็น หรือสิ่งที่หน่วยบริการควรปรับปรุงในข้อนี้ (หน่วยบริการจะเห็นข้อความนี้)..." rows="2">${esc(rv.text||'')}</textarea>
+      ${hasText&&rv.by?`<div class="tiny muted" style="margin-top:4px;text-align:right">บันทึกโดย ${esc(rv.by)}${rv.at?' · '+thDateTime(rv.at):''}</div>`:''}
+    </div>`;
+  }
+  if(hasText){
+    return `<div class="field q-comment-view">
+      <div class="qcv-hdr">
+        <span class="qcv-icon">${ic('users')}</span>
+        <span>ข้อเสนอแนะ / ข้อคิดเห็นจาก MENTOR (รายข้อ)</span>
+        ${rv.by?`<span class="tiny muted" style="margin-left:auto;font-weight:400">โดย ${esc(rv.by)}${rv.at?' · '+thDateTime(rv.at):''}</span>`:''}
+      </div>
+      <div class="qcv-body">${esc(rv.text)}</div>
+    </div>`;
+  }
+  if(isMe){
+    return `<div class="field q-comment-empty">
+      <span class="qce-icon">${ic('info')}</span>
+      <span>ยังไม่มีข้อเสนอแนะรายข้อสำหรับข้อนี้จาก MENTOR</span>
+    </div>`;
+  }
+  return '';
+}
+
+function evBar(key,a,options=false){
+  const narr=typeof options==='boolean'?options:!!options?.narr;
+  const hideRev=typeof options==='object'&&!!options?.hideRev;
   const e=(a.ev||{})[key]||{}; const rv=(a.rev||{})[key]||{}; const files=e.files||[]; const isMe=S.role==='mentee'&&!S.lock, isMt=S.role==='mentor'&&!S.lock; const id=key.replace(':','-');
-  const openE=!!S.evOpen['e:'+key]||!!e.text, openR=!!S.evOpen['r:'+key]||!!rv.text; const canAttach=isMe||isMt;
+  const openE=!!S.evOpen['e:'+key]||!!e.text, openR=!hideRev&&(!!S.evOpen['r:'+key]||!!rv.text); const canAttach=isMe||isMt;
   return `<div class="evb">
     ${canAttach?`<div class="evb-a">
       ${isMe?`<button class="btn btn-sm" data-act="ev-open" data-k="${key}">${ic('pencil')}${e.text?'แก้ไขคำตอบ':'แก้ไข / ตอบเพิ่มเติม'}</button>`:''}
       <label class="btn btn-sm">${ic('image')}แนบรูป<input type="file" accept="image/*" multiple class="sr" data-act-change="ev-img" data-k="${key}"></label>
       <label class="btn btn-sm">${ic('file')}แนบ PDF<input type="file" accept="application/pdf,.pdf" class="sr" data-act-change="ev-pdf" data-k="${key}"></label>
-      ${isMt?`<button class="btn btn-sm btn-gold" data-act="rev-open" data-k="${key}">${ic('pencil')}${rv.text?'แก้ไขข้อเสนอแนะ':'ข้อเสนอแนะ / ข้อแก้ไข'}</button>`:''}
+      ${isMt&&!hideRev?`<button class="btn btn-sm btn-gold" data-act="rev-open" data-k="${key}">${ic('pencil')}${rv.text?'แก้ไขข้อเสนอแนะ':'ข้อเสนอแนะ / ข้อแก้ไข'}</button>`:''}
       ${files.length?`<span class="evb-n">${ic('clipboard')}หลักฐาน ${files.length} ไฟล์</span>`:''}
     </div>`:''}
     ${narr?`<div class="evh">ตามหลักเกณฑ์ แนบหลักฐาน/รูปภาพประกอบได้ข้อละไม่เกิน 1 ไฟล์ ขนาดไม่เกิน 10 MB</div>`:''}
@@ -5428,10 +5478,11 @@ function tabHTML(a,c,ro,info){
       const itSelf=(a.self?.qc?.[i]) || {subs:[], score:null};
       const subs=q.subs.map((s,k)=>({s,k})).filter(o=>!S.onlyNew||o.s.n);
       const copyQcBtn = !ro ? `<button class="btn btn-sm btn-ghost" data-act="copy-self-qc" data-qc-idx="${i}" title="คัดลอกเครื่องหมายติ๊กถูกจากตนเอง">${ic('copy')} คัดลอกจากตนเอง</button>` : '';
+      const hasRev = !!(a.rev?.['qc:'+i]?.text && a.rev['qc:'+i].text.trim());
       return `<div class="card qcard"><div class="card-h">
         <span class="qno">${i+1}</span>
         <div style="min-width:0;flex:1">
-          <h3>${esc(q.t)}</h3>
+          <h3>${esc(q.t)}${hasRev ? ' <span class="badge-mini" style="background:#FDE8E8;color:#9B1C1C;border:1px solid #F8B4B4;font-size:12px;vertical-align:middle;margin-left:6px">💬 มีข้อเสนอแนะ</span>' : ''}</h3>
           <p>${q.subs.length} ข้อย่อย${nNew?` <span class="new-soft">มีเกณฑ์ใหม่ ${nNew} ข้อ</span>`:''}</p>
         </div>
         <div class="qscore-duo">
@@ -5483,7 +5534,8 @@ function tabHTML(a,c,ro,info){
           <input class="inp num" id="qo-${i}" type="number" inputmode="decimal" min="0" max="10" step="0.5" placeholder="${fmt(qcSuggest(a,i),1)}" value="${it.score??''}" data-bind="qco.${i}" ${dis}>
           <span id="qsug-${i}">คะแนนแนะนำ ${fmt(qcSuggest(a,i),1)} (เว้นว่างเพื่อใช้คะแนนแนะนำ)</span>
         </div>
-        ${evBar('qc:'+i,a)}
+        ${itemCommentBox('qc:'+i,a,ro)}
+        ${evBar('qc:'+i,a,{hideRev:true})}
       </div></div>`;
     }).join('')}${advBox('qual',a)}`;
   }
@@ -5493,10 +5545,11 @@ function tabHTML(a,c,ro,info){
       const it=a.narr[i];
       const itSelf=(a.self?.narr?.[i]) || {score:null};
       const len=(it.text||'').length;
+      const hasRev = !!(a.rev?.['narr:'+i]?.text && a.rev['narr:'+i].text.trim());
       return `<div class="card qcard ncard">
         <div class="card-h">
           <span class="qno">${i+1}</span>
-          <div style="flex:1;min-width:0"><h3>${esc(n.t)}</h3></div>
+          <div style="flex:1;min-width:0"><h3>${esc(n.t)}${hasRev ? ' <span class="badge-mini" style="background:#FDE8E8;color:#9B1C1C;border:1px solid #F8B4B4;font-size:12px;vertical-align:middle;margin-left:6px">💬 มีข้อเสนอแนะ</span>' : ''}</h3></div>
           <div class="qscore-duo">
             <div class="qscore-box self">
               <span class="qs-lbl">ประเมินตนเอง</span>
@@ -5527,7 +5580,8 @@ function tabHTML(a,c,ro,info){
               </div>
             </div>
           </div>
-          ${evBar('narr:'+i,a,true)}
+          ${itemCommentBox('narr:'+i,a,ro)}
+          ${evBar('narr:'+i,a,{narr:true,hideRev:true})}
         </div>
       </div>`;
     }).join('')}${advBox('qual',a)}`;
@@ -6264,7 +6318,7 @@ function demoHash(){ if(window.GECC_SERVER) return; const h=(location.hash||'').
 demoHash(); window.addEventListener('hashchange',demoHash);
 </script>
 <script src="assets/backup.js"></script>
-<script src="assets/server-client.js?v=2570x"></script>
-<script src="assets/public-features.js?v=2570x"></script>
+<script src="assets/server-client.js?v=2570y"></script>
+<script src="assets/public-features.js?v=2570y"></script>
 </body>
 </html>
