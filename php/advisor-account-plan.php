@@ -14,7 +14,7 @@ function advisor_grants(object $input,object $source):array {
         if(!is_string($username)||!isset($expected[$username])||isset($seen[$username])||($account->name??null)!==$expected[$username]
             ||!in_array($account->role??null,['mentor','coord'],true)||!is_bool($account->grantConfirmed??null))fail(400,'ชื่อ บัญชี หรือสิทธิ์ไม่ตรงรายชื่อที่ยืนยัน');
         $seen[$username]=true;$team=$account->team??null;
-        if(($account->role==='coord'&&$team!==null)||($account->role==='mentor'&&$account->grantConfirmed&&(!is_int($team)||$team<0||$team>6))
+        if(($account->role==='coord'&&$team!==null)||($account->role==='mentor'&&$account->grantConfirmed&&(!is_int($team)||$team<0||$team>7))
             ||(!$account->grantConfirmed&&$team!==null))fail(400,'ต้องยืนยันกลุ่มจริงก่อนให้สิทธิ์ MENTOR');
         $result[]=(object)['username'=>$username,'name'=>$account->name,'role'=>$account->role,'unitId'=>null,
             'team'=>$team,'grantConfirmed'=>$account->grantConfirmed];

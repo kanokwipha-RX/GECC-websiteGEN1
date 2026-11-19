@@ -44,7 +44,7 @@ function content_refresh_plan(object $live, object $wanted, object $base, array 
         ||count($wanted->publicContent->mentorAdvisors??[])!==6)fail(400,'ข้อมูลต้นทางต้องมี 32 หน่วยงาน 24 MENTOR และที่ปรึกษา 6 คน');
     $next=copy_value($live);$changes=[];$conflicts=[];$ids=[];$codes=[];
     $teamIds=array_map(fn($t)=>$t->id??null,$wanted->teams);sort($teamIds);
-    if($teamIds!==[1,2,3,4,5,6])fail(400,'กลุ่มต้นทางต้องครบ 1–6 และไม่ซ้ำ');
+    if($teamIds!==[1,2,3,4,5,6] && $teamIds!==[1,2,3,4,5,6,7])fail(400,'กลุ่มต้นทางต้องครบ 1–6 หรือ 1–7 และไม่ซ้ำ');
     foreach($wanted->teams as $team) {
         if(count($team->members??[])!==4)fail(400,'MENTOR ต้องมี 4 คนต่อกลุ่ม');
         foreach($team->members as $member) {

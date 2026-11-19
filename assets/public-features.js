@@ -332,7 +332,7 @@ window.GECCPublic = (() => {
     </div>`);
   }
 
-  async function mentors(){try{setCollectionHead('MENTOR','users','ทีมพี่เลี้ยงประจำ 6 กลุ่ม');await load();if(S.view!=='mentors')return;$('#content').innerHTML=DB.teams.map(t=>`<section><h2 class="section-t">${safe(t.name)}</h2><div class="mentor-roster">${Array.from({length:Math.max(4,t.members?.length||0)},(_,i)=>personCard(t.members?.[i]||{title:'รอรายชื่อ MENTOR',role:'กลุ่มที่ '+t.id})).join('')}</div></section>`).join('');}catch(e){$('#content').innerHTML='<p role="alert">โหลดรายชื่อไม่สำเร็จ กรุณาเลือกเมนู MENTOR เพื่อลองใหม่</p>';error(e);}}
+  async function mentors(){try{setCollectionHead('MENTOR','users','ทีมพี่เลี้ยงประจำ 7 กลุ่ม');await load();if(S.view!=='mentors')return;$('#content').innerHTML=DB.teams.map(t=>`<section><h2 class="section-t">${safe(t.name)}</h2><div class="mentor-roster">${Array.from({length:Math.max(4,t.members?.length||0)},(_,i)=>personCard(t.members?.[i]||{title:'รอรายชื่อ MENTOR',role:'กลุ่มที่ '+t.id})).join('')}</div></section>`).join('');}catch(e){$('#content').innerHTML='<p role="alert">โหลดรายชื่อไม่สำเร็จ กรุณาเลือกเมนู MENTOR เพื่อลองใหม่</p>';error(e);}}
   function resetLoginOptions(){
     rosterGeneration++;loginOptions=null;loginUnits=null;loginError=null;rosterLoading=false;
   }
