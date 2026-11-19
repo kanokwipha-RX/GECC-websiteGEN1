@@ -2525,15 +2525,6 @@ const OFFICIAL_UNITS = [
     "prev": ""
   },
   {
-    "id": "h01",
-    "code": "000101",
-    "name": "โรงพยาบาลศรีสะเกษ (โรงพยาบาลศูนย์ - อำเภอเมืองศรีสะเกษ)",
-    "district": "เมืองศรีสะเกษ",
-    "kind": "",
-    "team": 7,
-    "prev": ""
-  },
-  {
     "id": "h02",
     "code": "000102",
     "name": "โรงพยาบาลยางชุมน้อย (อำเภอยางชุมน้อย)",
@@ -2547,15 +2538,6 @@ const OFFICIAL_UNITS = [
     "code": "000103",
     "name": "โรงพยาบาลกันทรารมย์ (อำเภอกันทรารมย์)",
     "district": "กันทรารมย์",
-    "kind": "",
-    "team": 7,
-    "prev": ""
-  },
-  {
-    "id": "h04",
-    "code": "000104",
-    "name": "โรงพยาบาลกันทรลักษ์ (อำเภอกันทรลักษ์)",
-    "district": "กันทรลักษ์",
     "kind": "",
     "team": 7,
     "prev": ""
@@ -2959,10 +2941,8 @@ const OFFICIAL_GROUPS = [
   {
     "name": "กลุ่มที่ 7: งานสาธารณสุข",
     "units": [
-      ["โรงพยาบาลศรีสะเกษ (โรงพยาบาลศูนย์ - อำเภอเมืองศรีสะเกษ)", "เมืองศรีสะเกษ", "h01", "000101"],
       ["โรงพยาบาลยางชุมน้อย (อำเภอยางชุมน้อย)", "ยางชุมน้อย", "h02", "000102"],
       ["โรงพยาบาลกันทรารมย์ (อำเภอกันทรารมย์)", "กันทรารมย์", "h03", "000103"],
-      ["โรงพยาบาลกันทรลักษ์ (อำเภอกันทรลักษ์)", "กันทรลักษ์", "h04", "000104"],
       ["โรงพยาบาลขุขันธ์ (อำเภอขุขันธ์)", "ขุขันธ์", "h05", "000105"],
       ["โรงพยาบาลไพรบึง (อำเภอไพรบึง)", "ไพรบึง", "h06", "000106"],
       ["โรงพยาบาลปรางค์กู่ (อำเภอปรางค์กู่)", "ปรางค์กู่", "h07", "000107"],
@@ -3187,7 +3167,7 @@ const MENTOR_MEMBERS = {
     ]
   },
   "7": {
-    "focus": "งานสาธารณสุข (โรงพยาบาล 21 แห่ง)",
+    "focus": "งานสาธารณสุข (โรงพยาบาล 19 แห่ง)",
     "m": [
       [
         "นายแพทย์จิระวัตร วิเศษสังข์",
@@ -3216,6 +3196,27 @@ const MENTOR_MEMBERS = {
         "assets/images/mentor-group-7-4.jpg?v=2570b",
         "MENTOR",
         "0894230010"
+      ],
+      [
+        "นางพิศมัย ประสมศรี",
+        "พยาบาลวิชาชีพชำนาญการ",
+        "",
+        "MENTOR",
+        ""
+      ],
+      [
+        "นายอนุศร การะเกษ",
+        "พยาบาลวิชาชีพชำนาญการ",
+        "",
+        "MENTOR",
+        ""
+      ],
+      [
+        "นางสาวมุธิตา โพธิบุตร",
+        "เภสัชกรชำนาญการ",
+        "",
+        "MENTOR",
+        ""
       ]
     ]
   }
@@ -3264,8 +3265,8 @@ function migrate(db){
     if(!t.lead) t.lead=mentorLead(t.id);
     if(t.focus===undefined) t.focus=MENTOR_MEMBERS[t.id]?.focus||'';
   });
-  db.mentorRosterVersion=3;
-  if((db.rosterVersion||0)<3){
+  db.mentorRosterVersion=4;
+  if((db.rosterVersion||0)<4){
     for(const official of OFFICIAL_UNITS){
       const current=db.units.find(u=>u.id===official.id);
       if(!current&&!db.units.some(u=>u.name===official.name)) db.units.push({...official});
@@ -3273,8 +3274,14 @@ function migrate(db){
     }
     const rasi=db.units.find(u=>u.id==='u20');
     if(rasi){ rasi.team=5; rasi.name='โรงพยาบาลราษีไศล'; }
-    db.units=db.units.filter(u=>u.id!=='h09');
-    db.rosterVersion=3;
+    db.units=db.units.filter(u=>u.id!=='h01'&&u.id!=='h04'&&u.id!=='h09');
+    const t7=db.teams.find(t=>t.id===7);
+    if(t7){
+      t7.members=defMembers(7);
+      t7.lead=mentorLead(7);
+      t7.focus=MENTOR_MEMBERS[7]?.focus||'';
+    }
+    db.rosterVersion=4;
   }
   Object.entries(db.assess||{}).forEach(([uid,a])=>{ if(!Array.isArray(a.inspectors)){ const u=db.units.find(x=>x.id===uid); const t=u&&db.teams.find(x=>x.id===u.team); a.inspectors = (db.isSample && a.started && t) ? t.members.slice(0,2).map(m=>m.name) : []; a.inspector = a.inspectors.join(', ') || (db.isSample?'':a.inspector||''); } });
   return db;
@@ -6539,7 +6546,7 @@ function demoHash(){ if(window.GECC_SERVER) return; const h=(location.hash||'').
 demoHash(); window.addEventListener('hashchange',demoHash);
 </script>
 <script src="assets/backup.js"></script>
-<script src="assets/server-client.js?v=2570aa"></script>
-<script src="assets/public-features.js?v=2570aa"></script>
+<script src="assets/server-client.js?v=2570ab"></script>
+<script src="assets/public-features.js?v=2570ab"></script>
 </body>
 </html>
