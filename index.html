@@ -3177,18 +3177,18 @@ const MENTOR_MEMBERS = {
         ""
       ],
       [
-        "ภญ.กนกวิภา ประกอบศรี",
-        "กลุ่มงานคุ้มครองผู้บริโภคฯ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ",
-        "assets/images/mentor-group-7-2.jpg?v=2570b",
-        "MENTOR",
-        "0896254066"
-      ],
-      [
         "ภญ.มัลลิกา สุพล",
         "เภสัชกรชำนาญการพิเศษ สสจ.ศรีสะเกษ",
         "assets/images/mentor-group-7-3.jpg?v=2570b",
         "MENTOR",
         ""
+      ],
+      [
+        "ภญ.กนกวิภา ประกอบศรี",
+        "กลุ่มงานคุ้มครองผู้บริโภคฯ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ",
+        "assets/images/mentor-group-7-2.jpg?v=2570b",
+        "MENTOR",
+        "0896254066"
       ],
       [
         "ภญ.ฐิติพร อินศร",
@@ -3265,8 +3265,8 @@ function migrate(db){
     if(!t.lead) t.lead=mentorLead(t.id);
     if(t.focus===undefined) t.focus=MENTOR_MEMBERS[t.id]?.focus||'';
   });
-  db.mentorRosterVersion=4;
-  if((db.rosterVersion||0)<4){
+  db.mentorRosterVersion=5;
+  if((db.rosterVersion||0)<5){
     for(const official of OFFICIAL_UNITS){
       const current=db.units.find(u=>u.id===official.id);
       if(!current&&!db.units.some(u=>u.name===official.name)) db.units.push({...official});
@@ -3281,7 +3281,7 @@ function migrate(db){
       t7.lead=mentorLead(7);
       t7.focus=MENTOR_MEMBERS[7]?.focus||'';
     }
-    db.rosterVersion=4;
+    db.rosterVersion=5;
   }
   Object.entries(db.assess||{}).forEach(([uid,a])=>{ if(!Array.isArray(a.inspectors)){ const u=db.units.find(x=>x.id===uid); const t=u&&db.teams.find(x=>x.id===u.team); a.inspectors = (db.isSample && a.started && t) ? t.members.slice(0,2).map(m=>m.name) : []; a.inspector = a.inspectors.join(', ') || (db.isSample?'':a.inspector||''); } });
   return db;
@@ -6546,7 +6546,7 @@ function demoHash(){ if(window.GECC_SERVER) return; const h=(location.hash||'').
 demoHash(); window.addEventListener('hashchange',demoHash);
 </script>
 <script src="assets/backup.js"></script>
-<script src="assets/server-client.js?v=2570ab"></script>
-<script src="assets/public-features.js?v=2570ab"></script>
+<script src="assets/server-client.js?v=2570ac"></script>
+<script src="assets/public-features.js?v=2570ac"></script>
 </body>
 </html>
