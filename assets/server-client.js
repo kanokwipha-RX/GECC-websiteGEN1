@@ -18,6 +18,14 @@ window.GECCClient = (() => {
     delete d.pins;
     delete d.demoStat;
     delete d.mentorRosterVersion;
+    if (user && user.role !== 'coord' && confirmed) {
+      if (Array.isArray(confirmed.units)) d.units = clone(confirmed.units);
+      if (Array.isArray(confirmed.teams)) d.teams = clone(confirmed.teams);
+      if (confirmed.publicContent) d.publicContent = clone(confirmed.publicContent);
+      if (confirmed.cal) d.cal = clone(confirmed.cal);
+      if (confirmed.fy !== undefined) d.fy = confirmed.fy;
+      if (confirmed.rosterVersion !== undefined) d.rosterVersion = confirmed.rosterVersion;
+    }
     if (user && user.role === 'mentor' && user.team && !S.coord && !S.allGroups) {
       const allowedUnitIds = new Set((d.units || []).filter(u => u.team === user.team).map(u => u.id));
       if (d.assess) {
@@ -26,6 +34,16 @@ window.GECCClient = (() => {
           if (allowedUnitIds.has(id)) filteredAssess[id] = a;
         }
         d.assess = filteredAssess;
+      }
+    }
+    if (user && user.role === 'mentee' && user.unitId) {
+      if (d.assess) {
+        const filteredAssess = {};
+        if (d.assess[user.unitId]) filteredAssess[user.unitId] = d.assess[user.unitId];
+        d.assess = filteredAssess;
+      }
+      if (Array.isArray(d.defects)) {
+        d.defects = d.defects.filter(def => def.unitId === user.unitId);
       }
     }
     return d;

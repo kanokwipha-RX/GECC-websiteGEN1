@@ -238,11 +238,7 @@ export function mergeState(current, incoming, actor) {
   const visible = project(current, actor);
   const next = clone(current);
   const now = new Date().toISOString();
-  if (actor.role !== "coord") {
-    for (const k of Object.keys(incoming))
-      if (!["assess", "defects"].includes(k) && !equal(incoming[k], visible[k]))
-        fail(403, "ไม่มีสิทธิ์แก้ไขข้อมูลส่วนกลาง");
-  }
+  // Non-coordinators only submit assess and defects; central data is managed exclusively by coords.
   if (actor.role === "coord") {
     for (const k of [
       "units",

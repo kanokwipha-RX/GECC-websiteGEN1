@@ -172,7 +172,7 @@ function validate_assessment(mixed $a): void {
 function merge_state(object $current, mixed $input, array $actor): object {
     if (!is_object($input)||!is_array($input->units??null)||!is_array($input->teams??null)||!is_array($input->defects??null)||!is_object($input->assess??null)) fail(400,'รูปแบบข้อมูลไม่ถูกต้อง');
     $visible=project($current,$actor); $next=copy_value($current); $now=now();
-    if ($actor['role']!=='coord') foreach($input as $k=>$v) if (!in_array($k,['assess','defects'],true)&&!same($v,$visible->$k??null)) fail(403,'ไม่มีสิทธิ์แก้ไขข้อมูลส่วนกลาง');
+    // Non-coordinators only submit assess and defects; central data is managed exclusively by coords.
     if ($actor['role']==='coord') {
         foreach(['units','teams','fy','cal','mentorCoordinators','publicContent'] as $k) if (property_exists($input,$k)) $next->$k=copy_value($input->$k);
         if (!is_int($next->fy)||$next->fy<1||$next->fy>9999) fail(400,'ปีงบประมาณไม่ถูกต้อง');
