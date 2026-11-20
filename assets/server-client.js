@@ -85,14 +85,16 @@ window.GECCClient = (() => {
     if (typeof migrate === "function") {
       try { migrate(DB); } catch (e) { console.warn("migrate failed:", e); }
     }
-    if (!Array.isArray(DB.teams) || !DB.teams.some(t => t.id === 7)) {
-      if (typeof defaultTeams === "function") {
-        const t7 = defaultTeams().find(t => t.id === 7);
-        if (t7) {
-          DB.teams = Array.isArray(DB.teams) ? DB.teams : [];
-          DB.teams.push(clone(t7));
+    if (typeof defaultTeams === "function") {
+      const defs = defaultTeams();
+      if (!Array.isArray(DB.teams)) DB.teams = [];
+      [7, 8, 9, 10].forEach(gid => {
+        if (!DB.teams.some(t => t.id === gid)) {
+          const dt = defs.find(t => t.id === gid);
+          if (dt) DB.teams.push(clone(dt));
         }
-      }
+      });
+      DB.teams.sort((a,b)=>a.id-b.id);
     }
     aggregate = result.summary;
     applyContent();

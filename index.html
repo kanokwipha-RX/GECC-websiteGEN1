@@ -2207,7 +2207,7 @@ const NEWB = '<span class="new" title="เกณฑ์ที่ปรับเ�
 
 /* ================= เกณฑ์ GECC 2570 ================= */
 /* n:true = เกณฑ์ที่ปรับเพิ่มใหม่ ตามอินโฟกราฟิก "มีอะไรใหม่ใน GECC 2570" */
-const GROUP_PHOTOS = Object.fromEntries([1,2,3,4,5,6,7].map(id=>[id, id===4?'assets/images/group-4-v2.jpg?v=2570b':id===5?'assets/images/group-5-v2.jpg?v=2570b':id===7?'assets/images/group-7.jpg?v=2570b':`assets/images/group-${id}.jpg?v=2570b`]));
+const GROUP_PHOTOS = Object.fromEntries([1,2,3,4,5,6,7,8,9,10].map(id=>[id, id===4?'assets/images/group-4-v2.jpg?v=2570b':id===5?'assets/images/group-5-v2.jpg?v=2570b':id>=7?`assets/images/group-${id}.jpg?v=2570e`:`assets/images/group-${id}.jpg?v=2570b`]));
 const OFFICIAL_UNITS = [
   {
     "id": "u01",
@@ -2525,12 +2525,21 @@ const OFFICIAL_UNITS = [
     "prev": ""
   },
   {
+    "id": "h01",
+    "code": "000101",
+    "name": "โรงพยาบาลศรีสะเกษ (โรงพยาบาลศูนย์ - อำเภอเมืองศรีสะเกษ)",
+    "district": "เมืองศรีสะเกษ",
+    "kind": "",
+    "team": 8,
+    "prev": ""
+  },
+  {
     "id": "h02",
     "code": "000102",
     "name": "โรงพยาบาลยางชุมน้อย (อำเภอยางชุมน้อย)",
     "district": "ยางชุมน้อย",
     "kind": "",
-    "team": 7,
+    "team": 10,
     "prev": ""
   },
   {
@@ -2539,7 +2548,7 @@ const OFFICIAL_UNITS = [
     "name": "โรงพยาบาลกันทรารมย์ (อำเภอกันทรารมย์)",
     "district": "กันทรารมย์",
     "kind": "",
-    "team": 7,
+    "team": 10,
     "prev": ""
   },
   {
@@ -2548,7 +2557,7 @@ const OFFICIAL_UNITS = [
     "name": "โรงพยาบาลขุขันธ์ (อำเภอขุขันธ์)",
     "district": "ขุขันธ์",
     "kind": "",
-    "team": 7,
+    "team": 9,
     "prev": ""
   },
   {
@@ -2557,7 +2566,7 @@ const OFFICIAL_UNITS = [
     "name": "โรงพยาบาลไพรบึง (อำเภอไพรบึง)",
     "district": "ไพรบึง",
     "kind": "",
-    "team": 7,
+    "team": 9,
     "prev": ""
   },
   {
@@ -2575,7 +2584,7 @@ const OFFICIAL_UNITS = [
     "name": "โรงพยาบาลขุนหาญ (อำเภอขุนหาญ)",
     "district": "ขุนหาญ",
     "kind": "",
-    "team": 7,
+    "team": 10,
     "prev": ""
   },
   {
@@ -2593,7 +2602,7 @@ const OFFICIAL_UNITS = [
     "name": "โรงพยาบาลบึงบูรพ์ (อำเภอบึงบูรพ์)",
     "district": "บึงบูรพ์",
     "kind": "",
-    "team": 7,
+    "team": 10,
     "prev": ""
   },
   {
@@ -2602,7 +2611,7 @@ const OFFICIAL_UNITS = [
     "name": "โรงพยาบาลห้วยทับทัน (อำเภอห้วยทับทัน)",
     "district": "ห้วยทับทัน",
     "kind": "",
-    "team": 7,
+    "team": 9,
     "prev": ""
   },
   {
@@ -2611,7 +2620,7 @@ const OFFICIAL_UNITS = [
     "name": "โรงพยาบาลโนนคูณ (อำเภอโนนคูณ)",
     "district": "โนนคูณ",
     "kind": "",
-    "team": 7,
+    "team": 8,
     "prev": ""
   },
   {
@@ -2629,7 +2638,7 @@ const OFFICIAL_UNITS = [
     "name": "โรงพยาบาลน้ำเกลี้ยง (อำเภอน้ำเกลี้ยง)",
     "district": "น้ำเกลี้ยง",
     "kind": "",
-    "team": 7,
+    "team": 8,
     "prev": ""
   },
   {
@@ -2638,7 +2647,7 @@ const OFFICIAL_UNITS = [
     "name": "โรงพยาบาลวังหิน (อำเภอวังหิน)",
     "district": "วังหิน",
     "kind": "",
-    "team": 7,
+    "team": 8,
     "prev": ""
   },
   {
@@ -2647,7 +2656,7 @@ const OFFICIAL_UNITS = [
     "name": "โรงพยาบาลภูสิงห์ (อำเภอภูสิงห์)",
     "district": "ภูสิงห์",
     "kind": "",
-    "team": 7,
+    "team": 8,
     "prev": ""
   },
   {
@@ -2656,7 +2665,7 @@ const OFFICIAL_UNITS = [
     "name": "โรงพยาบาลเมืองจันทร์ (อำเภอเมืองจันทร์)",
     "district": "เมืองจันทร์",
     "kind": "",
-    "team": 7,
+    "team": 10,
     "prev": ""
   },
   {
@@ -2665,7 +2674,7 @@ const OFFICIAL_UNITS = [
     "name": "โรงพยาบาลเบญจลักษ์เฉลิมพระเกียรติ ๘๐ พรรษา (อำเภอเบญจลักษ์)",
     "district": "เบญจลักษ์",
     "kind": "",
-    "team": 7,
+    "team": 9,
     "prev": ""
   },
   {
@@ -2692,7 +2701,7 @@ const OFFICIAL_UNITS = [
     "name": "โรงพยาบาลศิลาลาด (อำเภอศิลาลาด)",
     "district": "ศิลาลาด",
     "kind": "",
-    "team": 7,
+    "team": 9,
     "prev": ""
   }
 ];
@@ -2941,25 +2950,41 @@ const OFFICIAL_GROUPS = [
   {
     "name": "กลุ่มที่ 7: งานสาธารณสุข",
     "units": [
-      ["โรงพยาบาลยางชุมน้อย (อำเภอยางชุมน้อย)", "ยางชุมน้อย", "h02", "000102"],
-      ["โรงพยาบาลกันทรารมย์ (อำเภอกันทรารมย์)", "กันทรารมย์", "h03", "000103"],
-      ["โรงพยาบาลขุขันธ์ (อำเภอขุขันธ์)", "ขุขันธ์", "h05", "000105"],
-      ["โรงพยาบาลไพรบึง (อำเภอไพรบึง)", "ไพรบึง", "h06", "000106"],
-      ["โรงพยาบาลปรางค์กู่ (อำเภอปรางค์กู่)", "ปรางค์กู่", "h07", "000107"],
-      ["โรงพยาบาลขุนหาญ (อำเภอขุนหาญ)", "ขุนหาญ", "h08", "000108"],
-      ["โรงพยาบาลอุทุมพรพิสัย (อำเภออุทุมพรพิสัย)", "อุทุมพรพิสัย", "h10", "000110"],
-      ["โรงพยาบาลบึงบูรพ์ (อำเภอบึงบูรพ์)", "บึงบูรพ์", "h11", "000111"],
-      ["โรงพยาบาลห้วยทับทัน (อำเภอห้วยทับทัน)", "ห้วยทับทัน", "h12", "000112"],
-      ["โรงพยาบาลโนนคูณ (อำเภอโนนคูณ)", "โนนคูณ", "h13", "000113"],
       ["โรงพยาบาลศรีรัตนะ (อำเภอศรีรัตนะ)", "ศรีรัตนะ", "h14", "000114"],
-      ["โรงพยาบาลน้ำเกลี้ยง (อำเภอน้ำเกลี้ยง)", "น้ำเกลี้ยง", "h15", "000115"],
-      ["โรงพยาบาลวังหิน (อำเภอวังหิน)", "วังหิน", "h16", "000116"],
-      ["โรงพยาบาลภูสิงห์ (อำเภอภูสิงห์)", "ภูสิงห์", "h17", "000117"],
-      ["โรงพยาบาลเมืองจันทร์ (อำเภอเมืองจันทร์)", "เมืองจันทร์", "h18", "000118"],
-      ["โรงพยาบาลเบญจลักษ์เฉลิมพระเกียรติ ๘๐ พรรษา (อำเภอเบญจลักษ์)", "เบญจลักษ์", "h19", "000119"],
+      ["โรงพยาบาลปรางค์กู่ (อำเภอปรางค์กู่)", "ปรางค์กู่", "h07", "000107"],
       ["โรงพยาบาลพยุห์ (อำเภอพยุห์)", "พยุห์", "h20", "000120"],
       ["โรงพยาบาลโพธิ์ศรีสุวรรณ (อำเภอโพธิ์ศรีสุวรรณ)", "โพธิ์ศรีสุวรรณ", "h21", "000121"],
-      ["โรงพยาบาลศิลาลาด (อำเภอศิลาลาด)", "ศิลาลาด", "h22", "000122"]
+      ["โรงพยาบาลอุทุมพรพิสัย (อำเภออุทุมพรพิสัย)", "อุทุมพรพิสัย", "h10", "000110"]
+    ]
+  },
+  {
+    "name": "กลุ่มที่ 8: งานสาธารณสุข",
+    "units": [
+      ["โรงพยาบาลภูสิงห์ (อำเภอภูสิงห์)", "ภูสิงห์", "h17", "000117"],
+      ["โรงพยาบาลน้ำเกลี้ยง (อำเภอน้ำเกลี้ยง)", "น้ำเกลี้ยง", "h15", "000115"],
+      ["โรงพยาบาลวังหิน (อำเภอวังหิน)", "วังหิน", "h16", "000116"],
+      ["โรงพยาบาลโนนคูณ (อำเภอโนนคูณ)", "โนนคูณ", "h13", "000113"],
+      ["โรงพยาบาลศรีสะเกษ (โรงพยาบาลศูนย์ - อำเภอเมืองศรีสะเกษ)", "เมืองศรีสะเกษ", "h01", "000101"]
+    ]
+  },
+  {
+    "name": "กลุ่มที่ 9: งานสาธารณสุข",
+    "units": [
+      ["โรงพยาบาลไพรบึง (อำเภอไพรบึง)", "ไพรบึง", "h06", "000106"],
+      ["โรงพยาบาลห้วยทับทัน (อำเภอห้วยทับทัน)", "ห้วยทับทัน", "h12", "000112"],
+      ["โรงพยาบาลศิลาลาด (อำเภอศิลาลาด)", "ศิลาลาด", "h22", "000122"],
+      ["โรงพยาบาลขุขันธ์ (อำเภอขุขันธ์)", "ขุขันธ์", "h05", "000105"],
+      ["โรงพยาบาลเบญจลักษ์เฉลิมพระเกียรติ ๘๐ พรรษา (อำเภอเบญจลักษ์)", "เบญจลักษ์", "h19", "000119"]
+    ]
+  },
+  {
+    "name": "กลุ่มที่ 10: งานสาธารณสุข",
+    "units": [
+      ["โรงพยาบาลเมืองจันทร์ (อำเภอเมืองจันทร์)", "เมืองจันทร์", "h18", "000118"],
+      ["โรงพยาบาลกันทรารมย์ (อำเภอกันทรารมย์)", "กันทรารมย์", "h03", "000103"],
+      ["โรงพยาบาลบึงบูรพ์ (อำเภอบึงบูรพ์)", "บึงบูรพ์", "h11", "000111"],
+      ["โรงพยาบาลขุนหาญ (อำเภอขุนหาญ)", "ขุนหาญ", "h08", "000108"],
+      ["โรงพยาบาลยางชุมน้อย (อำเภอยางชุมน้อย)", "ยางชุมน้อย", "h02", "000102"]
     ]
   }
 ];
@@ -3167,63 +3192,50 @@ const MENTOR_MEMBERS = {
     ]
   },
   "7": {
-    "focus": "งานสาธารณสุข (โรงพยาบาล 19 แห่ง)",
+    "focus": "งานสาธารณสุข (โรงพยาบาล 5 แห่ง)",
     "m": [
       [
-        "นายแพทย์จิระวัตร วิเศษสังข์",
-        "ผู้อำนวยการโรงพยาบาล โรงพยาบาลราษีไศล",
-        "assets/images/mentor-group-7-1.jpg?v=2570d",
+        "ภญ.กนกวิภา ประกอบศรี",
+        "กลุ่มงานคุ้มครองผู้บริโภคฯ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ",
+        "assets/images/mentor-group-7-1.jpg?v=2570e",
+        "หัวหน้าทีม",
+        "0896254066"
+      ]
+    ]
+  },
+  "8": {
+    "focus": "งานสาธารณสุข (โรงพยาบาล 5 แห่ง)",
+    "m": [
+      [
+        "ภญ.ณัฐธิดา ถาวรยุติการณ์",
+        "กลุ่มงานคุ้มครองผู้บริโภคฯ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ",
+        "assets/images/mentor-group-8-1.jpg?v=2570e",
         "หัวหน้าทีม",
         ""
-      ],
+      ]
+    ]
+  },
+  "9": {
+    "focus": "งานสาธารณสุข (โรงพยาบาล 5 แห่ง)",
+    "m": [
       [
-        "ภญ.มัลลิกา สุพล",
-        "เภสัชกรชำนาญการพิเศษ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ",
-        "assets/images/mentor-group-7-2.jpg?v=2570d",
-        "MENTOR",
+        "ภญ.มุธิตา โพธิบุตร",
+        "กลุ่มงานคุ้มครองผู้บริโภคฯ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ",
+        "assets/images/mentor-group-9-1.jpg?v=2570e",
+        "หัวหน้าทีม",
         ""
-      ],
-      [
-        "ภญ.กนกวิภา ประกอบศรี",
-        "เภสัชกรชำนาญการพิเศษ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ",
-        "assets/images/mentor-group-7-3.jpg?v=2570d",
-        "MENTOR",
-        "0896254066"
-      ],
-      [
-        "ภญ.ณัฐธิดา ถาวรยุติการต์",
-        "เภสัชกรชำนาญการ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ",
-        "assets/images/mentor-group-7-4.jpg?v=2570d",
-        "MENTOR",
-        ""
-      ],
+      ]
+    ]
+  },
+  "10": {
+    "focus": "งานสาธารณสุข (โรงพยาบาล 5 แห่ง)",
+    "m": [
       [
         "ภญ.ฐิติพร อินศร",
         "เภสัชกรชำนาญการพิเศษ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ",
-        "assets/images/mentor-group-7-5.jpg?v=2570d",
-        "MENTOR",
+        "assets/images/mentor-group-10-1.jpg?v=2570e",
+        "หัวหน้าทีม",
         "0894230010"
-      ],
-      [
-        "นางพิศมัย ประสมศรี",
-        "พยาบาลวิชาชีพชำนาญการ โรงพยาบาลราษีไศล",
-        "assets/images/mentor-group-7-6.jpg?v=2570d",
-        "MENTOR",
-        ""
-      ],
-      [
-        "นายอนุศร การะเกษ",
-        "พยาบาลวิชาชีพชำนาญการ โรงพยาบาลราษีไศล",
-        "assets/images/mentor-group-7-7.jpg?v=2570d",
-        "MENTOR",
-        ""
-      ],
-      [
-        "ภญ.มุธิตา โพธิบุตร",
-        "เภสัชกรชำนาญการ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ",
-        "assets/images/mentor-group-7-8.jpg?v=2570d",
-        "MENTOR",
-        ""
       ]
     ]
   }
@@ -3253,7 +3265,7 @@ function migrate(db){
     const existing = db.teams.find(t => t.id === dt.id);
     if(!existing){
       db.teams.push({...dt});
-    } else if(dt.id === 7){
+    } else if(dt.id >= 7 && dt.id <= 10){
       existing.name = dt.name;
       existing.photo = dt.photo;
       existing.lead = dt.lead;
@@ -3262,18 +3274,19 @@ function migrate(db){
       delete existing.isHospitalGroup;
     }
   });
+  db.teams = db.teams.filter(t => t.id <= 10);
   db.teams.sort((a,b)=>a.id-b.id);
   db.teams.forEach(t=>{
     t.name=String(t.name||'').replace(/\s*\(?โซนที่\s*1\)?/g,'').trim();
     const oldNames=LEGACY_ROSTER.teams.find(x=>x.id===t.id)?.names||[];
     const seeded=Array.isArray(t.members)&&t.members.length===oldNames.length&&t.members.every((m,i)=>m.name===oldNames[i]);
-    if(!Array.isArray(t.members)||((db.mentorRosterVersion||0)<3&&seeded)) t.members=defMembers(t.id);
+    if(!Array.isArray(t.members)||((db.mentorRosterVersion||0)<3&&seeded)||t.id>=7) t.members=defMembers(t.id);
     else t.members.forEach(m=>{const known=defMembers(t.id).find(x=>x.name===m.name||(x.name&&m.name&&(x.name.includes(m.name.slice(4))||m.name.includes(x.name.slice(4)))));if(known){if(!m.photo)m.photo=known.photo;if(known.phone)m.phone=known.phone;if(known.role)m.role=known.role;}});
     if(!t.lead) t.lead=mentorLead(t.id);
     if(t.focus===undefined) t.focus=MENTOR_MEMBERS[t.id]?.focus||'';
   });
-  db.mentorRosterVersion=6;
-  if((db.rosterVersion||0)<6){
+  db.mentorRosterVersion=7;
+  if((db.rosterVersion||0)<7){
     for(const official of OFFICIAL_UNITS){
       const current=db.units.find(u=>u.id===official.id);
       if(!current&&!db.units.some(u=>u.name===official.name)) db.units.push({...official});
@@ -3281,14 +3294,18 @@ function migrate(db){
     }
     const rasi=db.units.find(u=>u.id==='u20');
     if(rasi){ rasi.team=5; rasi.name='โรงพยาบาลราษีไศล'; }
-    db.units=db.units.filter(u=>u.id!=='h01'&&u.id!=='h04'&&u.id!=='h09');
-    const t7=db.teams.find(t=>t.id===7);
-    if(t7){
-      t7.members=defMembers(7);
-      t7.lead=mentorLead(7);
-      t7.focus=MENTOR_MEMBERS[7]?.focus||'';
-    }
-    db.rosterVersion=6;
+    db.units=db.units.filter(u=>u.id!=='h04'&&u.id!=='h09');
+    [7, 8, 9, 10].forEach(gid => {
+      const tm = db.teams.find(t=>t.id===gid);
+      if(tm){
+        tm.members=defMembers(gid);
+        tm.lead=mentorLead(gid);
+        tm.focus=MENTOR_MEMBERS[gid]?.focus||'';
+        tm.name=OFFICIAL_GROUPS[gid-1]?.name||tm.name;
+        tm.photo=GROUP_PHOTOS[gid]||tm.photo;
+      }
+    });
+    db.rosterVersion=7;
   }
   Object.entries(db.assess||{}).forEach(([uid,a])=>{ if(!Array.isArray(a.inspectors)){ const u=db.units.find(x=>x.id===uid); const t=u&&db.teams.find(x=>x.id===u.team); a.inspectors = (db.isSample && a.started && t) ? t.members.slice(0,2).map(m=>m.name) : []; a.inspector = a.inspectors.join(', ') || (db.isSample?'':a.inspector||''); } });
   return db;

@@ -437,27 +437,28 @@ window.GECCPublic = (() => {
   }
   function decorate(){if(!$('#content'))return;if(S.view==='portfolio'&&window.GECC_SERVER&&!loginOptions&&!rosterLoading&&!loginError)loadLoginOptions();const height=$('.site-nav')?.offsetHeight;if(height)document.documentElement.style.setProperty('--site-nav-height',height+'px');if(S.view==='exec'&&!$('#public-directory-button'))$('#content').insertAdjacentHTML('afterbegin',`<div class="feature-tools"><button class="btn btn-primary" id="public-directory-button" data-public-directory>ดูรายละเอียดรายหน่วยบริการ</button>${surveyLinkHTML()}</div>`);if(S.view==='exec'){document.querySelectorAll('.pbc-k .pk').forEach((el,i)=>{el.dataset.publicFilter='phys:'+['full','part','zero'][i%3];el.setAttribute('role','button');el.tabIndex=0;});document.querySelectorAll('.lvl-tile').forEach((el,i)=>{if(el.dataset.publicFilter)return;el.dataset.publicFilter=['gold','silver','blue'][i%3];el.setAttribute('role','button');el.tabIndex=0;});}if(S.view==='settings'&&S.coord&&!$('#feature-editor-button'))$('#content').insertAdjacentHTML('afterbegin','<button class="btn btn-primary" id="feature-editor-button" data-feature-editor>จัดการ Gallery และเนื้อหาเผยแพร่</button>');}
   const observer=new MutationObserver(()=>{decorate();});observer.observe($('#app'),{childList:true,subtree:true});
-  // ================= กลุ่มที่ 7: งานบริการโรงพยาบาล (19 แห่ง) =================
+  // ================= งานบริการโรงพยาบาล (20 แห่ง) =================
   const HOSPITALS_DEF = [
-    {id:'h02', num:1, name:'โรงพยาบาลยางชุมน้อย', type:'โรงพยาบาลชุมชน', district:'อำเภอยางชุมน้อย', detail:'อำเภอยางชุมน้อย'},
-    {id:'h03', num:2, name:'โรงพยาบาลกันทรารมย์', type:'โรงพยาบาลชุมชน', district:'อำเภอกันทรารมย์', detail:'อำเภอกันทรารมย์'},
-    {id:'h05', num:3, name:'โรงพยาบาลขุขันธ์', type:'โรงพยาบาลชุมชน', district:'อำเภอขุขันธ์', detail:'อำเภอขุขันธ์'},
-    {id:'h06', num:4, name:'โรงพยาบาลไพรบึง', type:'โรงพยาบาลชุมชน', district:'อำเภอไพรบึง', detail:'อำเภอไพรบึง'},
-    {id:'h07', num:5, name:'โรงพยาบาลปรางค์กู่', type:'โรงพยาบาลชุมชน', district:'อำเภอปรางค์กู่', detail:'อำเภอปรางค์กู่'},
-    {id:'h08', num:6, name:'โรงพยาบาลขุนหาญ', type:'โรงพยาบาลชุมชน', district:'อำเภอขุนหาญ', detail:'อำเภอขุนหาญ'},
-    {id:'h10', num:7, name:'โรงพยาบาลอุทุมพรพิสัย', type:'โรงพยาบาลชุมชน', district:'อำเภออุทุมพรพิสัย', detail:'อำเภออุทุมพรพิสัย'},
-    {id:'h11', num:8, name:'โรงพยาบาลบึงบูรพ์', type:'โรงพยาบาลชุมชน', district:'อำเภอบึงบูรพ์', detail:'อำเภอบึงบูรพ์'},
-    {id:'h12', num:9, name:'โรงพยาบาลห้วยทับทัน', type:'โรงพยาบาลชุมชน', district:'อำเภอห้วยทับทัน', detail:'อำเภอห้วยทับทัน'},
-    {id:'h13', num:10, name:'โรงพยาบาลโนนคูณ', type:'โรงพยาบาลชุมชน', district:'อำเภอโนนคูณ', detail:'อำเภอโนนคูณ'},
-    {id:'h14', num:11, name:'โรงพยาบาลศรีรัตนะ', type:'โรงพยาบาลชุมชน', district:'อำเภอศรีรัตนะ', detail:'อำเภอศรีรัตนะ'},
-    {id:'h15', num:12, name:'โรงพยาบาลน้ำเกลี้ยง', type:'โรงพยาบาลชุมชน', district:'อำเภอน้ำเกลี้ยง', detail:'อำเภอน้ำเกลี้ยง'},
-    {id:'h16', num:13, name:'โรงพยาบาลวังหิน', type:'โรงพยาบาลชุมชน', district:'อำเภอวังหิน', detail:'อำเภอวังหิน'},
-    {id:'h17', num:14, name:'โรงพยาบาลภูสิงห์', type:'โรงพยาบาลชุมชน', district:'อำเภอภูสิงห์', detail:'อำเภอภูสิงห์'},
-    {id:'h18', num:15, name:'โรงพยาบาลเมืองจันทร์', type:'โรงพยาบาลชุมชน', district:'อำเภอเมืองจันทร์', detail:'อำเภอเมืองจันทร์'},
-    {id:'h19', num:16, name:'โรงพยาบาลเบญจลักษ์เฉลิมพระเกียรติ ๘๐ พรรษา', type:'โรงพยาบาลชุมชน', district:'อำเภอเบญจลักษ์', detail:'อำเภอเบญจลักษ์'},
-    {id:'h20', num:17, name:'โรงพยาบาลพยุห์', type:'โรงพยาบาลชุมชน', district:'อำเภอพยุห์', detail:'อำเภอพยุห์'},
-    {id:'h21', num:18, name:'โรงพยาบาลโพธิ์ศรีสุวรรณ', type:'โรงพยาบาลชุมชน', district:'อำเภอโพธิ์ศรีสุวรรณ', detail:'อำเภอโพธิ์ศรีสุวรรณ'},
-    {id:'h22', num:19, name:'โรงพยาบาลศิลาลาด', type:'โรงพยาบาลชุมชน', district:'อำเภอศิลาลาด', detail:'อำเภอศิลาลาด'}
+    {id:'h01', num:1, name:'โรงพยาบาลศรีสะเกษ', type:'โรงพยาบาลทั่วไป', district:'อำเภอเมืองศรีสะเกษ', detail:'อำเภอเมืองศรีสะเกษ'},
+    {id:'h02', num:2, name:'โรงพยาบาลยางชุมน้อย', type:'โรงพยาบาลชุมชน', district:'อำเภอยางชุมน้อย', detail:'อำเภอยางชุมน้อย'},
+    {id:'h03', num:3, name:'โรงพยาบาลกันทรารมย์', type:'โรงพยาบาลชุมชน', district:'อำเภอกันทรารมย์', detail:'อำเภอกันทรารมย์'},
+    {id:'h05', num:4, name:'โรงพยาบาลขุขันธ์', type:'โรงพยาบาลชุมชน', district:'อำเภอขุขันธ์', detail:'อำเภอขุขันธ์'},
+    {id:'h06', num:5, name:'โรงพยาบาลไพรบึง', type:'โรงพยาบาลชุมชน', district:'อำเภอไพรบึง', detail:'อำเภอไพรบึง'},
+    {id:'h07', num:6, name:'โรงพยาบาลปรางค์กู่', type:'โรงพยาบาลชุมชน', district:'อำเภอปรางค์กู่', detail:'อำเภอปรางค์กู่'},
+    {id:'h08', num:7, name:'โรงพยาบาลขุนหาญ', type:'โรงพยาบาลชุมชน', district:'อำเภอขุนหาญ', detail:'อำเภอขุนหาญ'},
+    {id:'h10', num:8, name:'โรงพยาบาลอุทุมพรพิสัย', type:'โรงพยาบาลชุมชน', district:'อำเภออุทุมพรพิสัย', detail:'อำเภออุทุมพรพิสัย'},
+    {id:'h11', num:9, name:'โรงพยาบาลบึงบูรพ์', type:'โรงพยาบาลชุมชน', district:'อำเภอบึงบูรพ์', detail:'อำเภอบึงบูรพ์'},
+    {id:'h12', num:10, name:'โรงพยาบาลห้วยทับทัน', type:'โรงพยาบาลชุมชน', district:'อำเภอห้วยทับทัน', detail:'อำเภอห้วยทับทัน'},
+    {id:'h13', num:11, name:'โรงพยาบาลโนนคูณ', type:'โรงพยาบาลชุมชน', district:'อำเภอโนนคูณ', detail:'อำเภอโนนคูณ'},
+    {id:'h14', num:12, name:'โรงพยาบาลศรีรัตนะ', type:'โรงพยาบาลชุมชน', district:'อำเภอศรีรัตนะ', detail:'อำเภอศรีรัตนะ'},
+    {id:'h15', num:13, name:'โรงพยาบาลน้ำเกลี้ยง', type:'โรงพยาบาลชุมชน', district:'อำเภอน้ำเกลี้ยง', detail:'อำเภอน้ำเกลี้ยง'},
+    {id:'h16', num:14, name:'โรงพยาบาลวังหิน', type:'โรงพยาบาลชุมชน', district:'อำเภอวังหิน', detail:'อำเภอวังหิน'},
+    {id:'h17', num:15, name:'โรงพยาบาลภูสิงห์', type:'โรงพยาบาลชุมชน', district:'อำเภอภูสิงห์', detail:'อำเภอภูสิงห์'},
+    {id:'h18', num:16, name:'โรงพยาบาลเมืองจันทร์', type:'โรงพยาบาลชุมชน', district:'อำเภอเมืองจันทร์', detail:'อำเภอเมืองจันทร์'},
+    {id:'h19', num:17, name:'โรงพยาบาลเบญจลักษ์เฉลิมพระเกียรติ ๘๐ พรรษา', type:'โรงพยาบาลชุมชน', district:'อำเภอเบญจลักษ์', detail:'อำเภอเบญจลักษ์'},
+    {id:'h20', num:18, name:'โรงพยาบาลพยุห์', type:'โรงพยาบาลชุมชน', district:'อำเภอพยุห์', detail:'อำเภอพยุห์'},
+    {id:'h21', num:19, name:'โรงพยาบาลโพธิ์ศรีสุวรรณ', type:'โรงพยาบาลชุมชน', district:'อำเภอโพธิ์ศรีสุวรรณ', detail:'อำเภอโพธิ์ศรีสุวรรณ'},
+    {id:'h22', num:20, name:'โรงพยาบาลศิลาลาด', type:'โรงพยาบาลชุมชน', district:'อำเภอศิลาลาด', detail:'อำเภอศิลาลาด'}
   ];
   let hospList = HOSPITALS_DEF.map(x=>({...x, files:[]}));
   let hospActiveId = null;
@@ -540,8 +541,8 @@ window.GECCPublic = (() => {
     return `<div class="hosp-portal">
       <header class="hosp-hero">
         <div>
-          <span class="hosp-hero-badge">${ic('shield')} กลุ่มที่ 7 : งานสาธารณสุข (โรงพยาบาล 19 แห่ง)</span>
-          <h1>ระบบส่งเอกสารและไฟล์ GECC 2570 (19 โรงพยาบาล)</h1>
+          <span class="hosp-hero-badge">${ic('shield')} งานสาธารณสุข (โรงพยาบาล 20 แห่ง)</span>
+          <h1>ระบบส่งเอกสารและไฟล์ GECC 2570 (20 โรงพยาบาล)</h1>
           <p>ระบบจัดเก็บและอัพโหลดไฟล์แยกโฟลเดอร์ตามรายชื่อโรงพยาบาล สำหรับเตรียมความพร้อมและตรวจประเมินศูนย์ราชการสะดวก</p>
         </div>
         <div class="hosp-hero-actions">
@@ -574,7 +575,7 @@ window.GECCPublic = (() => {
 
     return `<div class="hosp-portal">
       <div style="margin-bottom:18px">
-        <button class="btn btn-sm btn-ghost" data-act="hosp-back" style="color:var(--navy);font-weight:700">${ic('left')} กลับไปหน้ารวม 19 โรงพยาบาล</button>
+        <button class="btn btn-sm btn-ghost" data-act="hosp-back" style="color:var(--navy);font-weight:700">${ic('left')} กลับไปหน้ารวม 20 โรงพยาบาล</button>
       </div>
 
       <div class="hosp-folder-view">
@@ -664,7 +665,7 @@ window.GECCPublic = (() => {
   }
 
   window.viewHospitalsPortal = async function(){
-    setCollectionHead('กลุ่มที่ 7: งานสาธารณสุข (โรงพยาบาล 19 แห่ง)','building','ระบบส่งเอกสารและไฟล์ GECC 2570 แยก 19 โรงพยาบาล');
+    setCollectionHead('งานสาธารณสุข (โรงพยาบาล 20 แห่ง)','building','ระบบส่งเอกสารและไฟล์ GECC 2570 แยก 20 โรงพยาบาล');
     $('#content').innerHTML = '<p role="status" style="text-align:center;padding:40px 0">กำลังโหลดข้อมูลกลุ่มที่ 7…</p>';
     await loadHospitalsData();
     if(S.view !== 'hospitals') return;
