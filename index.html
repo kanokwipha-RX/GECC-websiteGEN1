@@ -3197,7 +3197,7 @@ const MENTOR_MEMBERS = {
       [
         "ภญ.ฐิติพร อินศร",
         "เภสัชกรชำนาญการพิเศษ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ",
-        "assets/images/mentor-group-7-1.jpg?v=2570g",
+        "assets/images/mentor-group-7-1.jpg?v=2570h",
         "หัวหน้าทีม",
         "0894230010"
       ]
@@ -3209,7 +3209,7 @@ const MENTOR_MEMBERS = {
       [
         "ภญ.ณัฐธิดา ถาวรยุติกานต์",
         "กลุ่มงานคุ้มครองผู้บริโภคฯ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ",
-        "assets/images/mentor-group-8-1.jpg?v=2570g",
+        "assets/images/mentor-group-8-1.jpg?v=2570h",
         "หัวหน้าทีม",
         ""
       ]
@@ -3221,7 +3221,7 @@ const MENTOR_MEMBERS = {
       [
         "ภญ.มุธิตา โพธิบุตร",
         "กลุ่มงานคุ้มครองผู้บริโภคฯ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ",
-        "assets/images/mentor-group-9-1.jpg?v=2570g",
+        "assets/images/mentor-group-9-1.jpg?v=2570h",
         "หัวหน้าทีม",
         ""
       ]
@@ -3233,7 +3233,7 @@ const MENTOR_MEMBERS = {
       [
         "ภญ.กนกวิภา ประกอบศรี",
         "กลุ่มงานคุ้มครองผู้บริโภคฯ สำนักงานสาธารณสุขจังหวัดศรีสะเกษ",
-        "assets/images/mentor-group-10-1.jpg?v=2570g",
+        "assets/images/mentor-group-10-1.jpg?v=2570h",
         "หัวหน้าทีม",
         "0896254066"
       ]
@@ -3285,8 +3285,8 @@ function migrate(db){
     if(!t.lead) t.lead=mentorLead(t.id);
     if(t.focus===undefined) t.focus=MENTOR_MEMBERS[t.id]?.focus||'';
   });
-  db.mentorRosterVersion=8;
-  if((db.rosterVersion||0)<8){
+  db.mentorRosterVersion=9;
+  if((db.rosterVersion||0)<9){
     for(const official of OFFICIAL_UNITS){
       const current=db.units.find(u=>u.id===official.id);
       if(!current&&!db.units.some(u=>u.name===official.name)) db.units.push({...official});
@@ -3305,7 +3305,7 @@ function migrate(db){
         tm.photo=GROUP_PHOTOS[gid]||tm.photo;
       }
     });
-    db.rosterVersion=8;
+    db.rosterVersion=9;
   }
   Object.entries(db.assess||{}).forEach(([uid,a])=>{ if(!Array.isArray(a.inspectors)){ const u=db.units.find(x=>x.id===uid); const t=u&&db.teams.find(x=>x.id===u.team); a.inspectors = (db.isSample && a.started && t) ? t.members.slice(0,2).map(m=>m.name) : []; a.inspector = a.inspectors.join(', ') || (db.isSample?'':a.inspector||''); } });
   return db;
