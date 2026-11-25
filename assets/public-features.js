@@ -7,6 +7,10 @@ window.GECCPublic = (() => {
   const safe=s=>esc(String(s??''));
   const defaults={albums:[
     {
+      title:'ภาพกิจกรรม 20 พฤศจิกายน 2569',date:'2026-11-20',description:'',status:'published',
+      images:Array.from({length:30},(_,i)=>({src:'assets/gallery/gallery-2026-11-20-'+String(i+1).padStart(2,'0')+'.jpg',alt:'ภาพกิจกรรม 20 พฤศจิกายน 2569 ภาพที่ '+(i+1)}))
+    },
+    {
       title:'ภาพกิจกรรม 13 พฤศจิกายน 2569',date:'2026-11-13',description:'',status:'published',
       images:Array.from({length:39},(_,i)=>({src:'assets/gallery/gallery-2026-11-13-'+String(i+1).padStart(2,'0')+'.jpg',alt:'ภาพกิจกรรม 13 พฤศจิกายน 2569 ภาพที่ '+(i+1)}))
     },
@@ -66,7 +70,9 @@ window.GECCPublic = (() => {
     try{const c=await load();if(S.view!=='gallery')return;
       const albums=(c.albums||[]).filter(a=>a.status==='published').map(a=>{
         let title = a.title || '';
-        if ((a.date === '2026-11-13') || (title.includes('13') && title.includes('2569'))) {
+        if ((a.date === '2026-11-20') || (title.includes('20') && title.includes('2569') && !title.includes('29'))) {
+          title = 'ภาพกิจกรรม 20 พฤศจิกายน 2569';
+        } else if ((a.date === '2026-11-13') || (title.includes('13') && title.includes('2569'))) {
           title = 'ภาพกิจกรรม 13 พฤศจิกายน 2569';
         } else if (title.includes('\u0E40\u0E18') || title.includes('\u0E40\u0E19')) {
           if (a.date === '2026-11-04') title = 'กิจกรรม GECC · 4 พฤศจิกายน 2569';
