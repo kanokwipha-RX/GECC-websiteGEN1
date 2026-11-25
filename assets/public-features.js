@@ -64,7 +64,16 @@ window.GECCPublic = (() => {
     clearInterval(timer);setCollectionHead('Gallery','image','ภาพกิจกรรมและวิดีโอ GECC จังหวัดศรีสะเกษ');
     $('#content').innerHTML='<p role="status">กำลังโหลด Gallery…</p>';
     try{const c=await load();if(S.view!=='gallery')return;
-      const albums=(c.albums||[]).filter(a=>a.status==='published').sort((a,b)=>b.date.localeCompare(a.date));
+      const albums=(c.albums||[]).filter(a=>a.status==='published').map(a=>{
+        let title = a.title || '';
+        if ((a.date === '2026-11-13') || (title.includes('13') && title.includes('2569'))) {
+          title = 'ภาพกิจกรรม 13 พฤศจิกายน 2569';
+        } else if (title.includes('\u0E40\u0E18') || title.includes('\u0E40\u0E19')) {
+          if (a.date === '2026-11-04') title = 'กิจกรรม GECC · 4 พฤศจิกายน 2569';
+          else if (a.date === '2026-10-29') title = 'กิจกรรม GECC · 29 ตุลาคม 2569';
+        }
+        return {...a, title};
+      }).sort((a,b)=>b.date.localeCompare(a.date));
       $('#content').innerHTML=`<section class="public-intro"><h2>บันทึกกิจกรรม GECC</h2><p>ภาพกิจกรรมเรียงตามวันที่ล่าสุด แกลเลอรีสไลด์แผ่นฟิล์มเลื่อนไหลแบบ 3 มิติ</p></section>${albums.length?albums.map((a,i)=>`<article class="card album film-album" data-album="${i}">
         <div class="film-album-head">
           <div class="film-album-title-group">
