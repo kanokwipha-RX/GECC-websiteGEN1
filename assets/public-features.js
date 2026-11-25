@@ -7,8 +7,8 @@ window.GECCPublic = (() => {
   const safe=s=>esc(String(s??''));
   const defaults={albums:[
     {
-      title:'เธ เธฒเธเธเธดเธเธเธฃเธฃเธก 13 เธเธคเธจเธเธดเธเธฒเธขเธ 2569',date:'2026-11-13',description:'',status:'published',
-      images:Array.from({length:39},(_,i)=>({src:'assets/gallery/gallery-2026-11-13-'+String(i+1).padStart(2,'0')+'.jpg',alt:'เธ เธฒเธเธเธดเธเธเธฃเธฃเธก 13 เธเธคเธจเธเธดเธเธฒเธขเธ 2569 เธ เธฒเธเธ—เธตเน '+(i+1)}))
+      title:'ภาพกิจกรรม 13 พฤศจิกายน 2569',date:'2026-11-13',description:'',status:'published',
+      images:Array.from({length:39},(_,i)=>({src:'assets/gallery/gallery-2026-11-13-'+String(i+1).padStart(2,'0')+'.jpg',alt:'ภาพกิจกรรม 13 พฤศจิกายน 2569 ภาพที่ '+(i+1)}))
     },
     {
       title:'กิจกรรม GECC · 4 พฤศจิกายน 2569',date:'2026-11-04',description:'',status:'published',
@@ -30,7 +30,7 @@ window.GECCPublic = (() => {
     if(php()){
       content=await request('public/content');
       const savedAlbums=content.albums||[];
-      const missingAlbums=defaults.albums.filter(a=>!savedAlbums.some(b=>b.date===a.date&&b.title===a.title));
+      const missingAlbums=defaults.albums.filter(a=>!savedAlbums.some(b=>b.date===a.date));
       content.albums=[...savedAlbums,...missingAlbums];
       const savedVideos=content.videos||[];
       const videos=defaults.videos.map(dv=>{
@@ -42,7 +42,7 @@ window.GECCPublic = (() => {
       return content;
     }
     const saved=DB.publicContent||{},albums=saved.albums||[];
-    const missing=defaults.albums.filter(a=>!albums.some(b=>b.date===a.date&&b.title===a.title));
+    const missing=defaults.albums.filter(a=>!albums.some(b=>b.date===a.date));
     const savedVideos=saved.videos||[];
     const videos=defaults.videos.map(dv=>{
       const found=savedVideos.find(sv=>sv.title===dv.title&&sv.category===dv.category);
