@@ -5466,7 +5466,7 @@ function wfWaitCount(team){ return DB.units.filter(u=>!team||u.team===team).filt
 function wfBanner(a,u,inUnit){
   const k=wfOf(a), L=WF[k], w=a?.wf||{}; const isMe=S.role==='mentee', isMt=S.role==='mentor';
   let meta='';
-  const waitIso = (w.reopenedAt && w.reopenedAt > (w.submittedAt||'')) ? w.reopenedAt : (w.submittedAt || ''); const waitDays = daysSince(waitIso); if(k==='submitted') meta=`ส่งเมื่อ ${thDateTime(w.submittedAt)}${w.reopenedAt&&w.reopenedAt>w.submittedAt?` (เปิดแก้ไข ${thDateTime(w.reopenedAt)})`:''} \u00B7 รอตรวจ ${waitDays} วัน · ส่งครั้งที่ ${w.round}`:''}${w.mentorSavedAt&&w.mentorSavedAt>w.submittedAt?` · <b style="color:#2563EB">📝 บันทึกร่างไว้แล้ว (ตรวจต่อได้)</b>`:''}`;
+  const waitIso = (w.reopenedAt && w.reopenedAt > (w.submittedAt||'')) ? w.reopenedAt : (w.submittedAt || ''); const waitDays = daysSince(waitIso); if(k==='submitted') meta=`ส่งเมื่อ ${thDateTime(w.submittedAt)}${w.reopenedAt&&w.reopenedAt>w.submittedAt?` (เปิดแก้ไข ${thDateTime(w.reopenedAt)})`:''} · รอตรวจ ${waitDays} วัน${w.round>1?` · ส่งครั้งที่ ${w.round}`:''}${w.mentorSavedAt&&w.mentorSavedAt>w.submittedAt?` · <b style="color:#2563EB">📝 บันทึกร่างไว้แล้ว (ตรวจต่อได้)</b>`:''}`;
   else if(k==='reviewed') meta=`ตรวจโดย ${esc((w.reviewedBy||[]).join(', ')||'MENTOR')} · ${thDateTime(w.reviewedAt)}`;
   else if(k==='returned') meta=`ส่งกลับเมื่อ ${thDateTime(w.returnedAt)} · ${esc(w.returnNote||'')}`;
   else meta = isMe ? 'กรอกข้อมูลและแนบหลักฐานให้ครบ แล้วกดยืนยันส่งให้ MENTOR ตรวจ' : 'หน่วยบริการยังไม่ได้ยืนยันส่งข้อมูล MENTOR ตรวจในพื้นที่และยืนยันผลได้';
@@ -6567,7 +6567,7 @@ function demoHash(){ if(window.GECC_SERVER) return; const h=(location.hash||'').
 demoHash(); window.addEventListener('hashchange',demoHash);
 </script>
 <script src="assets/backup.js"></script>
-<script src="assets/server-client.js?v=2570ah"></script>
-<script src="assets/public-features.js?v=2570ah"></script>
+<script src="assets/server-client.js?v=2570ai"></script>
+<script src="assets/public-features.js?v=2570ai"></script>
 </body>
 </html>
