@@ -322,7 +322,7 @@ export function mergeState(current, incoming, actor) {
     validateAssessment(value);
     const a = clone(value);
     const status = old?.wf?.status || "draft";
-    if (status === "reviewed")
+    if (actor.role !== "mentee" && status === "reviewed")
       fail(409, "ผลตรวจถูกล็อก ต้องเปิดแก้ไขพร้อมเหตุผลก่อน");
     if (!equal(a.wf, old?.wf)) fail(400, "ต้องเปลี่ยนสถานะผ่านคำสั่ง workflow");
     if (actor.role === "mentee") {
@@ -470,7 +470,6 @@ export function transition(state, id, action, actor, note = "", sender) {
   const now = new Date().toISOString();
   if (action === "submit") {
     if (actor.role !== "mentee") fail(403, "เฉพาะหน่วยบริการส่งตรวจ");
-    if (w.status === "reviewed") fail(409, "ผลตรวจถูกล็อก");
     if (
       typeof sender?.name !== "string" ||
       !sender.name.trim() ||
@@ -512,6 +511,7 @@ export function transition(state, id, action, actor, note = "", sender) {
         );
       w.status = "submitted";
       w.reopenedAt = now;
+      w.submittedAt = now;
       w.mentorSavedAt = null;
     } else fail(400, "คำสั่งไม่ถูกต้อง");
   }

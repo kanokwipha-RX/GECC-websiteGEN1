@@ -206,7 +206,7 @@ function merge_state(object $current, mixed $input, array $actor): object {
         $old=$current->assess->$id??null;
         if (same($value,$visible->assess->$id??null)) continue;
         validate_assessment($value); $a=copy_value($value);
-        if (($old->wf->status??'draft')==='reviewed') fail(409,'ผลตรวจถูกล็อก ต้องเปิดแก้ไขพร้อมเหตุผลก่อน');
+        if ($actor['role']!=='mentee' && ($old->wf->status??'draft')==='reviewed') fail(409,'ผลตรวจถูกล็อก ต้องเปิดแก้ไขพร้อมเหตุผลก่อน');
         $wfA = copy_value($a->wf ?? null);
         $wfOld = copy_value($old->wf ?? null);
         if ($wfA) unset($wfA->mentorSavedAt);
@@ -254,7 +254,6 @@ function transition(object $s, string $id, string $action, array $actor, string 
     $w=$a->wf??(object)['status'=>'draft','round'=>0,'log'=>[]];$now=now();
     if ($action==='submit') {
         if ($actor['role']!=='mentee') fail(403,'เฉพาะหน่วยบริการส่งตรวจ');
-        if ($w->status==='reviewed') fail(409,'ผลตรวจถูกล็อก');
         if (!is_string($sender->name??null)||!trim($sender->name)||length($sender->name)>200||!preg_match('/^\d{9,10}$/D',preg_replace('/\D/','',(string)($sender->tel??'')))) fail(400,'กรุณาระบุชื่อและโทรศัพท์ผู้ส่ง');
         $sender=(object)['name'=>trim($sender->name),'pos'=>mb_substr((string)($sender->pos??''),0,200),'tel'=>mb_substr((string)($sender->tel??''),0,40)];
         if ($w->status!=='submitted') $w->round=($w->round??0)+1;
@@ -271,7 +270,7 @@ function transition(object $s, string $id, string $action, array $actor, string 
             $w->status='returned';$w->returnedAt=$now;$w->returnNote=$note;
         } elseif ($action==='reopen') {
             if ($w->status!=='reviewed'||length(trim($note))<10) fail(400,'เปิดแก้ไขได้เฉพาะผลตรวจที่ล็อกและต้องระบุเหตุผลอย่างน้อย 10 ตัวอักษร');
-            $w->status='submitted';$w->reopenedAt=$now;$w->mentorSavedAt=null;
+            $w->status='submitted';$w->reopenedAt=$now;$w->submittedAt=$now;$w->mentorSavedAt=null;
         } else fail(400,'คำสั่งไม่ถูกต้อง');
     }
     $w->log=[...($w->log??[]),(object)['at'=>$now,'status'=>$action==='reopen'?'reopened':$w->status,'by'=>$actor['name'],'note'=>$note]];

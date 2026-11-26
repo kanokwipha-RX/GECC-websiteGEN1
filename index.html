@@ -4711,7 +4711,7 @@ function wfNextModal(uid){
 }
 function wfAlertHTML(team){
   const us=DB.units.filter(u=>!team||u.team===team); const L=us.map(u=>({u,a:DB.assess[u.id]})).filter(o=>wfOf(o.a)==='submitted');
-  const pend=L.filter(o=>o.a.wf.mentorSavedAt && o.a.wf.mentorSavedAt>o.a.wf.submittedAt); const late=L.filter(o=>daysSince(o.a.wf.submittedAt)>7);
+  const pend=L.filter(o=>o.a.wf.mentorSavedAt && o.a.wf.mentorSavedAt>o.a.wf.submittedAt); const late=L.filter(o=>{ const iso=(o.a.wf?.reopenedAt&&o.a.wf.reopenedAt>(o.a.wf.submittedAt||''))?o.a.wf.reopenedAt:o.a.wf.submittedAt; return daysSince(iso)>7; });
   if(!pend.length && !late.length) return '';
   const chip=o=>`<button class="wa-u" data-act="open-review" data-id="${o.u.id}">${esc(o.u.name)}</button>`;
   return `<div class="wfalert" role="alert"><span class="wa-i">${ic('alert')}</span><div class="wa-t"><b>แจ้งเตือน MENTOR</b>${pend.length?`<div>ตรวจแล้วแต่ยังไม่ยืนยันผล <b>${pend.length}</b> แห่ง: ${pend.map(chip).join('')}</div>`:''}${late.length?`<div>รอตรวจเกิน 7 วัน <b>${late.length}</b> แห่ง: ${late.map(chip).join('')}</div>`:''}</div></div>`;
@@ -4787,7 +4787,7 @@ function reopenModal(uid){
 async function reopenOk(uid){
   const v=$('#ro-reason').value.trim(); if(v.length<10){ $('#f-ro').classList.add('invalid'); $('#ro-reason').focus(); return; }
   closeModal(); const by=(S.draft?.inspectors||DB.assess[uid]?.inspectors||[]).join(', ')||(S.coord?'ผู้ประสานงานจังหวัด':teamName(S.team));
-  await wfCommit(uid,(w)=>{ const now=new Date().toISOString(); w.status='submitted'; w.reopenedAt=now; w.mentorSavedAt=null; w.log.push({at:now,status:'reopened',by,note:v}); },'เปิดแก้ไขใหม่แล้ว · บันทึกเหตุผลในประวัติ');
+  await wfCommit(uid,(w)=>{ const now=new Date().toISOString(); w.status='submitted'; w.reopenedAt=now; w.submittedAt=now; w.mentorSavedAt=null; w.log.push({at:now,status:'reopened',by,note:v}); },'เปิดแก้ไขใหม่แล้ว · บันทึกเหตุผลในประวัติ');
 }
 function bareNav(prev,next){
   const b=(o,dir)=>`<button class="tn-b" ${o?`data-act="go" data-view="${o[0]}"`:'disabled'} title="${o?(dir==='p'?'ย้อนกลับ: ':'ถัดไป: ')+o[1]:''}" aria-label="${o?(dir==='p'?'ย้อนกลับไปหน้า ':'ไปหน้าถัดไป ')+o[1]:''}">${dir==='p'?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>':''}<span>${dir==='p'?'ย้อนกลับ':'ถัดไป'}<small>${o?o[1]:''}</small></span>${dir==='n'?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>':''}</button>`;
@@ -4970,7 +4970,7 @@ function menteeHome(){
 
   const wfL=WF[wf];
   const submitBtn = (wf==='submitted') ? `<div class="gsub-row"><div class="gsub-state wait">${ic('upload')}<div><b>ส่งแล้ว · รอ MENTOR ตรวจ</b><span>ส่งเมื่อ ${thDateTime(w.submittedAt)} · รอ ${daysSince(w.submittedAt)} วัน</span>${senderLine(a)}</div></div><button class="gbtn-out" data-act="wf-submit" data-id="${u.id}">${ic('upload')}ส่งข้อมูลเพิ่มเติม</button></div>`
-    : (wf==='reviewed') ? `<div class="gsub-row"><div class="gsub-state ok">${ic('shield')}<div><b>MENTOR ตรวจแล้ว</b><span>ตรวจโดย ${esc((w.reviewedBy||[]).join(', '))} · ${thDateTime(w.reviewedAt)}</span></div></div></div>`
+    : (wf==='reviewed') ? `<div class="gsub-row"><div class="gsub-state ok">${ic('shield')}<div><b>MENTOR ตรวจแล้ว</b><span>ตรวจโดย ${esc((w.reviewedBy||[]).join(', '))} \u00B7 ${thDateTime(w.reviewedAt)}</span></div></div><button class="gbtn-out" data-act="wf-submit" data-id="${u.id}">${ic('upload')}ส่งข้อมูล/หัวข้ออื่นเพิ่มเติม</button></div>`
     : `${wf==='returned'?`<div class="gsub-note">${ic('repeat')}<span><b>MENTOR ส่งกลับให้แก้ไข:</b> ${esc(w.returnNote||'')}</span></div>`:''}<button class="gsubmit" data-act="wf-submit" data-id="${u.id}">${ic('upload')}${wf==='returned'?'ส่งข้อมูลที่แก้ไขแล้วให้ MENTOR ตรวจ':'ยืนยันส่งข้อมูลให้ MENTOR ตรวจ'}</button>`;
   const tile=(t,v,max,sub)=>{ const pc=v==null?0:Math.max(0,Math.min(100,v/max*100)); return `<div class="dtile"><span class="dt-t">${t}</span><div class="dt-v"><b>${v==null?'–':fmt(v,1)}</b><small>/ ${max}</small></div><div class="dt-bar"><span style="width:${pc}%"></span></div><span class="dt-s">${sub}</span></div>`; };
   $('#content').innerHTML = `<section class="mods"><div class="mods-c">
@@ -5169,7 +5169,7 @@ function analyticsHTML(infos){
 function viewUnit(){
   const u=unitById(S.unitId); if(!u){ go('forms'); return; }
   if(!canAccessUnit(u)){ denyUnit(); go(S.role==='mentee'?'modules':S.role==='mentor'?'mdash':'exec'); return; }
-  S.lock = wfOf(DB.assess[u.id])==='reviewed'; const ro = S.role!=='mentor' || S.lock;
+  S.lock = (S.role==='mentor' && wfOf(DB.assess[u.id])==='reviewed'); const ro = S.role!=='mentor' || S.lock;
   if(!S.draft){
     S.draft = clone(DB.assess[u.id] || blankAssess());
     S.dirty=false;
@@ -5466,14 +5466,14 @@ function wfWaitCount(team){ return DB.units.filter(u=>!team||u.team===team).filt
 function wfBanner(a,u,inUnit){
   const k=wfOf(a), L=WF[k], w=a?.wf||{}; const isMe=S.role==='mentee', isMt=S.role==='mentor';
   let meta='';
-  if(k==='submitted') meta=`ส่งเมื่อ ${thDateTime(w.submittedAt)} · รอตรวจ ${daysSince(w.submittedAt)} วัน${w.round>1?` · ส่งครั้งที่ ${w.round}`:''}${w.mentorSavedAt&&w.mentorSavedAt>w.submittedAt?` · <b style="color:#2563EB">📝 บันทึกร่างไว้แล้ว (ตรวจต่อได้)</b>`:''}`;
+  const waitIso = (w.reopenedAt && w.reopenedAt > (w.submittedAt||'')) ? w.reopenedAt : (w.submittedAt || ''); const waitDays = daysSince(waitIso); if(k==='submitted') meta=`ส่งเมื่อ ${thDateTime(w.submittedAt)}${w.reopenedAt&&w.reopenedAt>w.submittedAt?` (เปิดแก้ไข ${thDateTime(w.reopenedAt)})`:''} \u00B7 รอตรวจ ${waitDays} วัน · ส่งครั้งที่ ${w.round}`:''}${w.mentorSavedAt&&w.mentorSavedAt>w.submittedAt?` · <b style="color:#2563EB">📝 บันทึกร่างไว้แล้ว (ตรวจต่อได้)</b>`:''}`;
   else if(k==='reviewed') meta=`ตรวจโดย ${esc((w.reviewedBy||[]).join(', ')||'MENTOR')} · ${thDateTime(w.reviewedAt)}`;
   else if(k==='returned') meta=`ส่งกลับเมื่อ ${thDateTime(w.returnedAt)} · ${esc(w.returnNote||'')}`;
   else meta = isMe ? 'กรอกข้อมูลและแนบหลักฐานให้ครบ แล้วกดยืนยันส่งให้ MENTOR ตรวจ' : 'หน่วยบริการยังไม่ได้ยืนยันส่งข้อมูล MENTOR ตรวจในพื้นที่และยืนยันผลได้';
   let acts='';
-  if(isMe){ if(k==='none'||k==='draft'||k==='returned') acts=`<button class="btn btn-lux" data-act="wf-submit" data-id="${u.id}">${ic('upload')}${k==='returned'?'ส่งข้อมูลที่แก้ไขแล้ว':'ยืนยันส่งให้ MENTOR ตรวจ'}</button>`; else if(k==='submitted') acts=`<button class="btn" data-act="wf-submit" data-id="${u.id}">${ic('upload')}ส่งข้อมูลเพิ่มเติม</button>`; if(!inUnit) acts+=`<button class="btn" data-act="mentee-tab" data-tab="ready">${ic('clipboard')}เปิดแบบตรวจ</button>`; }
+  if(isMe){ if(k==='none'||k==='draft'||k==='returned') acts=`<button class="btn btn-lux" data-act="wf-submit" data-id="${u.id}">${ic('upload')}${k==='returned'?'ส่งข้อมูลที่แก้ไขแล้ว':'ยืนยันส่งให้ MENTOR ตรวจ'}</button>`; else if(k==='submitted'||k==='reviewed') acts=`<button class="btn btn-lux" data-act="wf-submit" data-id="${u.id}">${ic('upload')}${k==='reviewed'?'ส่งข้อมูล/หัวข้ออื่นให้ MENTOR ตรวจ':'\u0E2A\u0E48\u0E07\u0E02\u0E49\u0E2D\u0E21\u0E39\u0E25\u0E40\u0E1E\u0E34\u0E48\u0E21\u0E40\u0E15\u0E34\u0E21'}</button>`; if(!inUnit) acts+=`<button class="btn" data-act="mentee-tab" data-tab="ready">${ic('clipboard')}เปิดแบบตรวจ</button>`; }
   if(isMt && inUnit){ if(k==='reviewed') acts=`<button class="btn" data-act="reopen" data-id="${u.id}">${ic('pencil')}เปิดแก้ไขใหม่</button>`; else { acts=`<button class="btn btn-lux" data-act="wf-review" data-id="${u.id}">${ic('shield')}ยืนยันตรวจแล้ว</button>`; if(k==='submitted') acts+=`<button class="btn btn-danger" data-act="wf-return" data-id="${u.id}">${ic('repeat')}ส่งกลับให้แก้ไข</button>`; if(k==='submitted') acts+=`<button class="btn btn-primary" data-act="save-draft" title="บันทึกผลการตรวจไว้ก่อน เพื่อกลับมาตรวจต่อทีหลัง">${ic('clock')}บันทึกไว้ตรวจต่อทีหลัง</button>`; } }
-  return `<div class="wfb ${L[2]}" role="status"><span class="wfb-i">${ic(L[1])}</span><div class="wfb-t"><span class="wfb-k">สถานะการส่งข้อมูล</span><b>${L[0]}</b><span>${meta}</span>${senderLine(a)}${k==='reviewed'&&inUnit?`<span class="lockbar">${ic('shield')}<span><b>ผลการตรวจถูกล็อกแล้ว</b> · แก้ไขไม่ได้จนกว่า MENTOR จะกด “เปิดแก้ไขใหม่” พร้อมบันทึกเหตุผล</span></span>`:''}${wfLogHTML(w)}</div>${acts?`<div class="wfb-a">${acts}</div>`:''}</div>`;
+  return `<div class="wfb ${L[2]}" role="status"><span class="wfb-i">${ic(L[1])}</span><div class="wfb-t"><span class="wfb-k">สถานะการส่งข้อมูล</span><b>${L[0]}</b><span>${meta}</span>${senderLine(a)}${k==='reviewed'&&inUnit?`<span class="lockbar">${ic('shield')}<span><b>ผลการตรวจถูกล็อกแล้ว</b> · ${isMe?'หน่วยงานสามารถส่งข้อมูลหรือหัวข้ออื่นเพิ่มเติมได้ตลอดเวลา':'\u0E41\u0E01\u0E49\u0E44\u0E02\u0E44\u0E21\u0E48\u0E44\u0E14\u0E49\u0E08\u0E19\u0E01\u0E27\u0E48\u0E32 MENTOR \u0E08\u0E30\u0E01\u0E14 \u201C\u0E40\u0E1B\u0E34\u0E14\u0E41\u0E01\u0E49\u0E44\u0E02\u0E43\u0E2B\u0E21\u0E48\u201D \u0E1E\u0E23\u0E49\u0E2D\u0E21\u0E1A\u0E31\u0E19\u0E17\u0E36\u0E01\u0E40\u0E2B\u0E15\u0E38\u0E1C\u0E25'} </span></span>`:''}${wfLogHTML(w)}</div>${acts?`<div class="wfb-a">${acts}</div>`:''}</div>`;
 }
 async function wfCommit(uid, mut, msg){
   if(window.GECC_SERVER) return await GECCClient.workflow(uid,mut,msg);
@@ -5522,7 +5522,7 @@ function wfQueueHTML(infos){
   const alertH=wfAlertHTML(S.mdTeam||(S.role==='mentor'&&!S.coord&&!S.allGroups?S.team:0));
   const rows=infos.map(x=>({x,k:wfOf(x.a),w:x.a?.wf||{}}));
   const c=k=>rows.filter(o=>o.k===k).length;
-  const wait=rows.filter(o=>o.k==='submitted').sort((a,b)=>(a.w.submittedAt||'').localeCompare(b.w.submittedAt||''));
+  const waitIso = o => (o.w.reopenedAt && o.w.reopenedAt > (o.w.submittedAt||'')) ? o.w.reopenedAt : (o.w.submittedAt||''); const wait=rows.filter(o=>o.k==='submitted').sort((a,b)=>waitIso(b).localeCompare(waitIso(a)));
   const ret=rows.filter(o=>o.k==='returned');
   const allDone=rows.filter(o=>o.k==='reviewed');
   const done=allDone.sort((a,b)=>(b.w.reviewedAt||'').localeCompare(a.w.reviewedAt||'')).slice(0,6);
@@ -6567,7 +6567,7 @@ function demoHash(){ if(window.GECC_SERVER) return; const h=(location.hash||'').
 demoHash(); window.addEventListener('hashchange',demoHash);
 </script>
 <script src="assets/backup.js"></script>
-<script src="assets/server-client.js?v=2570ag"></script>
-<script src="assets/public-features.js?v=2570ag"></script>
+<script src="assets/server-client.js?v=2570ah"></script>
+<script src="assets/public-features.js?v=2570ah"></script>
 </body>
 </html>
