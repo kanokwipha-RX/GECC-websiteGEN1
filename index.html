@@ -1904,10 +1904,21 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 .central-team{margin-top:34px;}
 .central-team h2{margin:0 0 18px;color:var(--navy);font-size:25px;}
 .central-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;max-width:800px;}
-.portfolio-entry{max-width:1000px;margin:0 auto;padding:28px;border-radius:16px;background:#0D1E57;color:#fff;}
+.portfolio-entry{max-width:1380px;width:100%;margin:0 auto;padding:28px;border-radius:16px;background:#0D1E57;color:#fff;}
 .portfolio-entry .entry-q{margin-top:0;}
 .portfolio-entry .entry-help{margin:8px 0 20px;color:#DDE3F2;line-height:1.6;}
 .portfolio-entry .entry-s{max-width:none;color:#DDE3F2;}
+.login-wizard .group-choice-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:0 0 24px;}
+.login-wizard .group-choice{border-radius:14px;}
+.login-wizard .showcase-card .group-choice-copy{margin:8px;padding:10px 12px;width:calc(100% - 16px);border-radius:10px;gap:2px;}
+.login-wizard .group-choice-copy strong{font-size:15px;line-height:1.25;}
+.login-wizard .group-choice-copy small{font-size:11.5px;line-height:1.35;color:#E2E8F5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:31px;}
+.login-wizard .showcase-card .group-choice-action{margin-top:8px;padding:7px 10px;font-size:11.5px;font-weight:600;border-radius:8px;gap:5px;justify-content:center;white-space:nowrap;}
+.login-wizard .group-choice-action svg{width:13px;height:13px;flex-shrink:0;}
+@media(max-width:1200px){.login-wizard .group-choice-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;}}
+@media(max-width:960px){.login-wizard .group-choice-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}}
+@media(max-width:680px){.login-wizard .group-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}.login-wizard .showcase-card .group-choice-copy{margin:6px;padding:8px 10px;width:calc(100% - 12px);}}
+@media(max-width:440px){.login-wizard .group-choice-grid{grid-template-columns:1fr;}}
 .entry-coordinator{display:inline-flex;align-items:center;gap:7px;padding:10px 0;border:0;background:none;color:var(--navy);cursor:pointer;font:600 14px 'IBM Plex Sans Thai',sans-serif;text-decoration:underline;text-underline-offset:3px;}
 .entry-coordinator svg{width:17px;height:17px;}
 .entry-coordinator:focus-visible{outline:2px solid var(--navy);outline-offset:3px;}
@@ -2127,7 +2138,7 @@ textarea[data-bind^="revt."], textarea[data-bind^="adv."]{ background:#FFF6F4!im
 </style>
 <link rel="stylesheet" href="assets/premium.css">
 <script src="assets/motion.js" defer></script>
-<link rel="stylesheet" href="assets/public-features.css?v=2570z">
+<link rel="stylesheet" href="assets/public-features.css?v=2570aj">
 <script src="assets/evaluation-dashboard.js?v=2570u"></script>
 </head>
 <body>
@@ -6567,7 +6578,7 @@ function demoHash(){ if(window.GECC_SERVER) return; const h=(location.hash||'').
 demoHash(); window.addEventListener('hashchange',demoHash);
 </script>
 <script src="assets/backup.js"></script>
-<script src="assets/server-client.js?v=2570ai"></script>
-<script src="assets/public-features.js?v=2570ai"></script>
+<script src="assets/server-client.js?v=2570aj"></script>
+<script src="assets/public-features.js?v=2570aj"></script>
 </body>
 </html>
