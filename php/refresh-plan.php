@@ -41,7 +41,7 @@ function refresh_value(mixed $live, mixed $base, mixed $wanted, string $path, ar
 function content_refresh_plan(object $live, object $wanted, object $base, array $accounts=[]): array {
     if(count($wanted->units??[])!==32||count($wanted->teams??[])!==6
         ||array_sum(array_map(fn($t)=>count($t->members??[]),$wanted->teams))!==24
-        ||count($wanted->publicContent->mentorAdvisors??[])!==6)fail(400,'ข้อมูลต้นทางต้องมี 32 หน่วยงาน 24 MENTOR และที่ปรึกษา 6 คน');
+        ||!in_array(count($wanted->publicContent->mentorAdvisors??[]),[6,8],true))fail(400,'ข้อมูลต้นทางต้องมี 32 หน่วยงาน 24 MENTOR และที่ปรึกษา 6 หรือ 8 คน');
     $next=copy_value($live);$changes=[];$conflicts=[];$ids=[];$codes=[];
     $teamIds=array_map(fn($t)=>$t->id??null,$wanted->teams);sort($teamIds);
     if($teamIds!==[1,2,3,4,5,6] && $teamIds!==[1,2,3,4,5,6,7])fail(400,'กลุ่มต้นทางต้องครบ 1–6 หรือ 1–7 และไม่ซ้ำ');
