@@ -1,0 +1,54 @@
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
+$ftpHost = '27.254.62.221:2121'
+$user = 'osscsskf'
+$pass = '951nFxJ2d*)pJC'
+$root = 'c:\Users\USER\Downloads\GECC'
+
+function Upload-FtpFile($remoteRelPath, $localFilePath) {
+    $remoteUri = "ftp://$ftpHost/$remoteRelPath"
+    Write-Host "Uploading $localFilePath -> $remoteUri"
+    $req = [System.Net.FtpWebRequest]::Create($remoteUri)
+    $req.Method = [System.Net.WebRequestMethods+Ftp]::UploadFile
+    $req.Credentials = New-Object System.Net.NetworkCredential($user, $pass)
+    $req.UseBinary = $true
+    $req.KeepAlive = $false
+    $bytes = [System.IO.File]::ReadAllBytes($localFilePath)
+    $req.ContentLength = $bytes.Length
+    $stream = $req.GetRequestStream()
+    $stream.Write($bytes, 0, $bytes.Length)
+    $stream.Close()
+    $resp = $req.GetResponse()
+    Write-Host "Uploaded: $($resp.StatusDescription.Trim())"
+    $resp.Close()
+}
+
+function Remove-FtpFile($remoteRelPath) {
+    $remoteUri = "ftp://$ftpHost/$remoteRelPath"
+    $req = [System.Net.FtpWebRequest]::Create($remoteUri)
+    $req.Method = [System.Net.WebRequestMethods+Ftp]::DeleteFile
+    $req.Credentials = New-Object System.Net.NetworkCredential($user, $pass)
+    $req.KeepAlive = $false
+    try {
+        $resp = $req.GetResponse()
+        $resp.Close()
+    } catch {}
+}
+
+# 1. Upload updater
+Write-Host "1. Uploading update_railway_and_disaster_units.php..."
+Upload-FtpFile "public_html/sskgecc/update_railway_and_disaster_units.php" "$root\tools\update_railway_and_disaster_units.php"
+
+# 2. Execute via HTTPS
+Write-Host "2. Executing update_railway_and_disaster_units.php via HTTPS..."
+$res = Invoke-RestMethod -Uri "https://www.osscsskfda.org/sskgecc/update_railway_and_disaster_units.php" -Method Get
+Write-Host "Server response:" ($res | ConvertTo-Json -Depth 5)
+
+# 3. Clean up updater
+Remove-FtpFile "public_html/sskgecc/update_railway_and_disaster_units.php"
+
+# 4. Upload index.html
+Write-Host "3. Uploading index.html..."
+Upload-FtpFile "public_html/sskgecc/index.html" "$root\index.html"
+
+Write-Host "Deployment completed successfully!"
